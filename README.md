@@ -1,3 +1,12 @@
+## About SONA SPACE
+
+In the rapidly growing creative and media industry, there is an increasing demand for flexible workspaces that offer full amenities and also support creative activities such as photography and videography. However, not all studios today can provide both a comfortable living environment and professional photography services.
+
+This creates a need for a versatile space solution that combines relaxation comforts with creative services, meeting all customer requirements.
+
+SONA SPACE was born with the mission to provide premium rental studio spaces, fully equipped for rest, living, and working, while also offering professional photography services. Our goal is to deliver the most convenient and perfect experience for our customers.
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
