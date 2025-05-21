@@ -6,3 +6,41 @@
     align-items: center;
     justify-content: center;
 }
+
+.section-1 {
+    // background-color: black;
+    border: 1px solid white;
+    // width: 1920px;
+}
+
+
+@include lg {
+    .section-1 {
+        border: 1px solid black;
+    }
+}
+
+@include md {
+    .section-1 {
+        border: 1px solid blue;
+    }
+}
+
+@include sm {
+    .section-1 {
+        // background-color: red;
+        border: 1px solid red;
+    }
+}
+
+@include xs{
+    .section-1 {
+        border: 1px solid green;
+    }
+}
+
+@include xxs {
+    .section-1 {
+        border: 1px solid yellow;
+    }
+}
