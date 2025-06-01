@@ -1,5 +1,6 @@
 ## About SONA SPACE
-dsdscscsdcsdcdscs activities such as photography and videography. However, not all studios today can provide both a comfortable living environment and professional photography services.
+
+In the rapidly growing creative and media industry, there is an increasing demand for flexible workspaces that offer full amenities and also support creative activities such as photography and videography. However, not all studios today can provide both a comfortable living environment and professional photography services.
 
 This creates a need for a versatile space solution that combines relaxation comforts with creative services, meeting all customer requirements.
 
