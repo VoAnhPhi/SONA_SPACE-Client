@@ -7,6 +7,14 @@
     "react-router-dom": "^7.6.1"
   },
   "devDependencies": {
-    "sass": "^1.89.1"
+    "@vitejs/plugin-react": "^4.5.0",
+    "sass": "^1.89.1",
+    "vite": "^6.3.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   }
+  
 }
