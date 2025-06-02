@@ -16,7 +16,28 @@
 /* Pages */
 @import "imports/pages/home";
 @import "imports/pages/contact";
-
+@import "imports/pages/product";
+@import "imports/pages/productOfCategory";
+@import "imports/pages/productDetail";
+@import "imports/pages/wishlist";
+@import "imports/pages/cart";
+@import "imports/pages/payment";
+@import "imports/pages/orderComplete";
+@import "imports/pages//room";
+@import "imports/pages/roomDetail";
+@import "imports/pages/contactForm";
+@import "imports/pages/contactFormArch";
+@import "imports/pages/contactFormDesign";
+@import "imports/pages/signUp";
+@import "imports/pages/signIn";
+@import "imports/pages/forgotPassword";
+@import "imports/pages/user";
+@import "imports/pages/detailOrder";
+@import "imports/pages/privacy";
+@import "imports/pages/policy";
+@import "imports/pages/news";
+@import "imports/pages/newsDetail";
+@import "imports/pages/404";
 
 /* Components */
 @import "imports/components/demoComponent";

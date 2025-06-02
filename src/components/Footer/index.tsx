@@ -72,8 +72,8 @@ const Footer = () => {
               Tất cả giá đều là giá bán lẻ đề xuất bằng Việt Nam Đồng (₫) và đã
               bao gồm VAT.
             </p>
-            <p>Thông tin cookie</p>
-            <p>Chính sách bảo mật</p>
+            <p><a href="/chinh-sach-bao-mat">Thông tin cookie</a></p>
+            <p><a href="/dieu-khoan-su-dung">Chính sách bảo mật</a></p>
             <div className="payment-icons">
               <img src="/images/payment-icons.png" alt="Payment methods" />
             </div>

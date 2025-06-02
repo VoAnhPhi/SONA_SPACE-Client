@@ -1,0 +1,150 @@
+.privacy-page {
+  padding: 60px 0;
+  
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  .page-title {
+    font-family: 'M-SB', sans-serif;
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  
+  .page-subtitle {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .terms-section {
+    margin-bottom: 30px;
+    
+    .section-title {
+      font-family: 'M-SB', sans-serif;
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      position: relative;
+      display: inline-block;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 100%;
+        height: 2px;
+        background-color: #F5A623;
+      }
+    }
+    
+    .section-content {
+      color: #333;
+      font-size: 14px;
+      line-height: 1.6;
+      
+      p {
+        margin-bottom: 15px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      
+      ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        margin-bottom: 15px;
+        
+        li {
+          margin-bottom: 8px;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+  
+  // Design Services Section
+  .design-services {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid #eee;
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+      }
+      
+      .service-item {
+        img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-bottom: 15px;
+        }
+        
+        h3 {
+          font-family: 'M-SB', sans-serif;
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 8px;
+        }
+        
+        p {
+          font-size: 14px;
+          color: #666;
+        }
+      }
+    }
+  }
+  
+  // Responsive styles
+  @media (max-width: 768px) {
+    padding: 40px 0;
+    
+    .page-title {
+      font-size: 24px;
+    }
+    
+    .page-subtitle {
+      margin-bottom: 30px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    padding: 30px 0;
+    
+    .page-title {
+      font-size: 22px;
+    }
+    
+    .terms-section {
+      .section-title {
+        font-size: 16px;
+      }
+      
+      .section-content {
+        font-size: 13px;
+      }
+    }
+  }
+}
