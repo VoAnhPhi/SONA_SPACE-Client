@@ -24,10 +24,19 @@ const Header = () => {
                   <a href="/khong-gian">Không Gian</a>
                 </li>
                 <li>
-                  <a href="/blog">Blog</a>
+                  <a href="/dich-vu-thiet-ke">Thiết Kế Nội Thất</a>
+                </li>
+                <li>
+                  <a href="/ho-so-kien-truc">Hồ Sơ Kiến Trúc</a>
+                </li>
+                <li>
+                  <a href="/tin-tuc">Tin Tức</a>
                 </li>
                 <li>
                   <a href="/ve-chung-toi">Về Chúng Tôi</a>
+                </li>
+                <li>
+                  <a href="/lien-he">Liên Hệ</a>
                 </li>
               </ul>
             </nav>

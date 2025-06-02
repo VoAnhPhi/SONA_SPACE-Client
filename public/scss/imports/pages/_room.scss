@@ -1,0 +1,514 @@
+.rooms-page {
+  // Banner Section
+  .room-banner {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0;
+
+    .banner-image {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  // Breadcrumb Styles
+  .breadcrumb-container {
+    padding: 15px 0;
+    background-color: #f8f8f8;
+    margin-bottom: 40px;
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'M-R';
+      font-size: 14px;
+
+      a {
+        color: #666;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #333;
+        }
+      }
+
+      span {
+        color: #999;
+
+        &.active {
+          color: #333;
+          font-family: 'M-M';
+        }
+      }
+    }
+  }
+
+  // Room Categories
+  .room-categories {
+    padding: 0 0 50px;
+
+    .section-title {
+      font-family: 'M-SB';
+      font-size: var(--h2-fs);
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .categories-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      .category-item {
+        width: 180px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+        }
+
+        .category-image {
+          width: 100%;
+          height: 180px;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 15px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+          }
+        }
+
+        .category-name {
+          font-family: 'M-M';
+          font-size: 16px;
+          color: #333;
+          margin: 0;
+        }
+
+        &.active {
+          .category-name {
+            color: #F5A623;
+          }
+
+          .category-image {
+            position: relative;
+
+            &::after {
+              content: '';
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              height: 3px;
+              background-color: #F5A623;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Room Products
+  .room-products {
+    padding: 50px 0;
+    background-color: #f8f8f8;
+
+    .section-title {
+      font-family: 'M-SB';
+      font-size: var(--h3-fs);
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-bottom: 40px;
+
+      .product-card {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+
+          .product-image img {
+            transform: scale(1.05);
+          }
+
+          .product-actions {
+            opacity: 1;
+          }
+        }
+
+        .product-image {
+          position: relative;
+          height: 250px;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+          }
+
+          .product-actions {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            .action-btn {
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background-color: #fff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: none;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+              text-decoration: none;
+
+              i {
+                font-size: 16px;
+                color: #333;
+              }
+
+              &:hover {
+                background-color: #F5A623;
+
+                i {
+                  color: #fff;
+                }
+              }
+            }
+          }
+        }
+
+        .product-info {
+          padding: 20px;
+
+          .product-category {
+            font-family: 'M-R';
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+          }
+
+          .product-name {
+            font-family: 'M-M';
+            font-size: 16px;
+            margin: 0 0 10px;
+            line-height: 1.4;
+
+            a {
+              color: #333;
+              text-decoration: none;
+              transition: color 0.3s ease;
+
+              &:hover {
+                color: #F5A623;
+              }
+            }
+          }
+
+          .product-price {
+            margin-bottom: 15px;
+
+            .current-price {
+              font-family: 'M-SB';
+              font-size: 18px;
+              color: #333;
+              margin-right: 10px;
+            }
+
+            .old-price {
+              font-family: 'M-R';
+              font-size: 14px;
+              color: #999;
+              text-decoration: line-through;
+            }
+          }
+
+          .product-colors {
+            display: flex;
+            gap: 8px;
+
+            .color-dot {
+              width: 16px;
+              height: 16px;
+              border-radius: 50%;
+              border: 1px solid #ddd;
+            }
+          }
+        }
+      }
+    }
+
+    .view-more-container {
+      text-align: center;
+
+      .view-more-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #333;
+        color: #fff;
+        font-family: 'M-M';
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #F5A623;
+        }
+      }
+    }
+  }
+
+  // Design Inspiration
+  .design-inspiration {
+    padding: 80px 0;
+
+    .inspiration-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+
+      .inspiration-text {
+        .section-title {
+          font-family: 'M-SB';
+          font-size: var(--h2-fs);
+          color: #333;
+          margin-bottom: 20px;
+        }
+
+        .description {
+          font-family: 'M-R';
+          font-size: 16px;
+          line-height: 1.6;
+          color: #666;
+          margin-bottom: 30px;
+        }
+
+        .learn-more-btn {
+          display: inline-block;
+          padding: 12px 30px;
+          background-color: #F5A623;
+          color: #fff;
+          font-family: 'M-M';
+          font-size: 16px;
+          text-decoration: none;
+          border-radius: 4px;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: darken(#F5A623, 10%);
+          }
+        }
+      }
+
+      .inspiration-image {
+        img {
+          width: 100%;
+          height: 400px;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+
+  // Room Recommendations
+  .room-recommendations {
+    padding: 60px 0;
+    background-color: #f8f8f8;
+
+    .section-title {
+      font-family: 'M-SB';
+      font-size: var(--h3-fs);
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+
+      .recommendation-item {
+        position: relative;
+        height: 300px;
+        border-radius: 8px;
+        overflow: hidden;
+
+        &:hover {
+          .recommendation-image img {
+            transform: scale(1.05);
+          }
+        }
+
+        .recommendation-image {
+          width: 100%;
+          height: 100%;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+          }
+        }
+
+        .recommendation-content {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          padding: 30px;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+          color: #fff;
+
+          h3 {
+            font-family: 'M-SB';
+            font-size: 20px;
+            margin-bottom: 15px;
+          }
+
+          .view-all-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #F5A623;
+            color: #fff;
+            font-family: 'M-M';
+            font-size: 14px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: darken(#F5A623, 10%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Design Blog Section
+  .design-blog {
+    padding: 60px 0;
+    background-color: #fff;
+
+    .section-title {
+      font-family: 'M-SB';
+      font-size: var(--h3-fs);
+      margin-bottom: 30px;
+      color: #333;
+      text-align: center;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+
+      .blog-item {
+        img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-bottom: 15px;
+        }
+
+        h3 {
+          font-family: 'M-M';
+          font-size: 16px;
+          color: #333;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  // Responsive Styles
+  @media (max-width: $lg-max) {
+    .room-products .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: $md-max) {
+    .room-products .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .design-inspiration .inspiration-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .room-recommendations .recommendations-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: $sm-max) {
+    .room-banner {
+      height: 200px;
+    }
+
+    .room-categories .categories-grid .category-item {
+      width: 150px;
+
+      .category-image {
+        height: 150px;
+      }
+    }
+
+    .design-blog .blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: $xs-max) {
+    .room-products .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .design-blog .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

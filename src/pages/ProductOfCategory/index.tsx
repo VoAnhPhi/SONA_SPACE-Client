@@ -1,0 +1,333 @@
+import React, { useState } from "react";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+
+interface ProductProps {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  colors: string[];
+  isNew?: boolean;
+  isSale?: boolean;
+  category: string;
+}
+
+interface CategoryProps {
+  id: number;
+  name: string;
+  image: string;
+  slug: string;
+}
+
+const ProductOfCategory: React.FC = () => {
+  const [selectedFilter, setSelectedFilter] = useState<string>("Chọn danh mục");
+  const [selectedSort, setSelectedSort] = useState<string>("Chọn danh mục");
+  const [selectedSpace, setSelectedSpace] = useState<string>("Chọn danh mục");
+
+  // Sample categories for the bottom section
+  const categories: CategoryProps[] = [
+    {
+      id: 1,
+      name: "Latest Edition",
+      image: "/images/categories/latest-edition.jpg",
+      slug: "latest-edition"
+    },
+    {
+      id: 2,
+      name: "Sofas",
+      image: "/images/categories/sofas.jpg",
+      slug: "sofas"
+    },
+    {
+      id: 3,
+      name: "Ghế",
+      image: "/images/categories/ghe.jpg",
+      slug: "ghe"
+    },
+    {
+      id: 4,
+      name: "Bàn",
+      image: "/images/categories/ban.jpg",
+      slug: "ban"
+    },
+    {
+      id: 5,
+      name: "Tủ",
+      image: "/images/categories/tu.jpg",
+      slug: "tu"
+    }
+  ];
+
+  // Sample product data
+  const products: ProductProps[] = [
+    {
+      id: 1,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/sofa-beige-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      category: "Sofas"
+    },
+    {
+      id: 2,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/sofa-gray-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      category: "Sofas"
+    },
+    {
+      id: 3,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/sofa-black-1.jpg",
+      colors: ["#D8C1A9", "#555555", "#333333"],
+      isNew: true,
+      category: "Sofas"
+    },
+    {
+      id: 4,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/cabinet-dark-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      isSale: true,
+      category: "Tủ"
+    },
+    {
+      id: 5,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/chair-wooden-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      category: "Ghế"
+    },
+    {
+      id: 6,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/chair-burgundy-1.jpg",
+      colors: ["#4A2932", "#E5E5E5", "#555555"],
+      category: "Ghế"
+    },
+    {
+      id: 7,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/table-round-black-1.jpg",
+      colors: ["#333333", "#555555", "#777777"],
+      isNew: true,
+      category: "Bàn"
+    },
+    {
+      id: 8,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/tiles-beige-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      category: "Latest Edition"
+    },
+    {
+      id: 9,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/lamp-floor-black-1.jpg",
+      colors: ["#333333", "#555555", "#777777"],
+      category: "Latest Edition"
+    },
+    {
+      id: 10,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/chair-metal-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      category: "Ghế"
+    },
+    {
+      id: 11,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/carpet-pattern-1.jpg",
+      colors: ["#333333", "#555555", "#777777"],
+      isNew: true,
+      category: "Latest Edition"
+    },
+    {
+      id: 12,
+      name: "Sofa Modular 2.5 seater với nhièu varian option",
+      price: 15190000,
+      image: "/images/products/artwork-woman-1.jpg",
+      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+      isSale: true,
+      category: "Latest Edition"
+    },
+  ];
+
+  // Format price with commas
+  const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  return (
+    <>
+      <Header />
+      <div className="product-of-category">
+        {/* Banner Section */}
+        <section className="category-banner">
+          <div className="container-fluid">
+            <div className="banner-image">
+              <img src="/images/categories/chair-category-banner.jpg" alt="Sản phẩm trong danh mục Ghế - Các loại ghế hiện đại" />
+              <div className="banner-content">
+                <div className="breadcrumb">
+                  <span>Trang chủ / </span>
+                  <span className="active">Ghế</span>
+                </div>
+                <h1>Sản phẩm trong danh mục Ghế</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Filter and Products */}
+        <section className="product-listing">
+          <div className="container">
+            {/* Filter Row */}
+            <div className="filter-row">
+              <div className="filter-left">
+                <div className="filter-icon">
+                  <img src="/images/icons/filter-icon.svg" alt="Filter" />
+                  <span>Bộ lọc:</span>
+                </div>
+                <div className="filter-dropdown">
+                  <button className="dropdown-toggle">
+                    <span>Danh mục: {selectedFilter}</span>
+                    <i className="dropdown-icon"></i>
+                  </button>
+                </div>
+                <div className="filter-dropdown">
+                  <button className="dropdown-toggle">
+                    <span>Danh mục: {selectedSort}</span>
+                    <i className="dropdown-icon"></i>
+                  </button>
+                </div>
+                <div className="filter-dropdown">
+                  <button className="dropdown-toggle">
+                    <span>Danh mục: {selectedSpace}</span>
+                    <i className="dropdown-icon"></i>
+                  </button>
+                </div>
+              </div>
+              <div className="filter-right">
+                <div className="filter-view">
+                  <button className="view-option active">
+                    <img src="/images/icons/grid-view.svg" alt="Grid View" />
+                  </button>
+                  <button className="view-option">
+                    <img src="/images/icons/list-view.svg" alt="List View" />
+                  </button>
+                </div>
+                <div className="filter-sort">
+                  <button className="sort-toggle">
+                    <img src="/images/icons/sort-icon.svg" alt="Sort" />
+                    <span>Sắp xếp</span>
+                    <i className="dropdown-icon"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className="products-grid">
+              {products.map((product) => (
+                <div key={product.id} className="product-item">
+                  <div className="product-image">
+                    {product.isNew && <span className="badge new">NEW</span>}
+                    {product.isSale && <span className="badge sale">SALE</span>}
+                    <img src={product.image} alt={`${product.name} - ${product.category}`} />
+                    <div className="product-actions">
+                      <button className="wishlist-btn">
+                        <img src="/images/icons/heart-icon.svg" alt="Add to wishlist" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="product-info">
+                    <div className="product-category">Sofas</div>
+                    <h3 className="product-name">{product.name}</h3>
+                    <div className="product-colors">
+                      {product.colors.map((color, index) => (
+                        <span
+                          key={index}
+                          className="color-option"
+                          style={{ backgroundColor: color }}
+                        ></span>
+                      ))}
+                    </div>
+                    <div className="product-price">
+                      <span className="price">{formatPrice(product.price)} ₫</span>
+                      <span className="price-label">Giá bán</span>
+                    </div>
+                    <div className="product-action">
+                      <a href="#" className="view-product">Xem ngay</a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="pagination">
+              <span className="pagination-text">Xem thêm sản phẩm</span>
+              <div className="pagination-dots">
+                <span className="dot active"></span>
+                <span className="dot"></span>
+                <span className="dot"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Category Navigation */}
+        <section className="category-navigation">
+          <div className="container">
+            <h2 className="section-title">Danh Mục Sản Phẩm</h2>
+            <div className="categories-grid">
+              {categories.map((category) => (
+                <div key={category.id} className="category-item">
+                  <a href={`/danh-muc/${category.slug}`} className="category-link">
+                    <img src={category.image} alt={`Danh mục ${category.name}`} />
+                    <h3>{category.name}</h3>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Design Blog Section */}
+        <section className="design-blog">
+          <div className="container">
+            <h2 className="section-title">Thiết kế có nhân hóa</h2>
+            <div className="blog-grid">
+              <div className="blog-item">
+                <img src="/images/blog/interior-design-tips-1.jpg" alt="Liên hệ ngay để tư vấn" />
+                <h3>Liên hệ ngay để tư vấn</h3>
+              </div>
+              <div className="blog-item">
+                <img src="/images/blog/material-samples-1.jpg" alt="Tìm hiểu thêm về vật liệu nội thất" />
+                <h3>Tìm hiểu thêm về vật liệu nội thất</h3>
+              </div>
+              <div className="blog-item">
+                <img src="/images/blog/customer-service-1.jpg" alt="Bạn cần tư vấn gì?" />
+                <h3>Bạn cần tư vấn gì?</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default ProductOfCategory;

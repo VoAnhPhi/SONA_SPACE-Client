@@ -1,0 +1,408 @@
+.wishlist-page {
+  // Breadcrumb Styles
+  .breadcrumb-container {
+    padding: 15px 0;
+    background-color: #f8f8f8;
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'M-R';
+      font-size: 14px;
+
+      a {
+        color: #666;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #333;
+        }
+      }
+
+      span {
+        color: #999;
+
+        &.active {
+          color: #333;
+          font-family: 'M-M';
+        }
+      }
+    }
+  }
+
+  // Wishlist Content
+  .wishlist-content {
+    padding: 40px 0 60px;
+
+    .page-title {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 40px;
+
+      h1 {
+        font-family: 'M-SB';
+        font-size: var(--h2-fs);
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .subtitle {
+        font-family: 'M-R';
+        font-size: 16px;
+        color: #666;
+        line-height: 1.6;
+      }
+    }
+
+    // Products Grid
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+
+      .product-item {
+        .product-image {
+          position: relative;
+          overflow: hidden;
+          border-radius: 8px;
+          margin-bottom: 15px;
+          height: 250px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+          }
+
+          .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            font-family: 'M-SB';
+            font-size: 12px;
+            border-radius: 4px;
+            z-index: 1;
+
+            &.new {
+              background-color: #4CAF50;
+              color: #fff;
+            }
+
+            &.sale {
+              background-color: #F44336;
+              color: #fff;
+            }
+          }
+
+          .product-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+
+            .remove-btn {
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              background-color: #fff;
+              border: none;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
+
+              i {
+                font-size: 16px;
+                color: #F44336;
+              }
+
+              &:hover {
+                background-color: #f5f5f5;
+              }
+            }
+          }
+
+          &:hover {
+            img {
+              transform: scale(1.05);
+            }
+          }
+        }
+
+        .product-info {
+          .product-category {
+            font-family: 'M-R';
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+          }
+
+          .product-name {
+            font-family: 'M-M';
+            font-size: 16px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .product-colors {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+
+            .color-option {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              cursor: pointer;
+              border: 1px solid #ddd;
+            }
+          }
+
+          .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+
+            .price-info {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+
+              .price {
+                font-family: 'M-SB';
+                font-size: 18px;
+                color: #333;
+              }
+
+              .old-price {
+                font-family: 'M-R';
+                font-size: 14px;
+                color: #999;
+                text-decoration: line-through;
+              }
+            }
+
+            .price-label {
+              font-family: 'M-R';
+              font-size: 12px;
+              color: #666;
+            }
+          }
+
+          .product-action {
+            .view-product {
+              display: inline-block;
+              font-family: 'M-M';
+              font-size: 14px;
+              color: #333;
+              text-decoration: none;
+              padding-bottom: 2px;
+              border-bottom: 1px solid #333;
+              transition: all 0.3s ease;
+
+              &:hover {
+                color: #000;
+                border-color: #000;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Empty Wishlist
+    .empty-wishlist {
+      text-align: center;
+      padding: 60px 0;
+      max-width: 500px;
+      margin: 0 auto;
+
+      .empty-icon {
+        font-size: 60px;
+        color: #ddd;
+        margin-bottom: 20px;
+
+        i {
+          display: inline-block;
+        }
+      }
+
+      h2 {
+        font-family: 'M-SB';
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-family: 'M-R';
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .btn-shop-now {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #F5A623;
+        color: #fff;
+        font-family: 'M-SB';
+        font-size: 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: darken(#F5A623, 10%);
+        }
+      }
+    }
+  }
+
+  // Features Section
+  .features-section {
+    padding: 60px 0;
+    background-color: #f8f8f8;
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+
+      .feature-item {
+        text-align: center;
+
+        .feature-icon {
+          width: 60px;
+          height: 60px;
+          margin: 0 auto 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+          }
+        }
+
+        h3 {
+          font-family: 'M-M';
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 10px;
+        }
+
+        p {
+          font-family: 'M-R';
+          font-size: 14px;
+          line-height: 1.5;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  // Design Blog Section
+  .design-blog {
+    padding: 60px 0;
+    background-color: #fff;
+
+    .section-title {
+      font-family: 'M-SB';
+      font-size: var(--h3-fs);
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+
+      .blog-item {
+        img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-bottom: 15px;
+        }
+
+        h3 {
+          font-family: 'M-M';
+          font-size: 16px;
+          color: #333;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  // Responsive Styles
+  @media (max-width: $md-max) {
+    .wishlist-content .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .features-section .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: $sm-max) {
+    .wishlist-content {
+      .page-title {
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .design-blog .blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: $xs-max) {
+    .wishlist-content {
+      .page-title {
+        h1 {
+          font-size: 20px;
+        }
+
+        .subtitle {
+          font-size: 14px;
+        }
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .features-section .features-grid,
+    .design-blog .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
