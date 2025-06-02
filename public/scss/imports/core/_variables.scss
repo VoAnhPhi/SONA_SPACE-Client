@@ -19,12 +19,20 @@ $lg-max: ($lg-min - 1); // Large Desktop
 //=====================================CÁC BIẾN KHÔNG THAY ĐỔI GIÁ TRỊ KHI RESPONSIVE======================================
 // colors - tuỳ chỉnh
 $white-cl: #fff;
+$snow-white-cl: #FCFCFC;
 $black-cl: #000;
-$red-cl: #d81f1f;
-$blue-cl: #00afab;
+$dark-cl: #221D00;
 $yellow-cl: #F0A00A;
-$gray-cl-1: #d1d1d1;
-$title-cl: #f1f1f1;
+
+$error-cl: #D83B01;
+$success-cl: #3AA655;
+$warning-cl: #F5B400;
+$info-cl: #0078D7;
+
+$gray-cl-1: #CCCCCC;
+$gray-cl-2: #E0E0E0;
+$gray-cl-3: #EEEEEE;
+
 $text-cl: #1d1d1d;
 $gradient-cl: linear-gradient(180deg, #df1cff 0%, #814bf6 50.55%, #00bcff 100%);
 
