@@ -3,9 +3,10 @@ const Filter = () => {
     <>
       {/* filter */}
        <section className="filter-container">
+        <div className="filter-width">
             <div className="filter-group">
                 <div className="filter-group1">
-                    <i className="fa-solid fa-filter"></i>
+                    <img src="images/products/filter.svg" alt="" />
                     <span>Bộ lọc</span>
                 </div>
                 <div className="filter-group2">
@@ -39,7 +40,8 @@ const Filter = () => {
                     <select>
                         <option value=""></option>
                     </select>
-                </div>
+            </div>
+            </div>
         </section>
     </>
   );
