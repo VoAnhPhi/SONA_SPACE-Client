@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import PopularCategory from "../../components/popular-category";
+import Filter from "../../components/filter";
+import ListProduct12 from "../../components/listProduct12";
+import Policy from "../Policy";
+import PolicyProduct from "../../components/Policy";
+import Getintouch from "../../components/getintouch";
 
 interface ProductProps {
   id: number;
@@ -118,70 +124,28 @@ const ProductPage: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="productpage">
         {/* Banner Section */}
-        <section className="product-banner">
-          <div className="container">
-            <div className="banner-content">
-              <h1>Sản phẩm</h1>
-              <p>Trang chủ / Sản phẩm</p>
+           <section className="banner-slider">
+            <div className="header-banner">
+                <img src="images/products/banner-slider.jpg" alt=""/>
             </div>
-          </div>
+            <div className="header-text">
+                <div className="text1">Chào mừng đến với</div>
+                <div className="text2">Bộ sưu tập nội thất của chúng tôi</div>
+                <div className="text3">Khám phá nhiều loại đồ nội thất chất lượng cao của chúng tôi.</div>
+            </div>
         </section>
 
-        {/* Category Recommendations */}
-        <section className="category-recommendations">
-          <div className="container">
-            <div className="recommendation-title">
-              <h2>Các danh mục sản phẩm phổ biến nhất</h2>
-              <p>
-                Khám phá những danh mục sản phẩm nổi bật của chúng tôi, được
-                thiết kế để nâng tầm không gian sống của bạn
-              </p>
-            </div>
+        {/* PopularCategory */}
+        <PopularCategory />
 
-            <div className="recommendation-grid">
-              <div className="grid-item">
-                <div className="category-card">
-                  <img src="/images/categories/living-room.jpg" alt="Phòng khách" />
-                  <div className="card-overlay">
-                    <button className="btn btn-outline">View all products</button>
-                  </div>
-                </div>
-              </div>
-              <div className="grid-item">
-                <div className="category-card">
-                  <img src="/images/categories/bedroom.jpg" alt="Phòng ngủ" />
-                  <div className="card-overlay">
-                    <button className="btn btn-outline">View all products</button>
-                  </div>
-                </div>
-              </div>
-              <div className="grid-item">
-                <div className="category-card">
-                  <img src="/images/categories/dining.jpg" alt="Phòng ăn" />
-                  <div className="card-overlay">
-                    <button className="btn btn-outline">View all products</button>
-                  </div>
-                </div>
-              </div>
-              <div className="grid-item">
-                <div className="category-card">
-                  <img src="/images/categories/bathroom.jpg" alt="Phòng tắm" />
-                  <div className="card-overlay">
-                    <button className="btn btn-outline">View all products</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        {/* Filter Section */}
+        <Filter/>
         {/* Product Filter and List */}
-        <section className="product-listing">
+        {/* <section className="product-listing">
           <div className="container">
             {/* Filter Row */}
-            <div className="filter-row">
+            {/* <div className="filter-row">
               <div className="filter-dropdowns">
                 <div className="filter-dropdown">
                   <button className="dropdown-toggle">
@@ -213,7 +177,8 @@ const ProductPage: React.FC = () => {
             </div>
 
             {/* Products Grid */}
-            <div className="products-grid">
+         
+            {/* <div className="products-grid">
               {products.map((product) => (
                 <div key={product.id} className="product-item">
                   <div className="product-image">
@@ -247,10 +212,10 @@ const ProductPage: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             {/* Pagination */}
-            <div className="pagination">
+            {/* <div className="pagination">
               <span className="pagination-text">Xem thêm sản phẩm</span>
               <div className="pagination-dots">
                 <span className="dot active"></span>
@@ -259,58 +224,20 @@ const ProductPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="features-section">
-          <div className="container">
-            <div className="features-grid">
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/quality.svg" alt="Chính sách & hỗ trợ" />
-                </div>
-                <h3>Chính sách & hỗ trợ</h3>
-                <p>
-                  Chúng tôi cung cấp các chính sách hỗ trợ và đổi trả linh hoạt
-                  giúp bạn mua sắm an tâm.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/shipping.svg" alt="Vận chuyển" />
-                </div>
-                <h3>Vận chuyển</h3>
-                <p>
-                  Giao hàng nhanh chóng, đúng hẹn với đội ngũ vận chuyển chuyên
-                  nghiệp, nhiệt tình.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/support.svg" alt="Hỗ trợ 24/7" />
-                </div>
-                <h3>Hỗ trợ 24/7</h3>
-                <p>
-                  Đội ngũ tư vấn viên luôn sẵn sàng giúp đỡ bạn với mọi thắc mắc
-                  và yêu cầu.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/warranty.svg" alt="Bảo hành & Bảo hiểm" />
-                </div>
-                <h3>Bảo hành & Bảo hiểm</h3>
-                <p>
-                  Chúng tôi cam kết chất lượng sản phẩm với chính sách bảo hành
-                  dài hạn và uy tín.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        </section> */}
+   <ListProduct12/>
+        {/* See More Section */}
+     <div className="box-seemore">
+            <p>Xem thêm sản phẩm</p>
+            <i className="fa-solid fa-angles-down"></i>
+        </div>
+        {/* Policy */}
+        <PolicyProduct />
+        
+        {/* Get in Touch Section */}
+        <Getintouch />
         {/* Contact Section */}
-        <section className="contact-section">
+        {/* <section className="contact-section">
           <div className="container">
             <div className="contact-grid">
               <div className="contact-info">
@@ -344,10 +271,10 @@ const ProductPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Design Blog Section */}
-        <section className="design-blog">
+        {/* <section className="design-blog">
           <div className="container">
             <h2 className="section-title">Thiết kế có nhân hóa</h2>
             <div className="blog-grid">
@@ -365,8 +292,7 @@ const ProductPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </section>
-      </div>
+        </section> */}
       <Footer />
     </>
   );

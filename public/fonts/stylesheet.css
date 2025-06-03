@@ -68,7 +68,7 @@
         url('Montserrat-BoldItalic.woff') format('woff');
     font-weight: bold;
     font-style: italic;
-    font-display: swap;
+    font-display: swap; 
 }
 
 @font-face {
