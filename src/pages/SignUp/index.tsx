@@ -159,7 +159,7 @@ const SignUp: React.FC = () => {
               </div>
               
               <button className="google-signup-btn">
-                <img src="/images/icons/google.svg" alt="Google" />
+                <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button>
             </div>
