@@ -179,10 +179,10 @@ const ProductOfCategory: React.FC = () => {
             <div className="banner-image">
               <img src="/images/product-of-category/banner-chair.jpg" alt="Sản phẩm trong danh mục Ghế - Các loại ghế hiện đại" />
               <div className="banner-content">
-                <div className="breadcrumb">
+                {/* <div className="breadcrumb">
                   <span>Trang chủ / </span>
                   <span className="active">Ghế</span>
-                </div>
+                </div> */}
                 <h1>Sản phẩm trong danh mục Ghế</h1>
               </div>
             </div>
