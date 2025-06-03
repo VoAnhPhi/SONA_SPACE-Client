@@ -2,9 +2,9 @@
   padding: 60px 0;
   
   .container {
-    max-width: 1140px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 8px;
+    width: 100%;
   }
   
   .signup-content {
@@ -15,14 +15,14 @@
     h1 {
       font-family: 'M-B', sans-serif;
       font-size: 3.2rem;
-      color: #333;
+      color: #000000;
       margin-bottom: 15px;
     }
     
     .signup-description {
       font-family: 'BE-R', sans-serif;
       font-size: 1.6rem;
-      color: #666;
+      color: #8C8A8A;
       margin-bottom: 30px;
     }
   }
@@ -41,10 +41,10 @@
         width: 100%;
         padding: 12px 15px;
         border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 6px;
         font-family: 'Be-R', sans-serif;
         font-size: 1.6rem;
-        color: #333;
+        color: #000000;
         transition: border-color 0.3s ease;
         
         &::placeholder {
@@ -85,11 +85,13 @@
           text-align: left;
           
           a {
-            color: #F5A623;
-            text-decoration: none;
+            color: #092C4C;
+            
+            text-decoration: underline; /* luôn có gạch chân */
             
             &:hover {
-              text-decoration: underline;
+              text-decoration: none;
+              color: $yellow-cl;
             }
           }
         }
@@ -119,7 +121,8 @@
   .social-signup {
    
     width: 500px;
-    margin: 0 auto; /* Căn giữa theo chiều ngang */
+    margin: 0 auto;
+    margin-bottom: 28px; /* Căn giữa theo chiều ngang */
     
     .divider {
       position: relative;
@@ -185,62 +188,51 @@
       
       a {
         color: #092C4C;
-       
+       text-decoration: underline;
         
         
         &:hover {
-          text-decoration: underline;
+          color: $yellow-cl;
+          text-decoration: none;
         }
       }
     }
   }
-  
-  // Design Services Section
-  .design-services {
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid #eee;
-    
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      
-      @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      @media (max-width: 576px) {
-        grid-template-columns: 1fr;
-      }
-      
-      .service-item {
-        img {
-          width: 100%;
-          height: 200px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 15px;
-        }
-        
-        h3 {
-          font-family: 'M-SB', sans-serif;
-          font-size: 18px;
-          color: #333;
-          margin-bottom: 8px;
-        }
-        
-        p {
-          font-size: 14px;
-          color: #666;
-        }
-      }
-    }
-  }
-  
-  // Responsive styles
+ 
+  // @media (min-width: $xxs-min) and (max-width: $xs-max) {
+  //   padding-left: 8px;
+  //   padding-right: 8px;
+  //   max-width: 100%;
+  // }
+
+  // @media (min-width: $xs-min) and (max-width: $sm-max) {
+  //   max-width: 752px;
+  //   padding-left: 16px;
+  //   padding-right: 16px;
+  // }
+
+  // @media (min-width: 1024px) and (max-width: $md-max) {
+  //   max-width: 992px;
+  //   padding-left: 16px;
+  //   padding-right: 16px;
+  // }
+
+  // @media (min-width: $md-min) and (max-width: $lg-max) {
+  //   max-width: 1232px;
+  //   padding-left: 16px;
+  //   padding-right: 16px;
+  // }
+
+  // @media (min-width: $lg-min) {
+  //   max-width: 1464px;
+  //   padding-left: 24px;
+  //   padding-right: 24px;
+  // }
+
+
+ // Responsive styles
   @media (max-width: 768px) {
-    padding: 40px 0;
+    padding: 40px 0px;
     
     .signup-content {
       h1 {

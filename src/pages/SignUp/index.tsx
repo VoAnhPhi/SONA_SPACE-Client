@@ -103,7 +103,7 @@ const SignUp: React.FC = () => {
                   type="tel" 
                   id="phone" 
                   name="phone" 
-                  placeholder="Số Điện Thoại"
+                  placeholder="Số điện thoại"
                   value={formData.phone} 
                   onChange={handleChange} 
                   required
@@ -127,7 +127,7 @@ const SignUp: React.FC = () => {
                   type="password" 
                   id="confirmPassword" 
                   name="confirmPassword" 
-                  placeholder="Nhập Lại Mật Khẩu"
+                  placeholder="Nhập lại mật khẩu"
                   value={formData.confirmPassword} 
                   onChange={handleChange} 
                   required
@@ -150,7 +150,7 @@ const SignUp: React.FC = () => {
                 </label>
               </div>
               
-              <button type="submit" className="signup-btn">Đăng Ký</button>
+              <button type="submit" className="signup-btn">Đăng ký</button>
             </form>
             
             <div className="social-signup">
@@ -170,28 +170,8 @@ const SignUp: React.FC = () => {
           </div>
         </div>
         
-        {/* Design Services Showcase */}
-        <div className="design-services">
-          <div className="container">
-            <div className="services-grid">
-              <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+        
+        
       </div>
       <Footer />
     </>
