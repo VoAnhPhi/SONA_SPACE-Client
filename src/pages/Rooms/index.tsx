@@ -27,32 +27,38 @@ const Rooms: React.FC = () => {
     {
       id: "living-room",
       name: "Phòng Khách",
-      image: "/images/rooms/living-room.jpg",
+      image: "/images/rooms/image1.jpg",
       slug: "phong-khach"
     },
     {
       id: "dining-room",
       name: "Phòng Ăn",
-      image: "/images/rooms/dining-room.jpg",
+      image: "/images/rooms/image2.jpg",
       slug: "phong-an"
     },
     {
       id: "bedroom",
       name: "Phòng Ngủ",
-      image: "/images/rooms/bedroom.jpg",
+      image: "/images/rooms/image3.jpg",
       slug: "phong-ngu"
     },
     {
       id: "workspace",
       name: "Không gian làm việc",
-      image: "/images/rooms/workspace.jpg",
+      image: "/images/rooms/image4.jpg",
       slug: "khong-gian-lam-viec"
     },
     {
       id: "small-space",
       name: "Small Space",
-      image: "/images/rooms/small-space.jpg",
+      image: "/images/rooms/image5.jpg",
       slug: "small-space"
+    },
+    {
+      id: "outdoor-space",
+      name: "Không gian ngoài trời",
+      image: "/images/rooms/image6.jpg",
+      slug: "khong-gian-ngoai-troi"
     }
   ];
 
@@ -197,11 +203,12 @@ const Rooms: React.FC = () => {
     <>
       <Header />
       <div className="rooms-page">
-        {/* Banner Section */}
+
+        {/* Banner */}
         <section className="room-banner">
           <div className="container-fluid">
             <div className="banner-image">
-              <img src="/images/banners/rooms-banner.jpg" alt="Khám phá không gian sống" />
+              <img src="/images/rooms/banner_room.jpg" alt="Khám phá không gian sống" />
             </div>
           </div>
         </section>
@@ -220,12 +227,11 @@ const Rooms: React.FC = () => {
         {/* Room Categories */}
         <section className="room-categories">
           <div className="container">
-            <h1 className="section-title">Khám phá từng căn phòng</h1>
-            
-            <div className="categories-grid">
+            <h1 className="section-title">Khám phá thêm các căn phòng</h1>
+            <div className="categories-flex">
               {roomCategories.map((room) => (
-                <div 
-                  key={room.id} 
+                <div
+                  key={room.id}
                   className={`category-item ${activeRoom === room.id ? 'active' : ''}`}
                   onClick={() => setActiveRoom(room.id)}
                 >
@@ -245,7 +251,6 @@ const Rooms: React.FC = () => {
         <section className="room-products">
           <div className="container">
             <h2 className="section-title">Sản Phẩm Mới</h2>
-            
             <div className="products-grid">
               {roomProducts[activeRoom]?.map((product) => (
                 <div key={product.id} className="product-card">
@@ -260,7 +265,7 @@ const Rooms: React.FC = () => {
                       </Link>
                     </div>
                   </div>
-                  
+
                   <div className="product-info">
                     <div className="product-category">{product.category}</div>
                     <h3 className="product-name">
@@ -274,7 +279,7 @@ const Rooms: React.FC = () => {
                     </div>
                     <div className="product-colors">
                       {product.colors.map((color, index) => (
-                        <span 
+                        <span
                           key={index}
                           className="color-dot"
                           style={{ backgroundColor: color }}
@@ -285,7 +290,7 @@ const Rooms: React.FC = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="view-more-container">
               <Link to={`/khong-gian/${roomCategories.find(room => room.id === activeRoom)?.slug}`} className="view-more-btn">
                 Xem tất cả sản phẩm
@@ -301,12 +306,12 @@ const Rooms: React.FC = () => {
               <div className="inspiration-text">
                 <h2 className="section-title">Nội Thất Theo Yêu Cầu</h2>
                 <p className="description">
-                  Khám phá dịch vụ thiết kế nội thất cao cấp của SONA SPACE. Với đội ngũ thiết kế chuyên nghiệp, 
+                  Khám phá dịch vụ thiết kế nội thất cao cấp của SONA SPACE. Với đội ngũ thiết kế chuyên nghiệp,
                   chúng tôi sẽ biến không gian sống của bạn thành một tác phẩm nghệ thuật đầy tinh tế và phong cách.
                 </p>
                 <Link to="/dich-vu-thiet-ke" className="learn-more-btn">Tìm hiểu thêm</Link>
               </div>
-              
+
               <div className="inspiration-image">
                 <img src="/images/design/custom-design-1.jpg" alt="Thiết kế nội thất theo yêu cầu" />
               </div>
@@ -318,7 +323,7 @@ const Rooms: React.FC = () => {
         <section className="room-recommendations">
           <div className="container">
             <h2 className="section-title">Các danh mục được phổ biến nhất</h2>
-            
+
             <div className="recommendations-grid">
               <div className="recommendation-item">
                 <div className="recommendation-image">
@@ -329,7 +334,7 @@ const Rooms: React.FC = () => {
                   <Link to="/khong-gian/phong-khach" className="view-all-btn">Xem tất cả sản phẩm</Link>
                 </div>
               </div>
-              
+
               <div className="recommendation-item">
                 <div className="recommendation-image">
                   <img src="/images/recommendations/bedroom-1.jpg" alt="Phòng ngủ thoải mái cho bạn" />
@@ -339,7 +344,7 @@ const Rooms: React.FC = () => {
                   <Link to="/khong-gian/phong-ngu" className="view-all-btn">Xem tất cả sản phẩm</Link>
                 </div>
               </div>
-              
+
               <div className="recommendation-item">
                 <div className="recommendation-image">
                   <img src="/images/recommendations/workspace-1.jpg" alt="Không gian làm việc hiệu quả" />
@@ -349,7 +354,7 @@ const Rooms: React.FC = () => {
                   <Link to="/khong-gian/khong-gian-lam-viec" className="view-all-btn">Xem tất cả sản phẩm</Link>
                 </div>
               </div>
-              
+
               <div className="recommendation-item">
                 <div className="recommendation-image">
                   <img src="/images/recommendations/dining-room-1.jpg" alt="Phòng ăn ấm cúng" />

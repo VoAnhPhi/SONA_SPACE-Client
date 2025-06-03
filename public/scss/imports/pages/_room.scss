@@ -1,10 +1,11 @@
 .rooms-page {
+
   // Banner Section
   .room-banner {
-    height: 300px;
+    height: 100dvh;
     overflow: hidden;
     position: relative;
-    margin-bottom: 0;
+    margin-top: -80px;
 
     .banner-image {
       width: 100%;
@@ -55,23 +56,44 @@
   // Room Categories
   .room-categories {
     padding: 0 0 50px;
+    overflow: visible;
 
     .section-title {
-      font-family: 'M-SB';
-      font-size: var(--h2-fs);
-      color: #333;
+      @include text(24px, M-EB, auto, $text-cl, none);
       margin-bottom: 30px;
-      text-align: center;
+      text-align: left;
     }
 
-    .categories-grid {
+    .categories-flex {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: start;
+      padding-bottom: 48px;
+      gap: 24px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+
+      .categories-flex::-webkit-scrollbar {
+        height: 8px;
+      }
+      
+      .categories-flex::-webkit-scrollbar-track {
+        background: #f0f0f0;
+      }
+      
+      .categories-flex::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
 
       .category-item {
-        width: 180px;
+        width: 300px;
+        height: max-content;
+        flex: 0 0 auto;        
         text-align: center;
         cursor: pointer;
         transition: transform 0.3s ease;
@@ -82,7 +104,7 @@
 
         .category-image {
           width: 100%;
-          height: 180px;
+          height: 100%;
           border-radius: 4px;
           overflow: hidden;
           margin-bottom: 15px;
@@ -100,26 +122,6 @@
           font-size: 16px;
           color: #333;
           margin: 0;
-        }
-
-        &.active {
-          .category-name {
-            color: #F5A623;
-          }
-
-          .category-image {
-            position: relative;
-
-            &::after {
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              width: 100%;
-              height: 3px;
-              background-color: #F5A623;
-            }
-          }
         }
       }
     }
