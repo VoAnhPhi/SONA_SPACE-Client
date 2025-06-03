@@ -4,7 +4,6 @@ import Footer from "../../components/Footer";
 import PopularCategory from "../../components/popular-category";
 import Filter from "../../components/filter";
 import ListProduct12 from "../../components/listProduct12";
-import Policy from "../Policy";
 import PolicyProduct from "../../components/Policy";
 import Getintouch from "../../components/getintouch";
 
@@ -19,108 +18,107 @@ interface ProductProps {
 }
 
 const ProductPage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("Chọn danh mục");
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string>("Chọn danh mục");
-  const [selectedSpace, setSelectedSpace] = useState<string>("Chọn danh mục");
-
-  // Sample product data
-  const products: ProductProps[] = [
-    {
-      id: 1,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/sofa-1.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 2,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/sofa-2.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 3,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/sofa-3.png",
-      colors: ["#D8C1A9", "#555555", "#333333"],
-      isNew: true,
-    },
-    {
-      id: 4,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/sofa-4.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      isSale: true,
-    },
-    {
-      id: 5,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/chair-1.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 6,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/chair-2.png",
-      colors: ["#4A2932", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 7,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/table-1.png",
-      colors: ["#333333", "#555555", "#777777"],
-      isNew: true,
-    },
-    {
-      id: 8,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/tile-1.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 9,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/lamp-1.png",
-      colors: ["#333333", "#555555", "#777777"],
-    },
-    {
-      id: 10,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/chair-3.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-    },
-    {
-      id: 11,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/carpet-1.png",
-      colors: ["#333333", "#555555", "#777777"],
-      isNew: true,
-    },
-    {
-      id: 12,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/art-1.png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      isSale: true,
-    },
-  ];
-
-  // Format price with commas
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
-
+    const [selectedCategory, setSelectedCategory] = useState<string>("Chọn danh mục");
+      const [selectedSubCategory, setSelectedSubCategory] = useState<string>("Chọn danh mục");
+      const [selectedSpace, setSelectedSpace] = useState<string>("Chọn danh mục");
+    
+      // Sample product data
+      const products: ProductProps[] = [
+        {
+          id: 1,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+          image: "/images/products/product1.jpg",
+          colors: ["#7d5a50", "#a3a380", "#757575"],
+        },
+        {
+          id: 2,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+          image: "/images/products/product1.jpg",
+           colors: ["#7d5a50", "#a3a380", "#757575"],
+        },
+        {
+          id: 3,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+           image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#555555", "#333333"],
+          isNew: true,
+        },
+        {
+          id: 4,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+        image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+          isSale: true,
+        },
+        {
+          id: 5,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+       image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+        },
+        {
+          id: 6,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+             image: "/images/products/product1.jpg",
+          colors: ["#4A2932", "#E5E5E5", "#555555"],
+        },
+        {
+          id: 7,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+          image: "/images/products/product1.jpg",
+          colors: ["#333333", "#555555", "#777777"],
+          isNew: true,
+        },
+        {
+          id: 8,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+          image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+        },
+        {
+          id: 9,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+            image: "/images/products/product1.jpg",
+          colors: ["#333333", "#555555", "#777777"],
+        },
+        {
+          id: 10,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+          image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+        },
+        {
+          id: 11,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+            image: "/images/products/product1.jpg",
+          colors: ["#333333", "#555555", "#777777"],
+          isNew: true,
+        },
+        {
+          id: 12,
+          name: "Sofa Modular 2.5 seater với nhièu varian option",
+          price: 22150000,
+            image: "/images/products/product1.jpg",
+          colors: ["#D8C1A9", "#E5E5E5", "#555555"],
+          isSale: true,
+        },
+      ];
+    
+      // Format price with commas
+      const formatPrice = (price: number): string => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      };
   return (
     <>
       <Header />
