@@ -1,8 +1,9 @@
 
 /* box-produúc */
 .section-box-products {
-  padding: 30px 230px 50px 230px;
-
+  padding: 40px 0;
+width: 100%;
+   margin: 0 auto;
   h5 {
     padding: 30px 0;
     font-size: 18px;
@@ -16,6 +17,9 @@
   gap: 30px;
   box-sizing: border-box;
   height: auto;
+  max-width: 1464px;
+  margin: 0 auto;
+
 }
 
 .box-products-frame {
@@ -26,33 +30,42 @@
 
   .products-frame-news {
     display: flex;
-
+  .news-t{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
     .news-tt {
       min-width: 20%;
       max-width: auto;
       border: 1px solid #00d078;
-      padding: 5px;
       border-radius: 5px;
       color: #00d078;
       text-align: center;
       font-family: 'BE-M';
       font-size: 14px;
+      align-self: center;
+          padding: 0 10px;
     }
     .news-tt-1 {
-      min-width: 20%;
+      min-width: 30%;
       max-width: auto;
       border: 1px solid #D83B01;
-      padding: 5px;
       border-radius: 5px;
       color: #D83B01;
       text-align: center;
+      padding: 0 5px;
       font-family: 'BE-M';
       font-size: 14px;
+        align-self: center;
     }
 
     .news-icon {
       margin-left: auto;
-      align-self: end;
+        display: flex;
+      justify-content: center; 
+      align-self: center; 
+      height: 100%;
 
       img {
         color: #d9d9d9;
