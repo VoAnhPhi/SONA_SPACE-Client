@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
+import PopularCategory from "../../components/popular-category";
+import InteriorDesign from "../../components/interiorDesign";
 interface RoomCategoryProps {
   id: string;
   name: string;
@@ -70,7 +71,7 @@ const Rooms: React.FC = () => {
         name: "Sofa Modena 2.5 seater ofa odena sema seater",
         price: 15190000,
         oldPrice: 25000000,
-        images: ["/images/products/sofa-beige-1.jpg"],
+        images: ["/images/rooms/imagep-1.jpg"],
         colors: ["#D8C1A9", "#999999", "#8B7355"],
         category: "Sofa",
         slug: "sofa-modena-2-5-seater-beige"
@@ -80,7 +81,7 @@ const Rooms: React.FC = () => {
         name: "Sofa Modena 2.5 seater ofa odena sema seater",
         price: 15190000,
         oldPrice: 25000000,
-        images: ["/images/products/sofa-gray-1.jpg"],
+        images: ["/images/rooms/imagep-2.jpg"],
         colors: ["#999999", "#D8C1A9", "#8B7355"],
         category: "Sofa",
         slug: "sofa-modena-2-5-seater-gray"
@@ -90,7 +91,7 @@ const Rooms: React.FC = () => {
         name: "Sofa Modena 2.5 seater ofa odena sema seater",
         price: 15190000,
         oldPrice: 25000000,
-        images: ["/images/products/sofa-brown-1.jpg"],
+        images: ["/images/rooms/imagep-3.jpg"],
         colors: ["#8B7355", "#D8C1A9", "#999999"],
         category: "Sofa",
         slug: "sofa-modena-2-5-seater-brown"
@@ -100,7 +101,7 @@ const Rooms: React.FC = () => {
         name: "Sofa Modena 2.5 seater ofa odena sema seater",
         price: 15190000,
         oldPrice: 25000000,
-        images: ["/images/products/sofa-beige-1.jpg"],
+        images: ["/images/rooms/imagep-4.jpg"],
         colors: ["#D8C1A9", "#999999", "#8B7355"],
         category: "Sofa",
         slug: "sofa-modena-2-5-seater-beige-2"
@@ -112,7 +113,7 @@ const Rooms: React.FC = () => {
         name: "Bàn ăn Modena 6 chỗ",
         price: 12190000,
         oldPrice: 18000000,
-        images: ["/images/products/dining-table-1.jpg"],
+        images: ["/images/rooms/imagep-5.jpg"],
         colors: ["#D8C1A9", "#8B7355"],
         category: "Bàn ăn",
         slug: "ban-an-modena-6-cho"
@@ -121,7 +122,7 @@ const Rooms: React.FC = () => {
         id: 6,
         name: "Ghế ăn Modena",
         price: 2190000,
-        images: ["/images/products/dining-chair-1.jpg"],
+        images: ["/images/rooms/imagep-6.jpg"],
         colors: ["#D8C1A9", "#999999", "#8B7355"],
         category: "Ghế ăn",
         slug: "ghe-an-modena"
@@ -133,7 +134,7 @@ const Rooms: React.FC = () => {
         name: "Giường ngủ Modena",
         price: 18990000,
         oldPrice: 25000000,
-        images: ["/images/products/bed-1.jpg"],
+        images: ["/images/rooms/imagep-7.jpg"],
         colors: ["#D8C1A9", "#8B7355"],
         category: "Giường ngủ",
         slug: "giuong-ngu-modena"
@@ -142,7 +143,7 @@ const Rooms: React.FC = () => {
         id: 8,
         name: "Tủ đầu giường Modena",
         price: 3590000,
-        images: ["/images/products/nightstand-1.jpg"],
+        images: ["/images/rooms/imagep-8.jpg"],
         colors: ["#D8C1A9", "#999999", "#8B7355"],
         category: "Tủ đầu giường",
         slug: "tu-dau-giuong-modena"
@@ -153,7 +154,7 @@ const Rooms: React.FC = () => {
         id: 9,
         name: "Bàn làm việc Modena",
         price: 8990000,
-        images: ["/images/products/desk-1.jpg"],
+        images: ["/images/rooms/imagep-9.jpg"],
         colors: ["#D8C1A9", "#8B7355"],
         category: "Bàn làm việc",
         slug: "ban-lam-viec-modena"
@@ -163,7 +164,7 @@ const Rooms: React.FC = () => {
         name: "Ghế văn phòng Modena",
         price: 4590000,
         oldPrice: 6000000,
-        images: ["/images/products/office-chair-1.jpg"],
+        images: ["/images/rooms/imagep-10.jpg"],
         colors: ["#999999", "#D8C1A9", "#8B7355"],
         category: "Ghế văn phòng",
         slug: "ghe-van-phong-modena"
@@ -174,7 +175,7 @@ const Rooms: React.FC = () => {
         id: 11,
         name: "Kệ sách đa năng Modena",
         price: 5990000,
-        images: ["/images/products/bookshelf-1.jpg"],
+        images: ["/images/rooms/imagep-11.jpg"],
         colors: ["#D8C1A9", "#8B7355"],
         category: "Kệ sách",
         slug: "ke-sach-da-nang-modena"
@@ -183,7 +184,7 @@ const Rooms: React.FC = () => {
         id: 12,
         name: "Bàn console Modena",
         price: 4590000,
-        images: ["/images/products/console-table-1.jpg"],
+        images: ["/images/rooms/imagep-12.jpg"],
         colors: ["#D8C1A9", "#999999"],
         category: "Bàn console",
         slug: "ban-console-modena"
@@ -299,95 +300,12 @@ const Rooms: React.FC = () => {
           </div>
         </section>
 
-        {/* Design Inspiration */}
-        <section className="design-inspiration">
-          <div className="container">
-            <div className="inspiration-grid">
-              <div className="inspiration-text">
-                <h2 className="section-title">Nội Thất Theo Yêu Cầu</h2>
-                <p className="description">
-                  Khám phá dịch vụ thiết kế nội thất cao cấp của SONA SPACE. Với đội ngũ thiết kế chuyên nghiệp,
-                  chúng tôi sẽ biến không gian sống của bạn thành một tác phẩm nghệ thuật đầy tinh tế và phong cách.
-                </p>
-                <Link to="/dich-vu-thiet-ke" className="learn-more-btn">Tìm hiểu thêm</Link>
-              </div>
+        {/* Interior Design */}
+        <InteriorDesign />
 
-              <div className="inspiration-image">
-                <img src="/images/design/custom-design-1.jpg" alt="Thiết kế nội thất theo yêu cầu" />
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Popular Category */}
+        <PopularCategory />
 
-        {/* Room Recommendations */}
-        <section className="room-recommendations">
-          <div className="container">
-            <h2 className="section-title">Các danh mục được phổ biến nhất</h2>
-
-            <div className="recommendations-grid">
-              <div className="recommendation-item">
-                <div className="recommendation-image">
-                  <img src="/images/recommendations/living-room-1.jpg" alt="Phòng khách mực phẩm cho bạn" />
-                </div>
-                <div className="recommendation-content">
-                  <h3>Các danh mục phẩm phổ biến nhất</h3>
-                  <Link to="/khong-gian/phong-khach" className="view-all-btn">Xem tất cả sản phẩm</Link>
-                </div>
-              </div>
-
-              <div className="recommendation-item">
-                <div className="recommendation-image">
-                  <img src="/images/recommendations/bedroom-1.jpg" alt="Phòng ngủ thoải mái cho bạn" />
-                </div>
-                <div className="recommendation-content">
-                  <h3>Không gian nghỉ ngơi lý tưởng cho bạn</h3>
-                  <Link to="/khong-gian/phong-ngu" className="view-all-btn">Xem tất cả sản phẩm</Link>
-                </div>
-              </div>
-
-              <div className="recommendation-item">
-                <div className="recommendation-image">
-                  <img src="/images/recommendations/workspace-1.jpg" alt="Không gian làm việc hiệu quả" />
-                </div>
-                <div className="recommendation-content">
-                  <h3>Không gian làm việc sáng tạo cho bạn</h3>
-                  <Link to="/khong-gian/khong-gian-lam-viec" className="view-all-btn">Xem tất cả sản phẩm</Link>
-                </div>
-              </div>
-
-              <div className="recommendation-item">
-                <div className="recommendation-image">
-                  <img src="/images/recommendations/dining-room-1.jpg" alt="Phòng ăn ấm cúng" />
-                </div>
-                <div className="recommendation-content">
-                  <h3>Phòng ăn ấm cúng cho gia đình bạn</h3>
-                  <Link to="/khong-gian/phong-an" className="view-all-btn">Xem tất cả sản phẩm</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Design Blog Section */}
-        <section className="design-blog">
-          <div className="container">
-            <h2 className="section-title">Thiết kế có nhân hóa</h2>
-            <div className="blog-grid">
-              <div className="blog-item">
-                <img src="/images/blog/interior-design-tips-1.jpg" alt="Liên hệ ngay để tư vấn" />
-                <h3>Liên hệ ngay để được tư vấn</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/material-samples-1.jpg" alt="Tìm hiểu thêm về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/customer-service-1.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
       <Footer />
     </>

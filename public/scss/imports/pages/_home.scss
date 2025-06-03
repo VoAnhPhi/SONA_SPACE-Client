@@ -1,4 +1,5 @@
 .homepage {
+
     // Hero Banner
     .hero-banner {
         width: 100%;
@@ -15,32 +16,6 @@
                 height: 100%;
                 object-fit: cover;
             }
-        }
-    }
-
-    // Section styles
-    section {
-        padding: 60px 0;
-
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .section-description {
-            font-size: 16px;
-            color: #666;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 40px;
         }
     }
 
@@ -228,65 +203,6 @@
                     .price-tag {
                         font-size: 12px;
                         color: #666;
-                    }
-                }
-            }
-        }
-    }
-
-    // Interior Design Section
-    .interior-design {
-        .design-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 40px;
-
-            .design-item {
-                .design-image {
-                    border-radius: 8px;
-                    overflow: hidden;
-                    margin-bottom: 20px;
-
-                    img {
-                        width: 100%;
-                        height: 300px;
-                        object-fit: cover;
-                    }
-                }
-
-                .design-content {
-                    h3 {
-                        font-size: 20px;
-                        font-weight: 600;
-                        margin-bottom: 15px;
-                    }
-
-                    p {
-                        font-size: 14px;
-                        color: #666;
-                        margin-bottom: 20px;
-                        line-height: 1.6;
-                    }
-
-                    .btn {
-                        padding: 10px 20px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                        font-weight: 500;
-                        text-decoration: none;
-                        transition: all 0.3s ease;
-                        display: inline-block;
-
-                        &.btn-primary {
-                            background-color: #333;
-                            color: #fff;
-                            border: 1px solid #333;
-
-                            &:hover {
-                                background-color: #000;
-                            }
-                        }
                     }
                 }
             }

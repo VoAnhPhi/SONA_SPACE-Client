@@ -55,6 +55,11 @@ body {
     }
     @media (min-width: $md-min) {
         .container {
+            max-width: 1200px;
+        }
+    }
+    @media (min-width: $lg-min) {
+        .container {
             max-width: $container-width;
         }
     }

@@ -1,0 +1,111 @@
+
+/* danh mục sản phẩm */
+.category-of-products {
+  padding: 100px 230px 50px 230px;
+  width: 100%;
+  height: 700px;
+
+  & .category-of-products-s1 {
+    height: 50%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    .products-s1-frame-1 {
+      background-color: #d9d9d9;
+      border-radius: 10px;
+
+      .frame-1-text1 {
+        font-family: 'M-SB';
+        margin-top: 70px;
+        padding: 0 30px;
+        font-size: 20px;
+        color: #221D00;
+      }
+
+      .frame-1-text2 {
+        font-size: 16px;
+        margin: 10px 0 0 30px;
+        font-family: 'BE-R';
+        width: 370px;
+        color: #221D00;
+      }
+    }
+
+    .products-s1-frame-2,
+    .products-s1-frame-3 {
+      height: auto;
+      background-image: url(/images/bedroom.jpg);
+      background-position: center;
+      background-size: cover;
+      display: block;
+      border-radius: 10px;
+      overflow: visible;
+
+      p {
+        margin: 170px 0 0 30px;
+        color: white;
+        font-size: 18px;
+        font-family: 'M-M';
+      }
+
+      button {
+        width: 170px;
+        height: 45px;
+        background-color: #fff;
+        color: black;
+        border-radius: 10px;
+        border: none;
+        margin: 15px 0 0 20px;
+        font-size: 16px;
+        font-family: 'BE-M';
+      }
+    }
+  }
+
+  & .category-of-products-s2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    height: 50%;
+    padding: 20px 0;
+
+    & .products-s2-frame-1,
+    & .products-s2-frame-2,
+    & .products-s2-frame-3,
+    & .products-s2-frame-4 {
+      height: auto;
+      background-image: url(/images/bedroom.jpg);
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      border-radius: 10px;
+      overflow: visible;
+
+      p {
+        color: white;
+        padding: 130px 0 0 15px;
+        font-family: 'M-M';
+      }
+
+      button {
+        width: 170px;
+        height: 45px;
+        background-color: #fff;
+        color: black;
+        border-radius: 10px;
+        border: none;
+        margin: 10px 0 0 20px;
+        font-family: 'BE-M';
+      }
+    }
+
+    & .products-s2-frame-4 {
+      button {
+        margin: 15px 0 0 15px;
+      }
+    }
+  }
+}

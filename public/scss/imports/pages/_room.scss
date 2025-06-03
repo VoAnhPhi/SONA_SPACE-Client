@@ -133,11 +133,9 @@
     background-color: #f8f8f8;
 
     .section-title {
-      font-family: 'M-SB';
-      font-size: var(--h3-fs);
-      color: #333;
+      @include text(24px, M-EB, auto, $text-cl, none);
       margin-bottom: 30px;
-      text-align: center;
+      text-align: left;
     }
 
     .products-grid {
