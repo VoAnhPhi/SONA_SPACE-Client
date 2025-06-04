@@ -83,7 +83,7 @@
 .product-slider-container {
     position: relative;
     width: 100%;
-    padding: 10px 0;
+    padding: 10px 0 30px;
     margin-top: 30px;
     
     .slider-arrow {
@@ -122,17 +122,51 @@
         }
     }
     
+    // Custom scrollbar track
+    .scrollbar-track {
+        position: absolute;
+        bottom: 10px;
+        left: 25%;
+        width: 50%;
+        height: 6px;
+        background-color: #f1f1f1;
+        border-radius: 10px;
+        z-index: 5;
+        overflow: hidden;
+        
+        // Custom scrollbar thumb
+        .scrollbar-thumb {
+            position: absolute;
+            height: 100%;
+            background-color: #ccc;
+            border-radius: 10px;
+            left: 0;
+            top: 0;
+            width: 20%;
+            transition: transform 0.1s ease-out;
+            cursor: pointer;
+            
+            &:hover {
+                background-color: #aaa;
+            }
+        }
+    }
+    
     .products-slider {
         display: flex;
         overflow-x: auto;
         scroll-behavior: smooth;
-        padding: 10px 5px;
+        padding: 10px 5px 20px;
         gap: 20px;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
+        position: relative;
         
+        // Hide default scrollbar for Firefox
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        
+        // Hide default scrollbar for Chrome/Safari/Opera
         &::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
         
         .product-item {

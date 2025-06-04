@@ -89,32 +89,7 @@ const HomePage = () => {
           <div className="container">
             <h2 className="section-title">Sản Phẩm Hot</h2>
 
-            <div className="products-grid">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="product-item">
-                  <div className="product-image">
-                    <img
-                      src={`/images/hot-product-${item}.jpg`}
-                      alt={`Hot Product ${item}`}
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h3 className="product-name">
-                      Ghế Wooden 2.0 nordic với nhiên liệu tương tự
-                    </h3>
-                    <div className="product-colors">
-                      <span className="color-option brown"></span>
-                      <span className="color-option beige"></span>
-                      <span className="color-option gray"></span>
-                    </div>
-                    <div className="product-price">
-                      <span className="price">15.190.000 ₫</span>
-                      <span className="price-tag">Giá bán</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProductSlider />
           </div>
         </section>
 
