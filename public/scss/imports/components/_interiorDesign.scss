@@ -6,7 +6,7 @@
 
             .title {
                   margin-bottom: 12px;
-                  @include text(24px, M-EB, auto, $text-cl, none);
+                  @include text(24px, M-B, auto, $text-cl, none);
             }
 
             .description {
@@ -23,8 +23,8 @@
 
             .design-item {
                   padding: 20px;
-                  min-width: 720px;
-                  min-height: 720px;
+                  max-width: 720px;
+                  max-height: 740px;
                   background-color: #fff;
                   border-radius: 8px;
                   overflow: hidden;
@@ -44,36 +44,51 @@
 
                   .design-content {
                         h3 {
-                              @include text(20px, M-EB, auto, $text-cl, none);
+                              margin: 24px 0 12px 0;
+                              @include text(20px, M-B, auto, $text-cl, none);
                         }
 
                         p {
-                              font-size: 14px;
-                              color: #666;
+                              @include text(14px, Be-R, auto, $text-cl, none);
                               margin-bottom: 20px;
-                              line-height: 1.6;
+                              line-height: 1.5;
                         }
 
                         .btn {
-                              padding: 10px 20px;
+                              padding: 10px 40px;
                               border-radius: 4px;
-                              font-size: 14px;
-                              font-weight: 500;
+                              @include text(14px, Be-B, auto, $text-cl, none);
                               text-decoration: none;
-                              transition: all 0.3s ease;
+                              transition: all 0.4s ease;
                               display: inline-block;
 
+                              .icon {
+                                    margin-left: 10px;
+                                    color: $text-cl;
+                                    transition: all 0.4s ease;
+                              }
+
                               &.btn-primary {
-                                    background-color: #333;
-                                    color: #fff;
-                                    border: 1px solid #333;
+                                    background-color: $white-cl;
+                                    color: $text-cl;
+                                    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
                                     &:hover {
-                                          background-color: #000;
+                                          background-color: $yellow-cl;
+                                          color: $white-cl;
+                                          .icon {
+                                                color: $white-cl;
+                                          }
                                     }
                               }
                         }
                   }
+            }
+      }
+
+      @include sm {
+            .design-grid {
+                  grid-template-columns: repeat(1, 1fr);
             }
       }
 }

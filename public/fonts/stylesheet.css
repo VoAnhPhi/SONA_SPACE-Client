@@ -1,78 +1,15 @@
-/* Montserrat */
+/* MONTESERRAT */
 @font-face {
-    font-family: 'M-BI';
-    src: url('Montserrat-BlackItalic.woff2') format('woff2'),
-        url('Montserrat-BlackItalic.woff') format('woff');
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-EB';
-    src: url('Montserrat-ExtraBold.woff2') format('woff2'),
-        url('Montserrat-ExtraBold.woff') format('woff');
-    font-weight: bold;
+    font-family: 'M-T';
+    src: url('Montserrat-Thin.woff2') format('woff2'),
+        url('Montserrat-Thin.woff') format('woff');
+    font-weight: 100;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'M-EXBI';
-    src: url('Montserrat-ExtraBoldItalic.woff2') format('woff2'),
-        url('Montserrat-ExtraBoldItalic.woff') format('woff');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-MI';
-    src: url('Montserrat-MediumItalic.woff2') format('woff2'),
-        url('Montserrat-MediumItalic.woff') format('woff');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-I';
-    src: url('Montserrat-Italic.woff2') format('woff2'),
-        url('Montserrat-Italic.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-Bl';
-    src: url('Montserrat-Black.woff2') format('woff2'),
-        url('Montserrat-Black.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-B';
-    src: url('Montserrat-Bold.woff2') format('woff2'),
-        url('Montserrat-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-BI';
-    src: url('Montserrat-BoldItalic.woff2') format('woff2'),
-        url('Montserrat-BoldItalic.woff') format('woff');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap; 
-}
-
-@font-face {
-    font-family: 'N-EL';
+    font-family: 'M-EL';
     src: url('Montserrat-ExtraLight.woff2') format('woff2'),
         url('Montserrat-ExtraLight.woff') format('woff');
     font-weight: 200;
@@ -90,7 +27,70 @@
 }
 
 @font-face {
-    font-family: 'MM-ELT';
+    font-family: 'M-R';
+    src: url('Montserrat-Regular.woff2') format('woff2'),
+        url('Montserrat-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-M';
+    src: url('Montserrat-Medium.woff2') format('woff2'),
+        url('Montserrat-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-SB';
+    src: url('Montserrat-SemiBold.woff2') format('woff2'),
+        url('Montserrat-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-B';
+    src: url('Montserrat-Bold.woff2') format('woff2'),
+        url('Montserrat-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-EB';
+    src: url('Montserrat-ExtraBold.woff2') format('woff2'),
+        url('Montserrat-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-Bl';
+    src: url('Montserrat-Black.woff2') format('woff2'),
+        url('Montserrat-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-TI';
+    src: url('Montserrat-ThinItalic.woff2') format('woff2'),
+        url('Montserrat-ThinItalic.woff') format('woff');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-ELI';
     src: url('Montserrat-ExtraLightItalic.woff2') format('woff2'),
         url('Montserrat-ExtraLightItalic.woff') format('woff');
     font-weight: 200;
@@ -108,38 +108,20 @@
 }
 
 @font-face {
-    font-family: 'M-M';
-    src: url('Montserrat-Medium.woff2') format('woff2'),
-        url('Montserrat-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-R';
-    src: url('Montserrat-Regular.woff2') format('woff2'),
-        url('Montserrat-Regular.woff') format('woff');
+    font-family: 'M-I';
+    src: url('Montserrat-Italic.woff2') format('woff2'),
+        url('Montserrat-Italic.woff') format('woff');
     font-weight: normal;
-    font-style: normal;
+    font-style: italic;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'M-SB';
-    src: url('Montserrat-SemiBold.woff2') format('woff2'),
-        url('Montserrat-SemiBold.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'M-T';
-    src: url('Montserrat-Thin.woff2') format('woff2'),
-        url('Montserrat-Thin.woff') format('woff');
-    font-weight: 100;
-    font-style: normal;
+    font-family: 'M-MI';
+    src: url('Montserrat-MediumItalic.woff2') format('woff2'),
+        url('Montserrat-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
     font-display: swap;
 }
 
@@ -153,13 +135,33 @@
 }
 
 @font-face {
-    font-family: 'M-TI';
-    src: url('Montserrat-ThinItalic.woff2') format('woff2'),
-        url('Montserrat-ThinItalic.woff') format('woff');
-    font-weight: 100;
+    font-family: 'M-BI';
+    src: url('Montserrat-BoldItalic.woff2') format('woff2'),
+        url('Montserrat-BoldItalic.woff') format('woff');
+    font-weight: bold;
     font-style: italic;
     font-display: swap;
 }
+
+@font-face {
+    font-family: 'M-EXBI';
+    src: url('Montserrat-ExtraBoldItalic.woff2') format('woff2'),
+        url('Montserrat-ExtraBoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M-BLI';
+    src: url('Montserrat-BlackItalic.woff2') format('woff2'),
+        url('Montserrat-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+
 
 /* BE VIETNAM */
 
@@ -288,4 +290,3 @@
     font-style: normal;
     font-display: swap;
 }
-
