@@ -41,7 +41,7 @@ const ListProduct = ({ product }: { product: ProductProps }) => {
   return (
     <>
                   {/* Products Grid */}
-   <div className="container">
+
                 <div className="box-products-frame">
                     <div className="products-frame-news" >
                     <div className="news-t">
@@ -91,7 +91,7 @@ const ListProduct = ({ product }: { product: ProductProps }) => {
                         </div>
                     </div>
                 </div>
-                    </div>          
+                         
     </>
   );
 };
