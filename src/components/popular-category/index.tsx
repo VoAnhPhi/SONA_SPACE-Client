@@ -2,7 +2,10 @@ const PopularCategory = () => {
   return (
     <>
       {/* Header/Navigation */}
-      <section className="category-of-products">
+        <section className="PopularCategory-full">
+              <div className="container">
+      <div className="category-of-products">
+
             <div className="category-of-products-s1">
                 <div className="products-s1-frame-1">
                     <p className="frame-1-text1">Các danh mục sản phẩm phổ biến nhất</p>
@@ -35,6 +38,9 @@ const PopularCategory = () => {
                     <button>View all Product +</button>
                 </div>
             </div>
+       
+        </div>
+             </div>
         </section>
     </>
   );

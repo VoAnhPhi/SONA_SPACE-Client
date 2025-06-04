@@ -2,7 +2,9 @@ const Filter = () => {
   return (
     <>
       {/* filter */}
+
        <section className="filter-container">
+              <div className="container">
         <div className="filter-width">
             <div className="filter-group">
                 <div className="filter-group1">
@@ -42,7 +44,9 @@ const Filter = () => {
                     </select>
             </div>
             </div>
+        </div>
         </section>
+        
     </>
   );
 };

@@ -2,7 +2,10 @@ const PolicyProduct = () => {
   return (
     <>
       {/* Header/Navigation */}
+      <section className="Policy-full">
+        <div className="container">
         <div className="box-policy">
+
             <div className="box-policy-1">
                 <div className="policy-text">Chính sách & Hỗ trợ</div>
                 <p>Chúng tôi cung cấp chính sách đổi trả linh hoạt và hỗ trợ tận tình để bạn an tâm khi mua sắm nội thất.</p>
@@ -23,6 +26,8 @@ const PolicyProduct = () => {
                 <p>Chính sách hoàn tiền linh hoạt và bảo hành dài hạn, đảm bảo quyền lợi khách hàng.</p>
             </div>
         </div>
+        </div>
+        </section>
     </>
   );
 };
