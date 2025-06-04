@@ -8,26 +8,28 @@
   }
   
   .signin-content {
-    max-width: 500px;
+    max-width: 780px;
     margin: 0 auto;
     text-align: center;
     
     h1 {
-      font-family: 'M-SB', sans-serif;
-      font-size: 28px;
+      font-family: 'M-B', sans-serif;
+      font-size: 3.2rem;
       color: #333;
       margin-bottom: 15px;
     }
     
     .signin-description {
-      font-size: 16px;
-      color: #666;
+      font-family:  'Be-R';
+      font-size: 1.6rem;
+      color: #8C8A8A;
       margin-bottom: 30px;
     }
   }
   
   .signin-form {
     margin-bottom: 30px;
+    
     
     .form-group {
       margin-bottom: 20px;
@@ -39,9 +41,9 @@
         padding: 12px 15px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        font-family: 'M-R', sans-serif;
-        font-size: 14px;
-        color: #333;
+        font-family: 'Be-R', sans-serif;
+        font-size: 1.6rem;
+        color: #8C8A8A;
         transition: border-color 0.3s ease;
         
         &::placeholder {
@@ -62,24 +64,30 @@
       margin-bottom: 20px;
       
       .remember-me {
+       
         display: flex;
         align-items: center;
         gap: 8px;
+       
+        
         
         input[type="checkbox"] {
           margin: 0;
         }
         
         label {
-          font-size: 13px;
-          color: #666;
+          font-family: 'Be-R';
+          font-size: 1.6rem;
+          color: #092C4C;
         }
       }
       
       .forgot-password {
         a {
-          font-size: 13px;
-          color: #F5A623;
+          font-size: 1.6rem;
+          font-family: 'Be-R';
+         
+          color: #092C4C;
           text-decoration: none;
           
           &:hover {
@@ -91,7 +99,8 @@
     
     .signin-btn {
       display: inline-block;
-      width: 100%;
+      width: 100%;            /* Chiều rộng 100% của container cha */
+      max-width: 561px;   
       padding: 12px 24px;
       background-color: #F5A623;
       color: #fff;
@@ -110,21 +119,29 @@
   }
   
   .social-signin {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
     margin-bottom: 30px;
+    
+  
     
     .divider {
       position: relative;
       text-align: center;
       margin-bottom: 20px;
-      
+      color: #092C4C;
+       font-family: 'M-SB', sans-serif;
+      font-size: 16px;
       &:before {
         content: '';
         position: absolute;
         top: 50%;
         left: 0;
         right: 0;
-        height: 1px;
-        background-color: #ddd;
+        height: 0; /* đổi height thành 0 vì dùng border */
+        border-bottom: 1px dashed #8C8A8A; /* nét đứt ngang */
+       
         z-index: 1;
       }
       
@@ -143,7 +160,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
+   margin: 0 auto;
+   width: 100%;
+      max-width: 230px;
       padding: 12px 24px;
       background-color: #fff;
       color: #333;
@@ -153,9 +172,7 @@
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      
-      img {
-        width: 20px;
+      img{        width: 20px;
         height: 20px;
         margin-right: 10px;
       }
@@ -168,98 +185,58 @@
   
   .signup-link {
     p {
-      font-size: 14px;
-      color: #666;
+      font-family: 'Be-R', sans-serif;
+      font-size: 1.6rem;
+      color: #092C4C;
       
       a {
-        color: #F5A623;
-        text-decoration: none;
-        font-family: 'M-SB', sans-serif;
+        color: #092C4C;
+       text-decoration: underline;
+        
         
         &:hover {
-          text-decoration: underline;
+          color: $yellow-cl;
+          text-decoration: none;
         }
       }
     }
   }
+
+
+  // // Responsive styles
+  // @media (max-width: 768px) {
+  //   padding: 40px 0;
+    
+  //   .signin-content {
+  //     h1 {
+  //       font-size: 24px;
+  //     }
+      
+  //     .signin-description {
+  //       font-size: 15px;
+  //     }
+  //   }
+  // }
   
-  // Design Services Section
-  .design-services {
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid #eee;
+  // @media (max-width: 576px) {
+  //   padding: 30px 0;
     
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      
-      @media (max-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      @media (max-width: 576px) {
-        grid-template-columns: 1fr;
-      }
-      
-      .service-item {
-        img {
-          width: 100%;
-          height: 200px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 15px;
-        }
-        
-        h3 {
-          font-family: 'M-SB', sans-serif;
-          font-size: 18px;
-          color: #333;
-          margin-bottom: 8px;
-        }
-        
-        p {
-          font-size: 14px;
-          color: #666;
-        }
-      }
-    }
-  }
-  
-  // Responsive styles
-  @media (max-width: 768px) {
-    padding: 40px 0;
+  //   .signin-content {
+  //     h1 {
+  //       font-size: 22px;
+  //     }
+  //   }
     
-    .signin-content {
-      h1 {
-        font-size: 24px;
-      }
-      
-      .signin-description {
-        font-size: 15px;
-      }
-    }
-  }
-  
-  @media (max-width: 576px) {
-    padding: 30px 0;
+  //   .signin-form {
+  //     .form-options {
+  //       flex-direction: column;
+  //       align-items: flex-start;
+  //       gap: 10px;
+  //     }
+  //   }
     
-    .signin-content {
-      h1 {
-        font-size: 22px;
-      }
-    }
-    
-    .signin-form {
-      .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-    }
-    
-    .design-services {
-      margin-top: 50px;
-    }
-  }
+  //   .design-services {
+  //     margin-top: 50px;
+  //   }
+  // }
 }

@@ -100,7 +100,8 @@
     
     .signup-btn {
       display: inline-block;
-      width: 561px;
+      width: 100%;
+      max-width: 561px;
       padding: 12px 24px;
       background-color: #F5A623;
       color: #fff;
@@ -119,8 +120,8 @@
   }
   
   .social-signup {
-   
-    width: 500px;
+   width:100%;
+    max-width: 500px;
     margin: 0 auto;
     margin-bottom: 28px; /* Căn giữa theo chiều ngang */
     
@@ -128,7 +129,9 @@
       position: relative;
       text-align: center;
       margin-bottom: 20px;
-      
+      color: #092C4C;
+       font-family: 'M-SB', sans-serif;
+      font-size: 16px;
       &:before {
         content: '';
         position: absolute;
@@ -156,7 +159,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 230px;
+      width: 100%;
+      max-width: 230px;
       padding: 12px 24px;
       background-color: #fff;
       color: #919EAB;
