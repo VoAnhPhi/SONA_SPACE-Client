@@ -2,6 +2,8 @@ const Getintouch = () => {
   return (
     <>
       {/* Getintouch */}
+      <section className="Getintouch">
+        <div className="container">
         <div className="box-getintouch">
             <div className="getintouch-1">
                 <h3>Get in touch</h3>
@@ -40,6 +42,8 @@ const Getintouch = () => {
                 </div>
             </div>
         </div>
+        </div>
+        </section>
     </>
   );
 };

@@ -30,7 +30,7 @@ const ProductPage: React.FC = () => {
           price: 22150000,
           image: "/images/products/product1.jpg",
           colors: ["#7d5a50", "#a3a380", "#757575"],
-          createdAt: ("2025-06-01"),
+          createdAt: ("2025-06-02"),
           priceSale: 20000000,
         },
         {
@@ -147,7 +147,7 @@ const ProductPage: React.FC = () => {
     <>
       <Header />
 
-      <div className="container">
+   
         {/* Banner Section */}
            <section className="banner-slider">
             <div className="header-banner">
@@ -168,9 +168,9 @@ const ProductPage: React.FC = () => {
         
         <section className="section-box-products">
             <div className="box-products-container">
-{products.map((product) => (
-  <ListProduct key={product.id} product={product} />
-))}
+          {products.map((product) => (
+          <ListProduct key={product.id} product={product} />
+            ))}
 
     </div>
         </section>
@@ -180,10 +180,12 @@ const ProductPage: React.FC = () => {
 
         {/* See More Section */}
      <div className="box-seemore">
+        <div className="container">
             <p>Xem thêm sản phẩm</p>
             <div className="arow-seemore">
                 <img src="/images/products/arow.svg" alt="" />
                 <img src="/images/products/arow.svg" alt="" />
+            </div>
             </div>
         </div>
         {/* Policy */}
@@ -191,7 +193,6 @@ const ProductPage: React.FC = () => {
         
         {/* Get in Touch Section */}
         <Getintouch />
-        </div>
       <Footer />
     </>
   );
