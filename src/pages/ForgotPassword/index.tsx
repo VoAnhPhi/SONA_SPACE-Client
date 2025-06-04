@@ -229,7 +229,7 @@ const ForgotPassword: React.FC = () => {
           </div>
         </div>
         
-        {/* Design Services Showcase */}
+        {/* Design Services Showcase
         <div className="design-services">
           <div className="container">
             <div className="services-grid">
@@ -250,7 +250,7 @@ const ForgotPassword: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <Footer />
     </>

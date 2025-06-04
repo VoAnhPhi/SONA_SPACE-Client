@@ -15,12 +15,12 @@
     h1 {
       font-family: 'M-B', sans-serif;
       font-size: 3.2rem;
-      color: #333;
+      color: #000000;
       margin-bottom: 15px;
     }
     
     .signin-description {
-      font-family:  'Be-R';
+      font-family: 'BE-R', sans-serif;
       font-size: 1.6rem;
       color: #8C8A8A;
       margin-bottom: 30px;
@@ -43,7 +43,7 @@
         border-radius: 4px;
         font-family: 'Be-R', sans-serif;
         font-size: 1.6rem;
-        color: #8C8A8A;
+        color: #000000;
         transition: border-color 0.3s ease;
         
         &::placeholder {
@@ -54,6 +54,15 @@
           outline: none;
           border-color: #999;
         }
+        &.error {
+          border-color: #ff3b30;
+        }
+      }
+      .error-message {
+        color: #ff3b30;
+        font-size: 1.6rem;
+        margin-top: 5px;
+        font-family: 'Be-R', sans-serif;
       }
     }
     
@@ -106,8 +115,8 @@
       color: #fff;
       border: none;
       border-radius: 4px;
-      font-family: 'M-SB', sans-serif;
-      font-size: 16px;
+      font-family: 'Be-B', sans-serif;
+      font-size: 1.8rem;  
       cursor: pointer;
       transition: background-color 0.3s ease;
       text-align: center;
