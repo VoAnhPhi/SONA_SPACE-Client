@@ -163,8 +163,8 @@ const ProductPage: React.FC = () => {
         <PopularCategory />
 
         {/* Filter Section */}
-        <Filter />
-
+        <Filter/>
+           <div className="container">
         <section className="section-box-products">
             <div className="box-products-container">
           {products.map((product) => (
@@ -173,7 +173,7 @@ const ProductPage: React.FC = () => {
 
           </div>
         </section>
-
+</div>
         {/* Products Grid */}
 
 
