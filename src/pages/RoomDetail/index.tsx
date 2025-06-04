@@ -17,6 +17,14 @@ interface ProductProps {
   isSale?: boolean;
 }
 
+interface RoomDetailProps {
+  id: number;
+  banner: string;
+  name: string;
+  image: string;
+  slug: string;
+}
+
 interface FilterProps {
   material: string;
   color: string;

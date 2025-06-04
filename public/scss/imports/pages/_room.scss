@@ -99,7 +99,7 @@
         transition: transform 0.3s ease;
 
         &:hover {
-          transform: translateY(-5px);
+          transform: translateY(-2px);
         }
 
         .category-image {
@@ -118,10 +118,8 @@
         }
 
         .category-name {
-          font-family: 'M-M';
-          font-size: 16px;
-          color: #333;
-          margin: 0;
+          text-align: left;
+          @include text(20px, Be-B, auto, $text-cl, none);
         }
       }
     }

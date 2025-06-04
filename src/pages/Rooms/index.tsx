@@ -192,9 +192,6 @@ const Rooms: React.FC = () => {
     ]
   };
 
-  // Active room category
-  const [activeRoom, setActiveRoom] = useState<string>("living-room");
-
   // Format price with commas
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -233,8 +230,7 @@ const Rooms: React.FC = () => {
               {roomCategories.map((room) => (
                 <div
                   key={room.id}
-                  className={`category-item ${activeRoom === room.id ? 'active' : ''}`}
-                  onClick={() => setActiveRoom(room.id)}
+                  className={`category-item`}
                 >
                   <Link to={`/khong-gian/${room.slug}`} className="category-link">
                     <div className="category-image">
@@ -253,7 +249,7 @@ const Rooms: React.FC = () => {
           <div className="container">
             <h2 className="section-title">Sản Phẩm Mới</h2>
             <div className="products-grid">
-              {roomProducts[activeRoom]?.map((product) => (
+              {roomProducts["living-room"]?.map((product) => (
                 <div key={product.id} className="product-card">
                   <div className="product-image">
                     <img src={product.images[0]} alt={product.name} />
@@ -293,7 +289,7 @@ const Rooms: React.FC = () => {
             </div>
 
             <div className="view-more-container">
-              <Link to={`/khong-gian/${roomCategories.find(room => room.id === activeRoom)?.slug}`} className="view-more-btn">
+              <Link to={`/khong-gian/phong-khach`} className="view-more-btn">
                 Xem tất cả sản phẩm
               </Link>
             </div>
