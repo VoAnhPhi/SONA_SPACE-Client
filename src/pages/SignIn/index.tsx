@@ -98,10 +98,10 @@ const SignIn: React.FC = () => {
               </div>
               
               <button className="google-signin-btn">
-                <img src="/images/icons/google.svg" alt="Google" />
+                <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button>
-            </div>
+            </div>  
             
             <div className="signup-link">
               <p>Bạn chưa có tài khoản? <Link to="/dang-ky">Đăng Ký ngay</Link></p>
@@ -109,28 +109,7 @@ const SignIn: React.FC = () => {
           </div>
         </div>
         
-        {/* Design Services Showcase */}
-        <div className="design-services">
-          <div className="container">
-            <div className="services-grid">
-              <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+       
       </div>
       <Footer />
     </>
