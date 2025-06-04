@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PopularCategory from "../../components/popular-category";
-import InteriorDesign from "../../components/interiorDesign";
+import InteriorDesign from "../../components/InteriorDesign";
+
 interface RoomCategoryProps {
   id: string;
   name: string;

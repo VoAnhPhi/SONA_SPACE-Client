@@ -1,6 +1,8 @@
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import InteriorDesign from "../../components/interiorDesign";
+import InteriorDesign from "../../components/InteriorDesign";
+import CategorySlider from "../../components/CategorySlider";
+import ProductSlider from "../../components/ProductSlider";
 
 const HomePage = () => {
   return (
@@ -69,28 +71,7 @@ const HomePage = () => {
           <div className="container">
             <h2 className="section-title">Danh Mục Sản Phẩm</h2>
 
-            <div className="category-slider">
-              <div className="category-item">
-                <img src="/images/category-1.jpg" alt="Limited Edition" />
-                <h3>Limited Edition</h3>
-              </div>
-              <div className="category-item">
-                <img src="/images/category-2.jpg" alt="Sofa" />
-                <h3>Sofa</h3>
-              </div>
-              <div className="category-item">
-                <img src="/images/category-3.jpg" alt="Ghế" />
-                <h3>Ghế</h3>
-              </div>
-              <div className="category-item">
-                <img src="/images/category-4.jpg" alt="Bàn" />
-                <h3>Bàn</h3>
-              </div>
-              <div className="category-item">
-                <img src="/images/category-5.jpg" alt="Tủ" />
-                <h3>Tủ</h3>
-              </div>
-            </div>
+            <CategorySlider />
           </div>
         </section>
 
@@ -99,32 +80,7 @@ const HomePage = () => {
           <div className="container">
             <h2 className="section-title">Sản Phẩm Mới</h2>
 
-            <div className="products-grid">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="product-item">
-                  <div className="product-image">
-                    <img
-                      src={`/images/product-${item}.jpg`}
-                      alt={`Product ${item}`}
-                    />
-                  </div>
-                  <div className="product-info">
-                    <h3 className="product-name">
-                      Ghế Wooden 2.0 nordic với nhiên liệu tương tự
-                    </h3>
-                    <div className="product-colors">
-                      <span className="color-option brown"></span>
-                      <span className="color-option beige"></span>
-                      <span className="color-option gray"></span>
-                    </div>
-                    <div className="product-price">
-                      <span className="price">15.190.000 ₫</span>
-                      <span className="price-tag">Giá bán</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProductSlider />
           </div>
         </section>
 
