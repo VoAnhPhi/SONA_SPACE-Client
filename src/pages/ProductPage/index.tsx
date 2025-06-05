@@ -204,7 +204,7 @@ const ProductPage: React.FC = () => {
       <PolicyProduct />
 
       {/* Get in Touch Section */}
-      <Getintouch />
+      <GetInTouch />
       <Footer />
     </>
   );
