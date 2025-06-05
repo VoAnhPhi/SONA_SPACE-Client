@@ -1,4 +1,4 @@
-const Getintouch = () => {
+const GetInTouch = () => {
   return (
     <>
       {/* Getintouch */}
@@ -48,4 +48,4 @@ const Getintouch = () => {
   );
 };
 
-export default Getintouch;
+export default GetInTouch;
