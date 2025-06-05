@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
-import Filter from "../../components/Filter";
-import ListProduct from "../../components/ListProduct";
+import Filter from "../../components/filter";
+import ListProduct from "../../components/listProduct";
 import PolicyProduct from "../../components/Policy";
-import Getintouch from "../../components/GetInTouch";
+import Getintouch from "../../components/getintouch";
+import Seemore from "../../components/seemore";
 
 interface ProductProps {
   id: number;
@@ -17,6 +18,7 @@ interface ProductProps {
   isSale?: boolean;
   createdAt?: string;
   priceSale?: number;
+  slug: string;
 }
 
 const ProductPage: React.FC = () => {
@@ -31,6 +33,7 @@ const ProductPage: React.FC = () => {
       colors: ["#7d5a50", "#a3a380", "#757575"],
       createdAt: ("2025-06-02"),
       priceSale: 20000000,
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 2,
@@ -40,6 +43,7 @@ const ProductPage: React.FC = () => {
       colors: ["#7d5a50", "#a3a380", "#757575"],
       createdAt: ("2025-05-01"),
       priceSale: 20000000,
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 3,
@@ -50,6 +54,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-02-01"),
       priceSale: 22000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 4,
@@ -60,6 +65,7 @@ const ProductPage: React.FC = () => {
       isSale: true,
       createdAt: ("2025-06-04"),
       priceSale: 21000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 5,
@@ -69,6 +75,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-01-01"),
       priceSale: 19000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 6,
@@ -78,6 +85,7 @@ const ProductPage: React.FC = () => {
       colors: ["#4A2932", "#E5E5E5", "#555555"],
       createdAt: ("2025-03-01"),
       priceSale: 18000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 7,
@@ -88,6 +96,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-01-01"),
       priceSale: 10000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 8,
@@ -97,6 +106,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-06-01"),
       priceSale: 16000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 9,
@@ -106,6 +116,7 @@ const ProductPage: React.FC = () => {
       colors: ["#333333", "#555555", "#777777"],
       createdAt: ("2025-06-01"),
       priceSale: 18900000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 10,
@@ -115,6 +126,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-06-01"),
       priceSale: 13400000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 11,
@@ -125,6 +137,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-06-01"),
       priceSale: 20000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 12,
@@ -135,6 +148,7 @@ const ProductPage: React.FC = () => {
       isSale: true,
       createdAt: ("2025-06-01"),
       priceSale: 20000000,
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
   ];
 
@@ -164,6 +178,9 @@ const ProductPage: React.FC = () => {
 
       {/* Filter Section */}
       <Filter />
+
+      {/* boxsanpham */}
+      <section className="boxProducts">
       <div className="container">
         <section className="section-box-products">
           <div className="box-products-container">
@@ -174,19 +191,15 @@ const ProductPage: React.FC = () => {
           </div>
         </section>
       </div>
+      </section>
+
+
+
       {/* Products Grid */}
 
 
       {/* See More Section */}
-      <div className="box-seemore">
-        <div className="container">
-          <p>Xem thêm sản phẩm</p>
-          <div className="arow-seemore">
-            <img src="/images/products/arow.svg" alt="" />
-            <img src="/images/products/arow.svg" alt="" />
-          </div>
-        </div>
-      </div>
+      <Seemore />
       {/* Policy */}
       <PolicyProduct />
 
