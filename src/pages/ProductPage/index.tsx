@@ -5,7 +5,7 @@ import PopularCategory from "../../components/PopularCategory";
 import Filter from "../../components/filter";
 import ListProduct from "../../components/listProduct";
 import PolicyProduct from "../../components/Policy";
-import Getintouch from "../../components/getintouch";
+import GetInTouch from "../../components/GetInTouch";
 import Seemore from "../../components/seemore";
 
 interface ProductProps {
