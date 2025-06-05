@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-interface RoomCategoryProps {
+interface CategoryProps {
     id: string;
     name: string;
     image: string;
@@ -8,57 +8,81 @@ interface RoomCategoryProps {
 }
 
 export default function CategorySlider() {
-    const roomCategories: RoomCategoryProps[] = [
+    const categories: CategoryProps[] = [
         {
-            id: "living-room",
-            name: "Phòng Khách",
-            image: "/images/rooms/image1.jpg",
-            slug: "phong-khach"
+            id: "latest-edition",
+            name: "Latest Edition",
+            image: "/images/image1.jpg",
+            slug: "latest-edition"
         },
         {
-            id: "dining-room",
-            name: "Phòng Ăn",
-            image: "/images/rooms/image2.jpg",
-            slug: "phong-an"
+            id: "sofa",
+            name: "Sofas",
+            image: "/images/image2.jpg",
+            slug: "sofa"
         },
         {
-            id: "bedroom",
-            name: "Phòng Ngủ",
-            image: "/images/rooms/image3.jpg",
-            slug: "phong-ngu"
+            id: "chair",
+            name: "Ghế",
+            image: "/images/image3.jpg",
+            slug: "chair"
         },
         {
-            id: "workspace",
-            name: "Không gian làm việc",
-            image: "/images/rooms/image4.jpg",
-            slug: "khong-gian-lam-viec"
+            id: "table",
+            name: "Bàn",
+            image: "/images/image4.jpg",
+            slug: "table"
         },
         {
-            id: "small-space",
-            name: "Small Space",
-            image: "/images/rooms/image5.jpg",
-            slug: "small-space"
+            id: "wardrobe",
+            name: "Tủ",
+            image: "/images/image5.jpg",
+            slug: "wardrobe"
         },
         {
-            id: "outdoor-space",
-            name: "Không gian ngoài trời",
-            image: "/images/rooms/image6.jpg",
-            slug: "khong-gian-ngoai-troi"
-        }
+            id: "bed",
+            name: "Giường",
+            image: "/images/image6.jpg",
+            slug: "bed"
+        },
+        {
+            id: "garden-table",
+            name: "Bàn Ghế Sân Vường",
+            image: "/images/image6.jpg",
+            slug: "garden-table"
+        },
+        {
+            id: "carpet",
+            name: "Thảm",
+            image: "/images/image6.jpg",
+            slug: "carpet"
+        },
+        {
+            id: "accessory",
+            name: "Phụ Kiện",
+            image: "/images/image6.jpg",
+            slug: "accessory"
+        },
+        {
+            id: "light",
+            name: "Đèn",
+            image: "/images/image6.jpg",
+            slug: "light"
+        },
     ];
     return (
         <>
             <div className="categories-flex">
-                {roomCategories.map((room) => (
+                {categories.map((category) => (
                     <div
-                        key={room.id}
+                        key={category.id}
                         className={`category-item`}
                     >
-                        <Link to={`/khong-gian/${room.slug}`} className="category-link">
+                        <Link to={`/san-pham/${category.slug}`} className="category-link">
                             <div className="category-image">
-                                <img src={room.image} alt={room.name} />
+                                <img src={category.image} alt={category.name} />
                             </div>
-                            <h3 className="category-name">{room.name}</h3>
+                            <h3 className="category-name">{category.name}</h3>
                         </Link>
                     </div>
                 ))}

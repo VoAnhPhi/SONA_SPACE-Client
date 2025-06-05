@@ -79,7 +79,6 @@ const HomePage = () => {
         <section className="featured-products">
           <div className="container">
             <h2 className="section-title">Sản Phẩm Mới</h2>
-
             <ProductSlider />
           </div>
         </section>
@@ -88,7 +87,6 @@ const HomePage = () => {
         <section className="hot-products">
           <div className="container">
             <h2 className="section-title">Sản Phẩm Hot</h2>
-
             <ProductSlider />
           </div>
         </section>
