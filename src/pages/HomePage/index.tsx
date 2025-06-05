@@ -3,6 +3,7 @@ import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import CategorySlider from "../../components/CategorySlider";
 import ProductSlider from "../../components/ProductSlider";
+import GetInTouch from "../../components/GetInTouch";
 
 const HomePage = () => {
   return (
@@ -23,9 +24,12 @@ const HomePage = () => {
           <div className="container">
             <h2 className="section-title">Sản Phẩm Được Đề Xuất Cho Bạn</h2>
             <p className="section-description">
-              Chúng tôi đã tuyển chọn một số sản phẩm mà bạn có thể sẽ quan tâm
-              dựa trên lịch sử tìm kiếm của bạn. Hãy khám phá các mẫu nội thất
-              và đồ trang trí mới nhất của chúng tôi.
+              Khám phá sản phẩm được yêu thích và đánh giá cao nhất bởi khách
+              hàng của chúng tôi.
+              <br />
+              Với thiết kế tinh tế, chất liệu cao cấp và sự thoải mái trong sử
+              dụng — đây là lựa chọn hoàn hảo để nâng tầm không gian sống của
+              bạn
             </p>
 
             <div className="recommendation-grid">
@@ -35,7 +39,8 @@ const HomePage = () => {
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Khách</h3>
                     <a href="/phong-khach" className="btn btn-outline">
-                      Xem Sản Phẩm
+                      Xem Sản Phẩm{" "}
+                      <img src="/images/icons/arrow-right-1.svg" alt="" />
                     </a>
                   </div>
                 </div>
@@ -46,7 +51,8 @@ const HomePage = () => {
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ngủ</h3>
                     <a href="/phong-ngu" className="btn btn-outline">
-                      Xem Sản Phẩm
+                      Xem Sản Phẩm{" "}
+                      <img src="/images/icons/arrow-right-1.svg" alt="" />
                     </a>
                   </div>
                 </div>
@@ -57,7 +63,8 @@ const HomePage = () => {
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ăn</h3>
                     <a href="/phong-an" className="btn btn-outline">
-                      Xem Sản Phẩm
+                      Xem Sản Phẩm{" "}
+                      <img src="/images/icons/arrow-right-1.svg" alt="" />
                     </a>
                   </div>
                 </div>
@@ -95,61 +102,30 @@ const HomePage = () => {
         <InteriorDesign />
 
         {/* Contact Section */}
-        <section className="contact-section">
-          <div className="container">
-            <h2 className="section-title">Get in touch</h2>
-
-            <div className="contact-grid">
-              <div className="contact-info">
-                <p>
-                  Looking for personalized design solutions? Our dedicated
-                  experts are ready to help you create the perfect space.
-                  Contact us to discuss your interior design vision.
-                </p>
-                <p>
-                  We provide full-service residential, commercial, and interior
-                  design. Let's create to impress.
-                </p>
-              </div>
-              <div className="contact-options">
-                <div className="contact-option">
-                  <h3>Chat with our Interior Designers</h3>
-                </div>
-                <div className="contact-option">
-                  <h3>Discover our space with immersive furniture design</h3>
-                </div>
-                <div className="contact-option">
-                  <h3>A designer furniture store like no other</h3>
-                </div>
-                <div className="contact-option">
-                  <h3>
-                    Create your signature style with customization options
-                  </h3>
-                </div>
-                <div className="contact-option">
-                  <h3>Convenient online shopping experience</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <GetInTouch />
 
         {/* Design Tips */}
         <section className="design-tips">
           <div className="container">
             <div className="tips-grid">
-              <div className="tip-item">
-                <img src="/images/tip-1.jpg" alt="Thiết kế có nhân hóa" />
-                <h3>Thiết kế có nhân hóa</h3>
-                <p>Làm thế nào để làm điều đó</p>
+              <div className="tips-grid-aside">
+                <div className="tip-item">
+                  <img src="/images/tip-1.jpg" alt="Thiết kế có nhân hóa" />
+                  <div className="content">
+                    <h3>Thiết kế cá nhân hóa</h3>
+                    <p>Liên hệ ngay để được tư vấn</p>
+                  </div>
+                </div>
               </div>
-              <div className="tip-item">
-                <img src="/images/tip-2.jpg" alt="Mẫu vật liệu" />
-                <h3>Mẫu vật liệu</h3>
-              </div>
-              <div className="tip-item">
-                <img src="/images/tip-3.jpg" alt="Thư viện" />
-                <h3>Thư viện</h3>
+              <div className="tips-grid-bside">
+                <div className="tip-item">
+                  <img src="/images/tip-2.jpg" alt="Mẫu vật liệu" />
+                  <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
+                </div>
+                <div className="tip-item">
+                  <img src="/images/tip-3.jpg" alt="Thư viện" />
+                  <h3>Bạn cần liên hệ hỗ trợ</h3>
+                </div>
               </div>
             </div>
           </div>
