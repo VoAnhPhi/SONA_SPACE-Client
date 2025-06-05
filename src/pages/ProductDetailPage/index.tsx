@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import PolicyProduct from "../../components/Policy";
+import ListProduct from "../../components/listProduct";
 
 interface ProductProps {
   id: number;
@@ -22,6 +24,7 @@ interface ProductProps {
     title: string;
     value: string;
   }[];
+  slug: string;
 }
 
 interface RelatedProductProps {
@@ -32,6 +35,8 @@ interface RelatedProductProps {
   image: string;
   colors: string[];
   category: string;
+  slug: string;
+
 }
 
 const ProductDetailPage: React.FC = () => {
@@ -48,17 +53,20 @@ const ProductDetailPage: React.FC = () => {
     price: 15190000,
     oldPrice: 18950000,
     images: [
-      "/images/products/sofa-beige-main.jpg",
-      "/images/products/sofa-beige-angle.jpg",
-      "/images/products/sofa-beige-front.jpg",
-      "/images/products/sofa-beige-detail.jpg",
+      "/images/detail/detail1.png",
+      "/images/detail/detail2.png",
+      "/images/detail/detail3.png",
+      "/images/detail/detail4.png",
+      "/images/detail/detail5.png",
+      "/images/detail/detail6.png",
+      "/images/detail/detail7.png",
     ],
     colors: [
       { code: "#D8C1A9", name: "Beige" },
       { code: "#333333", name: "Black" },
       { code: "#777777", name: "Gray" },
     ],
-    rating: 4.7,
+    rating: 4.5,
     reviewCount: 1481,
     stock: 300,
     category: "Sofas",
@@ -71,6 +79,7 @@ const ProductDetailPage: React.FC = () => {
       { title: "Chất liệu", value: "Cao cấp" },
       { title: "Kích thước", value: "Phù hợp" },
     ],
+          slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
   };
 
   // Mock related products
@@ -79,33 +88,37 @@ const ProductDetailPage: React.FC = () => {
       id: 2,
       name: "Sofa Modena 2.5 seater với nhiều varian option",
       price: 15190000,
-      image: "/images/products/chair-wooden-1.jpg",
+      image: "/images/products/product(1).png",
       colors: ["#D8C1A9", "#333333", "#777777"],
-      category: "Sofas"
+      category: "Sofas",
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 3,
       name: "Sofa Modena 2.5 seater với nhiều varian option",
       price: 15190000,
-      image: "/images/products/chair-burgundy-1.jpg",
+         image: "/images/products/product(2).png",
       colors: ["#4A2932", "#E5E5E5", "#555555"],
-      category: "Sofas"
+      category: "Sofas",
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 4,
       name: "Sofa Modena 2.5 seater với nhiều varian option",
       price: 15190000,
-      image: "/images/products/table-round-black-1.jpg",
+         image: "/images/products/product(3).png",
       colors: ["#333333", "#555555", "#777777"],
-      category: "Sofas"
+      category: "Sofas",
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 5,
       name: "Sofa Modena 2.5 seater với nhiều varian option",
       price: 15190000,
-      image: "/images/products/tiles-beige-1.jpg",
+        image: "/images/products/product(4).png",
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      category: "Sofas"
+      category: "Sofas",
+            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     }
   ];
 
@@ -123,143 +136,156 @@ const ProductDetailPage: React.FC = () => {
   };
 
   // Generate star rating
-  const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
-        stars.push(<span key={i} className="star filled">★</span>);
-      } else if (i - 0.5 <= rating) {
-        stars.push(<span key={i} className="star half-filled">★</span>);
-      } else {
-        stars.push(<span key={i} className="star">★</span>);
-      }
+const renderStars = (rating: number) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(rating)) {
+      // sao đầy
+      stars.push(<img key={i} src="/images/detail/star.svg" alt="" />);
+    } else if (i - 0.5 === rating) {
+      // sao nửa đầy
+      stars.push(<img key={i} src="/images/detail/star-half-filled.svg" alt="" />);
+    } else {
+      // sao rỗng
+      stars.push(<img key={i} src="/images/detail/star-filled.svg" alt="" />);
     }
-    return stars;
-  };
+  }
+  return stars;
+};
 
   return (
     <>
       <Header />
-      <div className="product-detail-page">
-        {/* Breadcrumb */}
-        <div className="breadcrumb-container">
+      <div className="product-details">
+        <section className="detail-page-link">
           <div className="container">
-            <div className="breadcrumb">
-              <a href="/">Trang chủ</a>
-              <span>/</span>
-              <a href="/san-pham">Sản phẩm</a>
-              <span>/</span>
-              <span className="active">{product.name}</span>
+            <div className="detail-link">
+            <span className="link1">Sản phẩm | </span>
+            <span className="link2">Ghế sofa MOHO HALDEN</span>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Product Detail Section */}
-        <section className="product-detail">
-          <div className="container">
-            <div className="product-detail-grid">
-              {/* Product Images */}
-              <div className="product-images">
-                <div className="main-image">
-                  <img 
-                    src={product.images[activeImageIndex]} 
-                    alt={`${product.name} - ${product.colors.find(c => c.code === selectedColor)?.name || 'Main'} View`} 
-                  />
-                </div>
-                <div className="thumbnail-images">
-                  {product.images.map((image, index) => (
-                    <div 
-                      key={index} 
-                      className={`thumbnail ${activeImageIndex === index ? 'active' : ''}`}
-                      onClick={() => setActiveImageIndex(index)}
-                    >
-                      <img src={image} alt={`${product.name} - Thumbnail ${index + 1}`} />
+    <section className="product-detail-info">
+    <div className="container">
+        <div className="detail-products">
+            <div className="detail-image">
+                <div className="image-full">
+                    <div className="image1">
+                        <img src={product.images[0]} alt="" />
                     </div>
-                  ))}
+                    <div className="image2">
+                        <div className="image2-1">
+                            <img src={product.images[1]} alt="" />
+                        </div>
+                        <div className="image2-2">
+                            <img src={product.images[2]} alt="" />
+                        </div>
+                    </div>
+                    <div className="image3">
+                        <div className="image3-1">
+                            <img src={product.images[3]} alt="" />
+                        </div>
+                        <div className="image3-2">
+                           <img src={product.images[4]} alt="" /> 
+                        </div>
+                    </div>
+                      <div className="image4">
+                        <img src={product.images[5]} alt="" /> 
+                    </div>
+                      <div className="image5">
+                         <img src={product.images[6]} alt="" /> 
+                    </div>
+            </div>
+            </div>
+            <div className="detail-content">
+                <div className="content-name">
+                    <h3>{product.name}</h3>
                 </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="product-info">
-                <h1 className="product-title">{product.name}</h1>
-                <div className="product-category">{product.category}</div>
-                
-                <div className="product-price">
-                  <div className="current-price">{formatPrice(product.price)} đ</div>
-                  {product.oldPrice && (
-                    <div className="old-price">{formatPrice(product.oldPrice)} đ</div>
-                  )}
+                <div className="content-description">
+                    <span>{product.category}</span>
                 </div>
-
-                <div className="product-rating">
-                  <div className="stars">{renderStars(product.rating)}</div>
-                  <div className="rating-value">{product.rating}</div>
-                  <div className="review-count">{product.reviewCount} Lượt đánh giá</div>
+                <div className="content-price">
+                    <span className="price">{formatPrice(product.price)} đ</span>
+                       {product.oldPrice && (
+                    <span className="price-old">{formatPrice(product.oldPrice)} đ</span>
+                       )}
                 </div>
-
-                <div className="product-stock">
-                  <span className="label">Số lượng trong kho:</span>
-                  <span className="value">{product.stock}</span>
-                  <span className="status">(Còn hàng)</span>
+                <div className="content-rating">
+                    <div className="rating-icon">
+                        <div className="icon-star">
+                         {renderStars(product.rating)}
+                        </div>
+                        <div className="icon-star-number">
+                            <span>{product.rating} </span>
+                        </div>
+                    </div>
+                    <div className="rating-evaluate">
+                        <span> {product.reviewCount} lượt đánh giá</span>
+                    </div>
                 </div>
-
-                <div className="product-colors-section">
-                  <div className="label">Chọn màu sắc:</div>
-                  <div className="color-options">
-                    {product.colors.map((color) => (
-                      <div 
+                    <div className="content-quantity">
+                        <span>Số lượng trong kho : </span>
+                        <span className="quantity-number">{product.stock}</span>
+                    </div>
+                    <div className="content-view">
+                        <span>Lượt xem: 300</span>
+                        <span className="view1"> Sản phẩm đã bán: 500</span>
+                    </div>
+                    <div className="content-color">
+                        <span>Chọn màu sắc</span>
+                        <div className="color-options">
+                            {product.colors.map((color) => (
+                        <div 
                         key={color.code} 
                         className={`color-option ${selectedColor === color.code ? 'active' : ''}`}
                         style={{ backgroundColor: color.code }}
                         onClick={() => setSelectedColor(color.code)}
                       ></div>
                     ))}
-                  </div>
-                </div>
+                        </div>
+                    </div>
+                    <div className="content-input-quantity">
+                        <span>Chọn số lượng</span>
+                        <div className="input-options">
+                        <button 
+                            className="quantity-input-" 
+                            onClick={() => handleQuantityChange(-1)}
+                            disabled={quantity <= 1}
+                            > -
+                        </button>
+                            <input type="text"   value={quantity} 
+                      readOnly  className="quantity-inputt" />
+                        <button 
+                            className="quantity-btn increase" 
+                            onClick={() => handleQuantityChange(1)}
+                            > +
+                        </button>
+                        </div>
+                    </div>
+                    <div className="content-button">
+                        <button className="button-add-cart">Thêm vào giỏ</button>
+                        <div className="button-icon-i">
+                          <div className="icon-img">
+                              <img src="/images/detail/heart.svg" alt="" />
+                          </div>
+                             <div className="icon-img">
+                              <img src="/images/detail/share.svg" alt="" />
+                          </div>
+                            
+                        </div>
 
-                <div className="product-quantity">
-                  <div className="label">Chọn số lượng</div>
-                  <div className="quantity-selector">
-                    <button 
-                      className="quantity-btn decrease" 
-                      onClick={() => handleQuantityChange(-1)}
-                      disabled={quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <input 
-                      type="text" 
-                      value={quantity} 
-                      readOnly 
-                      className="quantity-input" 
-                    />
-                    <button 
-                      className="quantity-btn increase" 
-                      onClick={() => handleQuantityChange(1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="product-actions">
-                  <button className="btn-add-to-cart">Thêm vào giỏ</button>
-                  <button className="btn-wishlist">
-                    <i className="icon-heart"></i>
-                  </button>
-                  <button className="btn-share">
-                    <i className="icon-share"></i>
-                  </button>
-                </div>
-              </div>
+                    </div>
             </div>
-          </div>
-        </section>
+        </div>
+    </div>
+    </section>
 
-        {/* Product Details Tabs */}
-        <section className="product-tabs">
-          <div className="container">
-            <div className="tabs-header">
+          <section className="detail-decriptionn">
+            <div className="container">
+            <div className="detail-decription-evaluate">
+                <div className="description-avalute-title">
+                    <div className="tabs-header">
               <button 
                 className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
                 onClick={() => setActiveTab('description')}
@@ -273,171 +299,73 @@ const ProductDetailPage: React.FC = () => {
                 Đánh giá
               </button>
             </div>
-
-            <div className="tabs-content">
-              {activeTab === 'description' && (
-                <div className="tab-pane description">
-                  <div className="description-content">
-                    <p>{product.description}</p>
-                    <p>Et sollicitudin gravida bibendum tellus pulvinar elementum quisque eu arcu. Aliquod sed vulputate sed cursus quam ut. Id eget turpis id sit etiam urna purus ipsum commodo sit.</p>
-                  </div>
-                  
-                  <div className="features-table">
-                    <h3>Đánh giá</h3>
-                    <div className="features-grid">
-                      {product.features.map((feature, index) => (
-                        <div key={index} className="feature-item">
-                          <div className="feature-title">{feature.title}</div>
-                          <div className="feature-value">{feature.value}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
-              )}
-
-              {activeTab === 'review' && (
-                <div className="tab-pane reviews">
-                  <div className="review-summary">
-                    <div className="rating-large">
-                      <div className="rating-value">{product.rating}</div>
-                      <div className="stars-large">{renderStars(product.rating)}</div>
-                      <div className="review-count">{product.reviewCount} Đánh giá</div>
+                <div className="description-avalute-content">
+                    <div className="description-avalute-content-text">
+                        <p>Lorem ipsum dolor sit amet consectetur. Non imperdiet quisque quam sed semper nec semper. Ipsum mattis accumsan natoque dictum et enim. Aliquam scelerisque at fames cras. <br /><br />
+                            Et sollicitudin gravida bibendum tellus pulvinar elementum egestas eu enim. Arcu tincidunt est nibh quisque. Nec aliquam turpis in etiam. Morbi augue lectus maecenas enim 
+                            orci cursus quam ac. Id eget turpis sit sit etiam arcu ipsum commodo id.
+                        </p>
                     </div>
-                  </div>
+                    <div className="description-avalute-content-size">
+                        <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                         <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                         <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                         <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                         <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                         <button className="color-info">
+                            <span>Màu sắc </span>
+                            <span>Đỏ, Trắng</span>
+                        </button>
+                    </div>
                 </div>
-              )}
             </div>
+            </div>
+          </section>
+
+              <section className="detail-banner-slider">
+                <div className="container">
+               <div className="detail-banner">
+                        <img src="/images/detail/banner-detail.jpg" alt="" />
+                </div>
+            </div>
+              </section>
+
+
+            <PolicyProduct />
+         
+                {/* boxsanpham */}
+      <section className="boxProducts">
+       
+      <div className="container">
+        <section className="section-box-products">
+               <h5>Các sản phẩm tương tự</h5>
+          <div className="box-products-container">
+            {relatedProducts.map((product) => (
+              <ListProduct key={product.id} product={product} />
+            ))}
+
           </div>
         </section>
+      </div>
+      </section>
 
-        {/* Product Image Gallery */}
-        <section className="product-gallery">
-          <div className="container">
-            <div className="gallery-image">
-              <img 
-                src="/images/products/sofa-lifestyle-1.jpg" 
-                alt="Sofa in modern living room setting" 
-              />
-            </div>
-          </div>
-        </section>
 
-        {/* Features Section */}
-        <section className="features-section">
-          <div className="container">
-            <div className="features-grid">
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/policy-icon.svg" alt="Chính sách & hỗ trợ" />
-                </div>
-                <h3>Chính sách & hỗ trợ</h3>
-                <p>
-                  Chúng tôi cung cấp các chính sách hỗ trợ và đổi trả linh hoạt
-                  giúp bạn mua sắm an tâm.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/shipping-icon.svg" alt="Vận chuyển" />
-                </div>
-                <h3>Vận chuyển</h3>
-                <p>
-                  Giao hàng nhanh chóng, đúng hẹn với đội ngũ vận chuyển chuyên
-                  nghiệp, nhiệt tình.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/support-icon.svg" alt="Hỗ trợ 24/7" />
-                </div>
-                <h3>Hỗ trợ 24/7</h3>
-                <p>
-                  Đội ngũ tư vấn viên luôn sẵn sàng giúp đỡ bạn với mọi thắc mắc
-                  và yêu cầu.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/warranty-icon.svg" alt="Hoàn tiền & Bảo hành" />
-                </div>
-                <h3>Hoàn tiền & Bảo hành</h3>
-                <p>
-                  Chúng tôi cam kết chất lượng sản phẩm với chính sách bảo hành
-                  dài hạn và uy tín.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Related Products */}
-        <section className="related-products">
-          <div className="container">
-            <h2 className="section-title">Các sản phẩm tương tự</h2>
-            
-            <div className="products-grid">
-              {relatedProducts.map((product) => (
-                <div key={product.id} className="product-item">
-                  <div className="product-image">
-                    <img src={product.image} alt={`${product.name} - ${product.category}`} />
-                    <div className="product-actions">
-                      <button className="wishlist-btn">
-                        <i className="icon-heart"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="product-info">
-                    <div className="product-category">{product.category}</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <div className="product-colors">
-                      {product.colors.map((color, index) => (
-                        <span
-                          key={index}
-                          className="color-option"
-                          style={{ backgroundColor: color }}
-                        ></span>
-                      ))}
-                    </div>
-                    <div className="product-price">
-                      <div className="price-current">
-                        <span className="price">{formatPrice(product.price)} ₫</span>
-                        {product.oldPrice && (
-                          <span className="old-price">{formatPrice(product.oldPrice)} ₫</span>
-                        )}
-                      </div>
-                      <span className="price-label">Giá bán</span>
-                    </div>
-                    <div className="product-action">
-                      <a href={`/san-pham/${product.id}`} className="view-product">Xem ngay</a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Design Blog Section */}
-        <section className="design-blog">
-          <div className="container">
-            <h2 className="section-title">Thiết kế có nhân hóa</h2>
-            <div className="blog-grid">
-              <div className="blog-item">
-                <img src="/images/blog/interior-design-tips-1.jpg" alt="Liên hệ ngay để tư vấn" />
-                <h3>Liên hệ ngay để tư vấn</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/material-samples-1.jpg" alt="Tìm hiểu thêm về vật liệu nội thất" />
-                <h3>Tìm hiểu thêm về vật liệu nội thất</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/customer-service-1.jpg" alt="Bạn cần tư vấn gì?" />
-                <h3>Bạn cần tư vấn gì?</h3>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
       <Footer />
     </>
