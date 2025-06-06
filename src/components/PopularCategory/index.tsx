@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const PopularCategory = () => {
 
     interface CategoryProps{
@@ -12,7 +13,7 @@ const PopularCategory = () => {
             id: "Ghế",
             name: "Ghế",
             image: "/images/productsCategory/ghe.jpg",
-            slug: "ghế"
+            slug: "ghe"
         },
           {
             id: "Bàn",
@@ -61,16 +62,21 @@ const PopularCategory = () => {
 
             <div className="category-of-products-s1">
                 <div className="products-s1-frame-1">
-                    <p className="frame-1-text1">Các danh mục sản phẩm phổ biến nhất</p>
-                    <p className="frame-1-text2">Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay</p>
+                  <div className="frame-1-text">
+                     <a className="frame-1-text1">Các danh mục sản phẩm phổ biến nhất</a>
+                    <a className="frame-1-text2">Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay</a>
+                  </div>
+
                 </div>
 
                 {topCategories.map((category) => (
                     <div className="products-s1-frame-2" key={category.id}>
                     <img src={category.image}/>
                     <div className="frame-2-t">
-                            <p>{category.name}</p>
-                    <button>View all Product +</button>
+                            <h3>{category.name}</h3>
+                    <a className="btn btn-outline" href={`danh-muc/${category.slug}`}>
+                  Xem Sản Phẩm <img alt="" src="/images/icons/arrow-right-1.svg" />
+                      </a>
                     </div>
                 </div>
                 ))}
@@ -82,8 +88,10 @@ const PopularCategory = () => {
                     <div className="products-s2-frame-1" key={category.id}>
                     <img src={category.image}/>
                     <div className="frame-2-t">
-                            <p>{category.name}</p>
-                    <button>View all Product +</button>
+                            <h3>{category.name}</h3>
+                <a className="btn btn-outline" href={`danh-muc/${category.slug}`}>
+                  Xem Sản Phẩm <img alt="" src="/images/icons/arrow-right-1.svg" />
+                      </a>
                     </div>
                 </div>
                 ))}
