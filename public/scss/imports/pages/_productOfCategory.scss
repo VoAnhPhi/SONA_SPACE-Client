@@ -5,13 +5,13 @@
     overflow: hidden;
 
     .banner-image {
-      width: 100%;
-      height:80%;
+      width: 100%vw  ;
+      height: 100%vh;
       position: relative;
 
       img {
-        width: 100%;
-        height: 80%;
+        width: 100%vw  ;
+        height: 100%vh;
         object-fit: cover;
         filter: brightness(0.7);
       }
