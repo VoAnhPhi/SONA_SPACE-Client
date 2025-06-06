@@ -10,8 +10,8 @@ interface ProductProps {
   isSale?: boolean;
   createdAt?: string;
   priceSale?: number;
-  slug: string; 
-  isWishlist?: boolean; 
+  slug: string;
+  isWishlist?: boolean;
 }
 const ListProduct = ({ product, slug }: { product: ProductProps, slug: string }) => {
   const today = new Date();
@@ -26,88 +26,86 @@ const ListProduct = ({ product, slug }: { product: ProductProps, slug: string })
     return createdDate >= threeDaysAgo && createdDate <= today;
   };
 
-  
-    const getDiscountPercent = (price: number, priceSale?: number): number => {
-        if (!priceSale || priceSale >= price) return 0;
-        return Math.round(((price - priceSale) / price) * 100);
-    };
 
-    const formatPrice = (price: number): string =>
-        price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const getDiscountPercent = (price: number, priceSale?: number): number => {
+    if (!priceSale || priceSale >= price) return 0;
+    return Math.round(((price - priceSale) / price) * 100);
+  };
 
-    const isProductNew = isNew(product.createdAt);
-    const discountPercent = getDiscountPercent(product.price, product.priceSale);
-    const showNewLabel = isProductNew;
-    const showDiscountLabel = discountPercent > 0;
+  const formatPrice = (price: number): string =>
+    price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-    return (
-      <>
-                
+  const isProductNew = isNew(product.createdAt);
+  const discountPercent = getDiscountPercent(product.price, product.priceSale);
+  const showNewLabel = isProductNew;
+  const showDiscountLabel = discountPercent > 0;
 
-                  <div className="box-products-frame">
-                      <div className="products-frame-news" >
-                      <div className="news-t">
-                          {showNewLabel && (  
-                  <span className="news-tt">Mới</span>  
-                )}  
-                {showDiscountLabel && (  
-                  <span className="news-tt-1">Giảm {discountPercent}%  </span> 
-                )} 
-                </div>
-                          <div className="news-icon">
-                                 {product.isWishlist && <span>Xóa</span>}
-                               <img
-                                    src={
-                                      product.isWishlist
-                                        ? "/images/icons/trashcan.svg"
-                                        : "/images/products/heart.svg"
-                                    }
-                                    alt=""
-                                    />
-                               
-                   
-                          </div>
-                      </div>
-                      <div className="products-frame-image">
-                        <Link to={`/san-pham/${product.slug}`}>
-                          <img src={product.image}  alt="" />
-                          </Link>
-                      </div>
-                      <div className="products-frame-name">
-                          <span>{product.name}</span>
-                      </div>
-                      <div className="products-frame-description">
-                          <span>Sofa</span>
-                      </div>
-                      <div className="products-frame-color">
-                          <div className="color-name">Màu</div>
-                          <div className="color-section">
-                              <span  className="color-1" style={{ backgroundColor: product.colors[0] }}></span>
-                              <span  className="color-2" style={{ backgroundColor: product.colors[1] }}></span>
-                              <span  className="color-3" style={{ backgroundColor: product.colors[2] }}></span>
+  return (
+    <>
+      <div className="box-products-frame">
+        <div className="products-frame-news" >
+          <div className="news-t">
+            {showNewLabel && (
+              <span className="news-tt">Mới</span>
+            )}
+            {showDiscountLabel && (
+              <span className="news-tt-1">Giảm {discountPercent}%  </span>
+            )}
+          </div>
+          <div className="news-icon">
+            {product.isWishlist && <span>Xóa</span>}
+            <img
+              src={
+                product.isWishlist
+                  ? "/images/icons/trashcan.svg"
+                  : "/images/products/heart.svg"
+              }
+              alt=""
+            />
 
-                          </div>
-                      </div>
-                      <div className="products-frame-cart">
-                      <div className="cart-price">
-                          {product.priceSale && ( 
-                            <span className="price1"><del>{formatPrice(product.price)} </del><span className="unit">đ</span></span>
-                          )}
-                          {product.priceSale && (
-                            <span className="price2">{formatPrice(product.priceSale)}</span>
-                          )}
-                          {!product.priceSale && (
-                            <span className="price2">{formatPrice(product.price)} <span className="unit">đ</span></span>
-                          )}
-                  </div>
-                          <div className="cart-button">
-                              <button>Mua ngay</button>
-                          </div>
-                      </div>
-                  </div>
-                          
-      </>
-    );
+
+          </div>
+        </div>
+        <div className="products-frame-image">
+          <Link to={`/san-pham/${product.slug}`}>
+            <img src={product.image} alt="" />
+          </Link>
+        </div>
+        <div className="products-frame-name">
+          <span>{product.name}</span>
+        </div>
+        <div className="products-frame-description">
+          <span>Sofa</span>
+        </div>
+        <div className="products-frame-color">
+          <div className="color-name">Màu</div>
+          <div className="color-section">
+            <span className="color-1" style={{ backgroundColor: product.colors[0] }}></span>
+            <span className="color-2" style={{ backgroundColor: product.colors[1] }}></span>
+            <span className="color-3" style={{ backgroundColor: product.colors[2] }}></span>
+
+          </div>
+        </div>
+        <div className="products-frame-cart">
+          <div className="cart-price">
+            {product.priceSale && (
+              <span className="price1"><del>{formatPrice(product.price)} </del><span className="unit">đ</span></span>
+            )}
+            {product.priceSale && (
+              <span className="price2">{formatPrice(product.priceSale)}</span>
+            )}
+            {!product.priceSale && (
+              <span className="price2">{formatPrice(product.price)} <span className="unit">đ</span></span>
+            )}
+          </div>
+          <div className="cart-button">
+            <button>Mua ngay</button>
+          </div>
+        </div>
+      </div>
+
+    </>
+  );
 };
 
 export default ListProduct;
