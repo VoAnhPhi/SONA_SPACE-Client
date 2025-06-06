@@ -54,7 +54,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-02-01"),
       priceSale: 22000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 4,
@@ -65,7 +65,7 @@ const ProductPage: React.FC = () => {
       isSale: true,
       createdAt: ("2025-06-04"),
       priceSale: 21000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 5,
@@ -75,7 +75,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-01-01"),
       priceSale: 19000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 6,
@@ -85,7 +85,7 @@ const ProductPage: React.FC = () => {
       colors: ["#4A2932", "#E5E5E5", "#555555"],
       createdAt: ("2025-03-01"),
       priceSale: 18000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 7,
@@ -96,7 +96,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-01-01"),
       priceSale: 10000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 8,
@@ -106,7 +106,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-06-01"),
       priceSale: 16000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 9,
@@ -116,7 +116,7 @@ const ProductPage: React.FC = () => {
       colors: ["#333333", "#555555", "#777777"],
       createdAt: ("2025-06-01"),
       priceSale: 18900000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 10,
@@ -126,7 +126,7 @@ const ProductPage: React.FC = () => {
       colors: ["#D8C1A9", "#E5E5E5", "#555555"],
       createdAt: ("2025-06-01"),
       priceSale: 13400000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 11,
@@ -137,7 +137,7 @@ const ProductPage: React.FC = () => {
       isNew: true,
       createdAt: ("2025-06-01"),
       priceSale: 20000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
     {
       id: 12,
@@ -148,7 +148,7 @@ const ProductPage: React.FC = () => {
       isSale: true,
       createdAt: ("2025-06-01"),
       priceSale: 20000000,
-            slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
+      slug: 'Sofa-Modular-2.5-seater-với-nhièu-varian-option'
     },
   ];
 
@@ -159,10 +159,8 @@ const ProductPage: React.FC = () => {
   return (
     <>
       <Header />
-
-
       {/* Banner Section */}
-      <section className="banner-slider">
+      <div className="banner-slider">
         <div className="header-banner">
           <img src="images/products/banner-slider.jpg" alt="" />
         </div>
@@ -171,7 +169,7 @@ const ProductPage: React.FC = () => {
           <div className="text2">Bộ sưu tập nội thất của chúng tôi</div>
           <div className="text3">Khám phá nhiều loại đồ nội thất chất lượng cao của chúng tôi.</div>
         </div>
-      </section>
+      </div>
 
       {/* PopularCategory */}
       <PopularCategory />
@@ -180,31 +178,28 @@ const ProductPage: React.FC = () => {
       <Filter />
 
       {/* boxsanpham */}
-      <section className="boxProducts">
-      <div className="container">
-        <section className="section-box-products">
-          <div className="box-products-container">
-            {products.map((product) => (
-              <ListProduct key={product.id} product={product} />
-            ))}
-
+      <div className="boxProducts">
+        <div className="container">
+          <div className="section-box-products">
+            <div className="box-products-container">
+              {products.map((product) => (
+                <ListProduct key={product.id} product={product} slug={product.slug} />
+              ))}
+            </div>
           </div>
-        </section>
+        </div>
       </div>
-      </section>
-
-
-
-      {/* Products Grid */}
-
 
       {/* See More Section */}
       <Seemore />
+
       {/* Policy */}
       <PolicyProduct />
 
       {/* Get in Touch Section */}
       <GetInTouch />
+
+      {/* Footer */}
       <Footer />
     </>
   );

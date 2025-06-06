@@ -13,7 +13,7 @@ interface ProductProps {
   slug: string; 
   isWishlist?: boolean; 
 }
-const ListProduct = ({ product }: { product: ProductProps }) => {
+const ListProduct = ({ product, slug }: { product: ProductProps, slug: string }) => {
   const today = new Date();
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(today.getDate() - 3);

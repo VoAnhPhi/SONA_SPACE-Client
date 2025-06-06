@@ -6,12 +6,12 @@
 
             .title {
                   margin-bottom: 12px;
-                  @include text(24px, M-B, auto, $text-cl, none);
+                  @include text(24px, M-B, normal, $text-cl, null);
             }
 
             .description {
                   align-items: center;
-                  @include text(16px, M-M, auto, $text-cl, none);
+                  @include text(16px, M-M, normal, $text-cl, null);
             }
       }
 
@@ -19,7 +19,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
-            margin-top: 40px;
 
             .design-item {
                   padding: 20px;
@@ -45,19 +44,19 @@
                   .design-content {
                         h3 {
                               margin: 24px 0 12px 0;
-                              @include text(20px, M-B, auto, $text-cl, none);
+                              @include text(20px, M-B, normal, $text-cl, null);
                         }
 
                         p {
-                              @include text(14px, Be-R, auto, $text-cl, none);
-                              margin-bottom: 20px;
-                              line-height: 1.5;
+                              @include text(14px, Be-R, normal, $text-cl, null);
+                              margin-bottom: 24px;
+                              text-align: left;
                         }
 
                         .btn {
                               padding: 10px 40px;
                               border-radius: 4px;
-                              @include text(14px, Be-B, auto, $text-cl, none);
+                              @include text(14px, Be-B, normal, $text-cl, null);
                               text-decoration: none;
                               transition: all 0.4s ease;
                               display: inline-block;

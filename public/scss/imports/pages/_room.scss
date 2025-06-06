@@ -60,7 +60,7 @@
     overflow: visible;
 
     .section-title {
-      @include text(24px, M-EB, auto, $text-cl, none);
+      @include text(24px, M-EB, normal, $text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }
@@ -72,7 +72,7 @@
     margin-bottom: 44px;
 
     .section-title {
-      @include text(24px, M-EB, auto, $text-cl, none);
+      @include text(24px, M-EB, normal, $text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }

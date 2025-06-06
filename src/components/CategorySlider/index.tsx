@@ -48,25 +48,25 @@ export default function CategorySlider() {
         {
             id: "garden-table",
             name: "Bàn Ghế Sân Vường",
-            image: "/images/image6.jpg",
+            image: "/images/image7.jpg",
             slug: "garden-table"
         },
         {
             id: "carpet",
             name: "Thảm",
-            image: "/images/image6.jpg",
+            image: "/images/image8.jpg",
             slug: "carpet"
         },
         {
             id: "accessory",
             name: "Phụ Kiện",
-            image: "/images/image6.jpg",
+            image: "/images/image9.jpg",
             slug: "accessory"
         },
         {
             id: "light",
             name: "Đèn",
-            image: "/images/image6.jpg",
+            image: "/images/image10.jpg",
             slug: "light"
         },
     ];
