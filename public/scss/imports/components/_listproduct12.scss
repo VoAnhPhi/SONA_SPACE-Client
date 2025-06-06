@@ -165,30 +165,28 @@
             font-family: 'Be-R';
           }
 
-          .price2 {
-            font-size: 20px;
-            font-weight: 600;
-            font-family: 'Be-B';
-          }
-        }
-
-        .cart-button {
-          width: 35%;
-          align-self: center;
-        }
-
-        .cart-button button {
-          cursor: pointer;
-          width: 120px;
-          height: 35px;
-          border: 1px solid #d9d9d9;
-          background-color: #fff;
-          font-size: 12px;
-          font-family: 'Be-M';
-        }
+      .price2 {
+        font-size: 20px;
+        font-weight: 600;
+        font-family: 'Be-B';
       }
     }
+.cart-button{
+    width: 35%;
+    align-self: center;
+}
+    .cart-button button {
 
+      width: 120px;
+      height: 35px;
+      border: 1px solid #d9d9d9;
+      background-color: #fff;
+      font-size: 12px;
+      font-family: 'Be-M';
+    }
+  }
+}
+  
 
   }
 
@@ -202,27 +200,3 @@
 
 
 
-//Custome Icons Wishlist
-.news-icon {
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.news-icon img {
-  transition: all 0.3s ease;
-}
-
-.heart-icon {
-  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(88%) contrast(92%);
-}
-
-.news-icon .heart-icon:hover {
-  transition: all 0.3s ease;
-  filter: invert(21%) sepia(100%) saturate(3523%) hue-rotate(337deg) brightness(87%) contrast(112%);
-}
-
-.heart-icon.active {
-  transition: all 0.3s ease;
-  filter: invert(21%) sepia(100%) saturate(3523%) hue-rotate(337deg) brightness(87%) contrast(112%);
-}

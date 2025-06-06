@@ -1,5 +1,7 @@
-
 /* danh mục sản phẩm */
+section p{
+  text-align: left;
+}
 .category-of-products {
   padding: 100px 0 50px 0;
   width: 100%;
@@ -7,7 +9,7 @@
   margin: 0 auto;
 
   & .category-of-products-s1 {
-    height: 50%;
+
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
@@ -18,142 +20,61 @@
       height: 100%;
       position: relative;
 
-      .frame-1-text{
-          position: absolute;
-          top: 20%;
-          left: 0;
-          width: 100%;
-          padding: 20px;
-          display: flex;
-          flex-wrap: wrap;
+      .frame-1-text {
+        position: absolute;
+        top: 20%;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
 
-           .frame-1-text1 {
-        font-family: 'M-SB';
-        font-size: 20px;
-        color: #221D00;
+        .frame-1-text1 {
+          font-family: 'M-SB';
+          font-size: 20px;
+          color: #221D00;
+        }
+
+        .frame-1-text2 {
+          font-size: 16px;
+          font-family: 'BE-R';
+          width: 420px;
+          color: #221D00;
+        }
       }
 
-      .frame-1-text2 {
-        font-size: 16px;
-        font-family: 'BE-R';
-        width: 420px;
-        color: #221D00;
-      }
-      }
 
-     
     }
 
     .products-s1-frame-2,
-    .products-s1-frame-3  {
+    .products-s1-frame-3 {
       position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    height: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+      height: 100%;
 
 
-      .frame-2-t{
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          padding: 20px;
-          background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          row-gap: 18px;
+      .frame-2-t {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        row-gap: 18px;
 
         h3 {
           font-size: 20px;
           font-family: 'M-SB';
           line-height: 22px;
           color: #fff;
-      }
+        }
 
-      a {
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 16px;
-        font-family: Be-M;
-        line-height: auto;
-        color: #221D00 !important;
-        transition: all 0.3s ease;
-        display: inline-block;
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-        column-gap: 8px;
-        border-radius: 12px;
-        width: 185px;
-        height: 50px;
-        outline: none;
-
-        img{
-          width: 16px;
-          height: 16px;
-
-          }
-      }
-         & .btn:hover{
-          background: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    outline: none;
-         }
-      }
-      img{
-
-        width: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-        height: 100%;
-            transition: transform 0.5s ease;
-      }
-  
-       &:hover img{
-          transform: scale(1.05);
-       }
-    }
-  }
-
-  & .category-of-products-s2 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    height: 50%;
-    padding: 20px 0;
-
-    & .products-s2-frame-1 {
-      
-         position: relative;
-          overflow: hidden;
-          border-radius: 8px;
-          height: 100%;
-
-      .frame-2-t{
-           position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            row-gap: 18px;
-            border-radius: 10px;
-
-      h3 {
-        font-size: 20px;
-        font-family: 'M-SB';
-        line-height: 22px;
-        color: #fff;
-      }
-
-      a {
-            padding: 8px 16px;
+        a {
+          padding: 8px 16px;
           border-radius: 4px;
           font-size: 16px;
           font-family: Be-M;
@@ -170,36 +91,123 @@
           height: 50px;
           outline: none;
 
-    img{
-          width: 16px;
-      height: 16px;
+          img {
+            width: 16px;
+            height: 16px;
 
-    }
-     &:hover img{
-          transform: scale(1.05);
-       }
-      }
- & .btn:hover{
+          }
+        }
+
+        & .btn:hover {
           background: rgba(255, 255, 255, 0.6);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    outline: none;
-         }
-  }      
-         img{
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          outline: none;
+        }
+      }
+
+      img {
+
         width: 100%;
         object-fit: cover;
         border-radius: 10px;
         height: 100%;
-            transition: transform 0.5s ease;
+        transition: transform 0.5s ease;
       }
 
-        &:hover img{
-          transform: scale(1.05);
-       }
+      &:hover img {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  & .category-of-products-s2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+ 
+    padding: 20px 0;
+
+    & .products-s2-frame-1 {
+
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      height: 100%;
+
+      .frame-2-t {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        row-gap: 18px;
+        border-radius: 10px;
+
+        h3 {
+          font-size: 20px;
+          font-family: 'M-SB';
+          line-height: 22px;
+          color: #fff;
+        }
+
+        a {
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 16px;
+          font-family: Be-M;
+          line-height: auto;
+          color: #221D00 !important;
+          transition: all 0.3s ease;
+          display: inline-block;
+          background-color: #fff;
+          display: flex;
+          align-items: center;
+          column-gap: 8px;
+          border-radius: 12px;
+          width: 185px;
+          height: 50px;
+          outline: none;
+
+          img {
+            width: 16px;
+            height: 16px;
+
+          }
+
+          &:hover img {
+            transform: scale(1.05);
+          }
+        }
+
+        & .btn:hover {
+          background: rgba(255, 255, 255, 0.6);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          outline: none;
+        }
+      }
+
+      img {
+        width: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        height: 100%;
+        transition: transform 0.5s ease;
+      }
+
+      &:hover img {
+        transform: scale(1.05);
+      }
 
     }
 
+     
   }
 }

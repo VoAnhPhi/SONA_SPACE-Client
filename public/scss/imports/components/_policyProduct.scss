@@ -27,6 +27,8 @@
       font-family: 'Be-R';
       font-size: 16px;
     }
+    
+
   }
 
   &-2 {
@@ -51,5 +53,9 @@
       font-family: 'Be-R';
       font-size: 18px;
     }
+
+     &:hover{
+        background-color: white;
+      }
   }
 }
