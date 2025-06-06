@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 interface ProductProps {
@@ -16,6 +16,7 @@ interface ProductProps {
 }
 const ListProduct = ({ product, slug }: { product: ProductProps, slug: string }) => {
   const [isHeartActive, setIsHeartActive] = useState(false);
+  const heartRef = useRef<HTMLImageElement>(null);
   const today = new Date();
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(today.getDate() - 3);
@@ -42,13 +43,18 @@ const ListProduct = ({ product, slug }: { product: ProductProps, slug: string })
   const showNewLabel = isProductNew;
   const showDiscountLabel = discountPercent > 0;
 
-  const handleWishlistClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isHeartActive) {
-      setIsHeartActive(false);
-    } else {
+  // Initialize heart active state based on wishlist status
+  useEffect(() => {
+    if (product.isWishlist) {
       setIsHeartActive(true);
     }
+  }, [product.isWishlist]);
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Toggle heart active state with a slight delay for better visual effect
+    setIsHeartActive(prev => !prev);
   };
 
   return (
@@ -65,6 +71,7 @@ const ListProduct = ({ product, slug }: { product: ProductProps, slug: string })
           </div>
           <div className="news-icon" onClick={handleWishlistClick}>
             <img
+              ref={heartRef}
               src="/images/products/heart.svg"
               alt=""
               className={isHeartActive ? "heart-icon active" : "heart-icon"}
