@@ -150,7 +150,7 @@ const Wishlist: React.FC = () => {
         <section className="section-box-products">
           <div className="box-products-container">
             {wishlistProducts.map((product) => (
-                <ListProduct key={product.id} product={{ ...product, isWishlist: true }} />
+                <ListProduct key={product.id} product={{ ...product, isWishlist: true } } slug={product.slug} />
             ))}
 
           </div>

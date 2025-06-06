@@ -357,7 +357,7 @@ const renderStars = (rating: number) => {
                <h5>Các sản phẩm tương tự</h5>
           <div className="box-products-container">
             {relatedProducts.map((product) => (
-              <ListProduct key={product.id} product={product} />
+              <ListProduct key={product.id} product={product} slug={product.slug} />
             ))}
 
           </div>

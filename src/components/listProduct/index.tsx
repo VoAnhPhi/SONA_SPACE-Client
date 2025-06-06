@@ -31,9 +31,9 @@ const ListProduct = ({ product, slug }: { product: ProductProps, slug: string })
         if (!priceSale || priceSale >= price) return 0;
         return Math.round(((price - priceSale) / price) * 100);
     };
-
-    const formatPrice = (price: number): string =>
-        price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    
+const formatPrice = (price: number): string =>
+  price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 
     const isProductNew = isNew(product.createdAt);
     const discountPercent = getDiscountPercent(product.price, product.priceSale);
@@ -97,7 +97,7 @@ const ListProduct = ({ product, slug }: { product: ProductProps, slug: string })
                             <span className="price2">{formatPrice(product.priceSale)}</span>
                           )}
                           {!product.priceSale && (
-                            <span className="price2">{formatPrice(product.price)} <span className="unit">đ</span></span>
+                            <span className="price2">{formatPrice(product.price)} </span>
                           )}
                   </div>
                           <div className="cart-button">

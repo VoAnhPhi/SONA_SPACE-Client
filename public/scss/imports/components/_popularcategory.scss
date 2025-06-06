@@ -16,64 +16,92 @@
       background-color: #d9d9d9;
       border-radius: 10px;
       height: 100%;
+      position: relative;
 
-      .frame-1-text1 {
+      .frame-1-text{
+          position: absolute;
+          top: 20%;
+          left: 0;
+          width: 100%;
+          padding: 20px;
+          display: flex;
+          flex-wrap: wrap;
+
+           .frame-1-text1 {
         font-family: 'M-SB';
-        margin-top: 70px;
-        padding: 0 30px;
         font-size: 20px;
         color: #221D00;
       }
 
       .frame-1-text2 {
         font-size: 16px;
-        margin: 10px 0 0 30px;
         font-family: 'BE-R';
-        width: 370px;
+        width: 420px;
         color: #221D00;
       }
+      }
+
+     
     }
 
     .products-s1-frame-2,
     .products-s1-frame-3  {
-      height: 100%;
-      width: 100%;
-      display: block;
       position: relative;
-      border-radius: 10px;
-      overflow: visible;
+    overflow: hidden;
+    border-radius: 8px;
+    height: 100%;
 
 
       .frame-2-t{
-        position: absolute;
-        top: 55%;
-        left: 20px;
-        color: white;
-        font-size: 18px;
-        font-family: 'M-M';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          padding: 20px;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          row-gap: 18px;
 
-            p {
-        position: absolute;
-        margin-top: 30px;
-        color: white;
-        font-size: 18px;
-        font-family: 'M-M';
+        h3 {
+          font-size: 20px;
+          font-family: 'M-SB';
+          line-height: 22px;
+          color: #fff;
       }
 
-      button {
-        position: absolute;
-        width: 170px;
-        height: 45px;
-        margin: 70px 0 0 0;
-        background-color: #fff;
-        color: black;
-        border-radius: 10px;
-        border: none;
-        // margin: 15px 0 0 20px;
+      a {
+        padding: 8px 16px;
+        border-radius: 4px;
         font-size: 16px;
-        font-family: 'BE-M';
-      }
+        font-family: Be-M;
+        line-height: auto;
+        color: #221D00 !important;
+        transition: all 0.3s ease;
+        display: inline-block;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
+        border-radius: 12px;
+        width: 185px;
+        height: 50px;
+        outline: none;
 
+        img{
+          width: 16px;
+          height: 16px;
+
+          }
+      }
+         & .btn:hover{
+          background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    outline: none;
+         }
       }
       img{
 
@@ -81,8 +109,12 @@
         object-fit: cover;
         border-radius: 10px;
         height: 100%;
+            transition: transform 0.5s ease;
       }
   
+       &:hover img{
+          transform: scale(1.05);
+       }
     }
   }
 
@@ -95,58 +127,79 @@
 
     & .products-s2-frame-1 {
       
-      height: 100%;
-      width: 100%;
-      display: block;
-      position: relative;
-      border-radius: 10px;
-      overflow: visible;
+         position: relative;
+          overflow: hidden;
+          border-radius: 8px;
+          height: 100%;
 
       .frame-2-t{
-        position: absolute;
-        top: 55%;
-        left: 20px;
-        color: white;
-        font-size: 18px;
-        font-family: 'M-M';
+           position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            row-gap: 18px;
+            border-radius: 10px;
 
-            p {
-        position: absolute;
-        margin-top: 30px;
-        color: white;
-        font-size: 18px;
-        font-family: 'M-M';
+      h3 {
+        font-size: 20px;
+        font-family: 'M-SB';
+        line-height: 22px;
+        color: #fff;
       }
 
-      button {
-        position: absolute;
-        width: 170px;
-        height: 45px;
-        margin: 70px 0 0 0;
-        background-color: #fff;
-        color: black;
-        border-radius: 10px;
-        border: none;
-        // margin: 15px 0 0 20px;
-        font-size: 16px;
-        font-family: 'BE-M';
-      }
+      a {
+            padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 16px;
+          font-family: Be-M;
+          line-height: auto;
+          color: #221D00 !important;
+          transition: all 0.3s ease;
+          display: inline-block;
+          background-color: #fff;
+          display: flex;
+          align-items: center;
+          column-gap: 8px;
+          border-radius: 12px;
+          width: 185px;
+          height: 50px;
+          outline: none;
 
-      }
-      img{
+    img{
+          width: 16px;
+      height: 16px;
 
+    }
+     &:hover img{
+          transform: scale(1.05);
+       }
+      }
+ & .btn:hover{
+          background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    outline: none;
+         }
+  }      
+         img{
         width: 100%;
         object-fit: cover;
         border-radius: 10px;
         height: 100%;
+            transition: transform 0.5s ease;
       }
-  
+
+        &:hover img{
+          transform: scale(1.05);
+       }
+
     }
 
-    & .products-s2-frame-4 {
-      button {
-        margin: 15px 0 0 15px;
-      }
-    }
   }
 }
