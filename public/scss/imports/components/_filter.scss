@@ -8,12 +8,18 @@
   
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  gap: 10px;
+      align-items: center;
+      gap: 10px;
   // margin: 0 230px;
 
-    
+
   }
+
+  //   @include sm {
+  //   .box-products-container {
+  //     grid-template-columns: repeat(1, 1fr);
+  //   }
+  // }
 }
 
 .filter-group {
@@ -34,7 +40,7 @@
     gap: 10px;
   }
   span {
-    font-weight: 600;
+    width: auto;
     font-size: 14px;
       font-family: 'Be-B';
   }
