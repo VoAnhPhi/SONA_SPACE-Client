@@ -203,3 +203,46 @@
 		background: $bgThumb;
 	}
 }
+
+// Hover line animation mixin
+@mixin hover-line-animation($color: $dark-cl, $height: 1px, $duration: 0.3s) {
+	position: relative;
+	padding-bottom: 2px;
+	
+	&:before, &:after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 0;
+		height: $height;
+		transition: width $duration ease;
+	}
+	
+	&:before {
+		background-color: $color;
+	}
+	
+	&:after {
+		background-color: transparent;
+		transition-delay: $duration;
+	}
+	
+	&:hover {
+		&:before {
+			width: 100%;
+		}
+	}
+	
+	&:not(:hover) {
+		&:after {
+			width: 100%;
+			transition-delay: 0s;
+		}
+		
+		&:before {
+			width: 0;
+			transition-delay: $duration;
+		}
+	}
+}

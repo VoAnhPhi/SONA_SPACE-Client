@@ -204,11 +204,10 @@
 
                 .tip-item {
                     display: flex;
-                    justify-content: space-between;
-
+                    column-gap: 24px;
                     .content {
                         align-content: center;
-
+                        flex: 1;
                         h3 {
                             @include text(26px, Be-SB, auto, $dark-cl, null);
                             margin-bottom: 12px;

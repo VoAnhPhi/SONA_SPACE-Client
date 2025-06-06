@@ -1,7 +1,6 @@
 .footer {
-    background-color: #333;
+    background-color: #FAFAFA;
     color: #fff;
-    display:none ;
     padding: 60px 0 30px;
 
     .container {
@@ -12,16 +11,14 @@
 
     .footer-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 30px;
         margin-bottom: 50px;
 
         .footer-column {
             h3 {
-                font-size: 16px;
-                font-weight: 600;
+                @include text(14px, Be-L, auto, $dark-cl, null);
                 margin-bottom: 20px;
-                color: #fff;
             }
 
             ul {
@@ -34,9 +31,7 @@
 
                     a,
                     p {
-                        color: #ccc;
-                        text-decoration: none;
-                        font-size: 14px;
+                        @include text(14px, Be-L, auto, $dark-cl, null);
                         transition: color 0.3s ease;
 
                         &:hover {
@@ -74,22 +69,25 @@
             }
 
             .btn {
-                padding: 10px 20px;
-                border-radius: 4px;
-                font-size: 14px;
-                font-weight: 500;
-                text-decoration: none;
+                padding: 10px 50px;
+                border-radius: 8px;
+                @include text(14px, Be-M, auto, $dark-cl, null);
                 transition: all 0.3s ease;
-                display: inline-block;
+                display: inline;
+                box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
 
                 &.btn-primary {
-                    background-color: #fff;
-                    color: #333;
-                    border: 1px solid #fff;
-
+                    background-color: $white-cl;
+                    color: $dark-cl;
+                    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                    -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                    -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                    border: 1px solid $yellow-cl;
                     &:hover {
-                        background-color: transparent;
-                        color: #fff;
+                        background-color: $yellow-cl;
+                        color: $white-cl;
                     }
                 }
             }
@@ -104,17 +102,13 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
 
         p {
-            font-size: 12px;
-            color: #ccc;
-            
+            @include text(14px, Be-L, auto, $dark-cl, null);
+
             a {
-                color: #ccc;
+                @include text(14px, Be-L, auto, $dark-cl, null);
                 text-decoration: none;
                 transition: color 0.3s ease;
-                
-                &:hover {
-                    color: #fff;
-                }
+                @include hover-line-animation($dark-cl, 1px, 0.3s);
             }
         }
 
