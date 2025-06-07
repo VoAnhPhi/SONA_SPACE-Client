@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import ListProduct from "../../components/Product";
 import CategorySlider from "../../components/CategorySlider";
 import Filter from "../../components/Filter";
+import Seemore from "../../components/seemore";
 
 interface ProductProps {
   id: number;
@@ -222,52 +223,7 @@ const ProductOfCategory: React.FC = () => {
           </div>
         </section>
 
-        {/* Filter and Products */}
         <section className="product-listing">
-          {/* Filter Row */}
-          {/* <div className="filter-row">
-              <div className="filter-left">
-                <div className="filter-icon">
-                  <img src="/images/icons/filter-icon.svg" alt="Filter" />
-                  <span>Bộ lọc:</span>
-                </div>
-                <div className="filter-dropdown">
-                  <button className="dropdown-toggle">
-                    <span>Danh mục: {selectedFilter}</span>
-                    <i className="dropdown-icon"></i>
-                  </button>
-                </div>
-                <div className="filter-dropdown">
-                  <button className="dropdown-toggle">
-                    <span>Danh mục: {selectedSort}</span>
-                    <i className="dropdown-icon"></i>
-                  </button>
-                </div>
-                <div className="filter-dropdown">
-                  <button className="dropdown-toggle">
-                    <span>Danh mục: {selectedSpace}</span>
-                    <i className="dropdown-icon"></i>
-                  </button>
-                </div>
-              </div>
-              <div className="filter-right">
-                <div className="filter-view">
-                  <button className="view-option active">
-                    <img src="/images/icons/grid-view.svg" alt="Grid View" />
-                  </button>
-                  <button className="view-option">
-                    <img src="/images/icons/list-view.svg" alt="List View" />
-                  </button>
-                </div>
-                <div className="filter-sort">
-                  <button className="sort-toggle">
-                    <img src="/images/icons/sort-icon.svg" alt="Sort" />
-                    <span>Sắp xếp</span>
-                    <i className="dropdown-icon"></i>
-                  </button>
-                </div>
-              </div>
-            </div> */}
           <Filter />
           <div className="boxProducts">
             <div className="container">
@@ -285,6 +241,7 @@ const ProductOfCategory: React.FC = () => {
             </div>
           </div>
         </section>
+        <Seemore />
 
         <section className="product-categories">
           <div className="container">
