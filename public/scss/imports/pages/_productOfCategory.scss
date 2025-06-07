@@ -1,17 +1,18 @@
 .product-of-category {
+
   // Banner Section
   .category-banner {
+
     position: relative;
     overflow: hidden;
 
     .banner-image {
-      width: 100%vw  ;
-      height: 100%vh;
+      height: 50dvh;
       position: relative;
 
       img {
-        width: 100%vw  ;
-        height: 100%vh;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         filter: brightness(0.7);
       }
@@ -68,7 +69,7 @@
           display: flex;
           align-items: center;
           gap: 8px;
-          
+
           img {
             width: 18px;
             height: 18px;
@@ -365,7 +366,7 @@
       }
     }
   }
-  
+
   .product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -485,6 +486,7 @@
     flex-shrink: 0;
     outline-offset: 2px;
   }
+
   .color-button:focus {
     outline: 2px solid #2563eb;
     outline-offset: 2px;
@@ -493,9 +495,11 @@
   .color-dark-brown {
     background-color: #78716c;
   }
+
   .color-light-brown {
     background-color: #a8a29e;
   }
+
   .color-gray {
     background-color: #71717a;
   }
@@ -656,6 +660,7 @@
 
   // Responsive Styles
   @media (max-width: $md-max) {
+
     .product-listing .products-grid,
     .category-navigation .categories-grid {
       grid-template-columns: repeat(3, 1fr);
@@ -663,25 +668,13 @@
   }
 
   @media (max-width: $sm-max) {
-    .category-banner {
-      height: 200px;
-    }
-
-    .filter-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 15px;
-
-      .filter-left {
-        width: 100%;
-        flex-wrap: wrap;
-      }
-
-      .filter-right {
-        width: 100%;
-        justify-content: space-between;
+    .banner-content {
+      h1 {
+        font-size: 2.5rem;
       }
     }
+
+
 
     .product-listing .products-grid,
     .category-navigation .categories-grid,
@@ -691,8 +684,20 @@
   }
 
   @media (max-width: $xs-max) {
+    .container-fluid {
+      padding: 0 15px;
+    }
+
     .category-banner {
-      height: 150px;
+      .banner-image {
+        height: 40dvh;
+      }
+    }
+
+    .banner-content {
+      h1 {
+        font-size: 2rem;
+      }
     }
 
     .product-listing .products-grid,
