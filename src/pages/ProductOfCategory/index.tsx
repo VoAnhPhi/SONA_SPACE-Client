@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ListProduct from "../../components/ListProduct";
+import ListProduct from "../../components/listProduct";
 import Filter from "../../components/filter";
 
 interface ProductProps {
