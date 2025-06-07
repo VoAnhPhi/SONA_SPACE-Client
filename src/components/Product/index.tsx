@@ -14,7 +14,7 @@ interface ProductProps {
   slug: string;
   isWishlist?: boolean;
 }
-const ListProduct = ({
+const Product = ({
   product,
   slug,
 }: {
@@ -123,4 +123,4 @@ const ListProduct = ({
   );
 };
 
-export default ListProduct;
+export default Product;
