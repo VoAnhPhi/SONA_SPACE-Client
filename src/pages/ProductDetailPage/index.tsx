@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
 import ListProduct from "../../components/listProduct";
+import { Link } from "react-router-dom";
 
 interface ProductProps {
   id: number;
@@ -157,16 +158,16 @@ const renderStars = (rating: number) => {
     <>
       <Header />
       <div className="product-details">
-        <section className="detail-page-link">
+        <div className="detail-page-link">
           <div className="container">
             <div className="detail-link">
             <span className="link1">Sản phẩm | </span>
-            <span className="link2">Ghế sofa MOHO HALDEN</span>
+            <span className="link2">{product.name}</span>
             </div>
           </div>
-        </section>
+        </div>
 
-    <section className="product-detail-info">
+    <div className="product-detail-info">
     <div className="container">
         <div className="detail-products">
             <div className="detail-image">
@@ -252,19 +253,19 @@ const renderStars = (rating: number) => {
                             className="quantity-input-" 
                             onClick={() => handleQuantityChange(-1)}
                             disabled={quantity <= 1}
-                            > -
+                            > <img src="/images/detail/tru.svg" alt="" />
                         </button>
                             <input type="text"   value={quantity} 
                       readOnly  className="quantity-inputt" />
                         <button 
                             className="quantity-btn increase" 
                             onClick={() => handleQuantityChange(1)}
-                            > +
+                            > <img src="/images/detail/cong.svg" alt="" />
                         </button>
                         </div>
                     </div>
                     <div className="content-button">
-                        <button className="button-add-cart">Thêm vào giỏ</button>
+                        <Link to={`cart/${product.slug}`} ><button className="button-add-cart">Thêm vào giỏ</button></Link>
                         <div className="button-icon-i">
                           <div className="icon-img">
                               <img src="/images/detail/heart.svg" alt="" />
@@ -279,9 +280,9 @@ const renderStars = (rating: number) => {
             </div>
         </div>
     </div>
-    </section>
+    </div>
 
-          <section className="detail-decriptionn">
+          <div className="detail-decriptionn">
             <div className="container">
             <div className="detail-decription-evaluate">
                 <div className="description-avalute-title">
@@ -336,24 +337,24 @@ const renderStars = (rating: number) => {
                 </div>
             </div>
             </div>
-          </section>
+          </div>
 
-              <section className="detail-banner-slider">
+              <div className="detail-banner-slider">
                 <div className="container">
                <div className="detail-banner">
                         <img src="/images/detail/banner-detail.jpg" alt="" />
                 </div>
             </div>
-              </section>
+              </div>
 
 
             <PolicyProduct />
          
                 {/* boxsanpham */}
-      <section className="boxProducts">
+      <div className="boxProducts">
        
       <div className="container">
-        <section className="section-box-products">
+        <div className="section-box-products">
                <h5>Các sản phẩm tương tự</h5>
           <div className="box-products-container">
             {relatedProducts.map((product) => (
@@ -361,9 +362,9 @@ const renderStars = (rating: number) => {
             ))}
 
           </div>
-        </section>
+        </div>
       </div>
-      </section>
+      </div>
 
 
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ProductProps {
@@ -14,6 +14,7 @@ interface ProductProps {
   slug: string;
   isWishlist?: boolean;
 }
+
 const ListProduct = ({
   product,
   slug,
@@ -21,6 +22,13 @@ const ListProduct = ({
   product: ProductProps;
   slug: string;
 }) => {
+  const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
+
+  const toggleWishlist = () => {
+    setWishlist(!wishlist);
+    // Có thể gọi API để lưu trạng thái wishlist ở backend
+  };
+
   const today = new Date();
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(today.getDate() - 3);
@@ -57,16 +65,17 @@ const ListProduct = ({
               <span className="news-tt-1">Giảm {discountPercent}% </span>
             )}
           </div>
-          <div className="news-icon">
-            {product.isWishlist && <span>Xóa</span>}
-            <img
-              src={
-                product.isWishlist
-                  ? "/images/icons/trashcan.svg"
-                  : "/images/products/heart.svg"
-              }
-              alt=""
-            />
+          <div className="news-icon" onClick={toggleWishlist} > 
+
+           <img
+            src={
+              wishlist
+                ? "/images/products/heart-red.svg" // hình trái tim đỏ
+                : "/images/products/heart.svg" // trái tim màu thường
+            }
+            alt=""
+            style={{ width: '20px', height: '20px' }}
+          />
           </div>
         </div>
         <div className="products-frame-image">
@@ -115,7 +124,7 @@ const ListProduct = ({
             )}
           </div>
           <div className="cart-button">
-            <button>Mua ngay</button>
+            <Link to={`cart/${product.slug}`}> <button>Mua ngay</button></Link>
           </div>
         </div>
       </div>

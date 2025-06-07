@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
-import Filter from "../../components/Filter";
-import ListProduct from "../../components/ListProduct";
+import Filter from "../../components/filter";
+import ListProduct from "../../components/listProduct";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/seemore";
 
 interface ProductProps {
   id: number;
