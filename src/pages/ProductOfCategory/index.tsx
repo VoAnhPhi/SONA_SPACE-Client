@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ListProduct from "../../components/listProduct";
+import ListProduct from "../../components/ListProduct";
 import Filter from "../../components/filter";
 
 interface ProductProps {
@@ -70,7 +70,7 @@ const ProductOfCategory: React.FC = () => {
     }
   ];
 
- // Sample product data
+  // Sample product data
   const products: ProductProps[] = [
     {
       id: 1,
@@ -199,7 +199,7 @@ const ProductOfCategory: React.FC = () => {
     },
   ];
 
-  
+
 
   // Format price with commas
   const formatPrice = (price: number): string => {
@@ -228,9 +228,9 @@ const ProductOfCategory: React.FC = () => {
 
         {/* Filter and Products */}
         <section className="product-listing">
-         
-            {/* Filter Row */}
-            {/* <div className="filter-row">
+
+          {/* Filter Row */}
+          {/* <div className="filter-row">
               <div className="filter-left">
                 <div className="filter-icon">
                   <img src="/images/icons/filter-icon.svg" alt="Filter" />
@@ -273,432 +273,15 @@ const ProductOfCategory: React.FC = () => {
                 </div>
               </div>
             </div> */}
-            <Filter />
+          <Filter />
+          <div className="boxProducts">
             <div className="container">
-            {products.map((product) => (
-                <ListProduct key={product.id} product={product} slug={product.slug} />
-              ))}
-            {/* Products Grid */}
-            {/* <div className="products-grid">
-              {products.map((product) => (
-                <div key={product.id} className="product-item">
-                  <div className="product-image">
-                    {product.isNew && <span className="badge new">NEW</span>}
-                    {product.isSale && <span className="badge sale">SALE</span>}
-                    <img src={product.image} alt={`${product.name} - ${categories.find(c => c.slug === product.category)?.category}`} />
-                    <div className="product-actions">
-                      <button className="wishlist-btn">
-                        <img src="/images/icons/heart-icon.svg" alt="Add to wishlist" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="product-info">
-                    <div className="product-category">Sofas</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <div className="product-colors">
-                      {product.colors.map((color, index) => (
-                        <span
-                          key={index}
-                          className="color-option"
-                          style={{ backgroundColor: color }}
-                        ></span>
-                      ))}
-                    </div>
-                    <div className="product-price">
-                      <span className="price">{formatPrice(product.price)} ₫</span>
-                      <span className="price-label">Giá bán</span>
-                    </div>
-                    <div className="product-action">
-                      <a href="#" className="view-product">Xem ngay</a>
-                    </div>
-                  </div>
+              <div className="section-box-products">
+                <div className="box-products-container">
+                  {products.map((product) => (
+                    <ListProduct key={product.id} product={product} slug={product.slug} />
+                  ))}
                 </div>
-              ))}
-            </div> */}
-
-
-            {/* <div className="product-grid" role="list" aria-label="Danh sách sản phẩm">
-              <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article> <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article>
-              <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article>
-
-
-              <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article>
-
-
-              <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article>
-
-
-              <article className="product-card" role="listitem" aria-label="Sản phẩm Sofa Modena 2,5 seater">
-                <div className="product-badges">
-                  <div className="badge-text"><span>Mới</span></div>
-                  <div className="badge-icon">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f6f26cd391f5d0e6006bf2b21f9dc97caa013e3?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Biểu tượng nhãn sản phẩm" />
-                  </div>
-                </div>
-                <div className="product-image">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a94b3d17a6a5c483f0afc304952e54d075f18f?placeholderIfAbsent=true&apiKey=c01b0b1f77f44db1a01eba6bb534c16f" alt="Sofa Modena 2.5 seater" />
-                </div>
-                <div className="product-info">
-                  <h2>Sofa Modena 2,5 seater ofa odena sema seater</h2>
-                  <p>Sofa</p>
-                </div>
-                <div className="color-selector" role="group" aria-label="Chọn màu sắc">
-                  <div className="colors">
-                    <span>Màu</span>
-                    <button className="color-button color-dark-brown" aria-label="Màu nâu đậm" type="button"></button>
-                    <button className="color-button color-light-brown" aria-label="Màu nâu sáng" type="button"></button>
-                    <button className="color-button color-gray" aria-label="Màu xám" type="button"></button>
-                  </div>
-                </div>
-                <hr className="divider" />
-                <div className="price-section">
-                  <div className="price-info">
-                    <p className="original-price">25.000.000 ₫</p>
-                    <p className="sale-price">15.190.000 ₫</p>
-                  </div>
-                  <button className="buy-button" type="button">Mua ngay</button>
-                </div>
-              </article>
-
-
-            </div> */}
-            {/* Pagination */}
-            <div className="pagination">
-              <span className="pagination-text">Xem thêm sản phẩm</span>
-              <div className="pagination-dots">
-                <span className="dot active"></span>
-                <span className="dot"></span>
-                <span className="dot"></span>
               </div>
             </div>
           </div>
