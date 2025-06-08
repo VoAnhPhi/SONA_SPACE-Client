@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
-import ListProduct from "../../components/listProduct";
+import ListProduct from "../../components/Product";
 
 interface ProductProps {
   id: number;

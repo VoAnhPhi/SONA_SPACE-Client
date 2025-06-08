@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-<<<<<<< HEAD
-import ListProduct from "../../components/listProduct";
-import Filter from "../../components/filter";
-=======
 import ListProduct from "../../components/Product";
 import CategorySlider from "../../components/CategorySlider";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import Seemore from "../../components/seemore";
->>>>>>> 9f0706bb50eab869a34702f004353b547672e494
 
 interface ProductProps {
   id: number;
