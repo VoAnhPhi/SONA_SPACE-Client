@@ -19,6 +19,10 @@
         align-items: center;
         justify-content: space-between;
         height: 80px;
+
+        .header-hamburger {
+            display: none;
+        }
     }
 
     .logo {
@@ -48,6 +52,7 @@
             li {
                 margin: 0 15px;
                 align-content: center;
+
                 a {
                     text-decoration: none;
                     color: #333;
@@ -60,6 +65,7 @@
                     align-items: center;
                     gap: 5px;
                     transition: all 0.3s ease;
+
                     &:hover,
                     &.active {
                         color: $yellow-cl;
@@ -368,6 +374,76 @@
                 &:hover {
                     background-color: #000;
                 }
+            }
+        }
+    }
+}
+
+//Responsive Device
+
+@include md {
+    .header {
+        &-wrapper{
+            .logo{
+                a{
+                    display: block;
+                    height: 17px;
+                }
+            }
+        }
+        &-actions-icons {
+            display: none;
+        }
+
+        &-actions-buttons {
+            display: none;
+        }
+
+        &-hamburger {
+            display: block !important;
+            button.btn-icon.hamburger-btn{
+                margin: unset;
+            }
+        }
+    }
+}
+
+@include sm {
+    .header {
+        display: block !important;
+
+        .main-nav {
+            display: none;
+        }
+
+        &-actions {
+            position: relative;
+            &-icons{
+                display: block;
+            }
+        }
+
+        &-actions-separator {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-60%);
+            display: block;
+            @include size(1px, 20px);
+            background-color: $white-cl;
+        }
+
+        &-actions-buttons {
+            display: none;
+        }
+
+        &-hamburger {
+            display: block !important;
+
+            button.btn-icon.hamburger-btn {
+                background-color: transparent;
+                border: none;
+                margin: unset;
             }
         }
     }
