@@ -258,14 +258,14 @@ const ProductDetailPage: React.FC = () => {
                             className="quantity-input-" 
                             onClick={() => handleQuantityChange(-1)}
                             disabled={quantity <= 1}
-                            > -
+                            > <img src="/images/detail/tru.svg" alt="" />
                         </button>
                             <input type="text"   value={quantity} 
                       readOnly  className="quantity-inputt" />
                         <button 
                             className="quantity-btn increase" 
                             onClick={() => handleQuantityChange(1)}
-                            > +
+                            >  <img src="/images/detail/cong.svg" alt="" />
                         </button>
                         </div>
                     </div>
