@@ -461,11 +461,11 @@ const Header = () => {
               </div>
               <span className="header-actions-separator"></span>
               <div className="header-actions-buttons">
-                <a href="/dang-nhap" className="btn btn-outline">
-                  Đăng Nhập
-                </a>
-                <a href="/dang-ky" className="btn btn-primary">
+              <a href="/dang-ky" className="btn sign-up">
                   Đăng Ký
+                </a>
+                <a href="/dang-nhap" className="btn sign-in">
+                  Đăng Nhập
                 </a>
               </div>
               <div className="header-hamburger">
