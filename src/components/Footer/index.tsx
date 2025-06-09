@@ -129,7 +129,9 @@ const Footer = () => {
             <div className="language">
               <p>Translate</p>
               <div className="language-icons">
-                <img src="/images/language-icons.png" alt="Language icons" />
+                <img src="/images/icons/lang_vie.svg" alt="Language icons" />
+                <span>Việt Nam</span>
+                <span className="icon-arrow-down"><img src="/images/icons/arrow-down-black.svg" alt="" /></span>
               </div>
             </div>
           </div>
