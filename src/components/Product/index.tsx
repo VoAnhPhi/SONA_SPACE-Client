@@ -46,8 +46,9 @@ const Product = ({
     return Math.round(((price - priceSale) / price) * 100);
   };
 
-  const formatPrice = (price: number): string =>
-    price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   const isProductNew = isNew(product.createdAt);
   const discountPercent = getDiscountPercent(product.price, product.priceSale);
@@ -114,7 +115,7 @@ const Product = ({
               </span>
             )}
             {product.priceSale && (
-              <span className="price2">{formatPrice(product.priceSale)}</span>
+              <span className="price2">{formatPrice(product.priceSale)} đ</span>
             )}
             {!product.priceSale && (
               <span className="price2">

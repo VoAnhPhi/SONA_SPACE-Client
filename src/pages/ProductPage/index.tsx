@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import ListProduct from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/seemore";
 
 interface ProductProps {
   id: number;
@@ -152,8 +152,8 @@ const ProductPage: React.FC = () => {
   ];
 
   // Format price with commas
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "d";
+   const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
   return (
     <>
