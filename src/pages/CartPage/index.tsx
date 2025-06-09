@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import GetInTouch from "../../components/GetInTouch";
+import PolicyProduct from "../../components/Policy";
 
 interface CartItemProps {
   id: number;
@@ -21,8 +23,8 @@ const CartPage: React.FC = () => {
       id: 1,
       name: "Sofa Modena 2.5 seater ofa odena sema seater",
       price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/products/sofa-gray-1.jpg",
+      // oldPrice: 25000000,
+      image: "/images/hot-product-1.jpg",
       color: "#999999",
       quantity: 1,
       category: "Sofa"
@@ -32,7 +34,47 @@ const CartPage: React.FC = () => {
       name: "Sofa Modena 2.5 seater ofa odena sema seater",
       price: 15190000,
       oldPrice: 25000000,
-      image: "/images/products/sofa-beige-1.jpg",
+      image: "/images/hot-product-2.jpg",
+      color: "#D8C1A9",
+      quantity: 1,
+      category: "Sofa"
+    },
+    {
+      id: 2,
+      name: "Sofa Modena 2.5 seater ofa odena sema seater",
+      price: 15190000,
+      oldPrice: 25000000,
+      image: "/images/hot-product-2.jpg",
+      color: "#D8C1A9",
+      quantity: 1,
+      category: "Sofa"
+    },
+    {
+      id: 2,
+      name: "Sofa Modena 2.5 seater ofa odena sema seater",
+      price: 15190000,
+      oldPrice: 25000000,
+      image: "/images/hot-product-2.jpg",
+      color: "#D8C1A9",
+      quantity: 1,
+      category: "Sofa"
+    },
+    {
+      id: 2,
+      name: "Sofa Modena 2.5 seater ofa odena sema seater",
+      price: 15190000,
+      oldPrice: 25000000,
+      image: "/images/hot-product-2.jpg",
+      color: "#D8C1A9",
+      quantity: 1,
+      category: "Sofa"
+    },
+    {
+      id: 2,
+      name: "Sofa Modena 2.5 seater ofa odena sema seater",
+      price: 15190000,
+      oldPrice: 25000000,
+      image: "/images/hot-product-2.jpg",
       color: "#D8C1A9",
       quantity: 1,
       category: "Sofa"
@@ -56,8 +98,8 @@ const CartPage: React.FC = () => {
   // Update quantity of an item
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    
-    setCartItems(cartItems.map(item => 
+
+    setCartItems(cartItems.map(item =>
       item.id === id ? { ...item, quantity: newQuantity } : item
     ));
   };
@@ -72,7 +114,7 @@ const CartPage: React.FC = () => {
     const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     const discount = subtotal * (cartSummary.discountPercent / 100);
     const total = subtotal + cartSummary.shipping - discount;
-    
+
     setCartSummary({
       ...cartSummary,
       subtotal,
@@ -86,13 +128,13 @@ const CartPage: React.FC = () => {
       <Header />
       <div className="cart-page">
         {/* Banner Section */}
-        <section className="cart-banner">
+        <div className="cart-banner">
           <div className="container-fluid">
             <div className="banner-image">
-              <img src="/images/banners/cart-banner.jpg" alt="Giỏ hàng - Mua sắm nội thất cao cấp" />
+              <img src="/images/cartpage/banner_cart.jpg" alt="Giỏ hàng - Mua sắm nội thất cao cấp" />
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Breadcrumb */}
         <div className="breadcrumb-container">
@@ -119,17 +161,20 @@ const CartPage: React.FC = () => {
                 <div className="cart-items">
                   {cartItems.map((item) => (
                     <div key={item.id} className="cart-item">
+
                       <div className="item-image">
                         <img src={item.image} alt={item.name} />
                       </div>
+
                       <div className="item-details">
+                        
                         <div className="item-info">
                           <h3 className="item-name">{item.name}</h3>
                           <div className="item-category">{item.category}</div>
                           <div className="item-color">
                             <span className="color-label">Màu:</span>
-                            <span 
-                              className="color-dot" 
+                            <span
+                              className="color-dot"
                               style={{ backgroundColor: item.color }}
                             ></span>
                           </div>
@@ -142,31 +187,20 @@ const CartPage: React.FC = () => {
                         </div>
                         <div className="item-actions">
                           <div className="quantity-selector">
-                            <button 
-                              className="quantity-btn decrease" 
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              disabled={item.quantity <= 1}
-                            >
+                            <button className="quantity-btn decrease" onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
                               -
                             </button>
-                            <input 
-                              type="text" 
-                              value={item.quantity} 
-                              readOnly 
-                              className="quantity-input" 
+                            <input
+                              type="text"
+                              value={item.quantity}
+                              readOnly
+                              className="quantity-input"
                             />
-                            <button 
-                              className="quantity-btn increase" 
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            >
+                            <button className="quantity-btn increase" onClick={() => updateQuantity(item.id, item.quantity + 1)} >
                               +
                             </button>
                           </div>
-                          <button 
-                            className="remove-btn"
-                            onClick={() => removeItem(item.id)}
-                            aria-label="Xóa sản phẩm khỏi giỏ hàng"
-                          >
+                          <button className="remove-btn" onClick={() => removeItem(item.id)} aria-label="Xóa sản phẩm khỏi giỏ hàng">
                             <i className="icon-trash"></i>
                           </button>
                         </div>
@@ -217,122 +251,12 @@ const CartPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="features-section">
-          <div className="container">
-            <div className="features-grid">
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/policy-icon.svg" alt="Chính sách & hỗ trợ" />
-                </div>
-                <h3>Chính sách & hỗ trợ</h3>
-                <p>
-                  Chúng tôi cung cấp các chính sách hỗ trợ và đổi trả linh hoạt
-                  giúp bạn mua sắm an tâm.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/shipping-icon.svg" alt="Vận chuyển" />
-                </div>
-                <h3>Vận chuyển</h3>
-                <p>
-                  Giao hàng nhanh chóng, đúng hẹn với đội ngũ vận chuyển chuyên
-                  nghiệp, nhiệt tình.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/support-icon.svg" alt="Hỗ trợ 24/7" />
-                </div>
-                <h3>Hỗ trợ 24/7</h3>
-                <p>
-                  Đội ngũ tư vấn viên luôn sẵn sàng giúp đỡ bạn với mọi thắc mắc
-                  và yêu cầu.
-                </p>
-              </div>
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <img src="/images/icons/warranty-icon.svg" alt="Hoàn tiền & Bảo hành" />
-                </div>
-                <h3>Hoàn tiền & Bảo hành</h3>
-                <p>
-                  Chúng tôi cam kết chất lượng sản phẩm với chính sách bảo hành
-                  dài hạn và uy tín.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Policy Product */}
+        <PolicyProduct />
+
 
         {/* FAQ Section */}
-        <section className="faq-section">
-          <div className="container">
-            <h2 className="section-title">Get in touch</h2>
-            <div className="faq-content">
-              <div className="faq-text">
-                <p>
-                  Looking for Vietnamese Design Furniture? Our dedicated customer service 
-                  team is ready to answer any enquiries you may have. Whether it's about our 
-                  products, delivery, or customization options, we're here to help.
-                </p>
-              </div>
-              <div className="faq-accordion">
-                <div className="accordion-item">
-                  <div className="accordion-header">
-                    <span>Chat with our Interior Designers</span>
-                    <i className="icon-arrow-down"></i>
-                  </div>
-                </div>
-                <div className="accordion-item">
-                  <div className="accordion-header">
-                    <span>Elevate your space with Vietnamese furniture design</span>
-                    <i className="icon-arrow-down"></i>
-                  </div>
-                </div>
-                <div className="accordion-item">
-                  <div className="accordion-header">
-                    <span>A designer furniture store like no other</span>
-                    <i className="icon-arrow-down"></i>
-                  </div>
-                </div>
-                <div className="accordion-item">
-                  <div className="accordion-header">
-                    <span>Create your signature look with customization options</span>
-                    <i className="icon-arrow-down"></i>
-                  </div>
-                </div>
-                <div className="accordion-item">
-                  <div className="accordion-header">
-                    <span>Convenient online shopping experience</span>
-                    <i className="icon-arrow-down"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Design Blog Section */}
-        <section className="design-blog">
-          <div className="container">
-            <h2 className="section-title">Thiết kế có nhân hóa</h2>
-            <div className="blog-grid">
-              <div className="blog-item">
-                <img src="/images/blog/interior-design-tips-1.jpg" alt="Liên hệ ngay để tư vấn" />
-                <h3>Liên hệ ngay để tư vấn</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/material-samples-1.jpg" alt="Tìm hiểu thêm về vật liệu nội thất" />
-                <h3>Tìm hiểu thêm về vật liệu nội thất</h3>
-              </div>
-              <div className="blog-item">
-                <img src="/images/blog/customer-service-1.jpg" alt="Bạn cần tư vấn gì?" />
-                <h3>Bạn cần tư vấn gì?</h3>
-              </div>
-            </div>
-          </div>
-        </section>
+        <GetInTouch />
       </div>
       <Footer />
     </>

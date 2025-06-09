@@ -3,10 +3,61 @@
     color: #fff;
     padding: 60px 0 30px;
 
-    .container {
-        max-width: 1440px;
-        margin: 0 auto;
-        padding: 0 20px;
+    .design-tips {
+        margin-bottom: 60px;
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 64px;
+
+            .tips-grid-aside {
+                padding: 14px;
+                border: 1px solid #D9D9D9;
+                border-radius: 16px;
+                box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+
+                .tip-item {
+                    display: flex;
+                    column-gap: 24px;
+
+                    .content {
+                        align-content: center;
+                        flex: 1;
+
+                        h3 {
+                            @include text(26px, Be-SB, auto, $dark-cl, null);
+                            margin-bottom: 12px;
+                        }
+
+                        p {
+                            margin: unset;
+                            @include text(16px, Be-L, auto, $dark-cl, null);
+                            text-align: left;
+                        }
+                    }
+                }
+            }
+
+            .tips-grid-bside {
+                display: flex;
+                column-gap: 60px;
+                padding: 14px;
+                border: 1px solid #D9D9D9;
+                border-radius: 16px;
+                box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+                -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+
+                .tip-item {
+                    h3 {
+                        @include text(18px, Be-L, auto, $dark-cl, null);
+                    }
+                }
+            }
+        }
     }
 
     .footer-grid {
@@ -85,6 +136,7 @@
                     -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
                     -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
                     border: 1px solid $yellow-cl;
+
                     &:hover {
                         background-color: $yellow-cl;
                         color: $white-cl;

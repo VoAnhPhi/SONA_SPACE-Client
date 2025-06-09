@@ -3,8 +3,8 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ListProduct from "../../components/Product";
 import CategorySlider from "../../components/CategorySlider";
-import Filter from "../../components/filter";
-import Seemore from "../../components/seemore";
+import Filter from "../../components/Filter";
+import Seemore from "../../components/SeeMore";
 
 interface ProductProps {
   id: number;

@@ -103,33 +103,6 @@ const HomePage = () => {
 
         {/* Contact Section */}
         <GetInTouch />
-
-        {/* Design Tips */}
-        <section className="design-tips">
-          <div className="container">
-            <div className="tips-grid">
-              <div className="tips-grid-aside">
-                <div className="tip-item">
-                  <img src="/images/tip-1.jpg" alt="Thiết kế có nhân hóa" />
-                  <div className="content">
-                    <h3>Thiết kế cá nhân hóa</h3>
-                    <p>Liên hệ ngay để được tư vấn</p>
-                  </div>
-                </div>
-              </div>
-              <div className="tips-grid-bside">
-                <div className="tip-item">
-                  <img src="/images/tip-2.jpg" alt="Mẫu vật liệu" />
-                  <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-                </div>
-                <div className="tip-item">
-                  <img src="/images/tip-3.jpg" alt="Thư viện" />
-                  <h3>Bạn cần liên hệ hỗ trợ</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
       <Footer />
     </>
