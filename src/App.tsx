@@ -39,9 +39,9 @@ function App() {
         <Route path="/dat-hang-thanh-cong" element={<OrderComplete />} />
         <Route path="/khong-gian" element={<Rooms />} />
         <Route path="/khong-gian/:slug" element={<RoomDetail />} />
-        <Route path="/dich-vu-thiet-ke" element={<ContactForm />} />
+        <Route path="/dich-vu-thiet-ke" element={<ContactFormDesign />} />
         <Route path="/ho-so-kien-truc" element={<ContactFormArch />} />
-        <Route path="/lien-he" element={<ContactFormDesign />} />
+        <Route path="/lien-he" element={<ContactForm />} />
         <Route path="/dang-ky" element={<SignUp />} />
         <Route path="/dang-nhap" element={<SignIn />} />
         <Route path="/quen-mat-khau" element={<ForgotPassword />} />

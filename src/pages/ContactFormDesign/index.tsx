@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -6,20 +7,32 @@ interface FormData {
   fullName: string;
   email: string;
   phone: string;
-  message: string;
+  space: string;
+  description: string;
+  style: string;
+  requirements: string;
+  budget: string;
+  note: string;
   agreeToTerms: boolean;
 }
+
 
 const ContactFormDesign: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     phone: "",
-    message: "",
+    space: "",
+    description: "",
+    style: "",
+    requirements: "",
+    budget: "",
+    note: "",
     agreeToTerms: false
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -45,160 +58,266 @@ const ContactFormDesign: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="contact-design-page">
+      <div className="contact-form-page">
         {/* Banner Section */}
-        <div className="store-banner">
-          <img src="/images/store-front.jpg" alt="SONA SPACE Store Front" />
-        </div>
-
-        <div className="container">
-          <div className="contact-design-wrapper">
-            {/* Store Information Section */}
-            <div className="store-info-section">
-              <h1>Hãy liên hệ với chúng tôi</h1>
-              <p className="intro-text">
-                Nâng tầm không gian của bạn với những thiết kế nội thất mang biệt phẩm ánh. 
-                Phong cách và trải nghiệm đẳng cấp của bạn, được chăm sóc và tinh 
-                xảo để mang đến trải nghiệm sống khó quên.
-              </p>
-
-              <div className="info-items">
-                <div className="info-item">
-                  <div className="icon">
-                    <img src="/images/icons/location.svg" alt="Location Icon" />
-                  </div>
-                  <div className="content">
-                    <h3>Địa chỉ</h3>
-                    <p>235 PNVB Avenue, New York, NY 10003, United States</p>
-                  </div>
-                </div>
-
-                <div className="info-item">
-                  <div className="icon">
-                    <img src="/images/icons/clock.svg" alt="Clock Icon" />
-                  </div>
-                  <div className="content">
-                    <h3>Giờ làm việc</h3>
-                    <p>Saturday-Sunday: 9:00 - 21:00</p>
-                    <p>Monday-Friday: 9:00 - 22:00</p>
-                  </div>
-                </div>
-
-                <div className="info-item">
-                  <div className="icon">
-                    <img src="/images/icons/phone.svg" alt="Phone Icon" />
-                  </div>
-                  <div className="content">
-                    <h3>Số điện thoại</h3>
-                    <p>Mobile: (+84) 546-6789</p>
-                    <p>Hotline: (+84) 546-6789</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="contact-message">
-                <h2>Chúng tôi rất mong nhận được phản hồi từ bạn</h2>
-                <p>
-                  Để biết thêm thông tin về sản phẩm và dịch vụ của chúng tôi. Vui lòng gửi 
-                  email cho chúng tôi. Đội ngũ nhân viên của chúng tôi luôn sẵn sàng trả lời 
-                  bạn. Đừng ngại ngùng!
-                </p>
-                <p className="email-contact">Hoặc liên hệ trực tiếp với chúng tôi qua <strong>sonaspce.@gmail.com</strong></p>
-              </div>
-            </div>
-
-            {/* Contact Form Section */}
-            <div className="contact-form-container">
-              <form className="design-contact-form" onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <input 
-                    type="text" 
-                    id="fullName" 
-                    name="fullName" 
-                    placeholder="Nhập họ và tên"
-                    value={formData.fullName} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="Email"
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="Số Điện Thoại"
-                    value={formData.phone} 
-                    onChange={handleChange} 
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <textarea 
-                    id="message" 
-                    name="message" 
-                    rows={5} 
-                    placeholder="Tin nhắn"
-                    value={formData.message} 
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                
-                <div className="form-group checkbox-group">
-                  <input 
-                    type="checkbox" 
-                    id="agreeToTerms" 
-                    name="agreeToTerms" 
-                    checked={formData.agreeToTerms} 
-                    onChange={handleCheckboxChange} 
-                    required 
-                  />
-                  <label htmlFor="agreeToTerms">
-                    I agree to the terms and privacy policy
-                  </label>
-                </div>
-                
-                <button type="submit" className="submit-btn">Gửi</button>
-              </form>
+        <div className="banner-section">
+          <div className="container-fluid">
+            <div className="container">
+              <img src="/images/ContactFormDesign/banner_design.jpg" alt="Thiết kế nội thất" />
             </div>
           </div>
         </div>
 
-        {/* Design Services Showcase */}
-        <div className="design-services">
+        {/* Breadcrumb */}
+        <div className="breadcrumb-container">
           <div className="container">
+            <div className="breadcrumb">
+              <Link to="/">Trang chủ</Link>
+              <span>/</span>
+              <span className="active">Thiết kế nội thất</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Services Section */}
+        <section className="services-section">
+          <div className="container">
+            <h2 className="section-title">Dịch vụ của chúng tôi</h2>
+
             <div className="services-grid">
               <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
+                <div className="service-icon">
+                  <img src="/images/ContactFormDesign/Lightingdesignicon.jpg" alt="Lighting Design" />
+                </div>
+                <div className="service-content">
+                  <h3>Lighting Design</h3>
+                  <p>Thiết kế ánh sáng cho không gian sống của bạn - Phối hợp ánh sáng tự nhiên và bổ sung nhân tạo.</p>
+                </div>
               </div>
-              
+
               <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
+                <div className="service-icon">
+                  <img src="/images/ContactFormDesign/Interiordesignicon.jpg" alt="Interior Design" />
+                </div>
+                <div className="service-content">
+                  <h3>Interior Design</h3>
+                  <p>Kiến tạo nội thất giúp hiện mỹ và công năng - mỗi không gian kể câu chuyện sống của bạn.</p>
+                </div>
               </div>
-              
+
               <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần tư vấn thiết kế?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
+                <div className="service-icon">
+                  <img src="/images/ContactFormDesign/Outdoordesignicon.jpg" alt="Outdoor Design" />
+                </div>
+                <div className="service-content">
+                  <h3>Outdoor Design</h3>
+                  <p>Biến không gian ngoài vườn thành nơi thư giãn và nghỉ ngơi - sống xanh với phong cách sống - bồn mưa điều hòa tạo cảm hứng mới.</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* How We Work Section */}
+        <section className="how-we-work">
+          <div className="container">
+            <h2 className="section-title">Cách Sona Space Hoạt Động</h2>
+
+            <div className="steps-container">
+              <div className="step-item">
+                <div className="step-number">01</div>
+                <div className="step-content">
+                  <h3>Kết nối với nhà thiết kế phù hợp</h3>
+                  <p>
+                    Với hơn 10 năm kinh nghiệm cùng 100.000+ Khách hàng hài lòng, đội ngũ của chúng tôi sẽ giúp bạn tìm kiếm nhà thiết kế phù hợp với phong cách và ngân sách của bạn. Chúng tôi sẽ hỗ trợ bạn trong suốt quá trình thiết kế.
+                  </p>
+                </div>
+                <div className="step-image">
+                  <img src="/images/ContactFormDesign/connect_01.jpg" alt="Kết nối với nhà thiết kế" />
+                </div>
+              </div>
+
+              <div className="step-item">
+                <div className="step-number">02</div>
+                <div className="step-content">
+                  <h3>Hợp tác để tạo nên không gian lý tưởng</h3>
+                  <p>
+                    Làm việc trực tiếp với nhà thiết kế để cùng bạn tạo nên không gian vừa đáp ứng công năng vừa có tính thẩm mỹ cao. Mỗi thiết kế sẽ được tùy chỉnh không quá 30 ngày thực hiện, chính nghi thiết kế hoàn hảo.
+                  </p>
+                </div>
+                <div className="step-image">
+                  <img src="/images/ContactFormDesign/connect_02.jpg" alt="Hợp tác thiết kế" />
+                </div>
+              </div>
+
+              <div className="step-item">
+                <div className="step-number">03</div>
+                <div className="step-content">
+                  <h3>Để dáng mạng thiết kế về ngôi nhà của bạn</h3>
+                  <p>
+                    Chúng tôi hợp tác với hơn 100 thương hiệu nội thất uy tín, đảm bảo mỗi không gian đều đặc sắc, đầy cá tính và sáng tạo. Với SONA SPACE, bạn có thể thanh toàn nhanh chóng, kiểm soát ngân sách và được cam kết với giá hợp lý nhất.
+                  </p>
+                </div>
+                <div className="step-image">
+                  <img src="/images/ContactFormDesign/connect_03.jpg" alt="Thiết kế hoàn thiện" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Form Section */}
+        <section className="contact-form-section">
+          <div className="container">
+            <div className="form-intro-container">
+              <h2 className="section-title">Bắt đầu hành trình thiết kế của bạn</h2>
+              <p className="form-intro">
+                Hãy cho chúng tôi biết về dự án của bạn và chúng tôi sẽ liên hệ với bạn để thảo luận chi tiết. Đội ngũ thiết kế của chúng tôi sẽ giúp bạn tạo ra không gian sống lý tưởng.
+              </p>
+            </div>
+
+            <form className="design-contact-form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-group floating-label">
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    placeholder=" "
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    required
+                  />
+                  <label htmlFor="fullName">Họ và tên *</label>
+                </div>
+
+                <div className="form-group floating-label">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder=" "
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <label htmlFor="email">E-mail *</label>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group floating-label">
+                  <input
+                    type="text"
+                    id="space"
+                    name="space"
+                    placeholder=" "
+                    value={formData.space}
+                    onChange={handleChange}
+                    required
+                  />
+                  <label htmlFor="space">Không gian</label>
+                </div>
+                <div className="form-group floating-label">
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder=" "
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                  <label htmlFor="phone">Số điện thoại *</label>
+                </div>
+              </div>
+
+              <div className="form-group full-width floating-label">
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder=" "
+                  rows={5}
+                  value={formData.description}
+                  onChange={handleChange}
+                ></textarea>
+                <label htmlFor="description">Mô tả sơ lược về yêu cầu thiết kế</label>
+              </div>
+
+              <div className="form-group floating-label">
+                <input
+                  type="text"
+                  id="style"
+                  name="style"
+                  placeholder=" "
+                  value={formData.style}
+                  onChange={handleChange}
+                />
+                <label htmlFor="style">Phong cách bạn muốn</label>
+              </div>
+
+              <div className="form-group floating-label">
+                <input
+                  type="text"
+                  id="requirements"
+                  name="requirements"
+                  placeholder=" "
+                  value={formData.requirements}
+                  onChange={handleChange}
+                />
+                <label htmlFor="requirements">Yêu cầu khác</label>
+              </div>
+
+              <div className={`form-group floating-label ${formData.budget ? 'has-value' : ''}`}>
+                <select
+                  id="budget"
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled hidden>Chọn ngân sách</option>
+                  <option value="under-100m">Dưới 100 triệu</option>
+                  <option value="100m-300m">100 - 300 triệu</option>
+                  <option value="300m-500m">300 - 500 triệu</option>
+                  <option value="500m-1b">500 triệu - 1 tỷ</option>
+                  <option value="over-1b">Trên 1 tỷ</option>
+                </select>
+                <label htmlFor="budget">Ngân sách</label>
+              </div>
+
+
+              <div className="form-group full-width floating-label">
+                <textarea
+                  id="note"
+                  name="note"
+                  placeholder=" "
+                  value={formData.note}
+                  onChange={handleChange}
+                ></textarea>
+                <label htmlFor="note">Lưu ý khác</label>
+              </div>
+
+              <div className="form-group checkbox-group">
+                <input
+                  type="checkbox"
+                  id="agreeToTerms"
+                  name="agreeToTerms"
+                  checked={formData.agreeToTerms}
+                  onChange={handleCheckboxChange}
+                  required
+                />
+                <div className="checkbox-text">
+                  Tôi đồng ý với
+                  <a href="/dieu-khoan" target="_blank" rel="noopener noreferrer">Điều khoản dịch vụ</a> &nbsp;và&nbsp;
+                  <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
+                </div>
+              </div>
+              <button type="submit" className="submit-btn">Gửi</button>
+            </form>
+          </div>
+        </section>
+
       </div>
       <Footer />
     </>

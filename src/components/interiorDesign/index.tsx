@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const InteriorDesign = () => {
       return (
             <section className="interior-design">
@@ -19,7 +20,7 @@ const InteriorDesign = () => {
                                           <p>
                                                 Mỗi khách hàng đều mang một cá tính riêng. Tại SONA SPACE, bạn được tự do chọn phong cách, màu sắc và bố trí theo đúng ý tưởng. Đội ngũ chuyên gia sẽ lắng nghe và hiện thực hóa từng chi tiết theo đúng "gu" sống của bạn.
                                           </p>
-                                          <a href="/dich-vu" className="btn btn-primary">
+                                          <Link to="/dich-vu-thiet-ke" className="btn btn-primary">
                                                 Xem thêm
                                                 <i className="icon">
                                                       <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +28,7 @@ const InteriorDesign = () => {
                                                                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                       </svg>
                                                 </i>
-                                          </a>
+                                          </Link>
                                     </div>
                               </div>
                               <div className="design-item">
@@ -42,7 +43,7 @@ const InteriorDesign = () => {
                                           <p>
                                                 Không chỉ đẹp mà còn thông minh – thiết kế của chúng tôi chú trọng vào sự tiện nghi và bố trí hợp lý. Dù là căn hộ nhỏ hay biệt thự rộng rãi, mọi thứ sẽ được sắp xếp tinh tế và tối ưu nhất.
                                           </p>
-                                          <a href="/tu-van" className="btn btn-primary">
+                                          <Link to="/dich-vu-thiet-ke" className="btn btn-primary">
                                                 Xem thêm
                                                 <i className="icon">
                                                       <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +51,7 @@ const InteriorDesign = () => {
                                                                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                       </svg>
                                                 </i>
-                                          </a>
+                                          </Link>
                                     </div>
                               </div>
                         </div>
