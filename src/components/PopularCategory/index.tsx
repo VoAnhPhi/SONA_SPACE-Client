@@ -56,14 +56,16 @@ const PopularCategory = () => {
 
     <>
       {/* Header/Navigation */}
-      <section className="PopularCategory-full">
+      <div className="PopularCategory-full">
         <div className="container">
           <div className="category-of-products">
 
             <div className="category-of-products-s1">
               <div className="products-s1-frame-1">
                 <div className="frame-1-text">
-                  <a className="frame-1-text1">Các danh mục sản phẩm phổ biến nhất</a>
+                  <a className="frame-1-text1">Các danh mục sản
+                    phẩm
+                    phổ biến nhất</a>
                   <a className="frame-1-text2">Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay</a>
                 </div>
 
@@ -127,7 +129,7 @@ const PopularCategory = () => {
 
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 };

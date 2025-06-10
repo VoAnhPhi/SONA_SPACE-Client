@@ -168,7 +168,7 @@ const ProductDetailPage: React.FC = () => {
           </div>
         </div>
 
-    <section className="product-detail-info">
+
     <div className="container">
         <div className="detail-products">
             <div className="detail-image">
@@ -285,9 +285,9 @@ const ProductDetailPage: React.FC = () => {
             </div>
         </div>
     </div>
-    </section>
 
-          <section className="detail-decriptionn">
+
+          <div className="detail-decriptionn">
             <div className="container">
             <div className="detail-decription-evaluate">
               <div className="description-avalute-title">
@@ -354,24 +354,24 @@ const ProductDetailPage: React.FC = () => {
               </div>
             </div>
             </div>
-          </section>
+          </div>
 
-              <section className="detail-banner-slider">
+              <div className="detail-banner-slider">
                 <div className="container">
                <div className="detail-banner">
                         <img src="/images/detail/banner-detail.jpg" alt="" />
                 </div>
             </div>
-              </section>
+              </div>
 
 
             <PolicyProduct />
          
                 {/* boxsanpham */}
-      <section className="boxProducts">
+      <div className="boxProducts">
        
       <div className="container">
-        <section className="section-box-products">
+        <div className="section-box-products">
                <h5>Các sản phẩm tương tự</h5>
           <div className="box-products-container">
             {relatedProducts.map((product) => (
@@ -379,9 +379,9 @@ const ProductDetailPage: React.FC = () => {
             ))}
 
           </div>
-        </section>
+        </div>
       </div>
-      </section>
+      </div>
 
 
       </div>

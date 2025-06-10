@@ -19,6 +19,7 @@ interface ProductProps {
   createdAt?: string;
   priceSale?: number;
   slug: string;
+  category: string;
 }
 
 const ProductPage: React.FC = () => {
@@ -30,9 +31,10 @@ const ProductPage: React.FC = () => {
       price: 22150000,
       image: "/images/products/product1.jpg",
       colors: ["#7d5a50", "#a3a380", "#757575"],
-      createdAt: "2025-06-02",
+      createdAt: "2025-06-08",
       priceSale: 20000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 2,
@@ -43,6 +45,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-05-01",
       priceSale: 20000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 3,
@@ -54,6 +57,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-02-01",
       priceSale: 22000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 4,
@@ -65,6 +69,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-04",
       priceSale: 21000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 5,
@@ -75,6 +80,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-01-01",
       priceSale: 19000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 6,
@@ -85,6 +91,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-03-01",
       priceSale: 18000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 7,
@@ -96,6 +103,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-01-01",
       priceSale: 10000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 8,
@@ -106,6 +114,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-01",
       priceSale: 16000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 9,
@@ -116,6 +125,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-01",
       priceSale: 18900000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 10,
@@ -126,6 +136,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-01",
       priceSale: 13400000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 11,
@@ -137,6 +148,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-01",
       priceSale: 20000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
     {
       id: 12,
@@ -148,6 +160,7 @@ const ProductPage: React.FC = () => {
       createdAt: "2025-06-01",
       priceSale: 20000000,
       slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
+      category: "Sofa"
     },
   ];
 
