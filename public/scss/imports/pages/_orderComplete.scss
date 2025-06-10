@@ -1,261 +1,236 @@
-.order-complete-page {
-  background-color: #2a3a36;
-  color: #fff;
-  min-height: 100vh;
-  padding: 40px 0 80px;
 
-  .order-complete-content {
-    max-width: 800px;
-    margin: 0 auto;
+.order-Complete-context {
+  background-color: #283833;
+  height: 95dvh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  gap: 170px;
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  .order-Complete-text1 {
+    height: max-content;
+
+    h1 {
+
+      width: fit-content;
+      font-size: 64px;
+      color: #fff;
+      font-family: 'Be-B';
     }
+  }
 
-    // Logo Section
-    .logo-section {
-      margin-bottom: 40px;
-      text-align: center;
+  .order-Complete-text2 {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    row-gap: 100px;
+    align-items: center;
 
-      .logo {
-        img {
-          height: 40px;
-          width: auto;
-        }
-      }
-    }
 
-    // Thank You Section
-    .thank-you-section {
-      text-align: center;
-      margin-bottom: 30px;
-
-      .thank-you-title {
-        font-family: 'M-SB';
-        font-size: 32px;
+    .Complete-text2-1 {
+      h5 {
+        font-size: 48px;
         color: #fff;
-        margin-bottom: 20px;
-      }
-
-      .thank-you-script {
-        font-family: 'Script', cursive;
-        font-size: 60px;
-        color: #fff;
-        line-height: 1.2;
-      }
-    }
-
-    // Order Message
-    .order-message {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 50px;
-
-      p {
-        font-family: 'M-R';
-        font-size: 16px;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.8);
-      }
-    }
-
-    // Order Summary
-    .order-summary-container {
-      width: 100%;
-      margin-bottom: 50px;
-
-      .order-summary-card {
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 30px;
-        color: #333;
-        width: 100%;
-
-        .summary-title {
-          font-family: 'M-SB';
-          font-size: 20px;
-          color: #333;
-          margin-bottom: 25px;
-          text-align: center;
-        }
-
-        .summary-row {
-          display: flex;
-          justify-content: space-between;
-          padding: 15px 0;
-          border-bottom: 1px solid #eee;
-
-          .label {
-            font-family: 'M-R';
-            font-size: 16px;
-            color: #666;
-          }
-
-          .value {
-            font-family: 'M-M';
-            font-size: 16px;
-            color: #333;
-            text-align: right;
-
-            div {
-              margin-bottom: 5px;
-
-              &:last-child {
-                margin-bottom: 0;
-              }
-            }
-          }
-
-          &.total {
-            border-bottom: none;
-            padding-top: 20px;
-
-            .label {
-              font-family: 'M-SB';
-              font-size: 18px;
-              color: #333;
-            }
-
-            .value {
-              font-family: 'M-SB';
-              font-size: 20px;
-              color: #333;
-            }
-          }
-        }
-
-        .view-order-btn {
-          display: block;
-          width: 100%;
-          height: 50px;
-          background-color: #F5A623;
-          border: none;
-          border-radius: 4px;
-          color: #fff;
-          font-family: 'M-SB';
-          font-size: 16px;
-          text-align: center;
-          line-height: 50px;
-          text-decoration: none;
-          margin-top: 25px;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: darken(#F5A623, 10%);
-          }
-        }
-      }
-    }
-
-    // Contact Section
-    .contact-section {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 40px;
-
-      p {
-        font-family: 'M-R';
-        font-size: 16px;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 20px;
-      }
-
-      .contact-info {
         font-family: 'M-M';
-        font-size: 16px;
-        color: #fff;
-        
-        .email, .phone {
-          margin-bottom: 10px;
-        }
       }
     }
 
-    // Action Buttons
-    .action-buttons {
-      display: flex;
-      gap: 20px;
+    .Complete-text2-2 {
+      h4 {
+        font-size: 128px;
+        color: #fff;
+        font-family: 'Mr Bedfort';
+      }
+    }
+  }
+
+  .order-Complete-text3 {
+    p {
+      font-family: 'Be-R';
+      font-size: 20px;
+      color: #fff;
       justify-content: center;
-      margin-top: 20px;
-
-      .btn-home, .btn-continue-shopping {
-        display: inline-block;
-        padding: 12px 25px;
-        border-radius: 4px;
-        font-family: 'M-M';
-        font-size: 16px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-      }
-
-      .btn-home {
-        background-color: transparent;
-        border: 1px solid #fff;
-        color: #fff;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-      }
-
-      .btn-continue-shopping {
-        background-color: #F5A623;
-        color: #fff;
-        border: 1px solid #F5A623;
-
-        &:hover {
-          background-color: darken(#F5A623, 10%);
-          border-color: darken(#F5A623, 10%);
-        }
+      text-align: center;
+      line-height: 35px;
+      
+    }
+    .text3-2{
+      span{
+        width: 300px;
+      padding-bottom: 30px;
+      border-bottom: 3px solid #ffffff;
+      color: #fff;
+      display: block;
+      text-align: center;
+      margin: 0 auto;
+      align-items: center;
       }
     }
-  }
 
-  // Responsive Styles
-  @media (max-width: $md-max) {
-    padding: 30px 0 60px;
 
-    .order-complete-content {
-      .thank-you-section {
-        .thank-you-title {
-          font-size: 28px;
-        }
-
-        .thank-you-script {
-          font-size: 50px;
-        }
-      }
-    }
-  }
-
-  @media (max-width: $sm-max) {
-    padding: 20px 0 40px;
-
-    .order-complete-content {
-      .thank-you-section {
-        .thank-you-title {
-          font-size: 24px;
-        }
-
-        .thank-you-script {
-          font-size: 40px;
-        }
-      }
-
-      .action-buttons {
-        flex-direction: column;
-        width: 100%;
-        max-width: 300px;
-        gap: 15px;
-
-        .btn-home, .btn-continue-shopping {
-          width: 100%;
-          text-align: center;
-        }
-      }
-    }
   }
 }
+.Order-Complete-Bill{
+  margin-top: 120px;
+}
+ .Order-complete-right {
+    width: 40%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 30px;
+    text-align: center;
+
+
+    .complete-right-bill {
+      display: flex;
+      flex-direction: column;
+      row-gap: 20px;
+
+      h4 {
+        font-size: 24px;
+        font-family: 'M-B';
+
+      }
+
+      &-voucher {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        font-size: 16px;
+        font-family: 'Be-R';
+        padding-bottom: 20px;
+        border-bottom: 1px solid #D9D9D9;
+
+        .voucher1 {
+          font-family: 'Be-M';
+          font-size: 18px;
+          color: #000000;
+        }
+      }
+
+      &-shipping {
+        display: flex;
+        justify-content: space-between;
+        font-size: 16px;
+        font-family: 'Be-R';
+        padding-bottom: 20px;
+        border-bottom: 1px solid #D9D9D9;
+
+        .shipping1 {
+          font-family: 'Be-M';
+          font-size: 18px;
+          color: #000000;
+        }
+      }
+
+      &-discount {
+        display: flex;
+        justify-content: space-between;
+        font-size: 16px;
+        font-family: 'Be-R';
+        padding-bottom: 20px;
+        border-bottom: 1px solid #D9D9D9;
+
+        .discount1 {
+          font-family: 'Be-M';
+          font-size: 18px;
+          color: #000000;
+        }
+      }
+
+      &-discount-code {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 16px;
+        font-family: 'Be-R';
+        gap: 10px;
+
+        input {
+          width: 350px;
+          height: 40px;
+          border: 1px solid #CBD5E1;
+          border-radius: 6px;
+          padding-left: 10px;
+          color: #94A3B8;
+          outline: invert(#F0A00A);
+        }
+
+        button {
+          width: 88px;
+          height: 40px;
+          background-color: #F0A00A;
+          border: none;
+          color: #fff;
+          font-size: 14px;
+          border-radius: 8px;
+        }
+
+      }
+
+      &-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 20px;
+        font-family: 'Be-B';
+
+        .bill-total1 {
+          font-size: 20px;
+          color: #8C8A8A;
+          font-family: "Be-SB";
+        }
+
+        .bill-total1 {
+          font-size: 20px;
+          color: #8C8A8A;
+          font-family: "Be-SB";
+        }
+      }
+
+      &-button {
+        margin-top: 20px;
+
+        button {
+          background-color: #F0A00A;
+          border: none;
+          color: #fff;
+          font-size: 18px;
+          font-family: 'Be-B';
+          width: 100%;
+          height: 55px;
+          border-radius: 10px;
+          transition: all 0.4s ease;
+
+          &:hover {
+            background-color: #f0b339;
+            color: #fff;
+          }
+        }
+
+      }
+    }
+  }
+  .Order-complete-center{
+    width: 700px; 
+    margin: 0 auto;
+    padding-top: 50px;
+
+    span{
+      font-size: 20px;
+      font-family: 'Be-R';
+    }
+
+    .center-text{
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+  }

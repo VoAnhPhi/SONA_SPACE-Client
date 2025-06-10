@@ -1,6 +1,6 @@
 /* box-produúc */
 .section-box-products {
-  padding: 40px 0;
+
   width: 100%;
   margin: 0 auto;
 
@@ -183,33 +183,303 @@
         }
 
         .cart-button {
-         
+
 
           button {
-          padding: 13px 32px;
-          border: 1px solid #D9D9D9;
-          border-radius: 3px;
-          cursor: pointer;
-          transition: all 0.3s ease;
+            padding: 13px 32px;
+            border: 1px solid #D9D9D9;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             border: 1px solid #d9d9d9;
             background-color: #fff;
             font-size: 12px;
             font-family: 'Be-M';
+
+
 
             &:hover {
               background-color: #F0A00A;
               transition: all 0.3s ease;
               color: #fff;
             }
+
           }
+
+
         }
       }
     }
   }
 
-  @include sm {
+  @include lg {
     .box-products-container {
-      grid-template-columns: repeat(2, 1fr);
+      .box-products-frame {
+        .products-frame-cart {
+          gap: 2px;
+          .cart-price {
+            .price1{
+              font-size: 14px
+            }
+            .price2{
+              font-size: 16px
+            }
+          }
+          .cart-button {
+            button {
+              padding: 10px 22px;
+            }
+          }
+
+        }
+      }
+    }
+  }
+ @include md {
+    .box-products-container {
+      .box-products-frame {
+        .products-frame-news{
+          .news-t{
+            .news-tt,
+            .news-tt-1{
+              
+              font-size: 8px;
+            }
+          }
+        }
+        .products-frame-image{
+          a{
+            img {
+              width: 60%;
+            }
+          }
+        }
+        .products-frame-name{
+          span{
+            font-size: 14px;
+          }
+        }
+        .products-frame-description{
+          span{
+            font-size: 14px;
+          }
+        }
+        .products-frame-color{
+          .color-name{
+            font-size: 14px;
+          }
+          .color-section{
+            .color-1,.color-2,.color-3{
+              width: 15px;
+              height: 15px;
+            }
+          }
+        }
+        .products-frame-cart {
+          gap: 2px;
+          .cart-price {
+            .price1{
+              font-size: 11px
+            }
+            .price2{
+              font-size: 13px
+            }
+          }
+          .cart-button {
+            button {
+              padding: 8px 12px;
+              font-size: 10px
+            }
+          }
+
+        }
+      }
+    }
+  }
+   @include sm {
+    .box-products-container {
+        grid-template-columns: repeat(2, 1fr);
+      .box-products-frame {
+        .products-frame-news{
+          .news-t{
+            .news-tt,
+            .news-tt-1{
+              
+              font-size: 12px;
+            }
+          }
+        }
+        .products-frame-image{
+          a{
+            img {
+              width: 70%;
+            }
+          }
+        }
+        .products-frame-name{
+          span{
+            font-size: 16px;
+          }
+        }
+        .products-frame-description{
+          span{
+            font-size: 16px;
+          }
+        }
+        .products-frame-color{
+          .color-name{
+            font-size: 16px;
+          }
+          .color-section{
+            .color-1,.color-2,.color-3{
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+        .products-frame-cart {
+          gap: 2px;
+          .cart-price {
+            .price1{
+              font-size: 14px
+            }
+            .price2{
+              font-size: 16px
+            }
+          }
+          .cart-button {
+            button {
+              padding: 10px 22px;
+              font-size: 14px
+            }
+          }
+
+        }
+      }
+    }
+  }
+  @include xs {
+    .box-products-container {
+        grid-template-columns: repeat(2, 1fr);
+      .box-products-frame {
+        .products-frame-news{
+          .news-t{
+            .news-tt,
+            .news-tt-1{
+              
+              font-size: 10px;
+            }
+          }
+        }
+        .products-frame-image{
+          a{
+            img {
+              width: 70%;
+            }
+          }
+        }
+        .products-frame-name{
+          span{
+            font-size: 14px;
+          }
+        }
+        .products-frame-description{
+          span{
+            font-size: 14px;
+          }
+        }
+        .products-frame-color{
+          .color-name{
+            font-size: 14px;
+          }
+          .color-section{
+            .color-1,.color-2,.color-3{
+              width: 18px;
+              height: 18px;
+            }
+          }
+        }
+        .products-frame-cart {
+          gap: 2px;
+          .cart-price {
+            .price1{
+              font-size: 10px
+            }
+            .price2{
+              font-size: 14px
+            }
+          }
+          .cart-button {
+            button {
+              padding: 8px 15px;
+              font-size: 12px
+            }
+          }
+
+        }
+      }
+    }
+  }
+    @include xxs {
+    .box-products-container {
+        grid-template-columns: repeat(2, 1fr);
+      .box-products-frame {
+        .products-frame-news{
+          .news-t{
+            .news-tt,
+            .news-tt-1{
+              
+              font-size: 10px;
+            }
+          }
+        }
+        .products-frame-image{
+          a{
+            img {
+              width: 70%;
+            }
+          }
+        }
+        .products-frame-name{
+          span{
+            font-size: 14px;
+          }
+        }
+        .products-frame-description{
+          span{
+            font-size: 16px;
+          }
+        }
+        .products-frame-color{
+          .color-name{
+            font-size: 16px;
+          }
+          .color-section{
+            .color-1,.color-2,.color-3{
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+        .products-frame-cart {
+          gap: 2px;
+          .cart-price {
+            .price1{
+              font-size: 14px
+            }
+            .price2{
+              font-size: 16px
+            }
+          }
+          .cart-button {
+            button {
+              padding: 8px 12px;
+              font-size: 14px
+            }
+          }
+
+        }
+      }
     }
   }
 }

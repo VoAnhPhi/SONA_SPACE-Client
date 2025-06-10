@@ -1,4 +1,3 @@
-
 /* box-policy */
 .box-policy {
   padding: 50px 0;
@@ -17,8 +16,8 @@
 
     .policy-text {
       margin: 40px 0 0 20px;
-            font-family: 'M-SB';
-            font-size: 20px;
+      font-family: 'M-SB';
+      font-size: 20px;
     }
 
     p {
@@ -27,7 +26,7 @@
       font-family: 'Be-R';
       font-size: 16px;
     }
-    
+
 
   }
 
@@ -54,8 +53,62 @@
       font-size: 18px;
     }
 
-     &:hover{
-        background-color: white;
-      }
+    &:hover {
+      background-color: white;
+    }
   }
 }
+
+@include md {
+  .box-policy{
+    .box-policy-1{
+        height: 100%;
+      .policy-text{
+        font-size: 16px;
+      }
+
+    }
+     .box-policy-2{
+        height: fit-content;
+        .policy-text{
+          font-size: 16px;
+      }
+      img{
+        margin: 30px 0 0 20px;
+      }
+      .p{
+        margin: 10px 20px 30px 20px;
+        font-size: 14px;
+      }
+     }
+  }
+}
+
+@include sm {
+  .box-policy{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    .box-policy-1{
+        height: 100%;
+      .policy-text{
+        margin: 50px 0 0 20px;
+        font-size: 16px;
+      }
+
+    }
+     .box-policy-2{
+        height: fit-content;
+        .policy-text{
+          font-size: 16px;
+      }
+      img{
+        margin: 30px 0 0 20px;
+      }
+      .p{
+        margin: 10px 20px 30px 20px;
+        font-size: 14px;
+      }
+     }
+  }
+}
+

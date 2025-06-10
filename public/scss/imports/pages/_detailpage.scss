@@ -30,10 +30,7 @@
 
   .detail-image {
     width: 60%;
-    max-height: 700px;
-    /* hoặc chiều cao bạn muốn cho phần cuộn */
-    overflow-y: auto;
-    // overflow: hidden;
+
   }
 
 }
@@ -169,6 +166,9 @@
 .detail-content {
   width: 40%;
   padding: 0 60px;
+  position: sticky;
+  height: fit-content;
+  top: 100px;
 
   .content-name {
     font-family: 'M-B';

@@ -116,9 +116,21 @@ const PopularCategory = () => {
     );
   }
 
-  // Chia danh mục thành 2 nhóm: 2 danh mục đầu và các danh mục còn lại
-  const topCategories = categories.slice(0, 2);
-  const remainingCategories = categories.slice(2);
+
+    <>
+      {/* Header/Navigation */}
+      <div className="PopularCategory-full">
+        <div className="container">
+          <div className="category-of-products">
+
+            <div className="category-of-products-s1">
+              <div className="products-s1-frame-1">
+                <div className="frame-1-text">
+                  <a className="frame-1-text1">Các danh mục sản
+                    phẩm
+                    phổ biến nhất</a>
+                  <a className="frame-1-text2">Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay</a>
+                </div>
 
   return (
     <section className="PopularCategory-full">
@@ -207,6 +219,8 @@ const PopularCategory = () => {
         </div>
       </div>
     </section>
+    </>
+
   );
 };
 
