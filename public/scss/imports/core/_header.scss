@@ -93,11 +93,12 @@
                         opacity: 0;
                         visibility: hidden;
                         transition: all 0.3s ease;
-                        position: absolute;
-                        width: 100dvw;
-                        top: 0;
+                        position: fixed;
+                        width: 100%;
+                        top: 70px;
                         left: 0;
-                        margin-top: 70px;
+                        right: 0;
+                        margin-top: 0;
                         background-color: #fff;
                         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                         padding: 20px;
@@ -201,6 +202,12 @@
     .header-actions {
         display: flex;
         align-items: center;
+        height: 100%;
+
+        .icons {
+            height: 100%;
+            align-content: center;
+        }
 
         .btn-icon {
             background: none;
@@ -216,10 +223,11 @@
 
             .sub-search {
                 display: none;
-                position: absolute;
+                position: fixed;
                 left: 0;
-                width: 100dvw;
-                top: 100%;
+                right: 0;
+                width: 100%;
+                top: 80px;
                 background-color: #fff;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                 padding: 30px;
@@ -403,14 +411,54 @@
                     height: 17px;
                 }
             }
+
+            .main-nav {
+                display: none;
+            }
+        }
+
+        &-actions {
+            position: relative;
         }
 
         &-actions-icons {
-            display: none;
+            display: flex;
+            height: 100%;
+            align-content: center;
+
+            button {
+                .sub-search {
+                    left: auto !important;
+                    right: 0 !important;
+
+                    .search-content {
+                        .popular-products {
+                            .product-row {
+                                .product-item {
+                                    &:nth-child(2n+4) {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         &-actions-buttons {
             display: none;
+        }
+
+        &-actions-separator {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-60%);
+            display: block;
+            width: 1px;
+            height: 20px;
+            background-color: #fff;
         }
 
         &-hamburger {
@@ -433,9 +481,24 @@
 
         &-actions {
             position: relative;
+            display: flex;
 
             &-icons {
                 display: block;
+
+                button {
+                    .search-content {
+                        .popular-products {
+                            .product-row {
+                                .product-item {
+                                    &:nth-child(2n+2) {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -465,10 +528,47 @@
     }
 }
 
-@include mdX{
-    .header{
-        &-wrapper{
-            .main-nav{
+@include xs {
+    .header {
+        &-actions {
+            &-icons {
+                display: block;
+
+                .sub-search {
+                    .search-container {
+                        .search-content {
+                            flex-direction: column;
+                        }
+                    }
+                }
+
+                button {
+                    .search-content {
+                        .popular-products {
+                            .product-row {
+                                .product-item {
+                                    &:nth-child(n+4) {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+@include mdX {
+    .header {
+        &-actions {
+            position: relative;
+        }
+
+        &-wrapper {
+            .main-nav {
                 display: none;
             }
         }

@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import GetInTouch from "../../components/GetInTouch";
 import PopularCategory from "../../components/PopularCategory";
-import CategoryList from '../../components/CategoryList';
+import CategoryList from "../../components/CategoryList";
 
 const HomePage = () => {
   return (
@@ -22,7 +22,7 @@ const HomePage = () => {
         </section>
 
         {/* Popular Categories - Hiển thị các danh mục phổ biến */}
-        <PopularCategory />
+        {/* <PopularCategory /> */}
 
         {/* All Categories - Hiển thị tất cả danh mục */}
         <section className="all-categories-section">
