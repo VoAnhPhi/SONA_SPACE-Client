@@ -1,9 +1,13 @@
+import React from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import CategorySlider from "../../components/CategorySlider";
 import ProductSlider from "../../components/ProductSlider";
 import GetInTouch from "../../components/GetInTouch";
+import ProductsByCategory from "../../components/ProductsByCategory";
+import PopularCategory from "../../components/PopularCategory";
+import CategoryList from '../../components/CategoryList';
 
 const HomePage = () => {
   return (
@@ -79,6 +83,7 @@ const HomePage = () => {
             <h2 className="section-title">Danh Mục Sản Phẩm</h2>
 
             <CategorySlider />
+            <ProductsByCategory />
           </div>
         </section>
 
@@ -103,6 +108,13 @@ const HomePage = () => {
 
         {/* Contact Section */}
         <GetInTouch />
+
+        <section className="categories-section">
+          <div className="container">
+            <h2 className="section-title">Danh mục sản phẩm</h2>
+            <CategoryList limit={6} showProductCount={true} />
+          </div>
+        </section>
       </div>
       <Footer />
     </>

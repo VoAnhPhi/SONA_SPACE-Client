@@ -25,11 +25,16 @@ export interface ProductSpecification {
 }
 
 export interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  image?: string;
-  parentId?: number;
+  category_id: number;
+  category_name: string;
+  category_slug: string;
+  category_image: string;
+  category_priority: number;
+  category_status: number;
+  updated_at: string;
+  created_at: string;
+  deleted_at: string | null;
+  product_count: number;
   children?: Category[];
 }
 
