@@ -27,79 +27,62 @@ const OrderComplete: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="order-complete-page">
-        <div className="order-complete-content">
-          <div className="container">
-            <div className="logo-section">
-              <div className="logo">
-                <img src="/images/logo.svg" alt="Sona Space" />
+      <div className="order-Complete-context">
+        <div className="order-Complete-text1">
+          <h1>sona space</h1>
+        </div>
+        <div className="order-Complete-text2">
+          <div className="Complete-text2-1">
+            <h5>Cảm ơn bạn đã mua hàng</h5>
+          </div>
+          <div className="Complete-text2-2">
+            <h4>Mahalo</h4>
+          </div>
+        </div>
+        <div className="order-Complete-text3">
+          <p className="text3-1">Bạn sẽ sớm nhận được email xác nhận với thông tin chi tiết về đơn hàng của bạn. Nếu không nhận </p>
+          <p className="text3-2">được email, vui lòng kiểm tra thư mục thư rác hoặc liên hệ với chúng tôi.
+            <span></span>
+          </p>
+        </div>
+      </div>
+      <div className="Order-Complete-Bill">
+        <div className="container">
+          <div className="Order-complete-right">
+            <div className="complete-right-bill">
+              <h4>Tóm tắt đơn hàng</h4>
+              <div className="complete-right-bill-voucher">
+                <span className="voucher1">Mã đơn hàng</span>
+                <span className="voucher2">{orderSummary.orderId}</span>
+              </div>
+              <div className="complete-right-bill-shipping">
+                <span className="shipping1">Thời gian thanh toán</span>
+                <span className="shipping2">{orderSummary.orderDate}</span>
+              </div>
+              <div className="complete-right-bill-discount">
+                <span className="discount1">Sản phẩm đã mua</span>
+                <span className="discount2">{orderSummary.itemCount} sản phẩm</span>
+              </div>
+              <div className="complete-right-bill-total">
+                <span className="total1">Tổng giá</span>
+                <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
+              </div>
+              <div className="complete-right-bill-button">
+                <Link to={``}><button type="submit" className="cart-button">Xem chi tiết đơn hàng</button></Link>
               </div>
             </div>
-            
-            <div className="thank-you-section">
-              <h1 className="thank-you-title">Cảm ơn bạn đã mua hàng</h1>
-              <div className="thank-you-script">Mahalo</div>
-            </div>
-            
-            <div className="order-message">
-              <p>
-                Bạn sẽ sớm nhận được email xác nhận với thông tin chi tiết về đơn hàng của bạn. 
-                Nếu không nhận được email, vui lòng kiểm tra thư mục thư rác hoặc liên hệ với chúng tôi.
-              </p>
-            </div>
-            
-            <div className="order-summary-container">
-              <div className="order-summary-card">
-                <h2 className="summary-title">Tóm tắt đơn hàng</h2>
-                
-                <div className="summary-row">
-                  <div className="label">Mã đơn hàng</div>
-                  <div className="value">{orderSummary.orderId}</div>
-                </div>
-                
-                <div className="summary-row">
-                  <div className="label">Thời gian thanh toán</div>
-                  <div className="value">
-                    <div>12 giờ 50 phút</div>
-                    <div>{orderSummary.orderDate}</div>
-                  </div>
-                </div>
-                
-                <div className="summary-row">
-                  <div className="label">Sản phẩm đã mua</div>
-                  <div className="value">{orderSummary.itemCount} sản phẩm</div>
-                </div>
-                
-                <div className="summary-row total">
-                  <div className="label">Tổng giá</div>
-                  <div className="value">{formatPrice(orderSummary.total)} đ</div>
-                </div>
-                
-                <Link to="/don-hang" className="view-order-btn">
-                  Xem chi tiết đơn hàng
-                </Link>
-              </div>
-            </div>
-            
-            <div className="contact-section">
-              <p>
-                Cảm ơn bạn đã mua sắm với chúng tôi! Nếu bạn có bất kỳ câu hỏi hoặc 
-                thắc mắc nào, vui lòng liên hệ với nhóm hỗ trợ khách hàng của chúng 
-                tôi theo địa chỉ:
-              </p>
-              <div className="contact-info">
-                <div className="email">Email: sona.furniture@gmail.com</div>
-                <div className="phone">Số điện thoại: 0900909090</div>
-              </div>
-            </div>
-            
-            <div className="action-buttons">
-              <Link to="/" className="btn-home">Quay về trang chủ</Link>
-              <Link to="/san-pham" className="btn-continue-shopping">Tiếp tục mua sắm</Link>
+          </div>
+          <div className="Order-complete-center">
+            <span>Cảm ơn bạn đã mua sắm với chúng tôi! Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng liên hệ với nhóm hỗ trợ khách hàng của chúng tôi theo địa chỉ: </span>
+            <div className="center-text">
+              <span>Email: sona.furniture@gmail.com</span>
+              <span>Số điện thoại: 0900909090</span>
             </div>
           </div>
         </div>
       </div>
+
+
       <Footer />
     </>
   );
