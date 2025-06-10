@@ -78,4 +78,24 @@
       }
     }
   }
+
+  @include md {
+    .get-in-touch__box {
+      grid-template-columns: 1fr;
+
+      .get-in-touch__intro {
+        height: 100%;
+      }
+
+      .get-in-touch__options {
+        padding: 0;
+      }
+    }
+  }
+
+  @include sm {
+  }
+
+  @include xs {
+  }
 }
