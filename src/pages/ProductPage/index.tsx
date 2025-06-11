@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import PopularCategory from "../../components/PopularCategory";
-import Filter from "../../components/filter";
+import Filter from "../../components/Filter";
 import ListProduct from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
