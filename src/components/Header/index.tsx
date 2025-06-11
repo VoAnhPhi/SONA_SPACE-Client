@@ -1,4 +1,37 @@
+import React, { useState, useEffect } from "react";
+
 const Header = () => {
+  // State để lưu trạng thái active của nav item
+  const [activeNavItem, setActiveNavItem] = useState<string>("/");
+
+  // Khi component mount, kiểm tra localStorage và pathname hiện tại để set active
+  useEffect(() => {
+    // Lấy active path từ localStorage nếu có
+    const savedActivePath = localStorage.getItem("activeNavPath");
+    
+    // Lấy pathname hiện tại từ URL
+    const currentPath = window.location.pathname;
+    
+    // Nếu có savedActivePath và người dùng không đang ở một trang khác, sử dụng savedActivePath
+    // Ngược lại, sử dụng currentPath
+    if (savedActivePath && currentPath === "/") {
+      setActiveNavItem(savedActivePath);
+    } else {
+      setActiveNavItem(currentPath);
+    }
+  }, []);
+
+  // Hàm xử lý khi click vào nav item
+  const handleNavClick = (path: string): void => {
+    setActiveNavItem(path);
+    localStorage.setItem("activeNavPath", path);
+  };
+
+  // Kiểm tra xem một path có active không
+  const isActive = (path: string): boolean => {
+    return activeNavItem === path;
+  };
+
   return (
     <>
       {/* Header/Navigation */}
@@ -6,19 +39,27 @@ const Header = () => {
         <div className="container">
           <div className="header-wrapper">
             <div className="logo">
-              <a href="/">
+              <a href="/" onClick={() => handleNavClick("/")}>
                 <img src="/images/logo.png" alt="SONA Space" />
               </a>
             </div>
             <nav className="main-nav">
               <ul>
                 <li>
-                  <a href="/" className="active">
+                  <a 
+                    href="/" 
+                    className={isActive("/") ? "active" : ""} 
+                    onClick={() => handleNavClick("/")}
+                  >
                     Trang Chủ
                   </a>
                 </li>
                 <li>
-                  <a href="/san-pham">
+                  <a 
+                    href="/san-pham" 
+                    className={isActive("/san-pham") ? "active" : ""} 
+                    onClick={() => handleNavClick("/san-pham")}
+                  >
                     {" "}
                     Sản Phẩm
                     <img src="../public/images/icons/arrow-down.svg" alt="" />
@@ -28,44 +69,44 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               <li>
-                                <a href="/san-pham/sofa">Sofa</a>
+                                <a href="/san-pham/sofa" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/sofa"); }}>Sofa</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ban-lam-viec">
+                                <a href="/san-pham/ban-lam-viec" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ban-lam-viec"); }}>
                                   Bàn làm việc
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tab-dau-giuong">
+                                <a href="/san-pham/tab-dau-giuong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tab-dau-giuong"); }}>
                                   Tab đầu giường
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tu-trang-tri">
+                                <a href="/san-pham/tu-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tu-trang-tri"); }}>
                                   Tủ trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tham">Thảm</a>
+                                <a href="/san-pham/tham" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tham"); }}>Thảm</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-don">Ghế đơn</a>
+                                <a href="/san-pham/ghe-don" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-don"); }}>Ghế đơn</a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-ban-an">Đèn bàn ăn</a>
+                                <a href="/san-pham/den-ban-an" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-ban-an"); }}>Đèn bàn ăn</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-van-phong">
+                                <a href="/san-pham/ghe-van-phong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-van-phong"); }}>
                                   Ghế văn phòng
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-trang-tri">
+                                <a href="/san-pham/den-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-trang-tri"); }}>
                                   Đèn trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ke-sach">Kệ sách</a>
+                                <a href="/san-pham/ke-sach" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ke-sach"); }}>Kệ sách</a>
                               </li>
                             </ul>
                           </div>
@@ -151,7 +192,11 @@ const Header = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/khong-gian">
+                  <a 
+                    href="/khong-gian" 
+                    className={isActive("/khong-gian") ? "active" : ""} 
+                    onClick={() => handleNavClick("/khong-gian")}
+                  >
                     Không Gian
                     <img src="../public/images/icons/arrow-down.svg" alt="" />
                     <div className="sub-menu">
@@ -160,44 +205,44 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               <li>
-                                <a href="/san-pham/sofa">Sofa</a>
+                                <a href="/san-pham/sofa" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/sofa"); }}>Sofa</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ban-lam-viec">
+                                <a href="/san-pham/ban-lam-viec" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ban-lam-viec"); }}>
                                   Bàn làm việc
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tab-dau-giuong">
+                                <a href="/san-pham/tab-dau-giuong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tab-dau-giuong"); }}>
                                   Tab đầu giường
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tu-trang-tri">
+                                <a href="/san-pham/tu-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tu-trang-tri"); }}>
                                   Tủ trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tham">Thảm</a>
+                                <a href="/san-pham/tham" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tham"); }}>Thảm</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-don">Ghế đơn</a>
+                                <a href="/san-pham/ghe-don" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-don"); }}>Ghế đơn</a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-ban-an">Đèn bàn ăn</a>
+                                <a href="/san-pham/den-ban-an" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-ban-an"); }}>Đèn bàn ăn</a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-van-phong">
+                                <a href="/san-pham/ghe-van-phong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-van-phong"); }}>
                                   Ghế văn phòng
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-trang-tri">
+                                <a href="/san-pham/den-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-trang-tri"); }}>
                                   Đèn trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ke-sach">Kệ sách</a>
+                                <a href="/san-pham/ke-sach" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ke-sach"); }}>Kệ sách</a>
                               </li>
                             </ul>
                           </div>
@@ -283,19 +328,31 @@ const Header = () => {
                   </a>
                 </li>
                 {/* <li>
-                  <a href="/dich-vu-thiet-ke">Thiết Kế Nội Thất</a>
+                  <a href="/dich-vu-thiet-ke" className={isActive("/dich-vu-thiet-ke") ? "active" : ""} onClick={() => handleNavClick("/dich-vu-thiet-ke")}>Thiết Kế Nội Thất</a>
                 </li>
                 <li>
-                  <a href="/ho-so-kien-truc">Hồ Sơ Kiến Trúc</a>
+                  <a href="/ho-so-kien-truc" className={isActive("/ho-so-kien-truc") ? "active" : ""} onClick={() => handleNavClick("/ho-so-kien-truc")}>Hồ Sơ Kiến Trúc</a>
                 </li> */}
                 <li>
-                  <a href="/tin-tuc">Tin Tức</a>
+                  <a 
+                    href="/tin-tuc" 
+                    className={isActive("/tin-tuc") ? "active" : ""} 
+                    onClick={() => handleNavClick("/tin-tuc")}
+                  >
+                    Tin Tức
+                  </a>
                 </li>
                 <li>
-                  <a href="/ve-chung-toi">Về Chúng Tôi</a>
+                  <a 
+                    href="/ve-chung-toi" 
+                    className={isActive("/ve-chung-toi") ? "active" : ""} 
+                    onClick={() => handleNavClick("/ve-chung-toi")}
+                  >
+                    Về Chúng Tôi
+                  </a>
                 </li>
                 {/* <li>
-                  <a href="/lien-he">Liên Hệ</a>
+                  <a href="/lien-he" className={isActive("/lien-he") ? "active" : ""} onClick={() => handleNavClick("/lien-he")}>Liên Hệ</a>
                 </li> */}
               </ul>
             </nav>
