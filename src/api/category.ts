@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { Category, PaginatedResponse, Product } from '../types';
 
 // Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
-const API_URL = 'http://localhost:3500/api';
+const API_URL = 'http://localhost:3501/api';
 
 // Hàm helper để kiểm tra và xử lý response
 const handleApiResponse = (response: any, errorMessage: string) => {

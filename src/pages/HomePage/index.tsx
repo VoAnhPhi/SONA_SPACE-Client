@@ -4,8 +4,7 @@ import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import GetInTouch from "../../components/GetInTouch";
-import PopularCategory from "../../components/PopularCategory";
-import CategoryList from "../../components/CategoryList";
+import CategorySlider from "../../components/CategorySlider";
 
 const HomePage = () => {
   return (
@@ -17,23 +16,6 @@ const HomePage = () => {
           <div className="container-fluid">
             <div className="banner-image">
               <img src="/images/hero-banner.png" alt="SONA Space Interior" />
-            </div>
-          </div>
-        </section>
-
-        {/* Popular Categories - Hiển thị các danh mục phổ biến */}
-        {/* <PopularCategory /> */}
-
-        {/* All Categories - Hiển thị tất cả danh mục */}
-        <section className="all-categories-section">
-          <div className="container">
-            <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
-            <CategoryList limit={4} showProductCount={true} />
-            <div className="view-all-categories">
-              <a href="/san-pham" className="btn btn-outline">
-                Xem tất cả danh mục
-                <img src="/images/icons/arrow-right-1.svg" alt="" />
-              </a>
             </div>
           </div>
         </section>
@@ -59,7 +41,11 @@ const HomePage = () => {
                     <h3>Nội Thất Cho Phòng Khách</h3>
                     <a href="/phong-khach" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
-                      <img src="/images/icons/arrow-right-1.svg" alt="" />
+                      <i>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z" />
+                        </svg>
+                      </i>
                     </a>
                   </div>
                 </div>
@@ -71,7 +57,11 @@ const HomePage = () => {
                     <h3>Nội Thất Cho Phòng Ngủ</h3>
                     <a href="/phong-ngu" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
-                      <img src="/images/icons/arrow-right-1.svg" alt="" />
+                      <i>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z" />
+                        </svg>
+                      </i>
                     </a>
                   </div>
                 </div>
@@ -83,12 +73,25 @@ const HomePage = () => {
                     <h3>Nội Thất Cho Phòng Ăn</h3>
                     <a href="/phong-an" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
-                      <img src="/images/icons/arrow-right-1.svg" alt="" />
+                      <i>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z" />
+                        </svg>
+                      </i>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* All Categories - Hiển thị tất cả danh mục */}
+        <section className="all-categories-section">
+          <div className="container">
+            <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
+            {/* <CategoryList showProductCount={true} /> */}
+            <CategorySlider showProductCount={true} />
           </div>
         </section>
 

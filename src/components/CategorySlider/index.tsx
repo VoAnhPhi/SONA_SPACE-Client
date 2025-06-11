@@ -1,85 +1,105 @@
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { fetchAllCategories, formatCategoryForDisplay } from '../../services/categoryService';
+import type { Category } from '../../types';
+import { Link } from 'react-router-dom';
 
-interface CategoryProps {
-  id: string;
-  name: string;
-  image: string;
-  slug: string;
+interface CategorySliderProps {
+  limit?: number;
+  showProductCount?: boolean;
 }
 
-export default function CategorySlider() {
-  const categories: CategoryProps[] = [
-    {
-      id: "latest-edition",
-      name: "Latest Edition",
-      image: "/images/image1.jpg",
-      slug: "latest-edition",
-    },
-    {
-      id: "sofa",
-      name: "Sofas",
-      image: "/images/image2.jpg",
-      slug: "sofa",
-    },
-    {
-      id: "chair",
-      name: "Ghế",
-      image: "/images/image3.jpg",
-      slug: "chair",
-    },
-    {
-      id: "table",
-      name: "Bàn",
-      image: "/images/image4.jpg",
-      slug: "table",
-    },
-    {
-      id: "wardrobe",
-      name: "Tủ",
-      image: "/images/image5.jpg",
-      slug: "wardrobe",
-    },
-    {
-      id: "bed",
-      name: "Giường",
-      image: "/images/image6.jpg",
-      slug: "bed",
-    },
-    {
-      id: "garden-table",
-      name: "Bàn Ghế Sân Vường",
-      image: "/images/image7.jpg",
-      slug: "garden-table",
-    },
-    {
-      id: "carpet",
-      name: "Thảm",
-      image: "/images/image8.jpg",
-      slug: "carpet",
-    },
-    {
-      id: "accessory",
-      name: "Phụ Kiện",
-      image: "/images/image9.jpg",
-      slug: "accessory",
-    },
-    {
-      id: "light",
-      name: "Đèn",
-      image: "/images/image10.jpg",
-      slug: "light",
-    },
-  ];
+const CategorySlider: React.FC<CategorySliderProps> = ({
+  limit,
+  showProductCount = true
+}) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string>('');
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchAllCategories();
+        setDebugInfo(prev => `${prev}\nReceived ${data.length} categories`);
+
+        // Apply limit if provided
+        const limitedData = limit ? data.slice(0, limit) : data;
+        setCategories(limitedData);
+        setError(null);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        setError(`Failed to load categories: ${errorMessage}`);
+        setDebugInfo(prev => `${prev}\nError: ${errorMessage}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, [limit]);
+
+  // Debug info component (only shown in development) | Just Opening when something went wrong and we need to debug.
+  const DebugInfo = () => {
+    const isDev = true; // Always show debug info for now
+    return isDev && debugInfo ? (
+      <div className="category-list-debug">
+        <details>
+          <summary>Debug Info</summary>
+          <pre>{debugInfo}</pre>
+        </details>
+      </div>
+    ) : null;
+  };
+
+  if (loading) {
+    return (
+      <div className="category-list-loading">
+        <div className="loading-spinner"></div>
+        <p>Đang tải danh mục sản phẩm...</p>
+        {/* <DebugInfo /> */}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="category-list-error">
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Thử lại</button>
+        <DebugInfo />
+      </div>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <div className="category-list-empty">
+        <p>Không tìm thấy danh mục sản phẩm nào</p>
+        <DebugInfo />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="categories-flex">
-        {categories.map((category) => (
-          <div key={category.id} className={`category-item`}>
-            <Link to={`/san-pham/${category.slug}`} className="category-link">
+        {categories.map((category: Category) => (
+          <div key={category.category_id} className={`category-item`}>
+            <Link to={`/san-pham/${category.category_slug}`} className="category-link">
               <div className="category-image">
-                <img src={category.image} alt={category.name} />
+                <img
+                  src={category.category_image}
+                  alt={category.category_name}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = '/images/image1.jpg'; // Fallback image
+                  }}
+                />
               </div>
-              <h3 className="category-name">{category.name}</h3>
+              <h3 className="category-name">{category.category_name}</h3>
             </Link>
           </div>
         ))}
@@ -87,3 +107,5 @@ export default function CategorySlider() {
     </>
   );
 }
+
+export default CategorySlider;

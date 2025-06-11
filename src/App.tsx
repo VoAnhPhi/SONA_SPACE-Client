@@ -24,7 +24,7 @@ import Policy from './pages/Policy'
 import News from './pages/News'
 import NewsDetail from './pages/NewsDetail'
 import NotFoundPage from './pages/404'
-import '../public/fonts/stylesheet.css'
+// import '../public/fonts/stylesheet.css'
 import TestPage from './pages/TestPage'
 
 function App() {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './styles.css';
+// import './styles.css';
 
-const API_URL = 'http://localhost:3500/api';
+const API_URL = 'http://localhost:3501/api';
 
 const ApiTest: React.FC = () => {
   const [apiStatus, setApiStatus] = useState<'loading' | 'online' | 'offline'>('loading');
