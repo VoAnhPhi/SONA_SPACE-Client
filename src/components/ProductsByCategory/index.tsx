@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchCategoryBySlug, fetchProductsByCategory } from '../../services/categoryService';
 import type { Category, Product } from '../../types';
-import './styles.css';
 
 // Set to true to enable debug information
 const IS_DEBUG_MODE = true;

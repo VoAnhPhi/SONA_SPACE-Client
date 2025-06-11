@@ -21,11 +21,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
     const loadCategories = async () => {
       try {
         setLoading(true);
-        setDebugInfo('Fetching categories...');
-        
-        console.log('CategoryList: Fetching categories');
         const data = await fetchAllCategories();
-        console.log('CategoryList: Received categories:', data);
         setDebugInfo(prev => `${prev}\nReceived ${data.length} categories`);
         
         // Apply limit if provided
@@ -36,7 +32,6 @@ const CategoryList: React.FC<CategoryListProps> = ({
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
         setError(`Failed to load categories: ${errorMessage}`);
         setDebugInfo(prev => `${prev}\nError: ${errorMessage}`);
-        console.error('Error loading categories:', err);
       } finally {
         setLoading(false);
       }
@@ -45,7 +40,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
     loadCategories();
   }, [limit]);
 
-  // Debug info component (only shown in development)
+  // Debug info component (only shown in development) | Just Opening when something went wrong and we need to debug.
   const DebugInfo = () => {
     const isDev = true; // Always show debug info for now
     return isDev && debugInfo ? (
@@ -89,7 +84,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
 
   return (
     <div className="category-list-container">
-      {/* <DebugInfo /> */}
+      {/* <DebugInfo />  | Just Opening when something went wrong and we need to debug. */}
       <div className="category-list">
         {categories.map((category) => {
           const formattedCategory = formatCategoryForDisplay(category);
