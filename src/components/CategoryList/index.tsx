@@ -89,11 +89,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
         {categories.map((category) => {
           const formattedCategory = formatCategoryForDisplay(category);
           return (
-            <Link 
-              to={`/danh-muc/${formattedCategory.slug}`} 
-              key={formattedCategory.id} 
-              className="category-item"
-            >
+            <Link to={`/danh-muc/${formattedCategory.slug}`} key={formattedCategory.id} className="category-item">
               <div className="category-image">
                 <img 
                   src={formattedCategory.image} 

@@ -217,14 +217,17 @@
       .box-products-frame {
         .products-frame-cart {
           gap: 2px;
+
           .cart-price {
-            .price1{
+            .price1 {
               font-size: 14px
             }
-            .price2{
+
+            .price2 {
               font-size: 16px
             }
           }
+
           .cart-button {
             button {
               padding: 10px 22px;
@@ -235,56 +238,70 @@
       }
     }
   }
- @include md {
+
+  @include md {
     .box-products-container {
       .box-products-frame {
-        .products-frame-news{
-          .news-t{
+        .products-frame-news {
+          .news-t {
+
             .news-tt,
-            .news-tt-1{
-              
+            .news-tt-1 {
+
               font-size: 8px;
             }
           }
         }
-        .products-frame-image{
-          a{
+
+        .products-frame-image {
+          a {
             img {
               width: 60%;
             }
           }
         }
-        .products-frame-name{
-          span{
+
+        .products-frame-name {
+          span {
             font-size: 14px;
           }
         }
-        .products-frame-description{
-          span{
+
+        .products-frame-description {
+          span {
             font-size: 14px;
           }
         }
-        .products-frame-color{
-          .color-name{
+
+        .products-frame-color {
+          .color-name {
             font-size: 14px;
           }
-          .color-section{
-            .color-1,.color-2,.color-3{
+
+          .color-section {
+
+            .color-1,
+            .color-2,
+            .color-3 {
               width: 15px;
               height: 15px;
             }
           }
         }
+
         .products-frame-cart {
           gap: 2px;
+
           .cart-price {
-            .price1{
+            .price1 {
               font-size: 11px
             }
-            .price2{
+
+            .price2 {
               font-size: 13px
             }
           }
+
           .cart-button {
             button {
               padding: 8px 12px;
@@ -296,57 +313,72 @@
       }
     }
   }
-   @include sm {
+
+  @include sm {
     .box-products-container {
-        grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+
       .box-products-frame {
-        .products-frame-news{
-          .news-t{
+        .products-frame-news {
+          .news-t {
+
             .news-tt,
-            .news-tt-1{
-              
+            .news-tt-1 {
+
               font-size: 12px;
             }
           }
         }
-        .products-frame-image{
-          a{
+
+        .products-frame-image {
+          a {
             img {
               width: 70%;
             }
           }
         }
-        .products-frame-name{
-          span{
+
+        .products-frame-name {
+          span {
             font-size: 16px;
           }
         }
-        .products-frame-description{
-          span{
+
+        .products-frame-description {
+          span {
             font-size: 16px;
           }
         }
-        .products-frame-color{
-          .color-name{
+
+        .products-frame-color {
+          .color-name {
             font-size: 16px;
           }
-          .color-section{
-            .color-1,.color-2,.color-3{
+
+          .color-section {
+
+            .color-1,
+            .color-2,
+            .color-3 {
               width: 20px;
               height: 20px;
             }
           }
         }
+
         .products-frame-cart {
           gap: 2px;
+
           .cart-price {
-            .price1{
+            .price1 {
               font-size: 14px
             }
-            .price2{
+
+            .price2 {
               font-size: 16px
             }
           }
+
           .cart-button {
             button {
               padding: 10px 22px;
@@ -358,57 +390,72 @@
       }
     }
   }
+
   @include xs {
     .box-products-container {
-        grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+
       .box-products-frame {
-        .products-frame-news{
-          .news-t{
+        .products-frame-news {
+          .news-t {
+
             .news-tt,
-            .news-tt-1{
-              
+            .news-tt-1 {
+
               font-size: 10px;
             }
           }
         }
-        .products-frame-image{
-          a{
+
+        .products-frame-image {
+          a {
             img {
               width: 70%;
             }
           }
         }
-        .products-frame-name{
-          span{
+
+        .products-frame-name {
+          span {
             font-size: 14px;
           }
         }
-        .products-frame-description{
-          span{
+
+        .products-frame-description {
+          span {
             font-size: 14px;
           }
         }
-        .products-frame-color{
-          .color-name{
+
+        .products-frame-color {
+          .color-name {
             font-size: 14px;
           }
-          .color-section{
-            .color-1,.color-2,.color-3{
+
+          .color-section {
+
+            .color-1,
+            .color-2,
+            .color-3 {
               width: 18px;
               height: 18px;
             }
           }
         }
+
         .products-frame-cart {
           gap: 2px;
+
           .cart-price {
-            .price1{
+            .price1 {
               font-size: 10px
             }
-            .price2{
+
+            .price2 {
               font-size: 14px
             }
           }
+
           .cart-button {
             button {
               padding: 8px 15px;
@@ -420,57 +467,72 @@
       }
     }
   }
-    @include xxs {
+
+  @include xxs {
     .box-products-container {
-        grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+
       .box-products-frame {
-        .products-frame-news{
-          .news-t{
+        .products-frame-news {
+          .news-t {
+
             .news-tt,
-            .news-tt-1{
-              
+            .news-tt-1 {
+
               font-size: 10px;
             }
           }
         }
-        .products-frame-image{
-          a{
+
+        .products-frame-image {
+          a {
             img {
               width: 70%;
             }
           }
         }
-        .products-frame-name{
-          span{
+
+        .products-frame-name {
+          span {
             font-size: 14px;
           }
         }
-        .products-frame-description{
-          span{
+
+        .products-frame-description {
+          span {
             font-size: 16px;
           }
         }
-        .products-frame-color{
-          .color-name{
+
+        .products-frame-color {
+          .color-name {
             font-size: 16px;
           }
-          .color-section{
-            .color-1,.color-2,.color-3{
+
+          .color-section {
+
+            .color-1,
+            .color-2,
+            .color-3 {
               width: 20px;
               height: 20px;
             }
           }
         }
+
         .products-frame-cart {
           gap: 2px;
+
           .cart-price {
-            .price1{
+            .price1 {
               font-size: 14px
             }
-            .price2{
+
+            .price2 {
               font-size: 16px
             }
           }
+
           .cart-button {
             button {
               padding: 8px 12px;

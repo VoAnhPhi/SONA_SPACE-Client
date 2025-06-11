@@ -663,22 +663,6 @@ section:nth-child(n+1) {
   margin-top: 74px;
 }
 
-section .section-title {
-  font-size: 32px;
-  font-family: M-B;
-  line-height: auto;
-  color: #221D00;
-  margin-bottom: 12px;
-}
-section p {
-  font-size: 18px;
-  font-family: Be-R;
-  line-height: auto;
-  color: #5E3E34;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
 .col-1,
 .col-2,
 .col-3,
