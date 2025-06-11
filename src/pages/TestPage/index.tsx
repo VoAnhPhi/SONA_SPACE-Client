@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ApiTest from '../../components/ApiTest';
 import ProductsByCategory from '../../components/ProductsByCategory';
-// import './styles.css';
+import './styles.css';
 
 const TestPage: React.FC = () => {
   const [categorySlug, setCategorySlug] = useState<string>('');

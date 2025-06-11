@@ -9,8 +9,7 @@ interface CategorySliderProps {
 }
 
 const CategorySlider: React.FC<CategorySliderProps> = ({
-  limit,
-  showProductCount = true
+  limit
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

@@ -148,12 +148,12 @@ section {
 //Custome Component [Title & Description]
 section {
     .section-title {
-        @include text(32px, M-B, auto, $dark-cl, null);
+        @include text(32px, M-B, normal, $dark-cl, null);
         margin-bottom: 12px;
     }
 
     p {
-        @include text(18px, Be-R, auto, $brown-cl, null);
+        @include text(18px, Be-R, normal, $dark-cl, null);
         text-align: center;
         margin-bottom: 32px;
     }
