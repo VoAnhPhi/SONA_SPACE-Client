@@ -28,7 +28,7 @@ const HomePage = () => {
         <section className="all-categories-section">
           <div className="container">
             <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
-            <CategoryList limit={6} showProductCount={true} />
+            <CategoryList limit={4} showProductCount={true} />
             <div className="view-all-categories">
               <a href="/san-pham" className="btn btn-outline">
                 Xem tất cả danh mục

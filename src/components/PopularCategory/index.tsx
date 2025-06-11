@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getFeaturedCategories, formatCategoryForDisplay } from "../../services/categoryService";
 import type { Category } from "../../types";
-import "./styles.css";
 
 export const PopularCategory = () => {
   const [categories, setCategories] = useState<Category[]>([]);

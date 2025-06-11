@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllCategories, formatCategoryForDisplay } from '../../services/categoryService';
 import type { Category } from '../../types';
 import { Link } from 'react-router-dom';
-import './styles.css';
 
 interface CategoryListProps {
   limit?: number;
@@ -64,7 +63,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
       <div className="category-list-loading">
         <div className="loading-spinner"></div>
         <p>Đang tải danh mục sản phẩm...</p>
-        <DebugInfo />
+        {/* <DebugInfo /> */}
       </div>
     );
   }
@@ -90,7 +89,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
 
   return (
     <div className="category-list-container">
-      <DebugInfo />
+      {/* <DebugInfo /> */}
       <div className="category-list">
         {categories.map((category) => {
           const formattedCategory = formatCategoryForDisplay(category);
@@ -107,7 +106,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
-                    target.src = '/images/placeholder.jpg'; // Fallback image
+                    target.src = '/images/product-1.jpg'; // Fallback image
                   }}
                 />
               </div>
