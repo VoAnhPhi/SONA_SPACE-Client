@@ -186,7 +186,7 @@ const ProductPage: React.FC = () => {
       </div>
 
       {/* PopularCategory */}
-      <PopularCategory />
+      {/* <PopularCategory /> */}
 
       {/* Filter Section */}
       <Filter />
