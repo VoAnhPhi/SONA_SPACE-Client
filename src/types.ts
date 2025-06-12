@@ -151,17 +151,24 @@ export interface Room {
 
 // News/Blog related interfaces
 export interface NewsArticle {
-  id: number;
-  title: string;
-  slug: string;
-  image: string;
-  summary: string;
-  content: string;
-  publishDate: string;
-  author?: string;
-  tags?: string[];
+  news_id: number;
+  news_name: string;
+  news_slug: string;
+  news_image: string;
+  news_summary: string;
+  news_content: string;
+  news_publishDate: string;
+  news_author?: string;
+  news_tags?: string[];
 }
-
+export interface NewsCategory {
+  news_category_id: number;
+  title: string;
+  news_category_slug: string;
+  news_category_status: string;
+  news_count: number;
+  name: string;
+}
 // API Response interfaces
 export interface ApiResponse<T> {
   success: boolean;
