@@ -6,7 +6,7 @@ import Filter from "../../components/Filter";
 import ListProduct from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/Seemore";
 
 interface ProductProps {
   id: number;

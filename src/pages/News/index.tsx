@@ -119,7 +119,7 @@ const News: React.FC<NewsProps> = ({
                     </li>
                   ))}
                 </ul> */}
-              <NewsCategories />
+              <NewsCategories limit={5} />
               {/* </div> */}
               {/* Recent post */}
               {/* <div className="recent-posts">

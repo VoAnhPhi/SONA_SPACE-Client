@@ -156,10 +156,13 @@ export interface NewsArticle {
   news_slug: string;
   news_image: string;
   news_summary: string;
+  news_view: number;
   news_content: string;
   news_publishDate: string;
   news_author?: string;
   news_tags?: string[];
+  news_created_ad? : String;
+  news_category: string;
 }
 export interface NewsCategory {
   news_category_id: number;
@@ -168,6 +171,7 @@ export interface NewsCategory {
   news_category_status: string;
   news_count: number;
   name: string;
+  news_slug: string;
 }
 // API Response interfaces
 export interface ApiResponse<T> {

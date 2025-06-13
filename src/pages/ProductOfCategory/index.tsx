@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import ListProduct from "../../components/Product";
 import CategorySlider from "../../components/CategorySlider";
 import Filter from "../../components/Filter";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/Seemore";
 
 interface ProductProps {
   id: number;
