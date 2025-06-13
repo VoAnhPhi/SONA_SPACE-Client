@@ -1,5 +1,8 @@
-import React from "react";
+'use client';
 import { Link } from "react-router-dom";
+import type { NewsArticle } from "../../types";
+import React, { useState, useEffect } from "react";
+import { getAllNewsByView } from "../../api/new";
 
 interface NewsItem {
   id: string;
@@ -12,23 +15,55 @@ interface NewsItem {
 
 interface RecentPostsProps {
   newsItems: NewsItem[];
+    limit?: number;
 }
 
-const RecentPosts: React.FC<RecentPostsProps> = ({ newsItems }) => {
+const RecentPosts: React.FC<RecentPostsProps> = ({
+  limit
+}) => {
+  const [newsByView, setNewsByView] = useState<NewsArticle[]>([]);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string>('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllNewsByView();
+        console.log(data, "news");
+        setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
+        setNewsByView(data);
+        setError(null); 
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      }
+    };
+    fetchData();
+  }, [limit]);
   return (
     <div className="recent-posts">
       <h2>Bài viết nổi bật</h2>
       <ul>
-        {newsItems.slice(0, 4).map((item) => (
-          <li key={item.id}>
-            <Link to={`/news/${item.slug}`} className="recent-post-item">
-              <img src={item.image} alt={item.title} />
+        {newsByView.slice(0, 4).map((item) => (
+          <li key={item.news_id}>
+            <Link to={`/tin-tuc/${item.news_slug}`} className="recent-post-item">
+               {(() => {
+                        try {
+                          const imagesArray = JSON.parse(item.news_image);
+                          const firstImage = imagesArray[0];
+                          return <img src={firstImage} alt={item.news_name} />;
+                        } catch (error) {
+                          return <img src="/fallback-image.jpg" alt={item.news_name} />;
+                        }
+                      })()}
+
               <div className="post-info">
-                <span className="post-title">{item.title}</span>
+                <span className="post-title">{item.news_name}</span>
                 <span className="post-date">
-                  {item.date
-                    ? new Date(item.date).toLocaleDateString("vi-VN")
-                    : "-"}
+                  {item.news_view}
+                  
                 </span>
               </div>
             </Link>

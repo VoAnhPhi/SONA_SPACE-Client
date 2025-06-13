@@ -43,7 +43,7 @@ const NewsCategories: React.FC<NewsProps> = ({
         // Apply limit if provided
         const limitedData = limit ? data.slice(0, limit) : data;
         setNews(limitedData);
-        setError(null); // gọi API lấy danh sách news
+        setError(null); 
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
