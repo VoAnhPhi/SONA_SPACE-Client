@@ -86,7 +86,7 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
       <div className="categories-flex">
         {categories.map((category: Category) => (
           <div key={category.category_id} className={`category-item`}>
-            <Link to={`/san-pham/${category.category_slug}`} className="category-link">
+            <Link to={`/danh-muc/${category.category_slug}`} className="category-link">
               <div className="category-image">
                 <img
                   src={category.category_image}
