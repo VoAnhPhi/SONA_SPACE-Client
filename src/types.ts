@@ -161,8 +161,8 @@ export interface NewsArticle {
   news_publishDate: string;
   news_author?: string;
   news_tags?: string[];
-  news_created_ad? : String;
-  news_category: string;
+  created_at? : String;
+  news_category_id: string;
 }
 export interface NewsCategory {
   news_category_id: number;

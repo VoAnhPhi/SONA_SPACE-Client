@@ -80,8 +80,8 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
             <div className="news-main-content">
               <h1 className="news-title">{newsDetailItem.news_name}</h1>
               <div className="news-meta">
-                <span className="date">{newsDetailItem.news_created_ad}</span>
-                <span className="category">{newsDetailItem.news_category}</span>
+                <span className="date">{newsDetailItem.created_at}</span>
+                <span className="category">{newsDetailItem.news_category_id}</span>
                 <span className="views">
                   <img src="../images/news/eye.svg" alt="" />
                   {newsDetailItem.news_view} lượt xem
