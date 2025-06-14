@@ -1,5 +1,3 @@
-// Common interfaces for SONA SPACE client application For All Users
-
 // Product related interfaces For All Users
 export interface Product {
   id: number;
@@ -9,18 +7,23 @@ export interface Product {
   colors: string[];
   isNew?: boolean;
   isSale?: boolean;
-  createdAt?: string;
+  created_at?: string;
   priceSale?: number;
   slug: string;
   isWishlist?: boolean;
   description?: string;
-  category?: string;
+  category: {
+    id: number;
+    name: string;
+  };
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];
 }
 
 export interface ProductSpecification {
   name: string;
+  label: string;
+
   value: string;
 }
 
@@ -35,6 +38,7 @@ export interface Category {
   created_at: string;
   deleted_at: string | null;
   product_count: number;
+
   children?: Category[];
 }
 
@@ -184,4 +188,18 @@ export interface PaginatedResponse<T> {
   page: number;
   pageSize: number;
   totalPages: number;
-} 
+}
+export interface Variant {
+  color_id: number;
+  color_name: string;
+  color_hex: string;
+  color_priority: number;
+  variant_id: number;
+  variant_slug: string;
+  variant_price: number;
+  variant_price_sale?: number;
+  variant_images?: string;
+  variant_height?: number;
+  variant_width?: number;
+  variant_depth?: number;
+}
