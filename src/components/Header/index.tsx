@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
   const [activeNavItem, setActiveNavItem] = useState<string>("/");
+  const { isAuthenticated, user, logout } = useAuth();
+
+  // Lấy tên cuối của người dùng
+  const getLastName = (fullName: string | undefined) => {
+    if (!fullName) return "";
+    const nameParts = fullName.split(" ");
+    return nameParts[nameParts.length - 1];
+  };
 
   // Khi component mount, kiểm tra localStorage và pathname hiện tại để set active
   useEffect(() => {
     // Lấy active path từ localStorage nếu có
     const savedActivePath = localStorage.getItem("activeNavPath");
-    
+
     // Lấy pathname hiện tại từ URL
     const currentPath = window.location.pathname;
-    
+
     // Nếu có savedActivePath và người dùng không đang ở một trang khác, sử dụng savedActivePath
     // Ngược lại, sử dụng currentPath
     if (savedActivePath && currentPath === "/") {
@@ -46,18 +55,18 @@ const Header = () => {
             <nav className="main-nav">
               <ul>
                 <li>
-                  <a 
-                    href="/" 
-                    className={isActive("/") ? "active" : ""} 
+                  <a
+                    href="/"
+                    className={isActive("/") ? "active" : ""}
                     onClick={() => handleNavClick("/")}
                   >
                     Trang Chủ
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="/san-pham" 
-                    className={isActive("/san-pham") ? "active" : ""} 
+                  <a
+                    href="/san-pham"
+                    className={isActive("/san-pham") ? "active" : ""}
                     onClick={() => handleNavClick("/san-pham")}
                   >
                     {" "}
@@ -69,44 +78,114 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               <li>
-                                <a href="/san-pham/sofa" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/sofa"); }}>Sofa</a>
+                                <a
+                                  href="/san-pham/sofa"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/sofa");
+                                  }}
+                                >
+                                  Sofa
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ban-lam-viec" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ban-lam-viec"); }}>
+                                <a
+                                  href="/san-pham/ban-lam-viec"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ban-lam-viec");
+                                  }}
+                                >
                                   Bàn làm việc
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tab-dau-giuong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tab-dau-giuong"); }}>
+                                <a
+                                  href="/san-pham/tab-dau-giuong"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tab-dau-giuong");
+                                  }}
+                                >
                                   Tab đầu giường
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tu-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tu-trang-tri"); }}>
+                                <a
+                                  href="/san-pham/tu-trang-tri"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tu-trang-tri");
+                                  }}
+                                >
                                   Tủ trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tham" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tham"); }}>Thảm</a>
+                                <a
+                                  href="/san-pham/tham"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tham");
+                                  }}
+                                >
+                                  Thảm
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-don" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-don"); }}>Ghế đơn</a>
+                                <a
+                                  href="/san-pham/ghe-don"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ghe-don");
+                                  }}
+                                >
+                                  Ghế đơn
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-ban-an" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-ban-an"); }}>Đèn bàn ăn</a>
+                                <a
+                                  href="/san-pham/den-ban-an"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/den-ban-an");
+                                  }}
+                                >
+                                  Đèn bàn ăn
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-van-phong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-van-phong"); }}>
+                                <a
+                                  href="/san-pham/ghe-van-phong"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ghe-van-phong");
+                                  }}
+                                >
                                   Ghế văn phòng
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-trang-tri"); }}>
+                                <a
+                                  href="/san-pham/den-trang-tri"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/den-trang-tri");
+                                  }}
+                                >
                                   Đèn trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ke-sach" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ke-sach"); }}>Kệ sách</a>
+                                <a
+                                  href="/san-pham/ke-sach"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ke-sach");
+                                  }}
+                                >
+                                  Kệ sách
+                                </a>
                               </li>
                             </ul>
                           </div>
@@ -192,9 +271,9 @@ const Header = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="/khong-gian" 
-                    className={isActive("/khong-gian") ? "active" : ""} 
+                  <a
+                    href="/khong-gian"
+                    className={isActive("/khong-gian") ? "active" : ""}
                     onClick={() => handleNavClick("/khong-gian")}
                   >
                     Không Gian
@@ -205,44 +284,114 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               <li>
-                                <a href="/san-pham/sofa" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/sofa"); }}>Sofa</a>
+                                <a
+                                  href="/san-pham/sofa"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/sofa");
+                                  }}
+                                >
+                                  Sofa
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ban-lam-viec" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ban-lam-viec"); }}>
+                                <a
+                                  href="/san-pham/ban-lam-viec"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ban-lam-viec");
+                                  }}
+                                >
                                   Bàn làm việc
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tab-dau-giuong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tab-dau-giuong"); }}>
+                                <a
+                                  href="/san-pham/tab-dau-giuong"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tab-dau-giuong");
+                                  }}
+                                >
                                   Tab đầu giường
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tu-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tu-trang-tri"); }}>
+                                <a
+                                  href="/san-pham/tu-trang-tri"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tu-trang-tri");
+                                  }}
+                                >
                                   Tủ trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/tham" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/tham"); }}>Thảm</a>
+                                <a
+                                  href="/san-pham/tham"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/tham");
+                                  }}
+                                >
+                                  Thảm
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-don" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-don"); }}>Ghế đơn</a>
+                                <a
+                                  href="/san-pham/ghe-don"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ghe-don");
+                                  }}
+                                >
+                                  Ghế đơn
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-ban-an" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-ban-an"); }}>Đèn bàn ăn</a>
+                                <a
+                                  href="/san-pham/den-ban-an"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/den-ban-an");
+                                  }}
+                                >
+                                  Đèn bàn ăn
+                                </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ghe-van-phong" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ghe-van-phong"); }}>
+                                <a
+                                  href="/san-pham/ghe-van-phong"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ghe-van-phong");
+                                  }}
+                                >
                                   Ghế văn phòng
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/den-trang-tri" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/den-trang-tri"); }}>
+                                <a
+                                  href="/san-pham/den-trang-tri"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/den-trang-tri");
+                                  }}
+                                >
                                   Đèn trang trí
                                 </a>
                               </li>
                               <li>
-                                <a href="/san-pham/ke-sach" onClick={(e) => { e.stopPropagation(); handleNavClick("/san-pham/ke-sach"); }}>Kệ sách</a>
+                                <a
+                                  href="/san-pham/ke-sach"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNavClick("/san-pham/ke-sach");
+                                  }}
+                                >
+                                  Kệ sách
+                                </a>
                               </li>
                             </ul>
                           </div>
@@ -334,18 +483,18 @@ const Header = () => {
                   <a href="/ho-so-kien-truc" className={isActive("/ho-so-kien-truc") ? "active" : ""} onClick={() => handleNavClick("/ho-so-kien-truc")}>Hồ Sơ Kiến Trúc</a>
                 </li> */}
                 <li>
-                  <a 
-                    href="/tin-tuc" 
-                    className={isActive("/tin-tuc") ? "active" : ""} 
+                  <a
+                    href="/tin-tuc"
+                    className={isActive("/tin-tuc") ? "active" : ""}
                     onClick={() => handleNavClick("/tin-tuc")}
                   >
                     Tin Tức
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="/ve-chung-toi" 
-                    className={isActive("/ve-chung-toi") ? "active" : ""} 
+                  <a
+                    href="/ve-chung-toi"
+                    className={isActive("/ve-chung-toi") ? "active" : ""}
                     onClick={() => handleNavClick("/ve-chung-toi")}
                   >
                     Về Chúng Tôi
@@ -518,12 +667,37 @@ const Header = () => {
               </div>
               <span className="header-actions-separator"></span>
               <div className="header-actions-buttons">
-              <a href="/dang-ky" className="btn sign-up">
-                  Đăng Ký
-                </a>
-                <a href="/dang-nhap" className="btn sign-in">
-                  Đăng Nhập
-                </a>
+                {isAuthenticated && user ? (
+                  <div className="user-greeting">
+                    <div className="user-greeting-text">
+                      <span>Chào, {getLastName(user.full_name)}</span>
+                      <img src="/images/icons/arrow-down.svg" alt="" />
+                    </div>
+                    <div className="user-dropdown">
+                      <ul>
+                        <li><a href="/tai-khoan">Tài khoản</a></li>
+                        <li><a href="/tai-khoan/thong-tin">Thông tin cá nhân</a></li>
+                        <li><a href="/tai-khoan/ma-giam-gia">Quản lý mã giảm giá</a></li>
+                        <li><a href="/tai-khoan/don-hang">Quản lý đơn hàng</a></li>
+                        <li><a href="/san-pham-yeu-thich">Danh sách yêu thích</a></li>
+                        <li><a href="/gio-hang">Giỏ hàng</a></li>
+                        <li><a href="#" onClick={(e) => {
+                          e.preventDefault();
+                          logout();
+                        }}>Đăng xuất</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <a href="/dang-ky" className="btn sign-up">
+                      Đăng Ký
+                    </a>
+                    <a href="/dang-nhap" className="btn sign-in">
+                      Đăng Nhập
+                    </a>
+                  </>
+                )}
               </div>
               <div className="header-hamburger">
                 <button className="btn-icon hamburger-btn">

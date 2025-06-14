@@ -46,6 +46,7 @@ export interface User {
   phone: string;
   addresses: Address[];
   wishlist?: Product[];
+  full_name?: string;
 }
 
 export interface Address {

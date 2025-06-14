@@ -18,6 +18,83 @@
         a {
             @include text(18px, Be-M, auto, $white-cl !important, null);
         }
+
+        .user-greeting {
+            position: relative;
+            
+            &-text {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                padding: 8px 0;
+
+                span {
+                    @include text(18px, Be-M, auto, $white-cl, null);
+                }
+
+                img {
+                    width: 12px;
+                    height: 12px;
+                    transition: transform 0.3s;
+                }
+            }
+
+            .user-dropdown {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: #fff;
+                border-radius: 4px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                min-width: 220px;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+                z-index: 100;
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+
+                    li {
+                        border-bottom: 1px solid #f0f0f0;
+                        
+                        &:last-child {
+                            border-bottom: none;
+                        }
+
+                        a {
+                            display: block;
+                            padding: 12px 20px;
+                            @include text(16px, Be-R, auto, #333 !important, null);
+                            transition: all 0.2s ease;
+                            
+                            &:hover {
+                                background-color: #f9f9f9;
+                                color: $yellow-cl !important;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                .user-greeting-text {
+                    img {
+                        transform: rotate(180deg);
+                    }
+                }
+                
+                .user-dropdown {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+            }
+        }
     }
 
     .header-wrapper {
