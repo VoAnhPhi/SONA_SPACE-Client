@@ -4,7 +4,6 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useRegister } from "../../hooks/useRegister";
-import "./styles.css";
 
 const SignUp: React.FC = () => {
   const {
