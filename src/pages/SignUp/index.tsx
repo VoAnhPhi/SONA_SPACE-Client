@@ -1,77 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
-interface FormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-  agreeToTerms: boolean;
-}
+import { BannerSection } from "../../components/BannerSection";
+import { useRegister } from "../../hooks/useRegister";
+import "./styles.css";
 
 const SignUp: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    fullName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    agreeToTerms: false
-  });
-
-  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-
-    // Check if passwords match when either password field changes
-    if (name === "password" || name === "confirmPassword") {
-      if (name === "password") {
-        setPasswordsMatch(value === formData.confirmPassword || formData.confirmPassword === "");
-      } else {
-        setPasswordsMatch(value === formData.password);
-      }
-    }
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: checked
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setPasswordsMatch(false);
-      return;
-    }
-    
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
-    alert("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
-    // Redirect to login page or home page after successful registration
-  };
+  const {
+    formData,
+    errors,
+    loading,
+    success,
+    apiError,
+    handleChange,
+    handleCheckboxChange,
+    handleSubmit
+  } = useRegister();
 
   return (
     <>
       <Header />
+      <BannerSection title={"Đăng Ký Tài Khoản"} />
       <div className="signup-page">
         <div className="container">
           <div className="signup-content">
             <h1>Đăng Ký Tài Khoản</h1>
             <p className="signup-description">Đăng ký thành viên để nhận thêm nhiều ưu đãi hấp dẫn</p>
+            
+            {success && (
+              <div className="success-message">
+                Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...
+              </div>
+            )}
+            
+            {apiError && (
+              <div className="error-message api-error">
+                {apiError}
+              </div>
+            )}
             
             <form className="signup-form" onSubmit={handleSubmit}>
               <div className="form-group">
@@ -82,8 +49,9 @@ const SignUp: React.FC = () => {
                   placeholder="Nhập Họ Và Tên"
                   value={formData.fullName} 
                   onChange={handleChange} 
-                  required 
+                  className={errors.fullName ? "error" : ""}
                 />
+                {errors.fullName && <p className="error-message">{errors.fullName}</p>}
               </div>
               
               <div className="form-group">
@@ -94,8 +62,9 @@ const SignUp: React.FC = () => {
                   placeholder="Email"
                   value={formData.email} 
                   onChange={handleChange} 
-                  required 
+                  className={errors.email ? "error" : ""}
                 />
+                {errors.email && <p className="error-message">{errors.email}</p>}
               </div>
               
               <div className="form-group">
@@ -106,8 +75,9 @@ const SignUp: React.FC = () => {
                   placeholder="Số điện thoại"
                   value={formData.phone} 
                   onChange={handleChange} 
-                  required
+                  className={errors.phone ? "error" : ""}
                 />
+                {errors.phone && <p className="error-message">{errors.phone}</p>}
               </div>
               
               <div className="form-group">
@@ -118,8 +88,9 @@ const SignUp: React.FC = () => {
                   placeholder="Mật Khẩu"
                   value={formData.password} 
                   onChange={handleChange} 
-                  required
+                  className={errors.password ? "error" : ""}
                 />
+                {errors.password && <p className="error-message">{errors.password}</p>}
               </div>
               
               <div className="form-group">
@@ -130,10 +101,22 @@ const SignUp: React.FC = () => {
                   placeholder="Nhập lại mật khẩu"
                   value={formData.confirmPassword} 
                   onChange={handleChange} 
-                  required
-                  className={!passwordsMatch ? "error" : ""}
+                  className={errors.confirmPassword ? "error" : ""}
                 />
-                {!passwordsMatch && <p className="error-message">Mật khẩu không khớp</p>}
+                {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+              </div>
+              
+              <div className="form-group">
+                <textarea
+                  id="address"
+                  name="address"
+                  placeholder="Địa chỉ"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className={errors.address ? "error" : ""}
+                  rows={3}
+                ></textarea>
+                {errors.address && <p className="error-message">{errors.address}</p>}
               </div>
               
               <div className="form-group checkbox-group">
@@ -143,14 +126,20 @@ const SignUp: React.FC = () => {
                   name="agreeToTerms" 
                   checked={formData.agreeToTerms} 
                   onChange={handleCheckboxChange} 
-                  required 
                 />
                 <label htmlFor="agreeToTerms">
                   Tôi đã đọc và đồng ý với <Link to="/dieu-khoan">Điều Khoản</Link> và <Link to="/chinh-sach">Chính Sách Bảo Mật</Link>
                 </label>
+                {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
               </div>
               
-              <button type="submit" className="signup-btn">Đăng ký</button>
+              <button 
+                type="submit" 
+                className="signup-btn" 
+                disabled={loading || success}
+              >
+                {loading ? "Đang xử lý..." : "Đăng ký"}
+              </button>
             </form>
             
             <div className="social-signup">
@@ -158,7 +147,7 @@ const SignUp: React.FC = () => {
                 <span>Đăng ký với Google</span>
               </div>
               
-              <button className="google-signup-btn">
+              <button className="google-signup-btn" disabled={loading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button>
@@ -169,9 +158,6 @@ const SignUp: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        
-        
       </div>
       <Footer />
     </>

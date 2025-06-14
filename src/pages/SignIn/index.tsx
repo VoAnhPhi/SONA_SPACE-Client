@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { BannerSection } from "../../components/BannerSection";
 
 interface FormData {
   email: string;
@@ -42,6 +43,7 @@ const SignIn: React.FC = () => {
   return (
     <>
       <Header />
+      <BannerSection title={"Đăng Nhập"} />
       <div className="signin-page">
         <div className="container">
           <div className="signin-content">

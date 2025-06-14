@@ -1,24 +1,24 @@
 .signup-page {
   padding: 60px 0;
-  
+
   .container {
     margin: 0 auto;
     padding: 0 8px;
     width: 100%;
   }
-  
+
   .signup-content {
     max-width: 780px;
     margin: 0 auto;
     text-align: center;
-    
+
     h1 {
       font-family: 'M-B', sans-serif;
       font-size: 3.2rem;
       color: #000000;
       margin-bottom: 15px;
     }
-    
+
     .signup-description {
       font-family: 'BE-R', sans-serif;
       font-size: 1.6rem;
@@ -26,14 +26,14 @@
       margin-bottom: 30px;
     }
   }
-  
+
   .signup-form {
     margin-bottom: 30px;
-    
+
     .form-group {
       margin-bottom: 20px;
       text-align: left;
-      
+
       input[type="text"],
       input[type="email"],
       input[type="tel"],
@@ -46,50 +46,52 @@
         font-size: 1.6rem;
         color: #000000;
         transition: border-color 0.3s ease;
-        
+
         &::placeholder {
           color: #999;
         }
-        
+
         &:focus {
           outline: none;
           border-color: #999;
         }
-        
+
         &.error {
           border-color: #ff3b30;
         }
       }
-      
+
       .error-message {
         color: #ff3b30;
-      font-size: 1.6rem;
-      margin-top: 5px;
-      font-family: 'Be-R', sans-serif;
+        font-size: 1.6rem;
+        margin-top: 5px;
+        font-family: 'Be-R', sans-serif;
       }
-      
+
       &.checkbox-group {
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        gap: 10px;
-        
+
         input[type="checkbox"] {
-          margin-top: 3px;
+          width: max-content;
+          height: 16px;
+          aspect-ratio: 16 / 9;
         }
-        
+
         label {
           font-family: 'Be-R', sans-serif;
           font-size: 1.6rem;
           color: #092C4C;
           text-align: left;
-          
+
           a {
             color: #092C4C;
-            
-            text-decoration: underline; /* luôn có gạch chân */
-            
+
+            text-decoration: underline;
+            /* luôn có gạch chân */
+
             &:hover {
               text-decoration: none;
               color: $yellow-cl;
@@ -98,7 +100,7 @@
         }
       }
     }
-    
+
     .signup-btn {
       display: inline-block;
       width: 100%;
@@ -113,38 +115,42 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       text-align: center;
-      
+
       &:hover {
         background-color: darken(#F5A623, 10%);
       }
     }
   }
-  
+
   .social-signup {
-   width:100%;
+    width: 100%;
     max-width: 500px;
     margin: 0 auto;
-    margin-bottom: 28px; /* Căn giữa theo chiều ngang */
-    
+    margin-bottom: 28px;
+    /* Căn giữa theo chiều ngang */
+
     .divider {
       position: relative;
       text-align: center;
       margin-bottom: 20px;
       color: #092C4C;
-       font-family: 'M-SB', sans-serif;
+      font-family: 'M-SB', sans-serif;
       font-size: 16px;
+
       &:before {
         content: '';
         position: absolute;
         top: 50%;
         left: 0;
         right: 0;
-        height: 0; /* đổi height thành 0 vì dùng border */
-        border-bottom: 1px dashed #8C8A8A; /* nét đứt ngang */
-       
+        height: 0;
+        /* đổi height thành 0 vì dùng border */
+        border-bottom: 1px dashed #8C8A8A;
+        /* nét đứt ngang */
+
         z-index: 1;
       }
-      
+
       span {
         display: inline-block;
         padding: 0 15px;
@@ -155,7 +161,7 @@
         color: #999;
       }
     }
-    
+
     .google-signup-btn {
       display: flex;
       align-items: center;
@@ -172,30 +178,30 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       margin: 0 auto;
-      
+
       img {
         width: 20px;
         height: 20px;
         margin-right: 10px;
       }
-      
+
       &:hover {
         background-color: #f8f8f8;
       }
     }
   }
-  
+
   .login-link {
     p {
       font-family: 'Be-R', sans-serif;
       font-size: 1.6rem;
       color: #092C4C;
-      
+
       a {
         color: #092C4C;
-       text-decoration: underline;
-        
-        
+        text-decoration: underline;
+
+
         &:hover {
           color: $yellow-cl;
           text-decoration: none;
@@ -203,7 +209,7 @@
       }
     }
   }
- 
+
   // @media (min-width: $xxs-min) and (max-width: $xs-max) {
   //   padding-left: 8px;
   //   padding-right: 8px;
@@ -235,30 +241,30 @@
   // }
 
 
- // Responsive styles
+  // Responsive styles
   @media (max-width: 768px) {
     padding: 40px 0px;
-    
+
     .signup-content {
       h1 {
         font-size: 24px;
       }
-      
+
       .signup-description {
         font-size: 15px;
       }
     }
   }
-  
+
   @media (max-width: 576px) {
     padding: 30px 0;
-    
+
     .signup-content {
       h1 {
         font-size: 22px;
       }
     }
-    
+
     .design-services {
       margin-top: 50px;
     }
