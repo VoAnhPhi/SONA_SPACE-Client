@@ -1,44 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
-
-interface FormData {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
+import { useLogin } from "../../hooks/useLogin";
+import "./styles.css";
 
 const SignIn: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
-    rememberMe: false
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: checked
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
-    // and handle authentication
-  };
+  const {
+    formData,
+    errors,
+    loading,
+    success,
+    apiError,
+    handleChange,
+    handleCheckboxChange,
+    handleSubmit
+  } = useLogin();
 
   return (
     <>
@@ -50,6 +28,18 @@ const SignIn: React.FC = () => {
             <h1>Đăng Nhập</h1>
             <p className="signin-description">Chào mừng bạn trở lại!</p>
             
+            {success && (
+              <div className="success-message">
+                Đăng nhập thành công! Đang chuyển hướng đến trang chủ...
+              </div>
+            )}
+            
+            {apiError && (
+              <div className="error-message api-error">
+                {apiError}
+              </div>
+            )}
+            
             <form className="signin-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <input 
@@ -59,8 +49,9 @@ const SignIn: React.FC = () => {
                   placeholder="Email"
                   value={formData.email} 
                   onChange={handleChange} 
-                  required 
+                  className={errors.email ? "error" : ""}
                 />
+                {errors.email && <p className="error-message">{errors.email}</p>}
               </div>
               
               <div className="form-group">
@@ -71,8 +62,9 @@ const SignIn: React.FC = () => {
                   placeholder="Mật Khẩu"
                   value={formData.password} 
                   onChange={handleChange} 
-                  required
+                  className={errors.password ? "error" : ""}
                 />
+                {errors.password && <p className="error-message">{errors.password}</p>}
               </div>
               
               <div className="form-options">
@@ -91,7 +83,13 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
               
-              <button type="submit" className="signin-btn">Đăng Nhập</button>
+              <button 
+                type="submit" 
+                className="signin-btn"
+                disabled={loading || success}
+              >
+                {loading ? "Đang xử lý..." : "Đăng Nhập"}
+              </button>
             </form>
             
             <div className="social-signin">
@@ -99,7 +97,7 @@ const SignIn: React.FC = () => {
                 <span>Đăng nhập với Google</span>
               </div>
               
-              <button className="google-signin-btn">
+              <button className="google-signin-btn" disabled={loading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button>
@@ -110,8 +108,6 @@ const SignIn: React.FC = () => {
             </div>
           </div>
         </div>
-        
-       
       </div>
       <Footer />
     </>
