@@ -29,7 +29,8 @@ interface UserInfo {
   name: string;
   email: string;
   phone: string;
-  addresses: string[];
+  address: string | string[];
+  full_name?: string;
 }
 
 interface PromoCode {
@@ -67,8 +68,9 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
     },
     {
       id: "sofa-modena-2-5-seater-2",
@@ -84,8 +86,9 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
     },
     {
       id: "sofa-modena-2-5-seater-3",
@@ -101,8 +104,9 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
     },
     {
       id: "sofa-modena-2-5-seater-4",
@@ -118,8 +122,9 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
     },
     {
       id: "sofa-modena-2-5-seater-5",
@@ -136,8 +141,9 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
     },
     {
       id: "sofa-modena-2-5-seater-6",
@@ -153,18 +159,45 @@ const User: React.FC = () => {
       customerInfo: {
         name: "Nguyễn Minh Duy",
         phone: "(+84) 866463002",
-        address: "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh"
-      }
-    }
+        address:
+          "19/10, Lý Thường Kiệt ( địa chỉ cũ 373/1/142/10 phường 9, quận Tân Bình ), Phường 9, Quận Tân Bình, TP. Hồ Chí Minh",
+      },
+    },
   ]);
 
-  // Mock data for user information
+  // Mock data for user information with default values
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: "Nguyễn Văn A",
     email: "example@gmail.com",
     phone: "0987654321",
-    addresses: ["123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"],
+    address: ["123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"],
   });
+
+  // Lấy thông tin người dùng từ sessionStorage khi component mount
+  useEffect(() => {
+    const userDataStr = sessionStorage.getItem("user");
+    if (userDataStr) {
+      try {
+        const userData = JSON.parse(userDataStr);
+        // Cập nhật thông tin người dùng từ sessionStorage
+        setUserInfo({
+          name: userData.name || userData.full_name || "Chưa cập nhật",
+          email: userData.email || "Chưa cập nhật",
+          phone: userData.phone || "Chưa cập nhật",
+          address: userData.address || "Chưa cập nhật địa chỉ",
+          full_name: userData.full_name,
+        });
+        console.log("Đã tải thông tin người dùng từ sessionStorage:", userData);
+      } catch (error) {
+        console.error(
+          "Lỗi khi parse dữ liệu người dùng từ sessionStorage:",
+          error
+        );
+      }
+    } else {
+      console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
+    }
+  }, []);
 
   // Mock data for promo codes
   const [promoCodes] = useState<PromoCode[]>([
@@ -261,7 +294,9 @@ const User: React.FC = () => {
     if (newAddress && newAddress.trim() !== "") {
       setUserInfo({
         ...userInfo,
-        addresses: [...userInfo.addresses, newAddress],
+        address: Array.isArray(userInfo.address) 
+          ? [...userInfo.address, newAddress] 
+          : [userInfo.address, newAddress]
       });
     }
   };
@@ -310,37 +345,39 @@ const User: React.FC = () => {
 
   // Get filtered orders based on active filter
   const getFilteredOrders = () => {
-    if (activeOrderFilter === 'all') {
+    if (activeOrderFilter === "all") {
       return orders;
     }
-    
+
     const statusMap: Record<string, string> = {
-      'pending': 'pending',
-      'confirmed': 'confirmed',
-      'shipping': 'shipping',
-      'completed': 'completed',
-      'cancelled': 'cancelled',
-      'returned': 'returned'
+      pending: "pending",
+      confirmed: "confirmed",
+      shipping: "shipping",
+      completed: "completed",
+      cancelled: "cancelled",
+      returned: "returned",
     };
-    
-    return orders.filter(order => order.status === statusMap[activeOrderFilter]);
+
+    return orders.filter(
+      (order) => order.status === statusMap[activeOrderFilter]
+    );
   };
 
   // Function to get status button text
   const getStatusButtonText = (status: string) => {
     switch (status) {
-      case 'pending':
-        return 'Chờ xác nhận';
-      case 'confirmed':
-        return 'Đã xác nhận';
-      case 'shipping':
-        return 'Đang giao';
-      case 'completed':
-        return 'Hoàn thành';
-      case 'cancelled':
-        return 'Đã hủy';
-      case 'returned':
-        return 'Trả hàng';
+      case "pending":
+        return "Chờ xác nhận";
+      case "confirmed":
+        return "Đã xác nhận";
+      case "shipping":
+        return "Đang giao";
+      case "completed":
+        return "Hoàn thành";
+      case "cancelled":
+        return "Đã hủy";
+      case "returned":
+        return "Trả hàng";
       default:
         return status;
     }
@@ -349,48 +386,48 @@ const User: React.FC = () => {
   // Function to get status button class
   const getStatusButtonClass = (status: string) => {
     switch (status) {
-      case 'pending':
-        return 'status-pending';
-      case 'confirmed':
-        return 'status-confirmed';
-      case 'shipping':
-        return 'status-shipping';
-      case 'completed':
-        return 'status-completed';
-      case 'cancelled':
-        return 'status-cancelled';
-      case 'returned':
-        return 'status-returned';
+      case "pending":
+        return "status-pending";
+      case "confirmed":
+        return "status-confirmed";
+      case "shipping":
+        return "status-shipping";
+      case "completed":
+        return "status-completed";
+      case "cancelled":
+        return "status-cancelled";
+      case "returned":
+        return "status-returned";
       default:
-        return '';
+        return "";
     }
   };
 
   // Function to get action buttons based on order status
   const getOrderActionButtons = (order: OrderItem) => {
     switch (order.status) {
-      case 'pending':
+      case "pending":
         return (
           <>
             <button className="btn-cancel-order">Hủy đơn hàng</button>
             <button className="btn-view-details">Xem chi tiết</button>
           </>
         );
-      case 'confirmed':
+      case "confirmed":
         return (
           <>
             <button className="btn-action-primary">Đã xác nhận</button>
             <button className="btn-view-details">Xem chi tiết</button>
           </>
         );
-      case 'shipping':
+      case "shipping":
         return (
           <>
             <button className="btn-action-primary">Mua lại</button>
             <button className="btn-view-details">Xem chi tiết</button>
           </>
         );
-      case 'completed':
+      case "completed":
         return (
           <>
             <button className="btn-action-primary">Mua lại</button>
@@ -398,14 +435,14 @@ const User: React.FC = () => {
             <button className="btn-view-details">Xem chi tiết</button>
           </>
         );
-      case 'cancelled':
+      case "cancelled":
         return (
           <>
             <button className="btn-action-primary">Mua lại</button>
             <button className="btn-view-details">Xem chi tiết</button>
           </>
         );
-      case 'returned':
+      case "returned":
         return (
           <>
             <button className="btn-action-primary">Mua lại</button>
@@ -413,9 +450,7 @@ const User: React.FC = () => {
           </>
         );
       default:
-        return (
-          <button className="btn-view-details">Xem chi tiết</button>
-        );
+        return <button className="btn-view-details">Xem chi tiết</button>;
     }
   };
 
@@ -564,7 +599,11 @@ const User: React.FC = () => {
                               <div className="total-info">
                                 <span className="label">Địa chỉ: </span>
                                 <span className="value">
-                                  {userInfo.addresses[0]}
+                                  {typeof userInfo.address === 'string' 
+                                    ? userInfo.address 
+                                    : userInfo.address && userInfo.address.length > 0
+                                      ? userInfo.address[0]
+                                      : "Chưa cập nhật địa chỉ"}
                                 </span>
                               </div>
                               <div className="order-actions">
@@ -610,7 +649,9 @@ const User: React.FC = () => {
                       <div className="profile-info-grid">
                         <div className="profile-info-item">
                           <div className="info-label">Tên</div>
-                          <div className="info-value">{userInfo.name}</div>
+                          <div className="info-value">
+                            {userInfo.full_name || userInfo.name}
+                          </div>
                         </div>
 
                         <div className="profile-info-item">
@@ -626,8 +667,11 @@ const User: React.FC = () => {
                         <div className="profile-info-item">
                           <div className="info-label">Địa chỉ</div>
                           <div className="info-value">
-                            {userInfo.addresses[0] ||
-                              "12 hồ chí minh, trường chinh,..........."}
+                            {typeof userInfo.address === 'string' 
+                              ? userInfo.address 
+                              : userInfo.address && userInfo.address.length > 0
+                                ? userInfo.address[0]
+                                : "Chưa cập nhật địa chỉ"}
                           </div>
                         </div>
                       </div>
@@ -809,11 +853,15 @@ const User: React.FC = () => {
                             <input
                               type="text"
                               id="address"
-                              value={userInfo.addresses[0] || ""}
+                              value={typeof userInfo.address === 'string' 
+                                ? userInfo.address 
+                                : userInfo.address && userInfo.address.length > 0
+                                  ? userInfo.address[0]
+                                  : ""}
                               onChange={(e) =>
                                 setUserInfo({
                                   ...userInfo,
-                                  addresses: [e.target.value],
+                                  address: e.target.value,
                                 })
                               }
                             />
@@ -844,36 +892,48 @@ const User: React.FC = () => {
                   <h2>Sổ địa chỉ</h2>
 
                   <div className="addresses-list">
-                    {userInfo.addresses.map((address, index) => (
-                      <div className="address-item" key={index}>
+                    {Array.isArray(userInfo.address) ? (
+                      userInfo.address.map((address, index) => (
+                        <div className="address-item" key={index}>
+                          <div className="address-content">
+                            <h4>
+                              {index === 0
+                                ? "Địa chỉ mặc định"
+                                : `Địa chỉ ${index + 1}`}
+                            </h4>
+                            <p>{address}</p>
+                          </div>
+                          <div className="address-actions">
+                            <button className="btn-link">Sửa</button>
+                            {index !== 0 && (
+                              <button
+                                className="btn-link delete"
+                                onClick={() => {
+                                  const newAddresses = [...userInfo.address as string[]];
+                                  newAddresses.splice(index, 1);
+                                  setUserInfo({
+                                    ...userInfo,
+                                    address: newAddresses,
+                                  });
+                                }}
+                              >
+                                Xóa
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="address-item">
                         <div className="address-content">
-                          <h4>
-                            {index === 0
-                              ? "Địa chỉ mặc định"
-                              : `Địa chỉ ${index + 1}`}
-                          </h4>
-                          <p>{address}</p>
+                          <h4>Địa chỉ mặc định</h4>
+                          <p>{userInfo.address}</p>
                         </div>
                         <div className="address-actions">
                           <button className="btn-link">Sửa</button>
-                          {index !== 0 && (
-                            <button
-                              className="btn-link delete"
-                              onClick={() => {
-                                const newAddresses = [...userInfo.addresses];
-                                newAddresses.splice(index, 1);
-                                setUserInfo({
-                                  ...userInfo,
-                                  addresses: newAddresses,
-                                });
-                              }}
-                            >
-                              Xóa
-                            </button>
-                          )}
                         </div>
                       </div>
-                    ))}
+                    )}
 
                     <button
                       className="btn-add-address"
@@ -963,46 +1023,56 @@ const User: React.FC = () => {
               {activeTab === "wishlist" && (
                 <div className="content-section orders-management-section">
                   <h2>Đơn hàng của</h2>
-                  
+
                   <div className="order-filter-tabs">
-                    <button 
-                      className={activeOrderFilter === 'all' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('all')}
+                    <button
+                      className={activeOrderFilter === "all" ? "active" : ""}
+                      onClick={() => setActiveOrderFilter("all")}
                     >
                       Tất cả
                     </button>
-                    <button 
-                      className={activeOrderFilter === 'pending' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('pending')}
+                    <button
+                      className={
+                        activeOrderFilter === "pending" ? "active" : ""
+                      }
+                      onClick={() => setActiveOrderFilter("pending")}
                     >
                       Chờ xác nhận
                     </button>
-                    <button 
-                      className={activeOrderFilter === 'shipping' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('shipping')}
+                    <button
+                      className={
+                        activeOrderFilter === "shipping" ? "active" : ""
+                      }
+                      onClick={() => setActiveOrderFilter("shipping")}
                     >
                       Đang giao hàng
                     </button>
-                    <button 
-                      className={activeOrderFilter === 'completed' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('completed')}
+                    <button
+                      className={
+                        activeOrderFilter === "completed" ? "active" : ""
+                      }
+                      onClick={() => setActiveOrderFilter("completed")}
                     >
                       Hoàn thành
                     </button>
-                    <button 
-                      className={activeOrderFilter === 'cancelled' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('cancelled')}
+                    <button
+                      className={
+                        activeOrderFilter === "cancelled" ? "active" : ""
+                      }
+                      onClick={() => setActiveOrderFilter("cancelled")}
                     >
                       Đã hủy
                     </button>
-                    <button 
-                      className={activeOrderFilter === 'returned' ? 'active' : ''} 
-                      onClick={() => setActiveOrderFilter('returned')}
+                    <button
+                      className={
+                        activeOrderFilter === "returned" ? "active" : ""
+                      }
+                      onClick={() => setActiveOrderFilter("returned")}
                     >
                       Trả hàng/hoàn tiền
                     </button>
                   </div>
-                  
+
                   {getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
                       {getFilteredOrders().map((order, index) => (
@@ -1013,27 +1083,34 @@ const User: React.FC = () => {
                               <span>Ngày đặt: {order.date}</span>
                             </div>
                             <div className="order-status">
-                              <span className={getStatusButtonClass(order.status)}>
+                              <span
+                                className={getStatusButtonClass(order.status)}
+                              >
                                 {getStatusButtonText(order.status)}
                               </span>
                             </div>
                           </div>
-                          
+
                           <div className="order-content">
                             <div className="product-image">
                               <img src={order.image} alt={order.name} />
                             </div>
-                            
+
                             <div className="product-details">
                               <h4>{order.name}</h4>
                               <p className="product-category">Sofa</p>
                               <div className="product-price">
-                                <span>Thành tiền: {formatPrice(order.price)}</span>
+                                <span>
+                                  Thành tiền: {formatPrice(order.price)}
+                                </span>
                               </div>
                               <div className="product-meta">
                                 <div className="meta-item">
                                   <span>Màu:</span>
-                                  <span className="color-dot" style={{ backgroundColor: order.color }}></span>
+                                  <span
+                                    className="color-dot"
+                                    style={{ backgroundColor: order.color }}
+                                  ></span>
                                 </div>
                                 <div className="meta-item">
                                   <span>Số lượng: {order.quantity}</span>
@@ -1043,67 +1120,98 @@ const User: React.FC = () => {
                                 <a href="#">Xem chi tiết</a>
                               </div>
                             </div>
-                            
+
                             <div className="order-info">
                               <h4>Thông tin:</h4>
                               <div className="info-item">
                                 <span className="label">Tên người nhận:</span>
-                                <span className="value">{order.customerInfo?.name}</span>
+                                <span className="value">
+                                  {order.customerInfo?.name}
+                                </span>
                               </div>
                               <div className="info-item">
                                 <span className="label">Số điện thoại:</span>
-                                <span className="value">{order.customerInfo?.phone}</span>
+                                <span className="value">
+                                  {order.customerInfo?.phone}
+                                </span>
                               </div>
                               <div className="info-item">
                                 <span className="label">Địa chỉ:</span>
-                                <span className="value">{order.customerInfo?.address}</span>
+                                <span className="value">
+                                  {order.customerInfo?.address}
+                                </span>
                               </div>
-                              
-                              {order.status === 'cancelled' && order.refundDate && (
-                                <div className="info-item refund-info">
-                                  <span className="label">Đơn hàng đã được hủy</span>
-                                  <span className="value">Ngày cấp xác: {order.refundDate}</span>
-                                </div>
-                              )}
-                              
+
+                              {order.status === "cancelled" &&
+                                order.refundDate && (
+                                  <div className="info-item refund-info">
+                                    <span className="label">
+                                      Đơn hàng đã được hủy
+                                    </span>
+                                    <span className="value">
+                                      Ngày cấp xác: {order.refundDate}
+                                    </span>
+                                  </div>
+                                )}
+
                               <div className="order-actions">
-                                {order.status === 'pending' && (
+                                {order.status === "pending" && (
                                   <>
-                                    <button className="btn-cancel-order">Hủy đơn hàng</button>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-cancel-order">
+                                      Hủy đơn hàng
+                                    </button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
-                                
-                                {order.status === 'confirmed' && (
+
+                                {order.status === "confirmed" && (
                                   <>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
-                                
-                                {order.status === 'shipping' && (
+
+                                {order.status === "shipping" && (
                                   <>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
-                                
-                                {order.status === 'completed' && (
+
+                                {order.status === "completed" && (
                                   <>
-                                    <button className="btn-action-primary">Mua lại</button>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-action-primary">
+                                      Mua lại
+                                    </button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
-                                
-                                {order.status === 'cancelled' && (
+
+                                {order.status === "cancelled" && (
                                   <>
-                                    <button className="btn-action-primary">Mua lại</button>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-action-primary">
+                                      Mua lại
+                                    </button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
-                                
-                                {order.status === 'returned' && (
+
+                                {order.status === "returned" && (
                                   <>
-                                    <button className="btn-action-primary">Mua lại</button>
-                                    <button className="btn-view-details">Xem chi tiết</button>
+                                    <button className="btn-action-primary">
+                                      Mua lại
+                                    </button>
+                                    <button className="btn-view-details">
+                                      Xem chi tiết
+                                    </button>
                                   </>
                                 )}
                               </div>
