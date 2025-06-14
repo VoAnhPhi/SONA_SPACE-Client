@@ -26,38 +26,41 @@ import NewsDetail from './pages/NewsDetail'
 import NotFoundPage from './pages/404'
 // import '../public/fonts/stylesheet.css'
 import TestPage from './pages/TestPage'
+import { AuthProvider } from './contexts/AuthContext'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/san-pham" element={<ProductPage />} />
-        <Route path="/danh-muc/:slug" element={<ProductOfCategory />} />
-        <Route path="/san-pham/:slug" element={<ProductDetailPage />} />
-        <Route path="/san-pham-yeu-thich" element={<Wishlist />} />
-        <Route path="/gio-hang" element={<CartPage />} />
-        <Route path="/thanh-toan" element={<Payment />} />
-        <Route path="/dat-hang-thanh-cong" element={<OrderComplete />} />
-        <Route path="/khong-gian" element={<Rooms />} />
-        <Route path="/khong-gian/:slug" element={<RoomDetail />} />
-        <Route path="/dich-vu-thiet-ke" element={<ContactFormDesign />} />
-        <Route path="/ho-so-kien-truc" element={<ContactFormArch />} />
-        <Route path="/lien-he" element={<ContactForm />} />
-        <Route path="/dang-ky" element={<SignUp />} />
-        <Route path="/dang-nhap" element={<SignIn />} />
-        <Route path="/quen-mat-khau" element={<ForgotPassword />} />
-        <Route path="/tai-khoan" element={<User />} />
-        <Route path="/chi-tiet-don-hang/:id" element={<DetailOrder />} />
-        <Route path="/dieu-khoan-su-dung" element={<Privacy />} />
-        <Route path="/chinh-sach-bao-mat" element={<Policy />} />
-        <Route path="/tin-tuc" element={<News />} />
-        <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
-        <Route path="/test" element={<TestPage />} />
-        {/* Catch-all route for 404 errors */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/san-pham" element={<ProductPage />} />
+          <Route path="/danh-muc/:slug" element={<ProductOfCategory />} />
+          <Route path="/san-pham/:slug" element={<ProductDetailPage />} />
+          <Route path="/san-pham-yeu-thich" element={<Wishlist />} />
+          <Route path="/gio-hang" element={<CartPage />} />
+          <Route path="/thanh-toan" element={<Payment />} />
+          <Route path="/dat-hang-thanh-cong" element={<OrderComplete />} />
+          <Route path="/khong-gian" element={<Rooms />} />
+          <Route path="/khong-gian/:slug" element={<RoomDetail />} />
+          <Route path="/dich-vu-thiet-ke" element={<ContactFormDesign />} />
+          <Route path="/ho-so-kien-truc" element={<ContactFormArch />} />
+          <Route path="/lien-he" element={<ContactForm />} />
+          <Route path="/dang-ky" element={<SignUp />} />
+          <Route path="/dang-nhap" element={<SignIn />} />
+          <Route path="/quen-mat-khau" element={<ForgotPassword />} />
+          <Route path="/tai-khoan" element={<User />} />
+          <Route path="/chi-tiet-don-hang/:id" element={<DetailOrder />} />
+          <Route path="/dieu-khoan-su-dung" element={<Privacy />} />
+          <Route path="/chinh-sach-bao-mat" element={<Policy />} />
+          <Route path="/tin-tuc" element={<News />} />
+          <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
+          <Route path="/test" element={<TestPage />} />
+          {/* Catch-all route for 404 errors */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
