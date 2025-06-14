@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import Product from "../Product";
+import type { Product as ProductType } from "../../types";
 
-export default function ProductSlider() {
+export default function ProductSlider({ products }: { products: ProductType[] }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -165,38 +167,13 @@ export default function ProductSlider() {
         ref={sliderRef}
         onScroll={checkScrollPosition}
       >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item) => (
-          <div key={item} className="product-item">
-            <div className="product-image">
-              <img
-                src={`/images/product-${item > 8 ? item - 8 : item}.jpg`}
-                alt={`Product ${item}`}
-              />
-            </div>
-            <div className="product-info">
-              <h3 className="product-name">
-                Ghế Wooden 2.0 nordic với nhiên liệu tương tự
-              </h3>
-              <div className="product-category">Sofa</div>
-              <div className="product-colors">
-                <span>Màu</span>
-                <span className="color-option brown"></span>
-                <span className="color-option beige"></span>
-                <span className="color-option gray"></span>
-              </div>
-              <span className="line-custome"></span>
-              <div className="product-price">
-                <div className="price-product">
-                  <span className="price-sale">25.000.000 ₫</span>
-                  <span className="price">15.190.000 ₫</span>
-                </div>
-                <div className="btn-buy">
-                  <a className="price-tag">Mua ngay</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <Product key={product.id} product={product} slug={product.slug} />
+          ))
+        ) : (
+          <div className="no-products">Không có sản phẩm nào</div>
+        )}
       </div>
 
       {/* Custom scrollbar */}
