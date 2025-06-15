@@ -2,22 +2,39 @@
 export interface Product {
   id: number;
   name: string;
+  slug: string;
+  description?: string;
+  priority: number;
+  images: string[];
+  view: number;
+  stock: number; // là số lượng sản phẩm còn trong kho
+  status: number;
+  sold: number; // số lượng sản phẩm đã bán
   price: number;
+  price_sale: number;
+  material: string;
+  height: number;
+  quantity: number;
+  color_name: string;
+  width: number;
+  depth: number;
+  seating_height?: number; // chiều cao ghế ngồi, có thể không có cho một số sản phẩm
+  maxium_weight?: number; // trọng lượng tối đa, có thể không có cho một số sản phẩm
   image: string;
-  colors: string[];
+
   isNew?: boolean;
   isSale?: boolean;
   created_at?: string;
   priceSale?: number;
-  slug: string;
   isWishlist?: boolean;
-  description?: string;
+  colors: string[];
   category: {
     id: number;
     name: string;
   };
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];
+  variants?: Variant[];
 }
 
 export interface ProductSpecification {
@@ -206,8 +223,10 @@ export interface Variant {
   variant_id: number;
   variant_slug: string;
   variant_price: number;
+  variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)
+  image: string[];
   variant_price_sale?: number;
-  variant_images?: string;
+
   variant_height?: number;
   variant_width?: number;
   variant_depth?: number;
