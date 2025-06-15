@@ -24,6 +24,6 @@ jobs:
           curl -H "Content-Type: application/json" \
                -X POST \
                -d "{
-                    \"content\": \"✅ **New Merge to \`main\` branch** in **${{ github.repository }}**\n\n📝 **Commit:** ${{ env.COMMIT_MSG }}\n🔢 **Hash:** \`${{ env.COMMIT_HASH }}\`\n👤 **By:** ${{ github.actor }}\n🕓 **Date:** ${{ env.COMMIT_TIME }}\n🔗 [View Repo](https://github.com/${{ github.repository }})\"
+                    \"content\": \"✅ **New Merge to \`main\` branch** in **${{ github.repository }}**\n\n📝 **Commit:** ${{ env.COMMIT_MSG }}\n\n🔢 **Hash:** \`${{ env.COMMIT_HASH }}\`\n\n👤 **By:** ${{ github.actor }}\n\n🕓 **Date:** ${{ env.COMMIT_TIME }}\n\n🔗 [View Repo](https://github.com/${{ github.repository }})\"
                   }" \
                ${{ secrets.DISCORD_WEBHOOK }}
