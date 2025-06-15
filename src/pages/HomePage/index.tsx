@@ -8,9 +8,24 @@ import type { Product as ProductType } from "../../types";
 import Product from "../../components/Product";
 import CategorySlider from "../../components/CategorySlider";
 
+// Định nghĩa kiểu dữ liệu phù hợp với component Product
+interface ProductComponentProps {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  colors: string[];
+  isNew?: boolean;
+  isSale?: boolean;
+  createdAt?: string;
+  priceSale?: number;
+  slug: string;
+  isWishlist?: boolean;
+}
+
 const HomePage = () => {
   // Mock data cho Product - mảng sản phẩm
-  const products: ProductType[] = [
+  const products: ProductComponentProps[] = [
     {
       id: 1,
       name: "Ghế Wooden 2.0",
@@ -21,34 +36,22 @@ const HomePage = () => {
       isNew: true,
       isSale: true,
       priceSale: 25000000,
-      category: {
-        id: 1,
-        name: "Sofa"
-      }
     },
     {
       id: 2,
       name: "Sofa Modena 2.5 seater",
       price: 18990000,
       image: "/images/product-2.jpg",
-      colors: ["#7D5A50", "#GRAY"],
+      colors: ["#7D5A50", "#GRAY", "#333333"],
       slug: "sofa-modena-2-5-seater",
-      category: {
-        id: 1,
-        name: "Sofa"
-      }
     },
     {
       id: 3,
       name: "Bàn ăn Osaka",
       price: 12500000,
       image: "/images/product-3.jpg",
-      colors: ["#WOOD", "#BLACK"],
+      colors: ["#WOOD", "#BLACK", "#555555"],
       slug: "ban-an-osaka",
-      category: {
-        id: 2,
-        name: "Bàn ăn"
-      }
     },
     {
       id: 4,
@@ -57,47 +60,8 @@ const HomePage = () => {
       image: "/images/product-4.jpg",
       colors: ["#WHITE", "#BLACK", "#YELLOW"],
       slug: "ghe-eames",
-      category: {
-        id: 3,
-        name: "Ghế"
-      }
-    },
-    {
-      id: 5,
-      name: "Đèn treo Pendant",
-      price: 1890000,
-      image: "/images/product-5.jpg",
-      colors: ["#BLACK", "#GOLD"],
-      slug: "den-treo-pendant",
-      category: {
-        id: 4,
-        name: "Đèn"
-      }
     }
   ];
-
-  // Hàm chuyển đổi colors từ string[] sang định dạng đối tượng
-  const formatProduct = (product: ProductType) => {
-    const formattedProduct = {
-      ...product,
-      colors: product.colors.map((color, index) => ({
-        colorId: index + 1,
-        colorName: color.replace('#', ''),
-        colorHex: color,
-        image: product.image,
-        slug: `${product.slug}-${color.replace('#', '').toLowerCase()}`,
-        colorPriority: index
-      })),
-      relatedProducts: undefined as any
-    };
-
-    // Xử lý relatedProducts nếu có
-    if (product.relatedProducts && product.relatedProducts.length > 0) {
-      formattedProduct.relatedProducts = product.relatedProducts.map(formatProduct);
-    }
-
-    return formattedProduct;
-  };
 
   // Sản phẩm hot - lấy 3 sản phẩm đầu tiên
   const hotProducts = products.slice(0, 3);
@@ -222,15 +186,17 @@ const HomePage = () => {
         {/* Featured Products */}
         <section className="featured-products">
           <div className="container">
-            <h2 className="section-title">Sản Phẩm Mới</h2>
-            <div className="products-grid">
-              {products.map((product) => (
-                <Product 
-                  key={product.id} 
-                  product={formatProduct(product)} 
-                  slug={product.slug} 
-                />
-              ))}
+            <div className="section-box-products">
+              <h5>Sản Phẩm Mới</h5>
+              <div className="box-products-container">
+                {products.map((product) => (
+                  <Product 
+                    key={product.id} 
+                    product={product} 
+                    slug={product.slug} 
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -238,15 +204,17 @@ const HomePage = () => {
         {/* Hot Products */}
         <section className="hot-products">
           <div className="container">
-            <h2 className="section-title">Sản Phẩm Hot</h2>
-            <div className="products-grid">
-              {hotProducts.map((product) => (
-                <Product 
-                  key={product.id} 
-                  product={formatProduct(product)} 
-                  slug={product.slug} 
-                />
-              ))}
+            <div className="section-box-products">
+              <h5>Sản Phẩm Hot</h5>
+              <div className="box-products-container">
+                {products.map((product) => (
+                  <Product 
+                    key={product.id} 
+                    product={product} 
+                    slug={product.slug} 
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
