@@ -10,11 +10,21 @@ $sm-min: 992px; // KHÔNG THAY ĐỔI
 $md-min: 1200px; // KHÔNG THAY ĐỔI
 $lg-min: 1536px; // CÓ THỂ TÙY CHỈNH
 
-$xxs-max: ($xxs-min - 1); // Small Mobile
-$xs-max: ($xs-min - 1); // Mobile
-$sm-max: ($sm-min - 1); // Tablet
-$md-max: ($md-min - 1); // Desktop
-$lg-max: ($lg-min - 1); // Large Desktop
+$xxs-max: (
+    $xxs-min - 1
+); // Small Mobile
+$xs-max: (
+    $xs-min - 1
+); // Mobile
+$sm-max: (
+    $sm-min - 1
+); // Tablet
+$md-max: (
+    $md-min - 1
+); // Desktop
+$lg-max: (
+    $lg-min - 1
+); // Large Desktop
 
 //=====================================CÁC BIẾN KHÔNG THAY ĐỔI GIÁ TRỊ KHI RESPONSIVE======================================
 // colors - tuỳ chỉnh
@@ -33,6 +43,7 @@ $gray-cl-1: #CCCCCC;
 $gray-cl-2: #E0E0E0;
 $gray-cl-3: #EEEEEE;
 $gray-cl-4: #EAEAEA;
+$gray-cl-5: #7D7D7D;
 $text-gray: #8C8A8A;
 $text-cl: #1d1d1d;
 $gradient-cl: linear-gradient(180deg, #df1cff 0%, #814bf6 50.55%, #00bcff 100%);
@@ -85,6 +96,7 @@ $cubic: cubic-bezier(0.84, 0.13, 0.33, 0.97);
     @media (max-width: $sm-max) {
         // Tablet
     }
+
     @media (max-width: $xs-max) {
         // Mobile
         --h1-fs: 3.6rem;
