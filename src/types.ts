@@ -187,7 +187,7 @@ export interface NewsArticle {
   news_publishDate: string;
   news_author?: string;
   news_tags?: string[];
-  created_at?: String;
+  created_at?: String | undefined;
   news_category_id: string;
 }
 export interface NewsCategory {
@@ -225,6 +225,7 @@ export interface Variant {
   variant_price: number;
   variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)
   image: string[];
+  // listImage: string[];
   variant_price_sale?: number;
 
   variant_height?: number;

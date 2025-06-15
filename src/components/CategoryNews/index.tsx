@@ -38,7 +38,6 @@ const NewsCategories: React.FC<NewsProps> = ({
       try {
         setLoading(true);
         const data = await getAllNewsCategories();
-        console.log(data, "news");
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         // Apply limit if provided
         const limitedData = limit ? data.slice(0, limit) : data;

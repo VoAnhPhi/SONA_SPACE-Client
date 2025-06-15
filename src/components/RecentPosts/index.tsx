@@ -32,7 +32,6 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
       try {
         setLoading(true);
         const data = await getAllNewsByView();
-        console.log(data, "news");
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         setNewsByView(data);
         setError(null); 
