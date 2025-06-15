@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Product, PaginatedResponse } from "../types";
+import type { Product, PaginatedResponse, Variant } from "../types";
 
 const API_URL = "http://localhost:3501/api";
 
@@ -63,8 +63,14 @@ export const getAllProducts = async (
  * @param {string} slug - Product slug
  * @returns {Promise<Product>} Product data
  */
+
 export const getProductBySlug = async (slug: string): Promise<Product> => {
   try {
+    type ProductDetailResponse = {
+      product: Product;
+      variants: Variant[];
+    };
+
     console.log(`Calling API: GET ${API_URL}/products/${slug}`);
     const response = await axios.get(`${API_URL}/products/${slug}`);
     console.log("API response received:", response.status);

@@ -77,7 +77,7 @@ export const formatProductForDisplay = (product: any): Product => {
     price: mainVariant.variant_price ?? 0,
     priceSale: mainVariant.variant_price_sale ?? 0,
     image: firstImage,
-    slug: mainVariant.variant_slug || "",
+    slug: product.slug || "",
     isNew,
     isSale,
     isWishlist: false,
@@ -87,7 +87,6 @@ export const formatProductForDisplay = (product: any): Product => {
       name: product.category_name ?? "",
     },
 
-    // ✅ Màu sắc đầy đủ hơn
     colors: variants.map((v: any) => ({
       colorId: v.color_id,
       colorName: v.color_name,
@@ -98,7 +97,6 @@ export const formatProductForDisplay = (product: any): Product => {
       priceSale: v.variant_price_sale,
     })),
 
-    // ✅ Đặc tả
     specifications: [
       {
         label: "Chiều cao",
