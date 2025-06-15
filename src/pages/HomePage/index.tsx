@@ -6,6 +6,7 @@ import GetInTouch from "../../components/GetInTouch";
 // import CategorySlider from "../../components/CategorySlider";
 import type { Product as ProductType } from "../../types";
 import Product from "../../components/Product";
+import CategorySlider from "../../components/CategorySlider";
 
 const HomePage = () => {
   // Mock data cho Product - mảng sản phẩm
@@ -173,13 +174,12 @@ const HomePage = () => {
         </section>
 
         {/* All Categories - Hiển thị tất cả danh mục */}
-        {/* <section className="all-categories-section">
+        <section className="all-categories-section">
           <div className="container">
             <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
-            <CategoryList showProductCount={true} />
-            <CategorySlider showProductCount={true} />
+            <CategorySlider/>
           </div>
-        </section> */}
+        </section>
 
         {/* Featured Products */}
         <section className="featured-products">
