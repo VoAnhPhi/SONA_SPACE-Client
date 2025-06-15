@@ -1,64 +1,81 @@
 import { Link } from "react-router-dom";
+import { fetchAllRooms } from "../../services/roomService";
+import type { Room } from "../../types";
+import { useEffect, useState } from "react";
 
-interface RoomCategoryProps {
-    id: string;
-    name: string;
-    image: string;
-    slug: string;
-}
-
-export default function CategorySlider() {
-    const roomCategories: RoomCategoryProps[] = [
-        {
-            id: "living-room",
-            name: "Phòng Khách",
-            image: "/images/rooms/image1.jpg",
-            slug: "phong-khach"
-        },
-        {
-            id: "dining-room",
-            name: "Phòng Ăn",
-            image: "/images/rooms/image2.jpg",
-            slug: "phong-an"
-        },
-        {
-            id: "bedroom",
-            name: "Phòng Ngủ",
-            image: "/images/rooms/image3.jpg",
-            slug: "phong-ngu"
-        },
-        {
-            id: "workspace",
-            name: "Không gian làm việc",
-            image: "/images/rooms/image4.jpg",
-            slug: "khong-gian-lam-viec"
-        },
-        {
-            id: "small-space",
-            name: "Small Space",
-            image: "/images/rooms/image5.jpg",
-            slug: "small-space"
-        },
-        {
-            id: "outdoor-space",
-            name: "Không gian ngoài trời",
-            image: "/images/rooms/image6.jpg",
-            slug: "khong-gian-ngoai-troi"
-        }
-    ];
+export default function RoomSlider() {
+    const [rooms, setRooms] = useState<Room[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [debugInfo, setDebugInfo] = useState<string>('');
+    useEffect(() => {
+        const loadRooms = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchAllRooms();
+                setDebugInfo(prev => `${prev}\nReceived ${data.length} rooms`);
+                setRooms(data);
+                setError(null);
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+                setError(`Failed to load rooms: ${errorMessage}`);
+                setDebugInfo(prev => `${prev}\nError: ${errorMessage}`);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadRooms();
+    }, []);
+    const DebugInfo = () => {
+        const isDev = true; // Always show debug info for now
+        return isDev && debugInfo ? (
+            <div className="category-list-debug">
+                <details>
+                    <summary>Debug Info</summary>
+                    <pre>{debugInfo}</pre>
+                </details>
+            </div>
+        ) : null;
+    };
+    if (loading) {
+        return (
+            <div className="category-list-loading">
+                <div className="loading-spinner"></div>
+                <p>Đang tải không gian...</p>
+                <DebugInfo />
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div className="category-list-error">
+                <p>{error}</p>
+                <button onClick={() => window.location.reload()}>Thử lại</button>
+                <DebugInfo />
+            </div>
+        );
+    }
+    if (rooms.length === 0) {
+        return (
+            <div className="category-list-empty">
+                <p>Không tìm thấy không gian nào</p>
+                <DebugInfo />
+            </div>
+        );
+    }
     return (
         <>
             <div className="categories-flex">
-                {roomCategories.map((room) => (
+                {rooms.map((room: Room) => (
                     <div
-                        key={room.id}
+                        key={room.room_id}
                         className={`category-item`}
                     >
                         <Link to={`/khong-gian/${room.slug}`} className="category-link">
                             <div className="category-image">
-                                <img src={room.image} alt={room.name} />
+                                <img src={room.room_image} alt={room.room_name} />
                             </div>
-                            <h3 className="category-name">{room.name}</h3>
+                            <h3 className="category-name">{room.room_name}</h3>
                         </Link>
                     </div>
                 ))}

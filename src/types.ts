@@ -146,11 +146,15 @@ export interface Recommendation {
 
 // Room/Space related interfaces
 export interface Room {
-  id: number;
-  name: string;
+  room_id: number;
+  room_name: string;
   slug: string;
-  image: string;
-  description?: string;
+  room_image: string;
+  room_description?: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  product_count: number;
   products?: Product[];
 }
 
@@ -166,7 +170,7 @@ export interface NewsArticle {
   news_publishDate: string;
   news_author?: string;
   news_tags?: string[];
-  created_at? : String;
+  created_at?: String;
   news_category_id: string;
 }
 export interface NewsCategory {

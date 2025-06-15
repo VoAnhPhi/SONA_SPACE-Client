@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/filter";
-import Seemore from "../../components/seemore";
+import Filter from "../../components/Filter";
+import Seemore from "../../components/SeeMore";
 import CategorySlider from "../../components/CategorySlider";
 import ProductComponent from "../../components/Product";
 import {

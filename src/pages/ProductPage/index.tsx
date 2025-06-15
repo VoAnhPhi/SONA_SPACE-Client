@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/filter";
+import Filter from "../../components/Filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
 import PopularCategory from "../../components/PopularCategory";
-import Seemore from "../../components/seemore";
+import Seemore from "../../components/SeeMore";
 import {
   fetchAllProducts,
   formatProductForDisplay,
