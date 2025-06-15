@@ -14,6 +14,7 @@ import { getProductBySlug } from "../../api/product";
 
 // import types
 import type { Product, Variant } from "../../types";
+import Comment from "../../components/Comment";
 
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -263,77 +264,67 @@ const ProductDetailPage: React.FC = () => {
           <div className="container">
             <div className="detail-decription-evaluate">
               <div className="description-avalute-title">
-                <div className="tabs-header">
+              <div className="tabs-header">
                   <button
-                    className={`tab-btn ${
-                      activeTab === "description" ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTab("description")}
+                    className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('description')}
                   >
                     Mô tả
                   </button>
                   <button
-                    className={`tab-btn ${
-                      activeTab === "review" ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTab("review")}
+                    className={`tab-btn ${activeTab === 'review' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('review')}
                   >
                     Đánh giá
                   </button>
                 </div>
               </div>
+              {activeTab === 'description' && (
               <div className="description-avalute-content">
                 <div className="description-avalute-content-text">
                   <p>
-                    {product.description}
+                    Lorem ipsum dolor sit amet consectetur. Non imperdiet
+                    quisque quam sed semper nec semper. Ipsum mattis accumsan
+                    natoque dictum et enim. Aliquam scelerisque at fames cras.{" "}
                     <br />
-                    {/* <br />
+                    <br />
                     Et sollicitudin gravida bibendum tellus pulvinar elementum
                     egestas eu enim. Arcu tincidunt est nibh quisque. Nec
                     aliquam turpis in etiam. Morbi augue lectus maecenas enim
                     orci cursus quam ac. Id eget turpis sit sit etiam arcu ipsum
-                    commodo id. */}
+                    commodo id.
                   </p>
                 </div>
                 <div className="description-avalute-content-size">
                   <button className="color-info">
-                    <span>Chiều cao:</span>
-                    <span>
-                      {selectedVariant?.variant_height || product.height} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                   <button className="color-info">
-                    <span>Chiều rộng:</span>
-                    <span>
-                      {selectedVariant?.variant_width || product.width} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                   <button className="color-info">
-                    <span>Chiều sâu:</span>
-                    <span>
-                      {selectedVariant?.variant_depth || product.depth} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                   <button className="color-info">
-                    <span>Chiều sâu:</span>
-                    <span>
-                      {selectedVariant?.variant_depth || product.depth} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                   <button className="color-info">
-                    <span>Chiều sâu:</span>
-                    <span>
-                      {selectedVariant?.variant_depth || product.depth} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                   <button className="color-info">
-                    <span>Chiều sâu:</span>
-                    <span>
-                      {selectedVariant?.variant_depth || product.depth} cm
-                    </span>
+                    <span>Màu sắc </span>
+                    <span>Đỏ, Trắng</span>
                   </button>
                 </div>
               </div>
+
+              )}
+              {activeTab === "review" && <Comment />}
             </div>
           </div>
         </div>
