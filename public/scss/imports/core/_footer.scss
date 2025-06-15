@@ -184,8 +184,24 @@
     }
 }
 
+@include lg {
+    .footer {
+        .footer-column {
+            &:last-child {
+                a.btn.btn-primary {
+                    padding: 10px 12px;
+                }
+            }
+        }
+    }
+}
+
 @include sm {
-    .footer {}
+    .footer {
+        .footer-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
 }
 
 @include xs {
@@ -199,6 +215,7 @@
                 &-aside {
                     .tip-item {
                         height: 100%;
+
                         img {
                             max-width: 40%;
                             object-fit: cover;
