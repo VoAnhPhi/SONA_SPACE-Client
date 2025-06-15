@@ -5,13 +5,13 @@ import type { NewsArticle , NewsCategory } from '../types';
 const API_URL = 'http://localhost:3501/api';
 
 // Hàm helper để kiểm tra và xử lý response
-const handleApiResponse = (response: any, errorMessage: string) => {
-  if (!response || !response.data) {
-    console.error(errorMessage);
-    throw new Error(errorMessage);
-  }
-  return response.data;
-};
+// const handleApiResponse = (response: any, errorMessage: string) => {
+//   if (!response || !response.data) {
+//     console.error(errorMessage);
+//     throw new Error(errorMessage);
+//   }
+//   return response.data;
+// };
 
 /**
  * Get all news
@@ -83,7 +83,7 @@ export const getAllNewsByView = async (): Promise<NewsArticle[]> => {
       
       // Thử lấy dữ liệu từ các cấu trúc phổ biến
       const data = response.data.data || response.data.news || response.data.items || [];
-      console.log('Extracted data:', data);
+      console.log('Extracted data new by view:', data);
       return data;
     }
     

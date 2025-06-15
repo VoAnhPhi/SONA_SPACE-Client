@@ -170,7 +170,7 @@ export interface NewsArticle {
   news_publishDate: string;
   news_author?: string;
   news_tags?: string[];
-  created_at?: String;
+  created_at?: String | undefined;
   news_category_id: string;
 }
 export interface NewsCategory {
