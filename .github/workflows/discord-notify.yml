@@ -1,0 +1,17 @@
+name: Notify Discord on Main Merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"✅ Merge mới vào nhánh main trong repo $GITHUB_REPOSITORY\"}" \
+               ${{ secrets.DISCORD_WEBHOOK }}
