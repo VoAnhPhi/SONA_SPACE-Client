@@ -21,7 +21,7 @@
 
         .user-greeting {
             position: relative;
-            
+
             &-text {
                 display: flex;
                 align-items: center;
@@ -61,7 +61,7 @@
 
                     li {
                         border-bottom: 1px solid #f0f0f0;
-                        
+
                         &:last-child {
                             border-bottom: none;
                         }
@@ -71,7 +71,7 @@
                             padding: 12px 20px;
                             @include text(16px, Be-R, auto, #333 !important, null);
                             transition: all 0.2s ease;
-                            
+
                             &:hover {
                                 background-color: #f9f9f9;
                                 color: $yellow-cl !important;
@@ -87,7 +87,7 @@
                         transform: rotate(180deg);
                     }
                 }
-                
+
                 .user-dropdown {
                     opacity: 1;
                     visibility: visible;
@@ -326,8 +326,8 @@
                             padding: 15px 20px;
                             border: none;
                             outline: none;
-                            font-size: 16px;
                             width: 100%;
+                            @include text(16px, M-SB, auto, $black-cl, null);
                         }
 
                         button {
@@ -351,9 +351,7 @@
                     .search-content {
                         h3 {
                             text-align: left;
-                            font-size: 22px;
-                            font-weight: 600;
-                            color: #333;
+                            @include text(24px, M-SB, auto, $black-cl, null);
                             margin-bottom: 20px;
                         }
 
@@ -368,9 +366,7 @@
                                     display: flex;
                                     align-items: center;
                                     gap: 10px;
-                                    color: #666;
-                                    text-decoration: none;
-                                    font-size: 16px;
+                                    @include text(16px, Be-M, auto, $gray-cl-5, null);
                                     transition: color 0.3s;
 
                                     img {
@@ -414,15 +410,15 @@
                                         }
 
                                         .product-title {
-                                            font-size: 16px;
-                                            color: #333;
-                                            font-weight: 500;
-                                            text-align: center;
+                                            @include text(18px, Be-R, auto, $black-cl, null);
+                                            text-align: initial;
+                                            transition: all 0.3s ease;
                                         }
 
                                         &:hover {
                                             .product-title {
                                                 color: $yellow-cl;
+                                                transition: all 0.3s ease;
                                             }
                                         }
                                     }
@@ -474,7 +470,6 @@
                 }
             }
         }
-
     }
 }
 
