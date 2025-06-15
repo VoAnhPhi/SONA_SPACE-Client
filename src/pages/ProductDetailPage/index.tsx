@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
 import ListProduct from "../../components/Product";
+import Comment from "../../components/Comment";
 
 interface ProductProps {
   id: number;
@@ -42,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [selectedColor, setSelectedColor] = useState<string>("#D8C1A9");
   const [quantity, setQuantity] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<string>("description");
+  const [activeTab, setActiveTab] = useState<'description' | 'review'>('description');
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
 
   // Mock product data
@@ -162,154 +163,150 @@ const ProductDetailPage: React.FC = () => {
         <div className="detail-page-link">
           <div className="container">
             <div className="detail-link">
-            <span className="link1">Sản phẩm | </span>
-            <span className="link2">Ghế sofa MOHO HALDEN</span>
+              <span className="link1">Sản phẩm | </span>
+              <span className="link2">Ghế sofa MOHO HALDEN</span>
             </div>
           </div>
         </div>
 
 
-    <div className="container">
-        <div className="detail-products">
+        <div className="container">
+          <div className="detail-products">
             <div className="detail-image">
-                <div className="image-full">
-                  <div className="image1">
-                    <img src={product.images[0]} alt="" />
+              <div className="image-full">
+                <div className="image1">
+                  <img src={product.images[0]} alt="" />
+                </div>
+                <div className="image2">
+                  <div className="image2-1">
+                    <img src={product.images[1]} alt="" />
                   </div>
-                  <div className="image2">
-                    <div className="image2-1">
-                      <img src={product.images[1]} alt="" />
-                    </div>
-                    <div className="image2-2">
-                      <img src={product.images[2]} alt="" />
-                    </div>
+                  <div className="image2-2">
+                    <img src={product.images[2]} alt="" />
                   </div>
-                  <div className="image3">
-                    <div className="image3-1">
-                      <img src={product.images[3]} alt="" />
-                    </div>
-                    <div className="image3-2">
-                      <img src={product.images[4]} alt="" />
-                    </div>
+                </div>
+                <div className="image3">
+                  <div className="image3-1">
+                    <img src={product.images[3]} alt="" />
                   </div>
-                  <div className="image4">
-                    <img src={product.images[5]} alt="" />
+                  <div className="image3-2">
+                    <img src={product.images[4]} alt="" />
                   </div>
-                  <div className="image5">
-                    <img src={product.images[6]} alt="" />
-                  </div>
+                </div>
+                <div className="image4">
+                  <img src={product.images[5]} alt="" />
+                </div>
+                <div className="image5">
+                  <img src={product.images[6]} alt="" />
                 </div>
               </div>
-              <div className="detail-content">
-                <div className="content-name">
-                  <h3>{product.name}</h3>
-                </div>
-                <div className="content-description">
-                  <span>{product.category}</span>
-                </div>
-                <div className="content-price">
-                  <span className="price">{formatPrice(product.price)} đ</span>
-                  {product.oldPrice && (
-                    <span className="price-old">
-                      {formatPrice(product.oldPrice)} đ
-                    </span>
-                  )}
-                </div>
-                <div className="content-rating">
-                  <div className="rating-icon">
-                    <div className="icon-star">
-                      {renderStars(product.rating)}
-                    </div>
-                    <div className="icon-star-number">
-                      <span>{product.rating} </span>
-                    </div>
-                  </div>
-                  <div className="rating-evaluate">
-                    <span> {product.reviewCount} lượt đánh giá</span>
-                  </div>
-                </div>
-                <div className="content-quantity">
-                  <span>Số lượng trong kho : </span>
-                  <span className="quantity-number">{product.stock}</span>
-                </div>
-                <div className="content-view">
-                  <span>Lượt xem: 300</span>
-                  <span className="view1"> Sản phẩm đã bán: 500</span>
-                </div>
-                <div className="content-color">
-                  <span>Chọn màu sắc</span>
-                  <div className="color-options">
-                    {product.colors.map((color) => (
-                      <div
-                        key={color.code}
-                        className={`color-option ${
-                          selectedColor === color.code ? "active" : ""
-                        }`}
-                        style={{ backgroundColor: color.code }}
-                        onClick={() => setSelectedColor(color.code)}
-                      ></div>
-                    ))}
-                        </div>
-                    </div>
-                    <div className="content-input-quantity">
-                        <span>Chọn số lượng</span>
-                        <div className="input-options">
-                        <button 
-                            className="quantity-input-" 
-                            onClick={() => handleQuantityChange(-1)}
-                            disabled={quantity <= 1}
-                            > <img src="/images/detail/tru.svg" alt="" />
-                        </button>
-                            <input type="text"   value={quantity} 
-                      readOnly  className="quantity-inputt" />
-                        <button 
-                            className="quantity-btn increase" 
-                            onClick={() => handleQuantityChange(1)}
-                            >  <img src="/images/detail/cong.svg" alt="" />
-                        </button>
-                        </div>
-                    </div>
-                    <div className="content-button">
-                        <button className="button-add-cart">Thêm vào giỏ</button>
-                        <div className="button-icon-i">
-                          <div className="icon-img">
-                              <img src="/images/detail/heart.svg" alt="" />
-                          </div>
-                             <div className="icon-img">
-                              <img src="/images/detail/share.svg" alt="" />
-                          </div>
-                            
-                        </div>
-
-                    </div>
             </div>
+            <div className="detail-content">
+              <div className="content-name">
+                <h3>{product.name}</h3>
+              </div>
+              <div className="content-description">
+                <span>{product.category}</span>
+              </div>
+              <div className="content-price">
+                <span className="price">{formatPrice(product.price)} đ</span>
+                {product.oldPrice && (
+                  <span className="price-old">
+                    {formatPrice(product.oldPrice)} đ
+                  </span>
+                )}
+              </div>
+              <div className="content-rating">
+                <div className="rating-icon">
+                  <div className="icon-star">
+                    {renderStars(product.rating)}
+                  </div>
+                  <div className="icon-star-number">
+                    <span>{product.rating} </span>
+                  </div>
+                </div>
+                <div className="rating-evaluate">
+                  <span> {product.reviewCount} lượt đánh giá</span>
+                </div>
+              </div>
+              <div className="content-quantity">
+                <span>Số lượng trong kho : </span>
+                <span className="quantity-number">{product.stock}</span>
+              </div>
+              <div className="content-view">
+                <span>Lượt xem: 300</span>
+                <span className="view1"> Sản phẩm đã bán: 500</span>
+              </div>
+              <div className="content-color">
+                <span>Chọn màu sắc</span>
+                <div className="color-options">
+                  {product.colors.map((color) => (
+                    <div
+                      key={color.code}
+                      className={`color-option ${selectedColor === color.code ? "active" : ""
+                        }`}
+                      style={{ backgroundColor: color.code }}
+                      onClick={() => setSelectedColor(color.code)}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+              <div className="content-input-quantity">
+                <span>Chọn số lượng</span>
+                <div className="input-options">
+                  <button
+                    className="quantity-input-"
+                    onClick={() => handleQuantityChange(-1)}
+                    disabled={quantity <= 1}
+                  > <img src="/images/detail/tru.svg" alt="" />
+                  </button>
+                  <input type="text" value={quantity}
+                    readOnly className="quantity-inputt" />
+                  <button
+                    className="quantity-btn increase"
+                    onClick={() => handleQuantityChange(1)}
+                  >  <img src="/images/detail/cong.svg" alt="" />
+                  </button>
+                </div>
+              </div>
+              <div className="content-button">
+                <button className="button-add-cart">Thêm vào giỏ</button>
+                <div className="button-icon-i">
+                  <div className="icon-img">
+                    <img src="/images/detail/heart.svg" alt="" />
+                  </div>
+                  <div className="icon-img">
+                    <img src="/images/detail/share.svg" alt="" />
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
 
 
-          <div className="detail-decriptionn">
-            <div className="container">
+        <div className="detail-decriptionn">
+          <div className="container">
             <div className="detail-decription-evaluate">
               <div className="description-avalute-title">
                 <div className="tabs-header">
                   <button
-                    className={`tab-btn ${
-                      activeTab === "description" ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTab("description")}
+                    className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('description')}
                   >
                     Mô tả
                   </button>
                   <button
-                    className={`tab-btn ${
-                      activeTab === "review" ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTab("review")}
+                    className={`tab-btn ${activeTab === 'review' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('review')}
                   >
                     Đánh giá
                   </button>
                 </div>
               </div>
+              {activeTab === 'description' && (
               <div className="description-avalute-content">
                 <div className="description-avalute-content-text">
                   <p>
@@ -352,36 +349,41 @@ const ProductDetailPage: React.FC = () => {
                   </button>
                 </div>
               </div>
+
+              )}
+              {activeTab === 'review' && (
+                  <Comment />
+            )}
             </div>
-            </div>
-          </div>
-
-              <div className="detail-banner-slider">
-                <div className="container">
-               <div className="detail-banner">
-                        <img src="/images/detail/banner-detail.jpg" alt="" />
-                </div>
-            </div>
-              </div>
-
-
-            <PolicyProduct />
-         
-                {/* boxsanpham */}
-      <div className="boxProducts">
-       
-      <div className="container">
-        <div className="section-box-products">
-               <h5>Các sản phẩm tương tự</h5>
-          <div className="box-products-container">
-            {relatedProducts.map((product) => (
-              <ListProduct key={product.id} product={product} slug={product.slug} />
-            ))}
-
           </div>
         </div>
-      </div>
-      </div>
+
+        <div className="detail-banner-slider">
+          <div className="container">
+            <div className="detail-banner">
+              <img src="/images/detail/banner-detail.jpg" alt="" />
+            </div>
+          </div>
+        </div>
+
+
+        <PolicyProduct />
+
+        {/* boxsanpham */}
+        <div className="boxProducts">
+
+          <div className="container">
+            <div className="section-box-products">
+              <h5>Các sản phẩm tương tự</h5>
+              <div className="box-products-container">
+                {relatedProducts.map((product) => (
+                  <ListProduct key={product.id} product={product} slug={product.slug} />
+                ))}
+
+              </div>
+            </div>
+          </div>
+        </div>
 
 
       </div>

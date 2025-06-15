@@ -43,6 +43,22 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
     fetchData();
   }, [slug, limit]);
 
+  const formatDate = (dateString: string): string | undefined => {
+    const date = new Date(dateString);
+    // Lấy các phần
+    const DD = ('0' + date.getDate()).slice(-2);
+    const MM = ('0' + (date.getMonth() + 1)).slice(-2);
+    const YYYY = date.getFullYear();
+    const HH = ('0' + date.getHours()).slice(-2);
+    const mm = ('0' + date.getMinutes()).slice(-2);
+    const ss = ('0' + date.getSeconds()).slice(-2);
+
+    return `${DD}/${MM}/${YYYY} ${HH}:${mm}:${ss}`;
+  };
+  const getFormattedDate = (dateString?: string | undefined) => {
+    if (!dateString) return 'Ngày không xác định';
+    return formatDate(dateString);
+  };
   if (isLoading) {
     return (
       <>
@@ -80,8 +96,12 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
             <div className="news-main-content">
               <h1 className="news-title">{newsDetailItem.news_name}</h1>
               <div className="news-meta">
-                <span className="date">{newsDetailItem.created_at}</span>
-                <span className="category">{newsDetailItem.news_category_id}</span>
+                <span className="date">
+                  {formatDate(
+                    newsDetailItem.created_at ? newsDetailItem.created_at.toString() : ""
+                  )}
+                </span>
+                {/* <span className="category">{newsDetailItem.news_category_id}</span> */}
                 <span className="views">
                   <img src="../images/news/eye.svg" alt="" />
                   {newsDetailItem.news_view} lượt xem
@@ -101,7 +121,7 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
               </div> */}
             </div>
             <div className="news-sidebar">
-              <NewsCategories limit={5}/>
+              <NewsCategories limit={5} />
               <RecentPosts newsItems={[]} /> {/* Tùy ý truyền dữ liệu khác */}
             </div>
           </div>
