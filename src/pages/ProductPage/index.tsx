@@ -61,24 +61,27 @@ const ProductPage: React.FC = () => {
         </div>
       </div>
 
-      <PopularCategory />
-      <Filter />
+      {/* Product section ( all products) */}
 
-      <div className="boxProducts">
-        <div className="container">
-          <div className="section-box-products">
-            <div className="box-products-container">
-              {products.map((product) => (
-                <ProductComponent
-                  key={product.id}
-                  product={product}
-                  slug={product.slug}
-                />
-              ))}
+      <PopularCategory />
+      <section className="product-section">
+        <Filter />
+        <div className="boxProducts">
+          <div className="container">
+            <div className="section-box-products">
+              <div className="box-products-container">
+                {products.map((product) => (
+                  <ProductComponent
+                    key={product.id}
+                    product={product}
+                    slug={product.slug}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <Seemore />
       <PolicyProduct />

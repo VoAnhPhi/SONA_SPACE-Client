@@ -141,14 +141,14 @@ article {
 //Section GAP
 section {
     &:nth-child(n+1) {
-        margin-top: 74px;
+        margin-top: 94px;
     }
 }
 
 //Custome Component [Title & Description]
 section {
     .section-title {
-        @include text(32px, M-B, normal, $dark-cl, null);
+        @include text(24px, M-B, normal, $dark-cl, null);
         margin-bottom: 12px;
     }
 
