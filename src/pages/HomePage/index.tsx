@@ -21,7 +21,10 @@ const HomePage = () => {
       isNew: true,
       isSale: true,
       priceSale: 25000000,
-      category: "Sofa"
+      category: {
+        id: 1,
+        name: "Sofa"
+      }
     },
     {
       id: 2,
@@ -30,7 +33,10 @@ const HomePage = () => {
       image: "/images/product-2.jpg",
       colors: ["#7D5A50", "#GRAY"],
       slug: "sofa-modena-2-5-seater",
-      category: "Sofa"
+      category: {
+        id: 1,
+        name: "Sofa"
+      }
     },
     {
       id: 3,
@@ -39,7 +45,10 @@ const HomePage = () => {
       image: "/images/product-3.jpg",
       colors: ["#WOOD", "#BLACK"],
       slug: "ban-an-osaka",
-      category: "Bàn ăn"
+      category: {
+        id: 2,
+        name: "Bàn ăn"
+      }
     },
     {
       id: 4,
@@ -48,7 +57,10 @@ const HomePage = () => {
       image: "/images/product-4.jpg",
       colors: ["#WHITE", "#BLACK", "#YELLOW"],
       slug: "ghe-eames",
-      category: "Ghế"
+      category: {
+        id: 3,
+        name: "Ghế"
+      }
     },
     {
       id: 5,
@@ -57,12 +69,38 @@ const HomePage = () => {
       image: "/images/product-5.jpg",
       colors: ["#BLACK", "#GOLD"],
       slug: "den-treo-pendant",
-      category: "Đèn"
+      category: {
+        id: 4,
+        name: "Đèn"
+      }
     }
   ];
 
-  // Sản phẩm hot - có thể lọc từ danh sách sản phẩm chính
-  const hotProducts = products.filter((product, index) => index < 3);
+  // Hàm chuyển đổi colors từ string[] sang định dạng đối tượng
+  const formatProduct = (product: ProductType) => {
+    const formattedProduct = {
+      ...product,
+      colors: product.colors.map((color, index) => ({
+        colorId: index + 1,
+        colorName: color.replace('#', ''),
+        colorHex: color,
+        image: product.image,
+        slug: `${product.slug}-${color.replace('#', '').toLowerCase()}`,
+        colorPriority: index
+      })),
+      relatedProducts: undefined as any
+    };
+
+    // Xử lý relatedProducts nếu có
+    if (product.relatedProducts && product.relatedProducts.length > 0) {
+      formattedProduct.relatedProducts = product.relatedProducts.map(formatProduct);
+    }
+
+    return formattedProduct;
+  };
+
+  // Sản phẩm hot - lấy 3 sản phẩm đầu tiên
+  const hotProducts = products.slice(0, 3);
 
   return (
     <>
@@ -187,7 +225,11 @@ const HomePage = () => {
             <h2 className="section-title">Sản Phẩm Mới</h2>
             <div className="products-grid">
               {products.map((product) => (
-                <Product key={product.id} product={product} slug={product.slug} />
+                <Product 
+                  key={product.id} 
+                  product={formatProduct(product)} 
+                  slug={product.slug} 
+                />
               ))}
             </div>
           </div>
@@ -199,7 +241,11 @@ const HomePage = () => {
             <h2 className="section-title">Sản Phẩm Hot</h2>
             <div className="products-grid">
               {hotProducts.map((product) => (
-                <Product key={product.id} product={product} slug={product.slug} />
+                <Product 
+                  key={product.id} 
+                  product={formatProduct(product)} 
+                  slug={product.slug} 
+                />
               ))}
             </div>
           </div>
