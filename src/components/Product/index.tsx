@@ -2,27 +2,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-interface ProductProps {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  colors: string[];
-  isNew?: boolean;
-  isSale?: boolean;
-  createdAt?: string;
-  priceSale?: number;
-  slug: string;
-  isWishlist?: boolean;
-}
-const Product = ({
-  product,
-  slug,
-}: {
-  product: ProductProps;
-  slug: string;
-}) => {
-  const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
+import type { Product } from "../../types";
+
+const Product = ({ product, slug }: { product: Product; slug: string }) => {
+  const [wishlist, setWishlist] = useState<boolean>(
+    product.isWishlist || false
+  );
 
   const toggleWishlist = () => {
     setWishlist(!wishlist);
@@ -32,6 +17,11 @@ const Product = ({
   const today = new Date();
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(today.getDate() - 3);
+  const price = Number(product.price); // "8000000.00" -> 8000000
+  const priceSale =
+    product.priceSale !== null ? Number(product.priceSale) : null;
+  const hasValidSale =
+    priceSale !== null && priceSale > 1000 && priceSale < price;
 
   const parseDate = (dateStr?: string) =>
     dateStr ? new Date(dateStr) : new Date(0);
@@ -42,17 +32,25 @@ const Product = ({
     return createdDate >= threeDaysAgo && createdDate <= today;
   };
 
-  const getDiscountPercent = (price: number, priceSale?: number): number => {
-    if (!priceSale || priceSale >= price) return 0;
+  const getDiscountPercent = (
+    price: number,
+    priceSale?: number | null
+  ): number => {
+    if (priceSale === null || priceSale === undefined) return 0;
+    if (priceSale <= 1000 || priceSale >= price) return 0; // giá sale quá nhỏ hoặc không hợp lệ
     return Math.round(((price - priceSale) / price) * 100);
   };
 
   const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const rounded = Math.round(price); // bỏ phần thập phân nếu có
+    return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
-  const isProductNew = isNew(product.createdAt);
-  const discountPercent = getDiscountPercent(product.price, product.priceSale);
+  const isProductNew = isNew(product.created_at);
+  const discountPercent = getDiscountPercent(
+    product.price ?? 0,
+    product.price_sale ?? undefined
+  );
   const showNewLabel = isProductNew;
   const showDiscountLabel = discountPercent > 0;
 
@@ -66,17 +64,16 @@ const Product = ({
               <span className="news-tt-1">Giảm {discountPercent}% </span>
             )}
           </div>
-          <div className="news-icon" onClick={toggleWishlist} > 
-
-           <img
-            src={
-              wishlist
-                ? "/images/products/heart-red.svg" // hình trái tim đỏ
-                : "/images/products/heart.svg" // trái tim màu thường
-            }
-            alt=""
-            style={{ width: '20px', height: '20px' }}
-          />
+          <div className="news-icon" onClick={toggleWishlist}>
+            <img
+              src={
+                wishlist
+                  ? "/images/products/heart-red.svg" // hình trái tim đỏ
+                  : "/images/products/heart.svg" // trái tim màu thường
+              }
+              alt=""
+              style={{ width: "20px", height: "20px" }}
+            />
           </div>
         </div>
         <div className="products-frame-image">
@@ -88,44 +85,45 @@ const Product = ({
           <span>{product.name}</span>
         </div>
         <div className="products-frame-description">
-          <span>Sofa</span>
+          <span>{product.category?.name}</span>
         </div>
         <div className="products-frame-color">
           <div className="color-name">Màu</div>
           <div className="color-section">
-            <span
-              className="color-1"
-              style={{ backgroundColor: product.colors[0] }}
-            ></span>
-            <span
-              className="color-2"
-              style={{ backgroundColor: product.colors[1] }}
-            ></span>
-            <span
-              className="color-3"
-              style={{ backgroundColor: product.colors[2] }}
-            ></span>
+            <div className="color-section">
+              {product.colors?.map((color, index) => (
+                <span
+                  key={index}
+                  className={`color-${index + 1}`}
+                  style={{ backgroundColor: color }}
+                ></span>
+              ))}
+            </div>
           </div>
         </div>
         <div className="products-frame-cart">
           <div className="cart-price">
-            {product.priceSale && (
-              <span className="price1">
-                <del>{formatPrice(product.price)} </del>
-                <span className="unit">đ</span>
-              </span>
-            )}
-            {product.priceSale && (
-              <span className="price2">{formatPrice(product.priceSale)} đ</span>
-            )}
-            {!product.priceSale && (
-              <span className="price2">
-                {formatPrice(product.price)} <span className="unit">đ</span>
-              </span>
-            )}
+            <div className="cart-price">
+              {hasValidSale ? (
+                <>
+                  <span className="price1">
+                    <del>{formatPrice(price)}</del>
+                    <span className="unit"> đ</span>
+                  </span>
+                  <span className="price2">{formatPrice(priceSale)} đ</span>
+                </>
+              ) : (
+                <span className="price2">
+                  {formatPrice(price)} <span className="unit">đ</span>
+                </span>
+              )}
+            </div>
           </div>
           <div className="cart-button">
-            <Link to={`cart/${product.slug}`}> <button>Mua ngay</button></Link>
+            <Link to={`cart/${product.slug}`}>
+              {" "}
+              <button>Mua ngay</button>
+            </Link>
           </div>
         </div>
       </div>

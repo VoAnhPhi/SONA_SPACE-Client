@@ -1,37 +1,40 @@
-// Product related interfaces For All Users
 export interface Product {
   id: number;
   name: string;
   slug: string;
-  description?: string;
-  priority: number;
-  images: string[];
-  view: number;
-  stock: number; // là số lượng sản phẩm còn trong kho
-  status: number;
-  sold: number; // số lượng sản phẩm đã bán
-  price: number;
-  price_sale: number;
-  material: string;
-  height: number;
-  quantity: number;
-  color_name: string;
-  width: number;
-  depth: number;
-  seating_height?: number; // chiều cao ghế ngồi, có thể không có cho một số sản phẩm
-  maxium_weight?: number; // trọng lượng tối đa, có thể không có cho một số sản phẩm
   image: string;
-
-  isNew?: boolean;
-  isSale?: boolean;
-  created_at?: string;
-  priceSale?: number;
-  isWishlist?: boolean;
-  colors: string[];
   category: {
     id: number;
     name: string;
   };
+  created_at: string;
+  updated_at?: string;
+
+  price?: number | null;
+  price_sale?: number | null;
+  color_hex?: string[];
+
+  description?: string;
+  priority?: number;
+  images?: string[];
+  view?: number;
+  stock?: number;
+  status?: number;
+  sold?: number;
+  material?: string;
+  height?: number;
+  quantity?: number;
+  color_name?: string;
+  width?: number;
+  depth?: number;
+  seating_height?: number;
+  maxium_weight?: number;
+
+  isNew?: boolean;
+  isSale?: boolean;
+  priceSale?: number;
+  isWishlist?: boolean;
+  colors?: string[];
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];
   variants?: Variant[];

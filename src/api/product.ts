@@ -17,30 +17,26 @@ const handleApiResponse = (response: any, errorMessage: string) => {
  * @returns {Promise<PaginatedResponse<Product>>} List of products
  */
 export const getAllProducts = async (
-  params: {
-    page?: number;
-    pageSize?: number;
-    category_id?: number;
-    search?: string;
-    min_price?: number;
-    max_price?: number;
-    sort_by?: string;
-    sort_order?: "ASC" | "DESC";
-  } = {}
+  page: number = 1,
+  limit: number = 8
 ): Promise<PaginatedResponse<Product>> => {
   try {
-    console.log(`Calling API: GET ${API_URL}/products with params:`, params);
-    const response = await axios.get(`${API_URL}/products`, { params });
+    console.log(
+      `Calling API: GET ${API_URL}/products?page=${page}&limit=${limit}`
+    );
+    const response = await axios.get(`${API_URL}/products`, {
+      params: { page, limit },
+    });
 
-    const data = response.data;
+    const data = handleApiResponse(response, "No data received from API");
 
-    if (!data || !data.products || !data.pagination) {
+    if (!Array.isArray(data.products) || !data.pagination) {
       console.error("Invalid API response structure");
       return {
         items: [],
         total: 0,
-        page: params.page || 1,
-        pageSize: params.pageSize || 10,
+        page,
+        pageSize: limit,
         totalPages: 0,
       };
     }
@@ -53,7 +49,7 @@ export const getAllProducts = async (
       totalPages: data.pagination.totalPages,
     };
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching paginated products:", error);
     throw error;
   }
 };
