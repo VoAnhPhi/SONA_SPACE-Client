@@ -229,10 +229,53 @@ export interface Variant {
   variant_price: number;
   variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)
   image: string[];
-  // listImage: string[];
   variant_price_sale?: number;
-
+  productId: number;
   variant_height?: number;
+  quantity: number;
+  price: number;
+  priceSale: number;
   variant_width?: number;
+  color: {
+    id: number;
+    name: string;
+    hex: string;
+    priority: number;
+    slug: string;
+  };
   variant_depth?: number;
+}
+export interface CommentStats {
+  average_rating: string;
+  total_ratings: number;
+  rating_breakdown: {
+    five_star: string;
+    four_star: string;
+    three_star: string;
+    two_star: string;
+    one_star: string;
+  };
+}
+
+export interface Comment {
+  comment_id: number;
+  comment_title: string;
+  user_id: number;
+  user_name: string;
+  user_image: string;
+  comment_description: string;
+  comment_rating: number;
+  created_at: string;
+}
+
+export interface CommentResponse {
+  product_id: number;
+  stats: CommentStats;
+  comments: Comment[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalComments: number;
+    commentsPerPage: number;
+  };
 }

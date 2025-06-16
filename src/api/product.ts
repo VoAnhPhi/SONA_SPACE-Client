@@ -60,33 +60,19 @@ export const getAllProducts = async (
  * @returns {Promise<Product>} Product data
  */
 
-export const getProductBySlug = async (slug: string): Promise<Product> => {
+// product.api.ts
+export const getProductBySlug = async (
+  slug: string
+): Promise<{
+  product: any;
+  colors: any[];
+  related_products: any[];
+}> => {
   try {
-    type ProductDetailResponse = {
-      product: Product;
-      variants: Variant[];
-    };
-
-    console.log(`Calling API: GET ${API_URL}/products/${slug}`);
     const response = await axios.get(`${API_URL}/products/${slug}`);
-    console.log("API response received:", response.status);
-
-    if (!response.data) {
-      console.error(`API returned empty data for product slug: ${slug}`);
-      throw new Error("Product not found");
-    }
-
-    return response.data;
+    return handleApiResponse(response, "No data received from API");
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        `Error fetching product with slug ${slug}: ${error.message}`
-      );
-      console.error("Response data:", error.response?.data);
-      console.error("Response status:", error.response?.status);
-    } else {
-      console.error(`Error fetching product with slug ${slug}:`, error);
-    }
+    // xử lý lỗi...
     throw error;
   }
 };
