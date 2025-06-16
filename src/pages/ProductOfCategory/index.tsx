@@ -12,6 +12,7 @@ import {
 } from "../../services/categoryService";
 import type { Category, Product } from "../../types";
 import { formatProductForDisplay } from "../../services/productService";
+import { useSearchParams } from "react-router-dom";
 
 const ProductOfCategory = () => {
   const { slug } = useParams();
@@ -19,6 +20,12 @@ const ProductOfCategory = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleSeeMore = () => {
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    setSearchParams({ page: (page + 1).toString() });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +42,7 @@ const ProductOfCategory = () => {
         }
 
         // 2. Gọi API lấy sản phẩm theo slug
-        const result = await fetchProductsByCategory(categoryData.category_id, {
+        const result = await fetchProductsByCategory(slug, {
           page: 1,
           pageSize: 8,
           sort: "created_at",
@@ -100,7 +107,7 @@ const ProductOfCategory = () => {
             </div>
           </div>
         </section>
-        <Seemore />
+        <Seemore onClick={handleSeeMore} />
 
         <section className="product-categories">
           <div className="container">

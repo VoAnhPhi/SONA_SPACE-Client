@@ -4,197 +4,75 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import CategorySlider from "../../components/CategorySlider";
 import Filter from "../../components/Filter";
-import ListProduct from "../../components/Product";
+import ProductComponent from "../../components/Product";
+import { fetchRoomBySlug, fetchProductsByRoom } from "../../services/roomService";
+import type { Room, Product } from "../../types";
+import Seemore from "../../components/SeeMore";
 
 const RoomDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [roomName, setRoomName] = useState<string>("");
-  const [bannerUrl, setBannerUrl] = useState<string>(
-    "/images/banners/default-room.jpg"
-  );
+  const [room, setRoom] = useState<Room | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  interface ProductProps {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    colors: string[];
-    isNew?: boolean;
-    isSale?: boolean;
-    createdAt?: string;
-    priceSale?: number;
-    slug: string;
-  }
-  // Sample product data
-  const products: ProductProps[] = [
-    {
-      id: 1,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#7d5a50", "#a3a380", "#757575"],
-      createdAt: "2025-06-02",
-      priceSale: 20000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 2,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#7d5a50", "#a3a380", "#757575"],
-      createdAt: "2025-05-01",
-      priceSale: 20000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 3,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#555555", "#333333"],
-      isNew: true,
-      createdAt: "2025-02-01",
-      priceSale: 22000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 4,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      isSale: true,
-      createdAt: "2025-06-04",
-      priceSale: 21000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 5,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      createdAt: "2025-01-01",
-      priceSale: 19000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 6,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#4A2932", "#E5E5E5", "#555555"],
-      createdAt: "2025-03-01",
-      priceSale: 18000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 7,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#333333", "#555555", "#777777"],
-      isNew: true,
-      createdAt: "2025-01-01",
-      priceSale: 10000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 8,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      createdAt: "2025-06-01",
-      priceSale: 16000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 9,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#333333", "#555555", "#777777"],
-      createdAt: "2025-06-01",
-      priceSale: 18900000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 10,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      createdAt: "2025-06-01",
-      priceSale: 13400000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 11,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#333333", "#555555", "#777777"],
-      isNew: true,
-      createdAt: "2025-06-01",
-      priceSale: 20000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-    {
-      id: 12,
-      name: "Sofa Modular 2.5 seater với nhièu varian option",
-      price: 22150000,
-      image: "/images/products/product1.jpg",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      isSale: true,
-      createdAt: "2025-06-01",
-      priceSale: 20000000,
-      slug: "sofa-modular-2.5-seater-voi-nhieu-varian-option",
-    },
-  ];
-  // Mock room data mapping
-  const roomMapping: { [key: string]: string } = {
-    "phong-khach": "Phòng Khách",
-    "phong-an": "Phòng Ăn",
-    "phong-ngu": "Phòng Ngủ",
-    "khong-gian-lam-viec": "Không gian làm việc",
-    "small-space": "Small Space",
-    "khong-gian-ngoai-troi": "Không gian ngoài trời",
-  };
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const bannerMapping: { [key: string]: string } = {
-    "phong-khach": "/images/rooms/living-room.jpg",
-    "phong-an": "/images/rooms/dining-room.jpg",
-    "phong-ngu": "/images/rooms/bedroom.jpg",
-    "khong-gian-lam-viec": "/images/rooms/workspace.jpg",
-    "small-space": "/images/rooms/small-space.jpg",
-    "khong-gian-ngoai-troi": "/images/rooms/outdoor-space.jpg",
-  };
-
-  // Set room name based on slug
   useEffect(() => {
-    if (slug && roomMapping[slug]) {
-      setRoomName(roomMapping[slug]);
-      setBannerUrl(bannerMapping[slug]);
-    } else {
-      setRoomName("Không gian");
-      setBannerUrl("/images/banners/default-room.jpg");
+    if (!slug) {
+      setError("Không gian không tồn tại");
+      setLoading(false);
+      return;
     }
+
+    const fetchRoomAndProducts = async () => {
+      try {
+        const roomData = await fetchRoomBySlug(slug);
+        setRoom(roomData[0] || roomData);
+        const { products: newProducts, totalPages } = await fetchProductsByRoom(
+          slug || "",
+          page,
+          8
+        );
+        setProducts(newProducts);
+        setTotalPages(totalPages);
+      } catch (error) {
+        setError("Không tìm thấy không gian");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoomAndProducts();
   }, [slug]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const handleSeeMore = () => {
+    if (page < totalPages) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
   return (
     <>
       <Header />
       <div className="room-detail-page">
         {/* Banner Section */}
-        <section className="room-banner">
+        <div className="room-banner">
           <div className="container-fluid">
             <div className="banner-image">
-              <img src={bannerUrl} alt={roomName} />
+              <img src={room?.room_banner} alt={room?.room_name} />
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Breadcrumb */}
         <div className="breadcrumb-container">
@@ -204,32 +82,34 @@ const RoomDetail: React.FC = () => {
               <span>/</span>
               <Link to="/khong-gian">Không gian</Link>
               <span>/</span>
-              <span className="active">{roomName}</span>
+              <span className="active">{room?.room_name}</span>
             </div>
           </div>
         </div>
 
-        {/* Filter Section */}
-        <section className="filter-section">
-          <Filter />
-        </section>
-
         {/* Product Section */}
-        <div className="boxProducts">
-          <div className="container">
-            <div className="section-box-products">
-              <div className="box-products-container">
-                {products.map((product) => (
-                  <ListProduct
-                    key={product.id}
-                    product={product}
-                    slug={product.slug}
-                  />
-                ))}
+        <section className="product-section">
+          <Filter />
+          <div className="boxProducts">
+            <div className="container">
+              <div className="section-box-products">
+                <div className="box-products-container">
+                  {products.map((product) => (
+                    <ProductComponent
+                      key={product.id}
+                      product={product}
+                      slug={product.slug}
+                    />
+                  ))}
+                </div>
+                {loading && <p>Đang tải thêm sản phẩm...</p>}
+                {!loading && page < totalPages && (
+                  <Seemore onClick={handleSeeMore} />
+                )}
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Inspiration Section */}
         <section className="inspiration-section">
