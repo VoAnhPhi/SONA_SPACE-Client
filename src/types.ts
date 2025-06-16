@@ -169,6 +169,7 @@ export interface Room {
   room_name: string;
   slug: string;
   room_image: string;
+  room_banner: string;
   room_description?: string;
   created_at: string;
   updated_at: string;
@@ -217,6 +218,7 @@ export interface PaginatedResponse<T> {
   pageSize: number;
   totalPages: number;
 }
+
 export interface Variant {
   color_id: number;
   color_name: string;

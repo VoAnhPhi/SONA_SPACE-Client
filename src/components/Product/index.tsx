@@ -4,13 +4,7 @@ import { Link } from "react-router-dom";
 
 import type { Product } from "../../types";
 
-const ProductComponent = ({
-  product,
-  slug,
-}: {
-  product: Product;
-  slug: string;
-}) => {
+const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(
     product.isWishlist || false
   );

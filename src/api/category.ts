@@ -86,96 +86,34 @@ export const getCategoryBySlug = async (slug: string): Promise<Category> => {
 
 /**
  * Get products by category
- * @param {number} categoryId - The category ID
+ * @param {number} categorySlug - The category slug
  * @param {Object} params - Query parameters (pagination, filters, etc.)
  * @returns {Promise<PaginatedResponse<Product>>} Products data
  */
 export const getProductsByCategory = async (
-  categoryId: number,
+  categorySlug: string,
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product>> => {
   try {
-    console.log(
-      `Calling API: GET ${API_URL}/categories/${categoryId}/products with params:`,
-      params
-    );
     const response = await axios.get(
-      `${API_URL}/categories/${categoryId}/products`,
-      { params }
-    );
-    // console.log('API response received:', response.status);
-
-    if (!response.data) {
-      console.error(
-        `API returned empty data for products in category: ${categoryId}`
-      );
-      // Return empty paginated response
-      return {
-        items: [],
-        total: 0,
-        page: params.page || 1,
-        pageSize: params.pageSize || 10,
-        totalPages: 0,
-      };
-    }
-
-    // Kiểm tra nếu response.data đã có cấu trúc phân trang
-    if (response.data.items || response.data.products) {
-      // Đã có cấu trúc phân trang
-      const paginatedData = {
-        items: response.data.items || response.data.products || [],
-        total: response.data.total || response.data.totalItems || 0,
-        page:
-          response.data.page || response.data.currentPage || params.page || 1,
-        pageSize:
-          response.data.pageSize ||
-          response.data.limit ||
-          params.pageSize ||
-          10,
-        totalPages: response.data.totalPages || response.data.pages || 1,
-      };
-      return paginatedData;
-    }
-
-    // Nếu response.data là mảng sản phẩm, tạo cấu trúc phân trang
-    if (Array.isArray(response.data)) {
-      return {
-        items: response.data,
-        total: response.data.length,
-        page: params.page || 1,
-        pageSize: params.pageSize || 10,
-        totalPages: 1,
-      };
-    }
-
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        `Error fetching products for category ${categoryId}: ${error.message}`
-      );
-      console.error("Response data:", error.response?.data);
-      console.error("Response status:", error.response?.status);
-
-      // Thử endpoint khác nếu endpoint chính không hoạt động
-      if (error.response?.status === 404) {
-        try {
-          console.log("Trying alternative endpoint...");
-          const altResponse = await axios.get(
-            `${API_URL}/category/${categoryId}/products`,
-            { params }
-          );
-          return altResponse.data;
-        } catch (altError) {
-          console.error("Alternative endpoint also failed");
-        }
+      `${API_URL}/categories/${categorySlug}/products`,
+      {
+        params,
       }
-    } else {
-      console.error(
-        `Error fetching products for category ${categoryId}:`,
-        error
-      );
-    }
+    );
+    const { products, pagination } = response.data;
+    return {
+      items: products,
+      total: pagination.total,
+      page: pagination.currentPage,
+      pageSize: pagination.productsPerPage,
+      totalPages: pagination.totalPages,
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching products for category ${categorySlug}:`,
+      error
+    );
     throw error;
   }
 };

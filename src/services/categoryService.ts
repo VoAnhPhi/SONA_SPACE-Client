@@ -33,7 +33,7 @@ export const fetchCategoryBySlug = async (
   slug: string
 ): Promise<Category | null> => {
   try {
-    console.log(`Service: Fetching category with slug: ${slug}`);
+    // console.log(`Service: Fetching category with slug: ${slug}`);
     const category = await getCategoryBySlug(slug);
     return category;
   } catch (error) {
@@ -59,36 +59,26 @@ export const fetchCategoryBySlug = async (
  * @returns {Promise<PaginatedResponse<Product> | null>} Paginated products data or null if error
  */
 export const fetchProductsByCategory = async (
-  categoryId: number,
+  categorySlug: string,
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product> | null> => {
   try {
-    console.log(
-      `Service: Fetching products for category ID: ${categoryId}, params:`,
-      params
-    );
-    const productsData = await getProductsByCategory(categoryId, params);
-    console.log(`Service: Received ${productsData.items.length} products`);
+    const productsData = await getProductsByCategory(categorySlug, params);
+    // console.log(`Service: Received ${productsData.items.length} products`);
+    // console.log("productsData", productsData);
     return productsData;
   } catch (error) {
     console.error(
-      `Error in fetchProductsByCategory service for category ${categoryId}:`,
+      `Error in fetchProductsByCategory service for category ${categorySlug}:`,
       error
     );
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 404) {
-        console.error(`Products for category ${categoryId} not found`);
-      } else if (error.code === "ECONNREFUSED") {
-        console.error("API server is not running or not accessible");
-      }
-    }
     // Return empty paginated response on error
     return {
       items: [],
       total: 0,
       page: params.page || 1,
       pageSize: params.pageSize || 10,
-      totalPages: 0,
+      totalPages: 1,
     };
   }
 };

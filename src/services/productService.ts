@@ -1,5 +1,6 @@
-import type { Product } from "../types";
+import type { PaginatedResponse, Product } from "../types";
 import { getProductBySlug, getAllProducts } from "../api/product";
+import { getProductsByRoom } from "../api/room";
 
 /**
  * Format raw product from API to usable Product type
@@ -66,6 +67,7 @@ export const fetchAllProducts = async (
   try {
     const rawProducts = await getAllProducts(page, limit);
     const formatted = rawProducts.items.map(formatProductForDisplay);
+    console.log("formatted", formatted);
     return {
       products: formatted,
       totalPages: rawProducts.totalPages,
@@ -119,3 +121,4 @@ export const fetchProductBySlug = async (
     };
   }
 };
+
