@@ -22,7 +22,9 @@ const Product = ({
   product: ProductProps;
   slug: string;
 }) => {
-  const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
+  const [wishlist, setWishlist] = useState<boolean>(
+    product.isWishlist || false
+  );
 
   const toggleWishlist = () => {
     setWishlist(!wishlist);
@@ -66,17 +68,16 @@ const Product = ({
               <span className="news-tt-1">Giảm {discountPercent}% </span>
             )}
           </div>
-          <div className="news-icon" onClick={toggleWishlist} > 
-
-           <img
-            src={
-              wishlist
-                ? "/images/products/heart-red.svg" // hình trái tim đỏ
-                : "/images/products/heart.svg" // trái tim màu thường
-            }
-            alt=""
-            style={{ width: '20px', height: '20px' }}
-          />
+          <div className="news-icon" onClick={toggleWishlist}>
+            <img
+              src={
+                wishlist
+                  ? "/images/products/heart-red.svg" // hình trái tim đỏ
+                  : "/images/products/heart.svg" // trái tim màu thường
+              }
+              alt=""
+              style={{ width: "20px", height: "20px" }}
+            />
           </div>
         </div>
         <div className="products-frame-image">
@@ -125,7 +126,10 @@ const Product = ({
             )}
           </div>
           <div className="cart-button">
-            <Link to={`cart/${product.slug}`}> <button>Mua ngay</button></Link>
+            <Link to={`cart/${product.slug}`}>
+              {" "}
+              <button>Mua ngay</button>
+            </Link>
           </div>
         </div>
       </div>

@@ -3,10 +3,9 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import GetInTouch from "../../components/GetInTouch";
-// import CategorySlider from "../../components/CategorySlider";
+import CategorySlider from "../../components/CategorySlider";
 import type { Product as ProductType } from "../../types";
 import Product from "../../components/Product";
-import CategorySlider from "../../components/CategorySlider";
 
 // Định nghĩa kiểu dữ liệu phù hợp với component Product
 interface ProductComponentProps {

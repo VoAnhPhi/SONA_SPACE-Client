@@ -12,12 +12,11 @@ import axios from "axios";
  */
 export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
-    console.log("Service: Fetching all categories");
     const categories = await getAllCategories();
-    console.log(`Service: Received ${categories.length} categories`);
+    // console.log("Service: Received categories:", categories);
     return categories;
   } catch (error) {
-    console.error("Error in fetchAllCategories service:", error);
+    // console.error("Error in fetchAllCategories service:", error);
     if (axios.isAxiosError(error) && error.code === "ECONNREFUSED") {
       console.error("API server is not running or not accessible");
     }
@@ -36,7 +35,6 @@ export const fetchCategoryBySlug = async (
   try {
     console.log(`Service: Fetching category with slug: ${slug}`);
     const category = await getCategoryBySlug(slug);
-    console.log(`Service: Received category with ID: ${category.category_id}`);
     return category;
   } catch (error) {
     console.error(
@@ -84,7 +82,6 @@ export const fetchProductsByCategory = async (
         console.error("API server is not running or not accessible");
       }
     }
-
     // Return empty paginated response on error
     return {
       items: [],
@@ -148,7 +145,7 @@ export const formatCategoryForDisplay = (
   return {
     id: category.category_id,
     name: category.category_name,
-    slug: category.category_slug,
+    slug: category.slug,
     image: category.category_image,
     productCount: category.product_count,
     children: category.children?.map((child) =>
