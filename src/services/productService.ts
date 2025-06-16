@@ -8,7 +8,7 @@ export const formatProductForDisplay = (product: any): Product => {
   const colorHexArray: string[] = Array.isArray(product.color_hex)
     ? product.color_hex
     : [];
-
+  // const colorHexString = res.colors.map((c: any) => c.colorHex);
   const isSale = !!product.price_sale && product.price_sale < product.price;
 
   const createdDate = new Date(product.created_at);
@@ -37,6 +37,22 @@ export const formatProductForDisplay = (product: any): Product => {
     },
     colors: colorHexArray, // ✅ Đúng theo kiểu string[]
     specifications: [], // nếu chưa cần, có thể bỏ trống
+    description: product.description ?? "",
+    sold: product.sold ?? 0,
+    view: product.view ?? 0,
+    material: product.materials ?? "",
+    height: product.height ? Number(product.height) : undefined,
+    width: product.width ? Number(product.width) : undefined,
+    depth: product.depth ? Number(product.depth) : undefined,
+    seating_height: product.seating_height
+      ? Number(product.seating_height)
+      : undefined,
+    maxium_weight: product.max_weight_load
+      ? Number(product.max_weight_load)
+      : undefined,
+    stock: product.defaultQuantity ?? 0,
+    images: product.defaultImages || [],
+    variants: product.variants || [], // Thêm variants vào đây
   };
 };
 
@@ -65,15 +81,41 @@ export const fetchAllProducts = async (
  */
 export const fetchProductBySlug = async (
   slug: string
-): Promise<Product | null> => {
+): Promise<{
+  product: Product | null;
+  colors: string[];
+  relatedProducts: {
+    id: number;
+    name: string;
+    slug: string;
+  }[];
+}> => {
   try {
-    console.log(`Service: Fetching product with slug: ${slug}`);
-    const rawProduct = await getProductBySlug(slug);
-    const formatted = formatProductForDisplay(rawProduct);
-    console.log(`Service: Received product with ID: ${formatted.id}`);
-    return formatted;
+    const {
+      product,
+      colors = [],
+      related_products = [],
+    } = await getProductBySlug(slug);
+
+    const formatted = formatProductForDisplay({
+      ...product,
+      price: parseFloat(product.defaultPrice),
+      price_sale: parseFloat(product.defaultPriceSale),
+      image: product.defaultImage,
+      color_hex: colors.map((c) => c.colorHex),
+    });
+
+    return {
+      product: formatted,
+      colors: colors.map((c) => c.colorName),
+      relatedProducts: related_products,
+    };
   } catch (error) {
-    console.error(`Error fetching product with slug "${slug}":`, error);
-    return null;
+    console.error("Error in fetchProductBySlug:", error);
+    return {
+      product: null,
+      colors: [],
+      relatedProducts: [],
+    };
   }
 };

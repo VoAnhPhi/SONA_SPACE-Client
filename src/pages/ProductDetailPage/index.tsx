@@ -1,75 +1,138 @@
 "use client";
 // Import necessary libraries
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
 // import components
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
-import ListProduct from "../../components/Product";
 
 // import API
 import { getProductBySlug } from "../../api/product";
+import { formatProductForDisplay } from "../../services/productService";
+import { fetchVariantBySlugAndColor } from "../../services/variantService";
 
 // import types
 import type { Product, Variant } from "../../types";
 import Comment from "../../components/Comment";
-
+import { getProductComments } from "../../api/comment";
+import type { CommentResponse } from "../../types";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<string>("description");
-  const selectedVariant = product?.variants?.find(
-    (variant: any) => variant.color_hex === selectedColor
-  );
+  const [commentData, setCommentData] = useState<CommentResponse | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const handleColorSelect = async (colorHex: string, colorId: number) => {
+    try {
+      setSelectedColor(colorHex);
+      setSearchParams((prev) => {
+        prev.set("color", colorId.toString());
+        return prev;
+      });
 
-  const imageList = selectedVariant?.listImage?.split(",") || [];
-
-  useEffect(() => {
-    if (slug) {
-      (async () => {
-        try {
-          const res = await getProductBySlug(slug);
-
-          // Chuẩn hóa lại data product và variants từ API
-          const productData = {
-            ...res.product,
-            variants: (res.variants || []).map((v: any) => ({
-              variant_id: v.variantId,
-              color_id: v.colorId,
-              color_name: v.colorName,
-              color_hex: v.colorHex,
-              color_priority: v.colorPriority,
-              variant_price: Number(v.price),
-              variant_price_sale: Number(v.priceSale),
-              quantity: v.quantity,
-              variant_slug: v.slug,
-              listImage: v.listImage,
-            })),
-          };
-
-          // Sắp xếp variants theo color_priority ASC (ưu tiên 1 lên đầu)
-          productData.variants = productData.variants.sort(
-            (a: any, b: any) =>
-              (a.color_priority ?? 99) - (b.color_priority ?? 99)
-          );
-
-          setProduct(productData);
-          setRelatedProducts(res.relatedProducts || []);
-
-          // Ưu tiên chọn biến thể có color_priority = 1
-          const defaultVariant = productData.variants?.[0];
-          setSelectedColor(defaultVariant?.color_hex || "#000");
-        } catch (error) {
-          console.error("Lỗi khi lấy sản phẩm:", error);
+      if (slug) {
+        const variant = await fetchVariantBySlugAndColor(slug, colorId);
+        if (variant) {
+          setSelectedVariant({
+            variant_price: variant.price,
+            variant_price_sale: variant.priceSale,
+            listImage: variant.images.join(","),
+            quantity: variant.quantity,
+            color_hex: variant.color.hex,
+            color_name: variant.color.name,
+          });
         }
-      })();
+      }
+    } catch (error) {
+      console.error("Error selecting color:", error);
     }
+  };
+  const imageList = selectedVariant?.listImage
+    ? selectedVariant.listImage.split(",")
+    : product?.images || [];
+  useEffect(() => {
+    if (!slug) return;
+    (async () => {
+      try {
+        const res = await getProductBySlug(slug);
+        const formattedProduct = formatProductForDisplay({
+          ...res.product,
+          price: parseFloat(res.product.defaultPrice),
+          price_sale: parseFloat(res.product.defaultPriceSale),
+          images: res.product.defaultImages,
+
+          variants: res.colors.map((c: any) => ({
+            color_id: c.colorId,
+            color_name: c.colorName,
+            color_hex: c.colorHex,
+            slug: c.slug,
+          })),
+          stock: res.product.defaultQuantity,
+          sold: res.product.sold,
+          view: res.product.view,
+          description: res.product.description,
+          material: res.product.materials,
+          height: Number(res.product.height),
+          width: Number(res.product.width),
+          depth: Number(res.product.depth),
+          seating_height: Number(res.product.seating_height),
+          maxium_weight: Number(res.product.max_weight_load),
+        });
+
+        setProduct(formattedProduct);
+        console.log("Formatted Product:", formattedProduct); // Thêm dòng này
+        setRelatedProducts(res.related_products || []);
+
+        // Hiển thị mặc định thông tin sản phẩm trước khi chọn màu
+        setSelectedColor(res.product.defaultColorHex);
+
+        setSelectedVariant({
+          variant_price: parseFloat(res.product.defaultPrice),
+          variant_price_sale: parseFloat(res.product.defaultPriceSale),
+          listImage: res.product.defaultImages.join(","),
+          quantity: res.product.defaultQuantity,
+          color_hex: res.product.defaultColorHex,
+          color_name: res.product.defaultColorName,
+        });
+      } catch (err) {
+        console.error("Lỗi khi fetch product:", err);
+      }
+    })();
   }, [slug]);
+  useEffect(() => {
+    if (!product?.variants) return;
+
+    const colorId = searchParams.get("color");
+    if (colorId) {
+      const variant = product.variants.find(
+        (v) => v.color_id.toString() === colorId
+      );
+      if (variant) {
+        handleColorSelect(variant.color_hex, variant.color_id);
+      }
+    }
+  }, [product, searchParams]);
+  useEffect(() => {
+    if (!product?.id) return;
+
+    const fetchComments = async () => {
+      try {
+        const data = await getProductComments(product.id);
+        setCommentData(data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    fetchComments();
+  }, [product?.id]);
 
   const formatPrice = (price?: number): string => {
     if (typeof price !== "number" || isNaN(price)) return "0";
@@ -178,27 +241,37 @@ const ProductDetailPage: React.FC = () => {
                   {formatPrice(selectedVariant?.variant_price || product.price)}{" "}
                   đ
                 </span>
-                {selectedVariant?.variant_price_sale && (
+                {(selectedVariant?.variant_price_sale || product.priceSale) && (
                   <span className="price-old">
-                    {formatPrice(selectedVariant?.variant_price_sale)} đ
+                    {formatPrice(
+                      selectedVariant?.variant_price_sale || product.priceSale
+                    )}{" "}
+                    đ
                   </span>
                 )}
               </div>
               <div className="content-rating">
-                {/* <div className="rating-icon">
-                  <div className="icon-star">{renderStars(product.rating)}</div>
-                  <div className="icon-star-number">
-                    <span>{product.rating} </span>
+                <div className="rating-icon">
+                  <div className="icon-star">
+                    {renderStars(
+                      Number(commentData?.stats.average_rating || 0)
+                    )}
                   </div>
-
-                </div> */}
+                  <div className="icon-star-number">
+                    <span>{commentData?.stats.average_rating || 0}</span>
+                  </div>
+                </div>
                 <div className="rating-evaluate">
-                  <span> 80 lượt đánh giá</span>
+                  <span>
+                    {commentData?.stats.total_ratings || 0} lượt đánh giá
+                  </span>
                 </div>
               </div>
               <div className="content-quantity">
-                <span>Số lượng trong kho : {product.stock}</span>
-                <span className="quantity-number">{product.quantity}</span>
+                <span>
+                  Số lượng trong kho:{" "}
+                  {selectedVariant?.quantity || product.stock}
+                </span>
               </div>
               <div className="content-view">
                 <span>Lượt xem: {product.view}</span>
@@ -214,7 +287,7 @@ const ProductDetailPage: React.FC = () => {
                       className={`color-option ${
                         selectedColor === v.color_hex ? "active" : ""
                       }`}
-                      onClick={() => setSelectedColor(v.color_hex)}
+                      onClick={() => handleColorSelect(v.color_hex, v.color_id)}
                     ></div>
                   ))}
                 </div>
@@ -248,9 +321,9 @@ const ProductDetailPage: React.FC = () => {
               <div className="content-button">
                 <button className="button-add-cart">Thêm vào giỏ</button>
                 <div className="button-icon-i">
-                  <div className="icon-img">
+                  {/* <div className="icon-img">
                     <img src="/images/detail/heart.svg" alt="" />
-                  </div>
+                  </div> */}
                   <div className="icon-img">
                     <img src="/images/detail/share.svg" alt="" />
                   </div>
@@ -264,67 +337,59 @@ const ProductDetailPage: React.FC = () => {
           <div className="container">
             <div className="detail-decription-evaluate">
               <div className="description-avalute-title">
-              <div className="tabs-header">
+                <div className="tabs-header">
                   <button
-                    className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('description')}
+                    className={`tab-btn ${
+                      activeTab === "description" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("description")}
                   >
                     Mô tả
                   </button>
                   <button
-                    className={`tab-btn ${activeTab === 'review' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('review')}
+                    className={`tab-btn ${
+                      activeTab === "review" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("review")}
                   >
                     Đánh giá
                   </button>
                 </div>
               </div>
-              {activeTab === 'description' && (
-              <div className="description-avalute-content">
-                <div className="description-avalute-content-text">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur. Non imperdiet
-                    quisque quam sed semper nec semper. Ipsum mattis accumsan
-                    natoque dictum et enim. Aliquam scelerisque at fames cras.{" "}
-                    <br />
-                    <br />
-                    Et sollicitudin gravida bibendum tellus pulvinar elementum
-                    egestas eu enim. Arcu tincidunt est nibh quisque. Nec
-                    aliquam turpis in etiam. Morbi augue lectus maecenas enim
-                    orci cursus quam ac. Id eget turpis sit sit etiam arcu ipsum
-                    commodo id.
-                  </p>
+              {activeTab === "description" && (
+                <div className="description-avalute-content">
+                  <div className="description-avalute-content-text">
+                    <p>{product.description}</p>
+                  </div>
+                  <div className="description-avalute-content-size">
+                    <button className="color-info">
+                      <span>Chất liệu </span>
+                      <span>{product.material} </span>
+                    </button>
+                    <button className="color-info">
+                      <span>Chiều ca </span>
+                      <span>{product.height} cm</span>
+                    </button>
+                    <button className="color-info">
+                      <span>Chiều rộng </span>
+                      <span>{product.width} cm</span>
+                    </button>
+                    <button className="color-info">
+                      <span>Chiều sâu </span>
+                      <span>{product.depth} cm</span>
+                    </button>
+                    <button className="color-info">
+                      <span>Chiều cao chỗ ngồi</span>
+                      <span>{product.seating_height} cm</span>
+                    </button>
+                    <button className="color-info">
+                      <span>Tải trọng tối đa </span>
+                      <span>{product.maxium_weight} kg</span>
+                    </button>
+                  </div>
                 </div>
-                <div className="description-avalute-content-size">
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                  <button className="color-info">
-                    <span>Màu sắc </span>
-                    <span>Đỏ, Trắng</span>
-                  </button>
-                </div>
-              </div>
-
               )}
-              {activeTab === "review" && <Comment />}
+              {activeTab === "review" && <Comment commentData={commentData} />}
             </div>
           </div>
         </div>
@@ -347,7 +412,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Các sản phẩm tương tự</h5>
-              <div className="box-products-container">
+              {/* <div className="box-products-container">
                 {relatedProducts.map((product) => (
                   <ListProduct
                     key={product.id}
@@ -355,7 +420,7 @@ const ProductDetailPage: React.FC = () => {
                     slug={product.slug}
                   />
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
