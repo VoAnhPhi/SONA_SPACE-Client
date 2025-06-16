@@ -10,11 +10,12 @@ import {
   fetchCategoryBySlug,
   fetchProductsByCategory,
 } from "../../services/categoryService";
-import type { Product } from "../../types";
+import type { Category, Product } from "../../types";
 import { formatProductForDisplay } from "../../services/productService";
 
 const ProductOfCategory = () => {
   const { slug } = useParams();
+  const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,16 +27,17 @@ const ProductOfCategory = () => {
         if (!slug) return;
 
         // 1. Lấy category từ slug
-        const category = await fetchCategoryBySlug(slug);
-        if (!category) {
+        const categoryData = await fetchCategoryBySlug(slug);
+        setCategory(categoryData);
+        if (!categoryData) {
           setError("Không tìm thấy danh mục");
           return;
         }
 
-        // 2. Gọi API lấy sản phẩm theo category_id
-        const result = await fetchProductsByCategory(category.category_id, {
+        // 2. Gọi API lấy sản phẩm theo slug
+        const result = await fetchProductsByCategory(categoryData.category_id, {
           page: 1,
-          pageSize: 12,
+          pageSize: 8,
           sort: "created_at",
         });
 
@@ -53,28 +55,32 @@ const ProductOfCategory = () => {
     fetchData();
   }, [slug]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       <Header />
       <div className="product-of-category">
         {/* Banner Section */}
-        <section className="category-banner">
+        <div className="category-banner">
           <div className="container-fluid">
             <div className="banner-image">
               <img
-                src="/images/productsCategory/banner-chair.jpg"
+                src={category?.category_banner}
                 alt="Sản phẩm trong danh mục Ghế - Các loại ghế hiện đại"
               />
               <div className="banner-content">
-                {/* <div className="breadcrumb">
-                  <span>Trang chủ / </span>
-                  <span className="active">Ghế</span>
-                </div> */}
-                <h1>Sản phẩm trong danh mục Ghế</h1>
+                <h1>{category?.category_name}</h1>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         <section className="product-listing">
           <Filter />

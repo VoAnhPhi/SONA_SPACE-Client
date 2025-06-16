@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchCategoryBySlug, fetchProductsByCategory } from '../../services/categoryService';
-import type { Category, Product } from '../../types';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
+  fetchCategoryBySlug,
+  fetchProductsByCategory,
+} from "../../services/categoryService";
+import type { Category, Product } from "../../types";
 
 // Set to true to enable debug information
 const IS_DEBUG_MODE = true;
@@ -13,7 +16,7 @@ interface ProductsByCategoryProps {
 
 const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
   initialPage = 1,
-  pageSize = 12
+  pageSize = 12,
 }) => {
   const { slug } = useParams<{ slug: string }>();
   const [category, setCategory] = useState<Category | null>(null);
@@ -22,58 +25,77 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [debugInfo, setDebugInfo] = useState<string>('');
+  const [debugInfo, setDebugInfo] = useState<string>("");
 
   useEffect(() => {
     const loadCategoryAndProducts = async () => {
       if (!slug) {
-        setError('No category slug provided');
+        setError("No category slug provided");
         setLoading(false);
         return;
       }
-      
+
       try {
         setLoading(true);
-        setDebugInfo('Fetching category data...');
-        
+        setDebugInfo("Fetching category data...");
+
         // Fetch category details
         const categoryData = await fetchCategoryBySlug(slug);
-        setDebugInfo(prev => `${prev}\nCategory data received: ${categoryData ? 'Yes' : 'No'}`);
-        
+        setDebugInfo(
+          (prev) =>
+            `${prev}\nCategory data received: ${categoryData ? "Yes" : "No"}`
+        );
+
         if (!categoryData) {
           setError(`Category not found for slug: ${slug}`);
           setLoading(false);
           return;
         }
-        
+
         setCategory(categoryData);
-        setDebugInfo(prev => `${prev}\nCategory ID: ${categoryData.category_id}`);
-        
+        setDebugInfo(
+          (prev) => `${prev}\nCategory ID: ${categoryData.category_id}`
+        );
+
         // Fetch products for this category
-        setDebugInfo(prev => `${prev}\nFetching products for category ID: ${categoryData.category_id}...`);
-        const productsData = await fetchProductsByCategory(categoryData.category_id, {
-          page: currentPage,
-          pageSize: pageSize
-        });
+        setDebugInfo(
+          (prev) =>
+            `${prev}\nFetching products for category ID: ${categoryData.category_id}...`
+        );
         
-        setDebugInfo(prev => `${prev}\nProducts data received: ${productsData ? 'Yes' : 'No'}`);
-        
+        const productsData = await fetchProductsByCategory(
+          categoryData.category_id,
+          {
+            page: currentPage,
+            pageSize: pageSize,
+          }
+        );
+
+        setDebugInfo(
+          (prev) =>
+            `${prev}\nProducts data received: ${productsData ? "Yes" : "No"}`
+        );
+
         if (productsData) {
           setProducts(productsData.items);
           setTotalPages(productsData.totalPages);
-          setDebugInfo(prev => `${prev}\nProducts count: ${productsData.items.length}, Total pages: ${productsData.totalPages}`);
+          setDebugInfo(
+            (prev) =>
+              `${prev}\nProducts count: ${productsData.items.length}, Total pages: ${productsData.totalPages}`
+          );
         } else {
           setProducts([]);
           setTotalPages(0);
-          setDebugInfo(prev => `${prev}\nNo products data received`);
+          setDebugInfo((prev) => `${prev}\nNo products data received`);
         }
-        
+
         setError(null);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
         setError(`Failed to load category or products: ${errorMessage}`);
-        setDebugInfo(prev => `${prev}\nError: ${errorMessage}`);
-        console.error('Error loading category or products:', err);
+        setDebugInfo((prev) => `${prev}\nError: ${errorMessage}`);
+        console.error("Error loading category or products:", err);
       } finally {
         setLoading(false);
       }
@@ -88,14 +110,13 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
   };
 
   // Debug info component
-  const DebugInfo = () => (
+  const DebugInfo = () =>
     IS_DEBUG_MODE ? (
       <div className="debug-info">
         <p>Debug Info:</p>
         <pre>{debugInfo}</pre>
       </div>
-    ) : null
-  );
+    ) : null;
 
   if (loading) {
     return (
@@ -127,7 +148,7 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
   return (
     <div className="products-by-category-container">
       <DebugInfo />
-      
+
       <div className="products-by-category-header">
         <h1 className="products-by-category-title">{category.category_name}</h1>
         <p className="products-by-category-count">
@@ -153,15 +174,15 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
                     {product.priceSale ? (
                       <>
                         <span className="original-price">
-                          {product.price.toLocaleString('vi-VN')} đ
+                          {product.price.toLocaleString("vi-VN")} đ
                         </span>
                         <span className="sale-price">
-                          {product.priceSale.toLocaleString('vi-VN')} đ
+                          {product.priceSale.toLocaleString("vi-VN")} đ
                         </span>
                       </>
                     ) : (
                       <span className="regular-price">
-                        {product.price.toLocaleString('vi-VN')} đ
+                        {product.price.toLocaleString("vi-VN")} đ
                       </span>
                     )}
                   </div>
@@ -179,17 +200,21 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
               >
                 Previous
               </button>
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  className={`pagination-button ${page === currentPage ? 'active' : ''}`}
-                  onClick={() => handlePageChange(page)}
-                >
-                  {page}
-                </button>
-              ))}
-              
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`pagination-button ${
+                      page === currentPage ? "active" : ""
+                    }`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+
               <button
                 className="pagination-button"
                 disabled={currentPage === totalPages}
@@ -205,4 +230,4 @@ const ProductsByCategory: React.FC<ProductsByCategoryProps> = ({
   );
 };
 
-export default ProductsByCategory; 
+export default ProductsByCategory;
