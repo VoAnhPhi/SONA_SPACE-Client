@@ -49,7 +49,7 @@ const Product = ({ product, slug }: { product: Product; slug: string }) => {
   const isProductNew = isNew(product.created_at);
   const discountPercent = getDiscountPercent(
     product.price ?? 0,
-    product.price_sale ?? undefined
+    product.priceSale ?? undefined
   );
   const showNewLabel = isProductNew;
   const showDiscountLabel = discountPercent > 0;
