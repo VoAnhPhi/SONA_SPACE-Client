@@ -41,7 +41,6 @@ const Comment: React.FC<CommentProps> = ({ commentData }) => {
   return (
     <>
       <div className="box-comment">
-        <div className="container">
           <div className="box-recomment">
             <div className="recomment-user">
               <div className="user-name">Đánh giá của khách hàng</div>
@@ -76,11 +75,9 @@ const Comment: React.FC<CommentProps> = ({ commentData }) => {
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       <div className="filter-comment">
-        <div className="container">
           <div className="filter-section">
             <div className="filter-value">
               <div className="filter-value-title">
@@ -96,11 +93,9 @@ const Comment: React.FC<CommentProps> = ({ commentData }) => {
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       <div className="comment-content">
-        <div className="container">
           {commentData.comments.map((comment) => (
             <div key={comment.comment_id} className="comment-content-value">
               <div className="content-value-infomation">
@@ -159,7 +154,6 @@ const Comment: React.FC<CommentProps> = ({ commentData }) => {
               </div>
             </div>
           ))}
-        </div>
       </div>
     </>
   );
