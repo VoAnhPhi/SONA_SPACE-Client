@@ -26,17 +26,17 @@ const OrderComplete: React.FC = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="order-Complete-context">
         <div className="order-Complete-text1">
-          <h1>sona space</h1>
+          <img src="/images/Order-Completed/sonaspace.png" alt="" />
         </div>
         <div className="order-Complete-text2">
           <div className="Complete-text2-1">
             <h5>Cảm ơn bạn đã mua hàng</h5>
           </div>
           <div className="Complete-text2-2">
-            <h4>Mahalo</h4>
+            <img src="/images/Order-Completed/Mahalo.png" alt="" />
           </div>
         </div>
         <div className="order-Complete-text3">

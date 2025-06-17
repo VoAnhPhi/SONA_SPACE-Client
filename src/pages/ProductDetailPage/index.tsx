@@ -175,157 +175,158 @@ const ProductDetailPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="container">
-          <div className="detail-products">
-            <div className="detail-image">
-              <div className="image-full">
-                <div className="image1">
-                  <img
-                    src={imageList[0]?.trim() || "/images/placeholder.jpg"}
-                    alt=""
-                  />
-                </div>
-                <div className="image2">
-                  <div className="image2-1">
+        <div className="details-infomation">
+          <div className="container">
+            <div className="detail-products">
+              <div className="detail-image">
+                <div className="image-full">
+                  <div className="image1">
                     <img
-                      src={imageList[1]?.trim() || "/images/placeholder.jpg"}
+                      src={imageList[0]?.trim() || "/images/placeholder.jpg"}
                       alt=""
                     />
                   </div>
-                  <div className="image2-2">
+                  <div className="image2">
+                    <div className="image2-1">
+                      <img
+                        src={imageList[1]?.trim() || "/images/placeholder.jpg"}
+                        alt=""
+                      />
+                    </div>
+                    <div className="image2-2">
+                      <img
+                        src={imageList[2]?.trim() || "/images/placeholder.jpg"}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                  <div className="image3">
+                    <div className="image3-1">
+                      <img
+                        src={imageList[3]?.trim() || "/images/placeholder.jpg"}
+                        alt=""
+                      />
+                    </div>
+                    <div className="image3-2">
+                      <img
+                        src={imageList[4]?.trim() || "/images/placeholder.jpg"}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                  <div className="image4">
                     <img
-                      src={imageList[2]?.trim() || "/images/placeholder.jpg"}
+                      src={imageList[5]?.trim() || "/images/placeholder.jpg"}
                       alt=""
                     />
                   </div>
-                </div>
-                <div className="image3">
-                  <div className="image3-1">
+                  <div className="image5">
                     <img
-                      src={imageList[3]?.trim() || "/images/placeholder.jpg"}
+                      src={imageList[6]?.trim() || "/images/placeholder.jpg"}
                       alt=""
                     />
                   </div>
-                  <div className="image3-2">
-                    <img
-                      src={imageList[4]?.trim() || "/images/placeholder.jpg"}
-                      alt=""
-                    />
-                  </div>
-                </div>
-                <div className="image4">
-                  <img
-                    src={imageList[5]?.trim() || "/images/placeholder.jpg"}
-                    alt=""
-                  />
-                </div>
-                <div className="image5">
-                  <img
-                    src={imageList[6]?.trim() || "/images/placeholder.jpg"}
-                    alt=""
-                  />
                 </div>
               </div>
-            </div>
-            <div className="detail-content">
-              <div className="content-name">
-                <h3>{product.name}</h3>
-              </div>
-              <div className="content-description">
-                <span>
-                  {product.category?.name || "Danh mục không xác định"}
-                </span>
-              </div>
-              <div className="content-price">
-                <span className="price">
-                  {formatPrice(selectedVariant?.variant_price || product.price)}{" "}
-                  đ
-                </span>
-                {(selectedVariant?.variant_price_sale || product.priceSale) && (
-                  <span className="price-old">
-                    {formatPrice(
-                      selectedVariant?.variant_price_sale || product.priceSale
-                    )}{" "}
+              <div className="detail-content">
+                <div className="content-name">
+                  <h3>{product.name}</h3>
+                </div>
+                <div className="content-description">
+                  <span>
+                    {product.category?.name || "Danh mục không xác định"}
+                  </span>
+                </div>
+                <div className="content-price">
+                  <span className="price">
+                    {formatPrice(selectedVariant?.variant_price || product.price)}{" "}
                     đ
                   </span>
-                )}
-              </div>
-              <div className="content-rating">
-                <div className="rating-icon">
-                  <div className="icon-star">
-                    {renderStars(
-                      Number(commentData?.stats.average_rating || 0)
-                    )}
+                  {(selectedVariant?.variant_price_sale || product.priceSale) && (
+                    <span className="price-old">
+                      {formatPrice(
+                        selectedVariant?.variant_price_sale || product.priceSale
+                      )}{" "}
+                      đ
+                    </span>
+                  )}
+                </div>
+                <div className="content-rating">
+                  <div className="rating-icon">
+                    <div className="icon-star">
+                      {renderStars(
+                        Number(commentData?.stats.average_rating || 0)
+                      )}
+                    </div>
+                    <div className="icon-star-number">
+                      <span>{commentData?.stats.average_rating || 0}</span>
+                    </div>
                   </div>
-                  <div className="icon-star-number">
-                    <span>{commentData?.stats.average_rating || 0}</span>
+                  <div className="rating-evaluate">
+                    <span>
+                      {commentData?.stats.total_ratings || 0} lượt đánh giá
+                    </span>
                   </div>
                 </div>
-                <div className="rating-evaluate">
+                <div className="content-quantity">
                   <span>
-                    {commentData?.stats.total_ratings || 0} lượt đánh giá
+                    Số lượng trong kho:{" "}
+                    {selectedVariant?.quantity || product.stock}
                   </span>
                 </div>
-              </div>
-              <div className="content-quantity">
-                <span>
-                  Số lượng trong kho:{" "}
-                  {selectedVariant?.quantity || product.stock}
-                </span>
-              </div>
-              <div className="content-view">
-                <span>Lượt xem: {product.view}</span>
-                <span className="view1"> Sản phẩm đã bán: {product.sold}</span>
-              </div>
-              <div className="content-color">
-                <span>Chọn màu sắc</span>
-                <div className="color-options">
-                  {product.variants?.map((v: any) => (
-                    <div
-                      key={v.color_id}
-                      style={{ backgroundColor: v.color_hex }}
-                      className={`color-option ${
-                        selectedColor === v.color_hex ? "active" : ""
-                      }`}
-                      onClick={() => handleColorSelect(v.color_hex, v.color_id)}
-                    ></div>
-                  ))}
+                <div className="content-view">
+                  <span>Lượt xem: {product.view}</span>
+                  <span className="view1"> Sản phẩm đã bán: {product.sold}</span>
                 </div>
-              </div>
-              <div className="content-input-quantity">
-                <span>Chọn số lượng</span>
-                <div className="input-options">
-                  <button
-                    className="quantity-input-"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
-                  >
-                    {" "}
-                    <img src="/images/detail/tru.svg" alt="" />
-                  </button>
-                  <input
-                    type="text"
-                    value={quantity}
-                    readOnly
-                    className="quantity-inputt"
-                  />
-                  <button
-                    className="quantity-btn increase"
-                    onClick={() => handleQuantityChange(1)}
-                  >
-                    {" "}
-                    <img src="/images/detail/cong.svg" alt="" />
-                  </button>
+                <div className="content-color">
+                  <span>Chọn màu sắc</span>
+                  <div className="color-options">
+                    {product.variants?.map((v: any) => (
+                      <div
+                        key={v.color_id}
+                        style={{ backgroundColor: v.color_hex }}
+                        className={`color-option ${selectedColor === v.color_hex ? "active" : ""
+                          }`}
+                        onClick={() => handleColorSelect(v.color_hex, v.color_id)}
+                      ></div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="content-button">
-                <button className="button-add-cart">Thêm vào giỏ</button>
-                <div className="button-icon-i">
-                  {/* <div className="icon-img">
+                <div className="content-input-quantity">
+                  <span>Chọn số lượng</span>
+                  <div className="input-options">
+                    <button
+                      className="quantity-input-"
+                      onClick={() => handleQuantityChange(-1)}
+                      disabled={quantity <= 1}
+                    >
+                      {" "}
+                      <img src="/images/detail/tru.svg" alt="" />
+                    </button>
+                    <input
+                      type="text"
+                      value={quantity}
+                      readOnly
+                      className="quantity-inputt"
+                    />
+                    <button
+                      className="quantity-btn increase"
+                      onClick={() => handleQuantityChange(1)}
+                    >
+                      {" "}
+                      <img src="/images/detail/cong.svg" alt="" />
+                    </button>
+                  </div>
+                </div>
+                <div className="content-button">
+                  <button className="button-add-cart">Thêm vào giỏ</button>
+                  <div className="button-icon-i">
+                    {/* <div className="icon-img">
                     <img src="/images/detail/heart.svg" alt="" />
                   </div> */}
-                  <div className="icon-img">
-                    <img src="/images/detail/share.svg" alt="" />
+                    <div className="icon-img">
+                      <img src="/images/detail/share.svg" alt="" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -339,17 +340,15 @@ const ProductDetailPage: React.FC = () => {
               <div className="description-avalute-title">
                 <div className="tabs-header">
                   <button
-                    className={`tab-btn ${
-                      activeTab === "description" ? "active" : ""
-                    }`}
+                    className={`tab-btn ${activeTab === "description" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("description")}
                   >
                     Mô tả
                   </button>
                   <button
-                    className={`tab-btn ${
-                      activeTab === "review" ? "active" : ""
-                    }`}
+                    className={`tab-btn ${activeTab === "review" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("review")}
                   >
                     Đánh giá
@@ -363,27 +362,27 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                   <div className="description-avalute-content-size">
                     <button className="color-info">
-                      <span>Chất liệu </span>
+                      <span className="info-ww">Chất liệu </span>
                       <span>{product.material} </span>
                     </button>
                     <button className="color-info">
-                      <span>Chiều ca </span>
+                      <span className="info-ww">Chiều cao </span>
                       <span>{product.height} cm</span>
                     </button>
                     <button className="color-info">
-                      <span>Chiều rộng </span>
+                      <span className="info-ww">Chiều rộng </span>
                       <span>{product.width} cm</span>
                     </button>
                     <button className="color-info">
-                      <span>Chiều sâu </span>
+                      <span className="info-ww">Chiều sâu </span>
                       <span>{product.depth} cm</span>
                     </button>
                     <button className="color-info">
-                      <span>Chiều cao chỗ ngồi</span>
+                      <span className="info-ww">Chiều cao chỗ ngồi</span>
                       <span>{product.seating_height} cm</span>
                     </button>
                     <button className="color-info">
-                      <span>Tải trọng tối đa </span>
+                      <span className="info-ww">Tải trọng tối đa </span>
                       <span>{product.maxium_weight} kg</span>
                     </button>
                   </div>
