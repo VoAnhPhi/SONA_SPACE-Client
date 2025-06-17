@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { getAllCategories } from "../../api/category";
+import type { Category } from "../../types";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
   const [activeNavItem, setActiveNavItem] = useState<string>("/");
   const { isAuthenticated, user, logout } = useAuth();
+  // State để lưu danh mục sản phẩm từ API
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
 
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -30,6 +35,24 @@ const Header = () => {
     }
   }, []);
 
+  // Fetch danh mục sản phẩm khi component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const data = await getAllCategories();
+        console.log("Fetched categories:", data);
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   // Hàm xử lý khi click vào nav item
   const handleNavClick = (path: string): void => {
     setActiveNavItem(path);
@@ -40,6 +63,26 @@ const Header = () => {
   const isActive = (path: string): boolean => {
     return activeNavItem === path;
   };
+
+  // Tạo nhóm danh mục theo hàng (5 danh mục mỗi hàng)
+  const getCategoryRows = () => {
+    if (!categories.length) return [];
+    
+    // Sắp xếp danh mục theo priority (ưu tiên)
+    const sortedCategories = [...categories].sort((a, b) => 
+      (a.category_priority || 999) - (b.category_priority || 999)
+    );
+    
+    // Chia thành các hàng, mỗi hàng tối đa 5 danh mục
+    const rows = [];
+    for (let i = 0; i < sortedCategories.length; i += 5) {
+      rows.push(sortedCategories.slice(i, i + 5));
+    }
+    
+    return rows;
+  };
+
+  const categoryRows = getCategoryRows();
 
   return (
     <>
@@ -190,80 +233,35 @@ const Header = () => {
                             </ul>
                           </div>
                           <div className="sub-menu-products">
-                            <div className="product-row">
-                              <div className="product-item">
-                                <a href="/san-pham/sofa">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Sofa</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ghe-don">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Ghế đơn</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ghe-banh">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Ghế bành</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ban-tra">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Bàn trà</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ke-tivi">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Kệ Tivi</div>
-                                </a>
-                              </div>
-                            </div>
-                            <div className="product-row">
-                              <div className="product-item">
-                                <a href="/san-pham/tu-trang-tri">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Tủ trang trí
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/den-phong-khach">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Đèn phòng khách
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/giuong-ngu">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Giường ngủ
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/tu-quan-ao">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Tủ quần áo
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ban-trang-diem">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Bàn trang điểm
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
+                            {loadingCategories ? (
+                              <div className="loading-categories">Đang tải danh mục...</div>
+                            ) : (
+                              categoryRows.map((row, rowIndex) => (
+                                <div className="product-row" key={`row-${rowIndex}`}>
+                                  {row.map((category) => (
+                                    <div className="product-item" key={`cat-${category.category_id}`}>
+                                      <a 
+                                        href={`/san-pham/${category.slug}`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleNavClick(`/san-pham/${category.slug}`);
+                                        }}
+                                      >
+                                        <div 
+                                          className="product-image" 
+                                          style={{ 
+                                            backgroundImage: `url(${category.category_image})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                          }}
+                                        ></div>
+                                        <div className="product-title">{category.category_name}</div>
+                                      </a>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))
+                            )}
                           </div>
                         </div>
                       </div>
@@ -283,193 +281,55 @@ const Header = () => {
                         <div className="sub-menu-wrapper">
                           <div className="sub-menu-column">
                             <ul>
-                              <li>
-                                <a
-                                  href="/san-pham/sofa"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/sofa");
-                                  }}
-                                >
-                                  Sofa
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ban-lam-viec"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ban-lam-viec");
-                                  }}
-                                >
-                                  Bàn làm việc
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tab-dau-giuong"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tab-dau-giuong");
-                                  }}
-                                >
-                                  Tab đầu giường
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tu-trang-tri"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tu-trang-tri");
-                                  }}
-                                >
-                                  Tủ trang trí
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tham"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tham");
-                                  }}
-                                >
-                                  Thảm
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ghe-don"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ghe-don");
-                                  }}
-                                >
-                                  Ghế đơn
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/den-ban-an"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/den-ban-an");
-                                  }}
-                                >
-                                  Đèn bàn ăn
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ghe-van-phong"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ghe-van-phong");
-                                  }}
-                                >
-                                  Ghế văn phòng
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/den-trang-tri"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/den-trang-tri");
-                                  }}
-                                >
-                                  Đèn trang trí
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ke-sach"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ke-sach");
-                                  }}
-                                >
-                                  Kệ sách
-                                </a>
-                              </li>
+                              {loadingCategories ? (
+                                <li><span>Đang tải danh mục...</span></li>
+                              ) : (
+                                categories.slice(0, 10).map((category) => (
+                                  <li key={`space-sidebar-${category.category_id}`}>
+                                    <a
+                                      href={`/san-pham/${category.slug}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNavClick(`/san-pham/${category.slug}`);
+                                      }}
+                                    >
+                                      {category.category_name}
+                                    </a>
+                                  </li>
+                                ))
+                              )}
                             </ul>
                           </div>
                           <div className="sub-menu-products">
-                            <div className="product-row">
-                              <div className="product-item">
-                                <a href="/san-pham/sofa">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Sofa</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ghe-don">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Ghế đơn</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ghe-banh">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Ghế bành</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ban-tra">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Bàn trà</div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ke-tivi">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">Kệ Tivi</div>
-                                </a>
-                              </div>
-                            </div>
-                            <div className="product-row">
-                              <div className="product-item">
-                                <a href="/san-pham/tu-trang-tri">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Tủ trang trí
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/den-phong-khach">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Đèn phòng khách
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/giuong-ngu">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Giường ngủ
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/tu-quan-ao">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Tủ quần áo
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="product-item">
-                                <a href="/san-pham/ban-trang-diem">
-                                  <div className="product-image"></div>
-                                  <div className="product-title">
-                                    Bàn trang điểm
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
+                            {loadingCategories ? (
+                              <div className="loading-categories">Đang tải danh mục...</div>
+                            ) : (
+                              categoryRows.map((row, rowIndex) => (
+                                <div className="product-row" key={`space-row-${rowIndex}`}>
+                                  {row.map((category) => (
+                                    <div className="product-item" key={`space-cat-${category.category_id}`}>
+                                      <a 
+                                        href={`/san-pham/${category.slug}`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleNavClick(`/san-pham/${category.slug}`);
+                                        }}
+                                      >
+                                        <div 
+                                          className="product-image" 
+                                          style={{ 
+                                            backgroundImage: `url(${category.category_image})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                          }}
+                                        ></div>
+                                        <div className="product-title">{category.category_name}</div>
+                                      </a>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))
+                            )}
                           </div>
                         </div>
                       </div>
@@ -583,76 +443,35 @@ const Header = () => {
                           </div>
                         </div>
                         <div className="popular-products col-md-9">
-                          <div className="product-row">
-                            <div className="product-item">
-                              <a href="/san-pham/sofa">
-                                <div className="product-image"></div>
-                                <div className="product-title">Sofa</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/ghe-don">
-                                <div className="product-image"></div>
-                                <div className="product-title">Ghế đơn</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/ghe-banh">
-                                <div className="product-image"></div>
-                                <div className="product-title">Ghế bành</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/ban-tra">
-                                <div className="product-image"></div>
-                                <div className="product-title">Bàn trà</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/ke-tivi">
-                                <div className="product-image"></div>
-                                <div className="product-title">Kệ Tivi</div>
-                              </a>
-                            </div>
-                          </div>
-                          <div className="product-row">
-                            <div className="product-item">
-                              <a href="/san-pham/tu-trang-tri">
-                                <div className="product-image"></div>
-                                <div className="product-title">
-                                  Tủ trang trí
-                                </div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/den-phong-khach">
-                                <div className="product-image"></div>
-                                <div className="product-title">
-                                  Đèn phòng khách
-                                </div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/giuong-ngu">
-                                <div className="product-image"></div>
-                                <div className="product-title">Giường ngủ</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/tu-quan-ao">
-                                <div className="product-image"></div>
-                                <div className="product-title">Tủ quần áo</div>
-                              </a>
-                            </div>
-                            <div className="product-item">
-                              <a href="/san-pham/ban-trang-diem">
-                                <div className="product-image"></div>
-                                <div className="product-title">
-                                  Bàn trang điểm
-                                </div>
-                              </a>
-                            </div>
-                          </div>
+                          {loadingCategories ? (
+                            <div className="loading-categories">Đang tải danh mục...</div>
+                          ) : (
+                            categoryRows.map((row, rowIndex) => (
+                              <div className="product-row" key={`search-row-${rowIndex}`}>
+                                {row.map((category) => (
+                                  <div className="product-item" key={`search-cat-${category.category_id}`}>
+                                    <a 
+                                      href={`/san-pham/${category.slug}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNavClick(`/san-pham/${category.slug}`);
+                                      }}
+                                    >
+                                      <div 
+                                        className="product-image" 
+                                        style={{ 
+                                          backgroundImage: `url(${category.category_image})`,
+                                          backgroundSize: 'cover',
+                                          backgroundPosition: 'center'
+                                        }}
+                                      ></div>
+                                      <div className="product-title">{category.category_name}</div>
+                                    </a>
+                                  </div>
+                                ))}
+                              </div>
+                            ))
+                          )}
                         </div>
                       </div>
                     </div>
