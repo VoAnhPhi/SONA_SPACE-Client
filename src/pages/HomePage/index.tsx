@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
@@ -6,6 +6,8 @@ import GetInTouch from "../../components/GetInTouch";
 import CategorySlider from "../../components/CategorySlider";
 import type { Product as ProductType } from "../../types";
 import Product from "../../components/Product";
+import { getNewestProducts } from "../../api/product";
+import { formatProductForDisplay } from "../../services/productService";
 
 // Định nghĩa kiểu dữ liệu phù hợp với component Product
 interface ProductComponentProps {
@@ -20,50 +22,63 @@ interface ProductComponentProps {
   priceSale?: number;
   slug: string;
   isWishlist?: boolean;
+  category: {
+    id: number;
+    name: string;
+  };
 }
 
 const HomePage = () => {
-  // Mock data cho Product - mảng sản phẩm
-  const products: ProductComponentProps[] = [
-    {
-      id: 1,
-      name: "Ghế Wooden 2.0",
-      price: 15190000,
-      image: "/images/product-1.jpg",
-      colors: ["#7D5A50", "#BEIGE", "#GRAY"],
-      slug: "ghe-wooden-2-0",
-      isNew: true,
-      isSale: true,
-      priceSale: 25000000,
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater",
-      price: 18990000,
-      image: "/images/product-2.jpg",
-      colors: ["#7D5A50", "#GRAY", "#333333"],
-      slug: "sofa-modena-2-5-seater",
-    },
-    {
-      id: 3,
-      name: "Bàn ăn Osaka",
-      price: 12500000,
-      image: "/images/product-3.jpg",
-      colors: ["#WOOD", "#BLACK", "#555555"],
-      slug: "ban-an-osaka",
-    },
-    {
-      id: 4,
-      name: "Ghế Eames",
-      price: 2490000,
-      image: "/images/product-4.jpg",
-      colors: ["#WHITE", "#BLACK", "#YELLOW"],
-      slug: "ghe-eames",
-    }
-  ];
+  const [newestProducts, setNewestProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Sản phẩm hot - lấy 3 sản phẩm đầu tiên
-  const hotProducts = products.slice(0, 3);
+  // Lấy danh sách sản phẩm mới nhất khi component mount
+  useEffect(() => {
+    const fetchNewestProducts = async () => {
+      try {
+        setLoading(true);
+        const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
+        console.log("Fetched newest products:", products);
+        
+        // Format sản phẩm để phù hợp với component Product
+        const formattedProducts = products.map((product, index) => {
+          return formatProductForDisplay(product);
+        });
+        
+        // Đảm bảo các id là duy nhất
+        const uniqueProducts = formattedProducts.filter((product, index, self) => 
+          index === self.findIndex(p => p.id === product.id)
+        );
+        
+        console.log("Formatted products:", uniqueProducts);
+        setNewestProducts(uniqueProducts);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching newest products:", error);
+        setError("Không thể tải sản phẩm mới nhất. Vui lòng thử lại sau.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNewestProducts();
+  }, []);
+
+  // Sản phẩm hot - chọn ngẫu nhiên 4 sản phẩm từ danh sách sản phẩm mới
+  const getRandomProducts = (count: number) => {
+    if (newestProducts.length <= count) return newestProducts;
+    
+    // Tạo một mảng các index ngẫu nhiên từ mảng newestProducts
+    const shuffledIndices = [...Array(newestProducts.length).keys()]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, count);
+    
+    // Lấy các sản phẩm theo index đã chọn
+    return shuffledIndices.map(index => newestProducts[index]);
+  };
+
+  const hotProducts = getRandomProducts(4);
 
   return (
     <>
@@ -187,11 +202,26 @@ const HomePage = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
+              {loading && <div className="loading-indicator">Đang tải sản phẩm...</div>}
+              {error && <div className="error-message">{error}</div>}
               <div className="box-products-container">
-                {products.map((product) => (
+                {newestProducts.map((product) => (
                   <Product 
-                    key={product.id} 
-                    product={product} 
+                    key={`new-${product.id}`} 
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      price: product.price || 0,
+                      image: product.image,
+                      colors: product.colors || [],
+                      isNew: true,
+                      isSale: product.price_sale !== null && product.price_sale !== undefined && product.price_sale > 0,
+                      created_at: product.created_at,
+                      priceSale: product.price_sale || undefined,
+                      slug: product.slug,
+                      isWishlist: product.isWishlist,
+                      category: product.category
+                    }}
                     slug={product.slug} 
                   />
                 ))}
@@ -206,10 +236,23 @@ const HomePage = () => {
             <div className="section-box-products">
               <h5>Sản Phẩm Hot</h5>
               <div className="box-products-container">
-                {products.map((product) => (
+                {hotProducts.map((product, index) => (
                   <Product 
-                    key={product.id} 
-                    product={product} 
+                    key={`hot-${product.id}-${index}`}
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      price: product.price || 0,
+                      image: product.image,
+                      colors: product.colors || [],
+                      isNew: false,
+                      isSale: product.price_sale !== null && product.price_sale !== undefined && product.price_sale > 0,
+                      created_at: product.created_at,
+                      priceSale: product.price_sale || undefined,
+                      slug: product.slug,
+                      isWishlist: product.isWishlist,
+                      category: product.category
+                    }}
                     slug={product.slug} 
                   />
                 ))}

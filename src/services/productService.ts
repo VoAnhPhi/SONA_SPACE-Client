@@ -6,12 +6,51 @@ import { getProductsByRoom } from "../api/room";
  * Format raw product from API to usable Product type
  */
 export const formatProductForDisplay = (product: any): Product => {
-  const colorHexArray: string[] = Array.isArray(product.color_hex)
-    ? product.color_hex
-    : [];
-  // const colorHexString = res.colors.map((c: any) => c.colorHex);
-  const isSale = !!product.price_sale && product.price_sale < product.price;
+  // Xử lý mảng màu sắc
+  let colorHexArray: string[] = [];
+  
+  // Trường hợp 1: product.color_hex là mảng
+  if (Array.isArray(product.color_hex)) {
+    colorHexArray = product.color_hex;
+  } 
+  // Trường hợp 2: product.colors là mảng
+  else if (Array.isArray(product.colors)) {
+    colorHexArray = product.colors;
+  } 
+  // Trường hợp 3: Mặc định một số màu cơ bản
+  else {
+    colorHexArray = ["#3C5838", "#D9A13B", "#DDC8A6"];
+  }
 
+  // Xử lý giá và giá khuyến mãi, đảm bảo là số
+  let price = 0;
+  if (product.price !== undefined && product.price !== null) {
+    price = Number(product.price);
+  } else if (product.variant_price !== undefined && product.variant_price !== null) {
+    price = Number(product.variant_price);
+  }
+  
+  // Nếu không có giá, sử dụng giá mặc định
+  if (isNaN(price) || price <= 0) {
+    price = 5000000; // Giá mặc định
+  }
+  
+  // Xử lý giá khuyến mãi
+  let priceSale = null;
+  if (product.price_sale !== undefined && product.price_sale !== null) {
+    priceSale = Number(product.price_sale);
+  } else if (product.variant_price_sale !== undefined && product.variant_price_sale !== null) {
+    priceSale = Number(product.variant_price_sale);
+  }
+  
+  // Kiểm tra giá khuyến mãi hợp lệ
+  if (priceSale !== null && (isNaN(priceSale) || priceSale <= 0 || priceSale >= price)) {
+    priceSale = null; // Không có khuyến mãi nếu giá không hợp lệ
+  }
+  
+  const isSale = priceSale !== null;
+
+  // Kiểm tra sản phẩm mới
   const createdDate = new Date(product.created_at);
   const today = new Date();
   const threeDaysAgo = new Date(today);
@@ -20,40 +59,80 @@ export const formatProductForDisplay = (product: any): Product => {
   const isNew =
     createdDate >= new Date(threeDaysAgo.setHours(0, 0, 0, 0)) &&
     createdDate <= new Date(today.setHours(23, 59, 59, 999));
+
+  // Xử lý thông tin danh mục
+  const category = {
+    id: product.category_id || 0,
+    name: product.category_name || "",
+  };
+
+  // Xử lý hình ảnh - kiểm tra các định dạng URL khác nhau
+  let image = product.product_image || product.image || "";
+  
+  // Xử lý trường hợp URL ảnh có chứa dấu phẩy
+  if (image && image.includes(',')) {
+    const imageArray = image.split(',');
+    image = imageArray[0].trim();
+  }
+  
+  // Xử lý trường hợp URL ảnh có chứa \n
+  if (image && image.includes('\\n')) {
+    const imageArray = image.split('\\n');
+    image = imageArray[0].trim();
+  }
+  
+  // Xử lý trường hợp URL ảnh có chứa \r\n
+  if (image && image.includes('\\r\\n')) {
+    const imageArray = image.split('\\r\\n');
+    image = imageArray[0].trim();
+  }
+
+  // Xử lý trường hợp URL ảnh có chứa newline literal
+  if (image && image.includes('\n')) {
+    const imageArray = image.split('\n');
+    image = imageArray[0].trim();
+  }
+
+  // Nếu không có ảnh, sử dụng ảnh mặc định
+  if (!image) {
+    image = "/images/placeholder.jpg";
+  }
+  
+  // Xử lý các thuộc tính vật lý
+  const height = product.variant_height ? Number(product.variant_height) : undefined;
+  const width = product.variant_width ? Number(product.variant_width) : undefined;
+  const depth = product.variant_depth ? Number(product.variant_depth) : undefined;
+  const seating_height = product.variant_seating_height ? Number(product.variant_seating_height) : undefined;
+  const maxium_weight = product.variant_maximum_weight_load ? Number(product.variant_maximum_weight_load) : undefined;
+
   return {
-    id: product.id,
-    name: product.name,
-    slug: product.slug || "",
-    price: product.price ?? 0,
-    priceSale: product.price_sale ?? 0,
-    image: product.image || "",
+    id: product.product_id || product.id,
+    name: product.product_name || product.name || "",
+    slug: product.product_slug || product.slug || "",
+    price: price,
+    price_sale: priceSale,
+    priceSale: priceSale,
+    image: image,
     isNew,
     isSale,
     isWishlist: false,
     created_at: product.created_at,
     updated_at: product.updated_at,
-    category: {
-      id: product.category_id ?? 0,
-      name: product.category_name ?? "",
-    },
-    colors: colorHexArray, // ✅ Đúng theo kiểu string[]
-    specifications: [], // nếu chưa cần, có thể bỏ trống
-    description: product.description ?? "",
-    sold: product.sold ?? 0,
-    view: product.view ?? 0,
-    material: product.materials ?? "",
-    height: product.height ? Number(product.height) : undefined,
-    width: product.width ? Number(product.width) : undefined,
-    depth: product.depth ? Number(product.depth) : undefined,
-    seating_height: product.seating_height
-      ? Number(product.seating_height)
-      : undefined,
-    maxium_weight: product.max_weight_load
-      ? Number(product.max_weight_load)
-      : undefined,
-    stock: product.defaultQuantity ?? 0,
-    images: product.defaultImages || [],
-    variants: product.variants || [], // Thêm variants vào đây
+    category: category,
+    colors: colorHexArray,
+    specifications: [],
+    description: product.product_description || product.description || "",
+    sold: product.product_sold || product.sold || 0,
+    view: product.product_view || product.view || 0,
+    material: product.variant_materials || product.material || "",
+    height,
+    width,
+    depth,
+    seating_height,
+    maxium_weight,
+    stock: product.product_stock || product.stock || 0,
+    images: product.images || [],
+    variants: product.variants || [],
   };
 };
 
