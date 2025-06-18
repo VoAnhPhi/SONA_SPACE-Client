@@ -18,68 +18,10 @@ interface CartItemProps {
 
 const CartPage: React.FC = () => {
   // Mock cart items
-  const [cartItems, setCartItems] = useState<CartItemProps[]>([
-    {
-      id: 1,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      // oldPrice: 25000000,
-      image: "/images/hot-product-1.jpg",
-      color: "#999999",
-      quantity: 1,
-      category: "Sofa"
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa"
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa"
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa"
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa"
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa"
-    }
-  ]);
+const [cartItems, setCartItems] = useState<CartItemProps[]>(() => {
+  const storedCart = localStorage.getItem('cart');
+  return storedCart ? JSON.parse(storedCart) : [];
+});
 
   // Cart summary state
   const [cartSummary, setCartSummary] = useState({
@@ -109,19 +51,35 @@ const CartPage: React.FC = () => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
 
-  // Calculate cart summary
   useEffect(() => {
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const discount = subtotal * (cartSummary.discountPercent / 100);
-    const total = subtotal + cartSummary.shipping - discount;
+  const storedCart = localStorage.getItem("cart");
+  if (storedCart) {
+    try {
+      const parsedCart = JSON.parse(storedCart);
+      setCartItems(parsedCart);
+    } catch (error) {
+      console.error("Lỗi khi parse cart từ localStorage:", error);
+      setCartItems([]);
+    }
+  }
+}, []);
+  // Calculate cart summary
+useEffect(() => {
+  // Cập nhật localStorage
+  localStorage.setItem("cart", JSON.stringify(cartItems));
 
-    setCartSummary({
-      ...cartSummary,
-      subtotal,
-      discount,
-      total
-    });
-  }, [cartItems]);
+  // Tính lại tổng đơn hàng
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const discount = subtotal * (cartSummary.discountPercent / 100);
+  const total = subtotal + cartSummary.shipping - discount;
+
+  setCartSummary(prev => ({
+    ...prev,
+    subtotal,
+    discount,
+    total
+  }));
+}, [cartItems]);
 
   return (
     <>
@@ -201,7 +159,8 @@ const CartPage: React.FC = () => {
                             </button>
                           </div>
                           <button className="remove-btn" onClick={() => removeItem(item.id)} aria-label="Xóa sản phẩm khỏi giỏ hàng">
-                            <i className="icon-trash"></i>
+                            {/* <i className="icon-trash"></i> */}
+                            <img src="/images/icons/trash.png" alt="" />
                           </button>
                         </div>
                       </div>
