@@ -1,37 +1,4 @@
 .product-detail-page {
-  // Breadcrumb Styles
-  .breadcrumb-container {
-    padding: 15px 0;
-    background-color: #f8f8f8;
-
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'M-R';
-      font-size: 14px;
-
-      a {
-        color: #666;
-        text-decoration: none;
-        transition: color 0.3s ease;
-
-        &:hover {
-          color: #333;
-        }
-      }
-
-      span {
-        color: #999;
-
-        &.active {
-          color: #333;
-          font-family: 'M-M';
-        }
-      }
-    }
-  }
-
   // Product Detail Section
   .product-detail {
     padding: 40px 0;

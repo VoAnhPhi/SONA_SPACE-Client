@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 // Component
 import Header from "../../components/Header";
@@ -96,6 +96,16 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Breadcrumb */}
+      <div className="breadcrumb-container">
+          <div className="container">
+            <div className="breadcrumb">
+              <Link to="/">Trang chủ</Link>
+              <span>/</span>
+              <span className="active">Sản phẩm</span>
+            </div>
+          </div>
+        </div>
       <PopularCategory />
       <section className="product-section">
         <Filter />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Filter from "../../components/Filter";
@@ -85,6 +85,18 @@ const ProductOfCategory = () => {
               <div className="banner-content">
                 <h1>{category?.category_name}</h1>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="breadcrumb-container">
+          <div className="container">
+            <div className="breadcrumb">
+              <Link to="/">Trang chủ</Link>
+              <span>/</span>
+              <Link to="/san-pham">Sản phẩm</Link>
+              <span>/</span>
+              <span className="active">{category?.category_name}</span>
             </div>
           </div>
         </div>

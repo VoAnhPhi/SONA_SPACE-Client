@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAllCategories } from "../../api/category";
 import type { Category } from "../../types";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
@@ -478,7 +479,9 @@ const Header = () => {
                   </div>
                 </button>
                 <button className="btn-icon cart-btn">
+                  <Link to="/gio-hang">
                   <img src="/images/icons/cart.svg" alt="cart" />
+                  </Link>
                 </button>
                 <button className="btn-icon wishlist-btn">
                   <img src="/images/icons/wishlist.svg" alt="wishlist" />
