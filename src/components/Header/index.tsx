@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAllCategories } from "../../api/category";
-import type { Category } from "../../types";
+import { getAllRooms } from "../../api/room";
+import type { Category, Room } from "../../types";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -10,7 +11,9 @@ const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
   // State để lưu danh mục sản phẩm từ API
   const [categories, setCategories] = useState<Category[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
+  const [loadingRooms, setLoadingRooms] = useState<boolean>(true);
 
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -51,7 +54,21 @@ const Header = () => {
       }
     };
 
+    const fetchRooms = async () => {
+      try {
+        setLoadingRooms(true);
+        const data = await getAllRooms();
+        console.log("Fetched rooms:", data);
+        setRooms(data);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      } finally {
+        setLoadingRooms(false);
+      }
+    };
+
     fetchCategories();
+    fetchRooms();
   }, []);
 
   // Hàm xử lý khi click vào nav item
@@ -83,7 +100,21 @@ const Header = () => {
     return rows;
   };
 
+  // Tạo nhóm phòng theo hàng (5 phòng mỗi hàng)
+  const getRoomRows = () => {
+    if (!rooms.length) return [];
+    
+    // Chia thành các hàng, mỗi hàng tối đa 5 phòng
+    const rows = [];
+    for (let i = 0; i < rooms.length; i += 5) {
+      rows.push(rooms.slice(i, i + 5));
+    }
+    
+    return rows;
+  };
+
   const categoryRows = getCategoryRows();
+  const roomRows = getRoomRows();
 
   return (
     <>
@@ -192,23 +223,21 @@ const Header = () => {
                         <div className="sub-menu-wrapper">
                           <div className="sub-menu-column">
                             <ul>
-                              {loadingCategories ? (
-                                <li><span>Đang tải danh mục...</span></li>
+                              {loadingRooms ? (
+                                <li><span>Đang tải không gian...</span></li>
                               ) : (
-                                categories
-                                  // Reverse the sort order for variety in Không Gian menu
-                                  .sort((a, b) => (b.category_priority || 0) - (a.category_priority || 0))
+                                rooms
                                   .slice(0, 10)
-                                  .map((category) => (
-                                    <li key={`space-sidebar-${category.category_id}`}>
+                                  .map((room) => (
+                                    <li key={`space-sidebar-${room.room_id}`}>
                                       <a
-                                        href={`/khong-gian/${category.slug}`}
+                                        href={`/khong-gian/${room.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleNavClick(`/khong-gian/${category.slug}`);
+                                          handleNavClick(`/khong-gian/${room.slug}`);
                                         }}
                                       >
-                                        {category.category_name}
+                                        {room.room_name}
                                       </a>
                                     </li>
                                   ))
@@ -216,29 +245,29 @@ const Header = () => {
                             </ul>
                           </div>
                           <div className="sub-menu-products">
-                            {loadingCategories ? (
-                              <div className="loading-categories">Đang tải danh mục...</div>
+                            {loadingRooms ? (
+                              <div className="loading-categories">Đang tải không gian...</div>
                             ) : (
-                              categoryRows.map((row, rowIndex) => (
+                              roomRows.map((row, rowIndex) => (
                                 <div className="product-row" key={`space-row-${rowIndex}`}>
-                                  {row.map((category) => (
-                                    <div className="product-item" key={`space-cat-${category.category_id}`}>
+                                  {row.map((room) => (
+                                    <div className="product-item" key={`space-room-${room.room_id}`}>
                                       <a 
-                                        href={`/san-pham/${category.slug}`}
+                                        href={`/khong-gian/${room.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleNavClick(`/san-pham/${category.slug}`);
+                                          handleNavClick(`/khong-gian/${room.slug}`);
                                         }}
                                       >
                                         <div 
                                           className="product-image" 
                                           style={{ 
-                                            backgroundImage: `url(${category.category_image})`,
+                                            backgroundImage: `url(${room.room_image})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center'
                                           }}
                                         ></div>
-                                        <div className="product-title">{category.category_name}</div>
+                                        <div className="product-title">{room.room_name}</div>
                                       </a>
                                     </div>
                                   ))}
@@ -358,29 +387,29 @@ const Header = () => {
                           </div>
                         </div>
                         <div className="popular-products col-md-9">
-                          {loadingCategories ? (
-                            <div className="loading-categories">Đang tải danh mục...</div>
+                          {loadingRooms ? (
+                            <div className="loading-categories">Đang tải không gian...</div>
                           ) : (
-                            categoryRows.map((row, rowIndex) => (
+                            roomRows.map((row, rowIndex) => (
                               <div className="product-row" key={`search-row-${rowIndex}`}>
-                                {row.map((category) => (
-                                  <div className="product-item" key={`search-cat-${category.category_id}`}>
+                                {row.map((room) => (
+                                  <div className="product-item" key={`search-room-${room.room_id}`}>
                                     <a 
-                                      href={`/san-pham/${category.slug}`}
+                                      href={`/khong-gian/${room.slug}`}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleNavClick(`/san-pham/${category.slug}`);
+                                        handleNavClick(`/khong-gian/${room.slug}`);
                                       }}
                                     >
                                       <div 
                                         className="product-image" 
                                         style={{ 
-                                          backgroundImage: `url(${category.category_image})`,
+                                          backgroundImage: `url(${room.room_image})`,
                                           backgroundSize: 'cover',
                                           backgroundPosition: 'center'
                                         }}
                                       ></div>
-                                      <div className="product-title">{category.category_name}</div>
+                                      <div className="product-title">{room.room_name}</div>
                                     </a>
                                   </div>
                                 ))}
