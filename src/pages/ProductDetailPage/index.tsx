@@ -160,6 +160,42 @@ const ProductDetailPage: React.FC = () => {
     return stars;
   };
 
+const addToCart = () => {
+  const image = selectedVariant?.listImage?.split(",")[0] || product?.images?.[0] || "";
+
+  const productToAdd = {
+    id: product?.id || 0,
+    name: product?.name || "",
+    price: selectedVariant?.variant_price || product?.price || 0,
+    oldPrice: product?.price_sale,
+    image: image ,
+    color: selectedVariant?.color_hex || "",
+    category: product?.category?.name || "",
+    quantity: quantity,
+  };
+
+  const storedCart = localStorage.getItem("cart");
+  let cart = storedCart ? JSON.parse(storedCart) : [];
+
+  const existingIndexSameId = cart.findIndex(
+    (item: any) => item.id === productToAdd.id
+  );
+
+  if (existingIndexSameId >= 0) {
+    const existingItem = cart[existingIndexSameId];
+    if (existingItem.color === productToAdd.color) {
+      cart[existingIndexSameId].quantity += productToAdd.quantity;
+    } else {
+      cart.push(productToAdd);
+    }
+  } else {
+    cart.push(productToAdd);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Đã thêm vào giỏ hàng");
+};
+
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
 
   return (
@@ -319,7 +355,7 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="content-button">
-                  <button className="button-add-cart">Thêm vào giỏ</button>
+                  <button className="button-add-cart" onClick={addToCart}>Thêm vào giỏ</button>
                   <div className="button-icon-i">
                     {/* <div className="icon-img">
                     <img src="/images/detail/heart.svg" alt="" />

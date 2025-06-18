@@ -18,68 +18,10 @@ interface CartItemProps {
 
 const CartPage: React.FC = () => {
   // Mock cart items
-  const [cartItems, setCartItems] = useState<CartItemProps[]>([
-    {
-      id: 1,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      // oldPrice: 25000000,
-      image: "/images/hot-product-1.jpg",
-      color: "#999999",
-      quantity: 1,
-      category: "Sofa",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      oldPrice: 25000000,
-      image: "/images/hot-product-2.jpg",
-      color: "#D8C1A9",
-      quantity: 1,
-      category: "Sofa",
-    },
-  ]);
+const [cartItems, setCartItems] = useState<CartItemProps[]>(() => {
+  const storedCart = localStorage.getItem('cart');
+  return storedCart ? JSON.parse(storedCart) : [];
+});
 
   // Cart summary state
   const [cartSummary, setCartSummary] = useState({
@@ -115,22 +57,35 @@ const CartPage: React.FC = () => {
     setCartItems([]);
   };
 
-  // Calculate cart summary
   useEffect(() => {
-    const subtotal = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-    const discount = subtotal * (cartSummary.discountPercent / 100);
-    const total = subtotal + cartSummary.shipping - discount;
+  const storedCart = localStorage.getItem("cart");
+  if (storedCart) {
+    try {
+      const parsedCart = JSON.parse(storedCart);
+      setCartItems(parsedCart);
+    } catch (error) {
+      console.error("Lỗi khi parse cart từ localStorage:", error);
+      setCartItems([]);
+    }
+  }
+}, []);
+  // Calculate cart summary
+useEffect(() => {
+  // Cập nhật localStorage
+  localStorage.setItem("cart", JSON.stringify(cartItems));
 
-    setCartSummary({
-      ...cartSummary,
-      subtotal,
-      discount,
-      total,
-    });
-  }, [cartItems]);
+  // Tính lại tổng đơn hàng
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const discount = subtotal * (cartSummary.discountPercent / 100);
+  const total = subtotal + cartSummary.shipping - discount;
+
+  setCartSummary(prev => ({
+    ...prev,
+    subtotal,
+    discount,
+    total
+  }));
+}, [cartItems]);
 
   return (
     <>
@@ -225,37 +180,9 @@ const CartPage: React.FC = () => {
                               +
                             </button>
                           </div>
-                          <button
-                            className="remove-btn"
-                            onClick={() => removeItem(item.id)}
-                            aria-label="Xóa sản phẩm khỏi giỏ hàng"
-                          >
+                          <button className="remove-btn" onClick={() => removeItem(item.id)} aria-label="Xóa sản phẩm khỏi giỏ hàng">
                             {/* <i className="icon-trash"></i> */}
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 18 18"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g clip-path="url(#clip0_2039_22395)">
-                                <path
-                                  d="M15.078 2.62793L14.46 14.7779C14.4215 15.5473 14.0885 16.2724 13.53 16.8029C12.9715 17.3335 12.2304 17.6289 11.46 17.6279H6.67202C5.90169 17.6289 5.16051 17.3335 4.60202 16.8029C4.04353 16.2724 3.71054 15.5473 3.67202 14.7779L3.07202 2.62793"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                                <path
-                                  d="M6.76808 1.50027C6.84652 1.25968 6.99902 1.05005 7.20376 0.90134C7.40851 0.75263 7.65502 0.672452 7.90808 0.672266H10.2421C10.4944 0.672037 10.7404 0.751342 10.945 0.89891C11.1497 1.04648 11.3026 1.2548 11.3821 1.49427L11.6581 2.32227H6.49208L6.76808 1.50027ZM6.06608 2.92827H16.5721C16.6516 2.92827 16.7279 2.89666 16.7842 2.8404C16.8405 2.78414 16.8721 2.70783 16.8721 2.62827C16.8721 2.5487 16.8405 2.47239 16.7842 2.41613C16.7279 2.35987 16.6516 2.32827 16.5721 2.32827H12.2881L11.9461 1.30827C11.8277 0.949479 11.5994 0.637037 11.2936 0.415203C10.9878 0.193369 10.6199 0.0733908 10.2421 0.0722656H7.90208C7.52427 0.0733908 7.15639 0.193369 6.85056 0.415203C6.54473 0.637037 6.31646 0.949479 6.19808 1.30827L5.85608 2.32827H1.57808C1.49851 2.32827 1.4222 2.35987 1.36594 2.41613C1.30968 2.47239 1.27808 2.5487 1.27808 2.62827C1.27808 2.70783 1.30968 2.78414 1.36594 2.8404C1.4222 2.89666 1.49851 2.92827 1.57808 2.92827H6.06608Z"
-                                  fill="currentColor"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_2039_22395">
-                                  <rect width="18" height="18" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
+                            <img src="/images/icons/trash.png" alt="" />
                           </button>
                         </div>
                       </div>

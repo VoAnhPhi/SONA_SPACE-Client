@@ -8,14 +8,8 @@ import React, { useState, useEffect } from "react";
 import PolicyProduct from "../../components/Policy";
 import type { NewsArticle, NewsCategory } from "../../types";
 import { getAllNews } from "../../api/new"; // Import hàm API
-import { fetchAllNews } from "../../services/newsService";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  icon: string;
-}
+
 
 interface NewsItem {
   id: string;
@@ -44,6 +38,7 @@ const News: React.FC<NewsProps> = ({
       try {
         setLoading(true);
         const data = await getAllNews();
+        setNews(data.slice(0, limit));
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         // Apply limit if provided
         const limitedData = limit ? data.slice(0, limit) : data;
