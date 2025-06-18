@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import type { Product } from "../../types";
+import type { Product, Variant } from "../../types";
 
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(
     product.isWishlist || false
   );
+  const [hoveredColor, setHoveredColor] = useState<string | null>(null);
 
   const toggleWishlist = () => {
     setWishlist(!wishlist);
@@ -19,9 +20,9 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   threeDaysAgo.setDate(today.getDate() - 3);
   const price = Number(product.price); // "8000000.00" -> 8000000
   const priceSale =
-    product.priceSale !== null ? Number(product.priceSale) : null;
+    product.priceSale !== undefined ? Number(product.priceSale) : undefined;
   const hasValidSale =
-    priceSale !== null && priceSale > 1000 && priceSale < price;
+    priceSale !== undefined && priceSale > 1000 && priceSale < price;
 
   const parseDate = (dateStr?: string) =>
     dateStr ? new Date(dateStr) : new Date(0);
@@ -34,9 +35,9 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
 
   const getDiscountPercent = (
     price: number,
-    priceSale?: number | null
+    priceSale?: number
   ): number => {
-    if (priceSale === null || priceSale === undefined) return 0;
+    if (priceSale === undefined) return 0;
     if (priceSale <= 1000 || priceSale >= price) return 0; // giá sale quá nhỏ hoặc không hợp lệ
     return Math.round(((price - priceSale) / price) * 100);
   };
@@ -46,10 +47,20 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
     return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  // Tìm tên màu dựa vào mã hex
+  const findColorName = (hexColor: string): string => {
+    if (!product.variants) return "";
+    
+    const variant = product.variants.find((v) => 
+      v.color_hex && v.color_hex.toLowerCase() === hexColor.toLowerCase());
+    
+    return variant?.color_name || "";
+  };
+
   const isProductNew = isNew(product.created_at);
   const discountPercent = getDiscountPercent(
     product.price ?? 0,
-    product.priceSale ?? undefined
+    product.priceSale
   );
   const showNewLabel = isProductNew;
   const showDiscountLabel = discountPercent > 0;
@@ -78,7 +89,7 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
         </div>
         <div className="products-frame-image">
           <Link to={`/san-pham/${product.slug}`}>
-            <img src={product.image} alt="" />
+            <img src={product.image} alt={product.name} />
           </Link>
         </div>
         <div className="products-frame-name">
@@ -88,17 +99,28 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
           <span>{product.category?.name}</span>
         </div>
         <div className="products-frame-color">
-          <div className="color-name">Màu</div>
+          <div className="color-name">
+            Màu {hoveredColor && <span style={{ fontSize: '14px', color: '#666', fontStyle: 'italic', marginLeft: '4px' }}>: {hoveredColor}</span>}
+          </div>
           <div className="color-section">
-            <div className="color-section">
-              {product.colors?.map((color, index) => (
+            {product.colors?.map((color, index) => {
+              const colorName = findColorName(color);
+              return (
                 <span
                   key={index}
                   className={`color-${index + 1}`}
-                  style={{ backgroundColor: color }}
+                  style={{ 
+                    backgroundColor: color,
+                    cursor: 'pointer',
+                    position: 'relative',
+                    border: '1px solid #ccc'
+                  }}
+                  onMouseEnter={() => setHoveredColor(colorName)}
+                  onMouseLeave={() => setHoveredColor(null)}
+                  title={colorName}
                 ></span>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
         <div className="products-frame-cart">
@@ -110,7 +132,7 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
                     <del>{formatPrice(price)}</del>
                     <span className="unit"> đ</span>
                   </span>
-                  <span className="price2">{formatPrice(priceSale)} đ</span>
+                  <span className="price2">{formatPrice(priceSale!)} đ</span>
                 </>
               ) : (
                 <span className="price2">
@@ -120,9 +142,9 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
             </div>
           </div>
           <div className="cart-button">
-            <Link to={`cart/${product.slug}`}>
+            <Link to={`/san-pham/${product.slug}`}>
               {" "}
-              <button>Mua ngay</button>
+              <button>Xem chi tiết</button>
             </Link>
           </div>
         </div>
