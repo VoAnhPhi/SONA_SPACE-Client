@@ -115,7 +115,7 @@ const Header = () => {
                   >
                     {" "}
                     Sản Phẩm
-                    <img src="../public/images/icons/arrow-down.svg" alt="" />
+                    <img className="arrow-icon" alt="arrow" />
                     <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
@@ -276,7 +276,7 @@ const Header = () => {
                     onClick={() => handleNavClick("/khong-gian")}
                   >
                     Không Gian
-                    <img src="../public/images/icons/arrow-down.svg" alt="" />
+                    <img className="arrow-icon" alt="arrow" />
                     <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
