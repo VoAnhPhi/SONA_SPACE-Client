@@ -152,9 +152,19 @@
                     transition: all 0.3s ease;
                     position: relative;
 
+                    img {
+                        transition: transform 0.3s ease;
+                        content: url('../../../public/images/icons/arrow-down.svg');
+                    }
+
                     &:hover,
                     &.active {
                         color: $yellow-cl;
+
+                        img {
+                            transform: rotate(180deg);
+                            content: url('../../../public/images/icons/arrow-down-2.svg');
+                        }
 
                         &:after {
                             content: '';
