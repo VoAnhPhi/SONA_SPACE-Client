@@ -29,7 +29,7 @@ const [cartItems, setCartItems] = useState<CartItemProps[]>(() => {
     shipping: 30000,
     discount: 0,
     discountPercent: 10,
-    total: 0
+    total: 0,
   });
 
   // Format price with commas
@@ -41,14 +41,20 @@ const [cartItems, setCartItems] = useState<CartItemProps[]>(() => {
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
 
-    setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
   };
 
   // Remove item from cart
   const removeItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+    setCartItems(cartItems.filter((item) => item.id !== id));
+  };
+
+  const handleDeleteAll = () => {
+    setCartItems([]);
   };
 
   useEffect(() => {
@@ -89,7 +95,10 @@ useEffect(() => {
         <div className="cart-banner">
           <div className="container-fluid">
             <div className="banner-image">
-              <img src="/images/cartpage/banner_cart.jpg" alt="Giỏ hàng - Mua sắm nội thất cao cấp" />
+              <img
+                src="/images/cartpage/banner_cart.jpg"
+                alt="Giỏ hàng - Mua sắm nội thất cao cấp"
+              />
             </div>
           </div>
         </div>
@@ -119,13 +128,11 @@ useEffect(() => {
                 <div className="cart-items">
                   {cartItems.map((item) => (
                     <div key={item.id} className="cart-item">
-
                       <div className="item-image">
                         <img src={item.image} alt={item.name} />
                       </div>
 
                       <div className="item-details">
-                        
                         <div className="item-info">
                           <h3 className="item-name">{item.name}</h3>
                           <div className="item-category">{item.category}</div>
@@ -138,14 +145,24 @@ useEffect(() => {
                           </div>
                         </div>
                         <div className="item-price">
-                          <div className="current-price">{formatPrice(item.price)} đ</div>
+                          <div className="current-price">
+                            {formatPrice(item.price)} đ
+                          </div>
                           {item.oldPrice && (
-                            <div className="old-price">{formatPrice(item.oldPrice)} đ</div>
+                            <div className="old-price">
+                              {formatPrice(item.oldPrice)} đ
+                            </div>
                           )}
                         </div>
                         <div className="item-actions">
                           <div className="quantity-selector">
-                            <button className="quantity-btn decrease" onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
+                            <button
+                              className="quantity-btn decrease"
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
+                              disabled={item.quantity <= 1}
+                            >
                               -
                             </button>
                             <input
@@ -154,7 +171,12 @@ useEffect(() => {
                               readOnly
                               className="quantity-input"
                             />
-                            <button className="quantity-btn increase" onClick={() => updateQuantity(item.id, item.quantity + 1)} >
+                            <button
+                              className="quantity-btn increase"
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
+                            >
                               +
                             </button>
                           </div>
@@ -166,6 +188,9 @@ useEffect(() => {
                       </div>
                     </div>
                   ))}
+                  <p className="delete-all" onClick={handleDeleteAll}>
+                    Xóa toàn bộ
+                  </p>
                 </div>
 
                 {/* Cart Summary */}
@@ -173,15 +198,21 @@ useEffect(() => {
                   <div className="summary-title">Đơn hàng</div>
                   <div className="summary-row">
                     <span className="label">Tổng tiền:</span>
-                    <span className="value">{formatPrice(cartSummary.subtotal)} đ</span>
+                    <span className="value">
+                      {formatPrice(cartSummary.subtotal)} đ
+                    </span>
                   </div>
                   <div className="summary-row">
                     <span className="label">Vận chuyển:</span>
-                    <span className="value">{formatPrice(cartSummary.shipping)} đ</span>
+                    <span className="value">
+                      {formatPrice(cartSummary.shipping)} đ
+                    </span>
                   </div>
                   <div className="summary-row discount">
                     <span className="label">Thành viên giảm giá:</span>
-                    <span className="value">-{cartSummary.discountPercent}%</span>
+                    <span className="value">
+                      -{cartSummary.discountPercent}%
+                    </span>
                   </div>
                   <div className="summary-row promo-code">
                     <span className="label">Mã giảm giá:</span>
@@ -192,9 +223,13 @@ useEffect(() => {
                   </div>
                   <div className="summary-total">
                     <span className="label">Tổng cộng</span>
-                    <span className="value">{formatPrice(cartSummary.total)} đ</span>
+                    <span className="value">
+                      {formatPrice(cartSummary.total)} đ
+                    </span>
                   </div>
-                  <Link to="/thanh-toan" className="checkout-btn">Tiến hành thanh toán</Link>
+                  <Link to="/thanh-toan" className="checkout-btn">
+                    Tiến hành thanh toán
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -204,7 +239,9 @@ useEffect(() => {
                 </div>
                 <h2>Giỏ hàng của bạn đang trống</h2>
                 <p>Hãy thêm sản phẩm vào giỏ hàng để tiến hành mua sắm.</p>
-                <Link to="/san-pham" className="btn-shop-now">Khám phá sản phẩm ngay</Link>
+                <Link to="/san-pham" className="btn-shop-now">
+                  Khám phá sản phẩm ngay
+                </Link>
               </div>
             )}
           </div>
@@ -212,7 +249,6 @@ useEffect(() => {
 
         {/* Policy Product */}
         <PolicyProduct />
-
 
         {/* FAQ Section */}
         <GetInTouch />

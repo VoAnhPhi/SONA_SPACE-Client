@@ -220,7 +220,8 @@ const HomePage = () => {
                       priceSale: product.price_sale || undefined,
                       slug: product.slug,
                       isWishlist: product.isWishlist,
-                      category: product.category
+                      category: product.category,
+                      variants: product.variants
                     }}
                     slug={product.slug} 
                   />

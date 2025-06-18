@@ -11,48 +11,13 @@
     justify-content: center;
     margin-top: 88px;
 
-    .banner-image {
-      width: 100%;
+    .container-fluid {
+      max-width: 100%;
       height: 100%;
-
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-      }
-    }
-  }
-
-  // Breadcrumb Styles
-  .breadcrumb-container {
-    padding: 15px 0;
-    background-color: #f8f8f8;
-    margin-bottom: 30px;
-
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'M-R';
-      font-size: 14px;
-
-      a {
-        color: #666;
-        text-decoration: none;
-        transition: color 0.3s ease;
-
-        &:hover {
-          color: #333;
-        }
-      }
-
-      span {
-        color: #999;
-
-        &.active {
-          color: #333;
-          font-family: 'M-M';
-        }
       }
     }
   }
@@ -340,12 +305,13 @@
           margin-top: 10px;
 
           input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
             margin-top: 0;
           }
 
           .checkbox-text {
             @include text(14px, M-R, normal, #888, null);
-            line-height: 1.5;
             display: flex;
             align-items: center;
             gap: 3px;

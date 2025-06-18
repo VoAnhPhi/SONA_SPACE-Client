@@ -71,6 +71,16 @@ const News: React.FC<NewsProps> = ({
           </div>
         </div>
 
+        <div className="breadcrumb-container">
+          <div className="container">
+            <div className="breadcrumb">
+              <Link to="/">Trang chủ</Link>
+              <span>/</span>
+              <span className="active">Tin tức</span>
+            </div>
+          </div>
+        </div>
+
         {/* New Content */}
         <div className="container">
           <div className="news-content">

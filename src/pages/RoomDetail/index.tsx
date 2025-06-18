@@ -70,6 +70,10 @@ const RoomDetail: React.FC = () => {
           <div className="container-fluid">
             <div className="banner-image">
               <img src={room?.room_banner} alt={room?.room_name} />
+              <div className="banner-text">
+                <h1>{room?.room_name}</h1>
+                <p>{room?.room_description}</p>
+              </div>
             </div>
           </div>
         </div>

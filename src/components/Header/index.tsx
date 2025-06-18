@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAllCategories } from "../../api/category";
 import type { Category } from "../../types";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
@@ -114,122 +115,32 @@ const Header = () => {
                   >
                     {" "}
                     Sản Phẩm
-                    <img src="../public/images/icons/arrow-down.svg" alt="" />
+                    <img className="arrow-icon" alt="arrow" />
                     <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
                           <div className="sub-menu-column">
                             <ul>
-                              <li>
-                                <a
-                                  href="/san-pham/sofa"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/sofa");
-                                  }}
-                                >
-                                  Sofa
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ban-lam-viec"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ban-lam-viec");
-                                  }}
-                                >
-                                  Bàn làm việc
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tab-dau-giuong"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tab-dau-giuong");
-                                  }}
-                                >
-                                  Tab đầu giường
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tu-trang-tri"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tu-trang-tri");
-                                  }}
-                                >
-                                  Tủ trang trí
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/tham"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/tham");
-                                  }}
-                                >
-                                  Thảm
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ghe-don"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ghe-don");
-                                  }}
-                                >
-                                  Ghế đơn
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/den-ban-an"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/den-ban-an");
-                                  }}
-                                >
-                                  Đèn bàn ăn
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ghe-van-phong"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ghe-van-phong");
-                                  }}
-                                >
-                                  Ghế văn phòng
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/den-trang-tri"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/den-trang-tri");
-                                  }}
-                                >
-                                  Đèn trang trí
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="/san-pham/ke-sach"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNavClick("/san-pham/ke-sach");
-                                  }}
-                                >
-                                  Kệ sách
-                                </a>
-                              </li>
+                              {loadingCategories ? (
+                                <li><span>Đang tải danh mục...</span></li>
+                              ) : (
+                                categories
+                                  .sort((a, b) => (a.category_priority || 999) - (b.category_priority || 999))
+                                  .slice(0, 10)
+                                  .map((category) => (
+                                    <li key={`product-sidebar-${category.category_id}`}>
+                                      <a
+                                        href={`/san-pham/${category.slug}`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleNavClick(`/san-pham/${category.slug}`);
+                                        }}
+                                      >
+                                        {category.category_name}
+                                      </a>
+                                    </li>
+                                  ))
+                              )}
                             </ul>
                           </div>
                           <div className="sub-menu-products">
@@ -275,7 +186,7 @@ const Header = () => {
                     onClick={() => handleNavClick("/khong-gian")}
                   >
                     Không Gian
-                    <img src="../public/images/icons/arrow-down.svg" alt="" />
+                    <img className="arrow-icon" alt="arrow" />
                     <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
@@ -284,19 +195,23 @@ const Header = () => {
                               {loadingCategories ? (
                                 <li><span>Đang tải danh mục...</span></li>
                               ) : (
-                                categories.slice(0, 10).map((category) => (
-                                  <li key={`space-sidebar-${category.category_id}`}>
-                                    <a
-                                      href={`/san-pham/${category.slug}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleNavClick(`/san-pham/${category.slug}`);
-                                      }}
-                                    >
-                                      {category.category_name}
-                                    </a>
-                                  </li>
-                                ))
+                                categories
+                                  // Reverse the sort order for variety in Không Gian menu
+                                  .sort((a, b) => (b.category_priority || 0) - (a.category_priority || 0))
+                                  .slice(0, 10)
+                                  .map((category) => (
+                                    <li key={`space-sidebar-${category.category_id}`}>
+                                      <a
+                                        href={`/khong-gian/${category.slug}`}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleNavClick(`/khong-gian/${category.slug}`);
+                                        }}
+                                      >
+                                        {category.category_name}
+                                      </a>
+                                    </li>
+                                  ))
                               )}
                             </ul>
                           </div>
@@ -478,7 +393,9 @@ const Header = () => {
                   </div>
                 </button>
                 <button className="btn-icon cart-btn">
+                  <Link to="/gio-hang">
                   <img src="/images/icons/cart.svg" alt="cart" />
+                  </Link>
                 </button>
                 <button className="btn-icon wishlist-btn">
                   <img src="/images/icons/wishlist.svg" alt="wishlist" />
