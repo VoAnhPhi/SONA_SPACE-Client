@@ -152,7 +152,7 @@
                     transition: all 0.3s ease;
                     position: relative;
 
-                    img {
+                    img.arrow-icon {
                         transition: transform 0.3s ease;
                         content: url('../../../public/images/icons/arrow-down.svg');
                     }
@@ -161,7 +161,7 @@
                     &.active {
                         color: $yellow-cl;
 
-                        img {
+                        img.arrow-icon {
                             transform: rotate(180deg);
                             content: url('../../../public/images/icons/arrow-down-2.svg');
                         }
@@ -292,7 +292,7 @@
         align-items: center;
         height: 100%;
 
-        .icons {
+        &-icons {
             height: 100%;
             align-content: center;
         }
@@ -303,6 +303,7 @@
             cursor: pointer;
             margin-right: 15px;
             padding: 8px;
+            height: 100%;
 
             i {
                 font-size: 20px;

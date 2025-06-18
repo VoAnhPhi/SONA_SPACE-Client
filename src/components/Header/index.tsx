@@ -387,11 +387,45 @@ const Header = () => {
                           </div>
                         </div>
                         <div className="popular-products col-md-9">
+                          {/* Hàng đầu tiên hiển thị categories */}
+                          <h3>Danh mục sản phẩm</h3>
+                          {loadingCategories ? (
+                            <div className="loading-categories">Đang tải danh mục...</div>
+                          ) : (
+                            categoryRows.slice(0, 1).map((row, rowIndex) => (
+                              <div className="product-row" key={`search-cat-row-${rowIndex}`}>
+                                {row.map((category) => (
+                                  <div className="product-item" key={`search-cat-${category.category_id}`}>
+                                    <a 
+                                      href={`/san-pham/${category.slug}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNavClick(`/san-pham/${category.slug}`);
+                                      }}
+                                    >
+                                      <div 
+                                        className="product-image" 
+                                        style={{ 
+                                          backgroundImage: `url(${category.category_image})`,
+                                          backgroundSize: 'cover',
+                                          backgroundPosition: 'center'
+                                        }}
+                                      ></div>
+                                      <div className="product-title">{category.category_name}</div>
+                                    </a>
+                                  </div>
+                                ))}
+                              </div>
+                            ))
+                          )}
+                          
+                          {/* Hàng thứ hai hiển thị rooms */}
+                          <h3 className="mt-4">Không gian</h3>
                           {loadingRooms ? (
                             <div className="loading-categories">Đang tải không gian...</div>
                           ) : (
-                            roomRows.map((row, rowIndex) => (
-                              <div className="product-row" key={`search-row-${rowIndex}`}>
+                            roomRows.slice(0, 1).map((row, rowIndex) => (
+                              <div className="product-row" key={`search-room-row-${rowIndex}`}>
                                 {row.map((room) => (
                                   <div className="product-item" key={`search-room-${room.room_id}`}>
                                     <a 
