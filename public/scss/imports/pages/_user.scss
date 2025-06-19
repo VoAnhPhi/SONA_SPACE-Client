@@ -103,6 +103,13 @@
           border-radius: 8px;
           margin-bottom: 20px;
           overflow: hidden;
+          /* From https://css.glass */
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 16px;
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
 
           .order-header {
             display: flex;
@@ -177,11 +184,13 @@
           }
 
           .order-content {
+            height: 300px;
             display: grid;
-            grid-template-columns: 200px 1fr 370px;
+            grid-template-columns: 1fr 0.5fr 1fr;
             gap: 20px;
             padding: 20px;
             background-color: #f9f9f9;
+            align-items: center;
 
             @media (max-width: 992px) {
               grid-template-columns: 150px 1fr;
@@ -1153,6 +1162,13 @@
         border-radius: 8px;
         overflow: hidden;
         background-color: #fff;
+        /* From https://css.glass */
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
 
         .order-header {
           display: flex;
@@ -1164,6 +1180,7 @@
 
           .order-number {
             @include text(14px, M-R, 16px, $dark-cl, null);
+
             // display: none;
             span {
               margin-right: 15px;
@@ -1221,10 +1238,12 @@
 
         .order-content {
           display: grid;
-          grid-template-columns: 200px 1fr 300px;
+          grid-template-columns: 1fr 0.5fr 1fr;
           gap: 20px;
+          column-gap: 100px;
           padding: 20px;
           background-color: #f9f9f9;
+          align-items: center;
 
           @media (max-width: 992px) {
             grid-template-columns: 150px 1fr;
@@ -1236,6 +1255,8 @@
           }
 
           .product-image {
+            align-content: center;
+
             img {
               width: 100%;
               height: auto;
@@ -1299,10 +1320,8 @@
           }
 
           .order-info {
-            background-color: #fff;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             height: fit-content;
 
             @media (max-width: 992px) {
