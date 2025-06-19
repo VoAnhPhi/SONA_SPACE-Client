@@ -10,7 +10,7 @@ export const fetchVariantBySlugAndColor = async (
     const raw = await getVariantBySlugAndColor(slug, colorId);
 
     const formatted: Variant = {
-      id: raw.variantId,
+      variant_id: raw.variantId,
       productId: raw.productId,
       color: {
         id: raw.colorId,

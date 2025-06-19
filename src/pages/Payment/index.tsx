@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
+import { useAuth } from "../../contexts/AuthContext";
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -10,21 +10,30 @@ interface OrderSummaryProps {
   discountPercent: number;
   total: number;
 }
-
+interface CartItemProps {
+  id: number;
+  name: string;
+  price: number;
+  oldPrice?: number;
+  image: string;
+  color: string;
+  quantity: number;
+  category: string;
+}
 const Payment: React.FC = () => {
   const navigate = useNavigate();
-
-  // Payment methods
+  const { user, isAuthenticated } = useAuth();
+  const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
 
   // Order summary state
-  const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
-    subtotal: 500000,
-    shipping: 30000,
-    discount: 50000,
-    discountPercent: 10,
-    total: 480000
-  });
+const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
+  subtotal: 0,
+  shipping: 30000,
+  discount: 0,
+  discountPercent: 10,
+  total: 30000, // subtotal = 0 + shipping = 30000
+});
 
   // Form data
   const [formData, setFormData] = useState({
@@ -59,34 +68,123 @@ const Payment: React.FC = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Process payment logic would go here
-    console.log("Processing payment with data:", { formData, paymentMethod, orderSummary });
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Redirect to order complete page
-    navigate("/dat-hang-thanh-cong");
+  // 1. Tạo mã đơn hàng ngẫu nhiên
+  const orderId = "#OD" + Math.floor(100000 + Math.random() * 900000); // 6 chữ số
+  
+  // 2. Lấy thời gian hiện tại (theo định dạng tiếng Việt)
+  const orderDate = new Date().toLocaleString("vi-VN");
+
+  // 3. Tạo dữ liệu đơn hàng
+  const orderData = {
+    orderId,
+    orderDate,
+    itemCount: cartItems.length,
+    total: orderSummary.total,
+    cartItems,
+    userInfo: formData,
+    paymentMethod,
   };
+
+  try {
+    // ✅ Lưu đơn hàng vào localStorage để hiển thị bên OrderComplete
+    localStorage.setItem("lastOrder", JSON.stringify(orderData));
+
+    // ✅ Xóa giỏ hàng khỏi localStorage
+    localStorage.removeItem("cart");
+
+    // ✅ Điều hướng sang trang hoàn tất đơn hàng
+    navigate("/dat-hang-thanh-cong");
+  } catch (error) {
+    console.error("Lỗi khi xử lý đơn hàng:", error);
+    alert("Có lỗi xảy ra khi xử lý đơn hàng.");
+  }
+};
 
   // Apply promo code
-  const applyPromoCode = () => {
-    if (formData.promoCode) {
-      // Mock promo code logic
-      alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
-      // Update order summary
-      const newDiscount = orderSummary.subtotal * 0.1; // Example: 10% discount
+const applyPromoCode = () => {
+  if (formData.promoCode.trim() !== "") {
+    const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const discount = subtotal * (orderSummary.discountPercent / 100);
+    const total = subtotal + orderSummary.shipping - discount;
+
+    alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
+
+    setOrderSummary({
+      ...orderSummary,
+      discount,
+      total,
+    });
+
+    setFormData({
+      ...formData,
+      promoCode: "",
+    });
+  }
+};
+
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     alert("Bạn cần đăng nhập để thanh toán!");
+  //     navigate("/dang-nhap"); // hoặc điều hướng sang trang đăng nhập
+  //   }
+  // }, [isAuthenticated])
+
+useEffect(() => {
+  const storedCart = localStorage.getItem("cart");
+  if (storedCart) {
+    try {
+      const parsedCart = JSON.parse(storedCart);
+      setCartItems(parsedCart);
+
+      const subtotal = parsedCart.reduce(
+        (total: number, item: CartItemProps) => total + item.price * item.quantity,
+        0
+      );
+
+      const shipping = 30000;
+      const discountPercent = 10; // Đồng bộ với CartPage
+      const discount = subtotal * (discountPercent / 100);
+      const total = subtotal + shipping - discount;
+
       setOrderSummary({
-        ...orderSummary,
-        discount: newDiscount,
-        total: orderSummary.subtotal + orderSummary.shipping - newDiscount
+        subtotal,
+        shipping,
+        discount,
+        discountPercent,
+        total,
       });
-      // Clear promo code field
-      setFormData({
-        ...formData,
-        promoCode: ""
-      });
+    } catch (error) {
+      console.error("Lỗi khi đọc giỏ hàng từ localStorage:", error);
     }
-  };
+  }
+}, []);
+
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: user.full_name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || ""
+      }));
+    }
+  }, [user, isAuthenticated]);
+
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      try {
+        setCartItems(JSON.parse(storedCart));
+      } catch (error) {
+        console.error("Lỗi khi parse giỏ hàng:", error);
+        setCartItems([]);
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -247,6 +345,7 @@ const Payment: React.FC = () => {
               <div className="pay-info-right">
                 <div className="info-right-bill">
                   <h4>Đơn hàng</h4>
+
                   <div className="info-right-bill-sum">
                     <span className="sum1">Tổng giá</span>
                     <span className="sum2">{formatPrice(orderSummary.subtotal)} đ</span>
@@ -256,16 +355,18 @@ const Payment: React.FC = () => {
                     <span className="shipping2">{formatPrice(orderSummary.shipping)} đ</span>
                   </div>
                   <div className="info-right-bill-discount">
-                    <span className="discount1">Thêm mã giảm giá</span>
+                    <span className="discount1">Thành viên  giảm giá</span>
                     <span className="discount2">-{orderSummary.discountPercent}%</span>
                   </div>
                   <div className="info-right-bill-discount-code">
-                    <input type="text"
+                    <input
+                      type="text"
                       name="promoCode"
                       placeholder="Nhập mã giảm giá"
                       value={formData.promoCode}
                       onChange={handleInputChange}
-                      className="discount-code" />
+                      className="discount-code"
+                    />
                     <button type="button"
                       className="apply-btn"
                       onClick={applyPromoCode}>Áp dụng</button>
@@ -275,7 +376,9 @@ const Payment: React.FC = () => {
                     <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
                   </div>
                   <div className="info-right-bill-button">
-                    <Link to={``}><button type="submit" className="cart-button">Tiến hành thanh toán</button></Link>
+                    <button type="submit" className="cart-button" onClick={handleSubmit}>
+                      Tiến hành thanh toán
+                    </button>
                   </div>
                 </div>
               </div>

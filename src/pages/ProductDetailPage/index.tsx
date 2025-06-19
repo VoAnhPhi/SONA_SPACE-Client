@@ -197,7 +197,6 @@ const addToCart = () => {
 };
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
-
   return (
     <>
       <Header />
