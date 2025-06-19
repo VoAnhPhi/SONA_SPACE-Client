@@ -1390,19 +1390,16 @@ const User: React.FC = () => {
                             <div className="order-info">
                               <h4>Thông tin:</h4>
                               <div className="info-item">
-                                <span className="label">Tên người nhận:</span>
                                 <span className="value">
                                   {order.customerInfo?.name}
                                 </span>
                               </div>
                               <div className="info-item">
-                                <span className="label">Số điện thoại:</span>
                                 <span className="value">
                                   {order.customerInfo?.phone}
                                 </span>
                               </div>
                               <div className="info-item">
-                                <span className="label">Địa chỉ:</span>
                                 <span className="value">
                                   {order.customerInfo?.address}
                                 </span>
