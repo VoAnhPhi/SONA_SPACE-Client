@@ -1,270 +1,163 @@
-// import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-// type FilterProps = {
-//   categories: string[];
-//   rooms: string[];
-//   prices: string[];
-//   colors: string[];
-//   onFilterChange: (filters: {
-//     category?: string;
-//     room?: string;
-//     price?: string;
-//     color?: string;
-//   }) => void;
-// };
+interface FilterProps {
+  onFilterChange: (filters: {
+    category?: string;
+    room?: string;
+    price?: string;
+    color?: string;
+    sort?: string;
+  }) => void;
+}
 
-// const Filter = ({
-//   categories,
-//   rooms,
-//   prices,
-//   colors,
-//   onFilterChange,
-// }: FilterProps) => {
-//   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-//   const [isRoomOpen, setIsRoomOpen] = useState(false);
-//   const [isPriceOpen, setIsPriceOpen] = useState(false);
-//   const [isColorOpen, setIsColorOpen] = useState(false);
+const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
+  const [openedDropdown, setOpenedDropdown] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Chọn danh mục");
+  const [selectedRoom, setSelectedRoom] = useState<string>("Chọn phòng");
+  const [selectedPrice, setSelectedPrice] = useState<string>("Chọn giá");
+  const [selectedColor, setSelectedColor] = useState<string>("Chọn màu");
+  const [selectedSort, setSelectedSort] = useState<string>("Sắp xếp");
+  const [currentFilters, setCurrentFilters] = useState<{[key: string]: string}>({});
 
-//   const [selectedCategory, setSelectedCategory] = useState("Chọn danh mục");
-//   const [selectedRoom, setSelectedRoom] = useState("Chọn phòng");
-//   const [selectedPrice, setSelectedPrice] = useState("Chọn giá");
-//   const [selectedColor, setSelectedColor] = useState("Chọn màu");
+  const prices = ["Dưới 10 triệu", "10 - 30 triệu", "Trên 30 triệu"];
+  const sortOptions = ["Giá tăng dần", "Giá giảm dần", "Mới nhất", "Giảm giá"];
 
-//   const handleSelect = (type: string, value: string) => {
-//     if (type === "category") {
-//       setSelectedCategory(value);
-//       setIsCategoryOpen(false);
-//     }
-//     if (type === "room") {
-//       setSelectedRoom(value);
-//       setIsRoomOpen(false);
-//     }
-//     if (type === "price") {
-//       setSelectedPrice(value);
-//       setIsPriceOpen(false);
-//     }
-//     if (type === "color") {
-//       setSelectedColor(value);
-//       setIsColorOpen(false);
-//     }
+  const [categories, setCategories] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [colors, setColors] = useState<any[]>([]);
 
-//     // Truyền tất cả filters lên cha
-//     onFilterChange({
-//       category: type === "category" ? value : selectedCategory,
-//       room: type === "room" ? value : selectedRoom,
-//       price: type === "price" ? value : selectedPrice,
-//       color: type === "color" ? value : selectedColor,
-//     });
-//   };
+  const filterRef = useRef<HTMLDivElement>(null);
 
-//   return (
-//     <div className="container">
-//       <div className="filter-row">
-//         <div className="filter-left">
-//           <div className="filter-icon">
-//               <img src="/images/products/filter.svg" alt="Filter" />
-//             <span>Bộ lọc:</span>
-//           </div>
-//           {/* Dropdown: Category */}
-//           <div className="filter-dropdown">
-//             <div
-//               className="dropdown-toggle"
-//               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-//             >
-//               <span>{selectedCategory}</span>
-//               <i
-//                 className={`dropdown-icon ${isCategoryOpen ? "open" : ""}`}
-//               ></i>
-//             </div>
-//             {isCategoryOpen && (
-//               <div className="dropdown-menu">
-//                 {categories.map((cat) => (
-//                   <div
-//                     key={cat}
-//                     className={`dropdown-item ${
-//                       selectedCategory === cat ? "selected" : ""
-//                     }`}
-//                     onClick={() => handleSelect("category", cat)}
-//                   >
-//                     {cat}
-//                   </div>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//           {/* Dropdown: Room */}
-//           <div className="filter-dropdown">
-//             <div
-//               className="dropdown-toggle"
-//               onClick={() => setIsRoomOpen(!isRoomOpen)}
-//             >
-//               <span>{selectedRoom}</span>
-//               <i className={`dropdown-icon ${isRoomOpen ? "open" : ""}`}></i>
-//             </div>
-//             {isRoomOpen && (
-//               <div className="dropdown-menu">
-//                 {rooms.map((room) => (
-//                   <div
-//                     key={room}
-//                     className={`dropdown-item ${
-//                       selectedRoom === room ? "selected" : ""
-//                     }`}
-//                     onClick={() => handleSelect("room", room)}
-//                   >
-//                     {room}
-//                   </div>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//           {/* Dropdown: Price */}
-//           <div className="filter-dropdown">
-//             <div
-//               className="dropdown-toggle"
-//               onClick={() => setIsPriceOpen(!isPriceOpen)}
-//             >
-//               <span>{selectedPrice}</span>
-//               <i className={`dropdown-icon ${isPriceOpen ? "open" : ""}`}></i>
-//             </div>
-//             {isPriceOpen && (
-//               <div className="dropdown-menu">
-//                 {prices.map((price) => (
-//                   <div
-//                     key={price}
-//                     className={`dropdown-item ${
-//                       selectedPrice === price ? "selected" : ""
-//                     }`}
-//                     onClick={() => handleSelect("price", price)}
-//                   >
-//                     {price}
-//                   </div>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//           {/* Dropdown: Color */}
-//           <div className="filter-dropdown">
-//             <div
-//               className="dropdown-toggle"
-//               onClick={() => setIsColorOpen(!isColorOpen)}
-//             >
-//               <span>{selectedColor}</span>
-//               <i className={`dropdown-icon ${isColorOpen ? "open" : ""}`}></i>
-//             </div>
-//             {isColorOpen && (
-//               <div className="dropdown-menu">
-//                 {colors.map((color) => (
-//                   <div
-//                     key={color}
-//                     className={`dropdown-item ${
-//                       selectedColor === color ? "selected" : ""
-//                     }`}
-//                     onClick={() => handleSelect("color", color)}
-//                   >
-//                     {color}
-//                   </div>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//         <div className="filter-right">
-//
-//           <div className="filter-sort">
-//             <button className="sort-toggle">
-//                <img src="/images/products/arrow-down-up.svg" alt="Sort" />
-//               <span>Sắp xếp</span>
-//               <i className="dropdown-icon"></i>
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Filter;
-import { useState } from "react";
-
-const Filter = () => {
-  const categories = [
-    { name: "Ghế", icon: "../../images/products/armchair.svg" },
-    { name: "Bàn", icon: "../../images/products/table.svg" },
-    { name: "Tủ", icon: "../../images/products/cabinet.svg" },
-    { name: "Đèn", icon: "../../images/products/lamp.svg" },
-  ];
-
-  const rooms = ["Phòng khách", "Phòng ngủ", "Nhà bếp"];
-  const prices = ["Dưới 1 triệu", "1 - 3 triệu", "Trên 3 triệu"];
-  const colors = ["Trắng", "Đen", "Nâu", "Xám"];
-
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isRoomOpen, setIsRoomOpen] = useState(false);
-  const [isPriceOpen, setIsPriceOpen] = useState(false);
-  const [isColorOpen, setIsColorOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [selectedSort, setSelectedSort] = useState("Sắp xếp");
-
-  const [selectedCategory, setSelectedCategory] = useState("Chọn danh mục");
-
-  const [selectedRoom, setSelectedRoom] = useState("Chọn phòng");
-  const [selectedPrice, setSelectedPrice] = useState("Chọn giá");
-  const sortOptions = [
-    "Giá tăng dần",
-    "Giá giảm dần",
-    "Mới nhất",
-    "Giảm giá nhiều",
-  ];
-  const mapColorNameToHex = (color: string) => {
-    switch (color.toLowerCase()) {
-      case "trắng":
-        return "#ffffff";
-      case "đen":
-        return "#000000";
-      case "nâu":
-        return "#8B4513";
-      case "xám":
-        return "#808080";
-      default:
-        return "#ccc";
-    }
+  const toggleDropdown = (type: string) => {
+    setOpenedDropdown((prev) => (prev === type ? null : type));
   };
-
-  const [selectedColor, setSelectedColor] = useState("Chọn màu");
 
   const handleSelect = (type: string, value: string) => {
-    if (type === "category") {
-      setSelectedCategory(value);
-      setIsCategoryOpen(false);
-    }
-    if (type === "room") {
-      setSelectedRoom(value);
-      setIsRoomOpen(false);
-    }
-    if (type === "price") {
-      setSelectedPrice(value);
-      setIsPriceOpen(false);
-    }
-    if (type === "color") {
-      setSelectedColor(value);
-      setIsColorOpen(false);
-    }
-    if (type === "sort") {
-      setSelectedSort(value);
-      setIsSortOpen(false);
-      console.log("Sắp xếp theo:", value);
-    }
-  };
-  const handleSortSelect = (value: string) => {
-    setSelectedSort(value);
-    setIsSortOpen(false);
+    console.log('Selected filter:', type, value);
 
-    console.log("Sắp xếp theo:", value);
+    let newFilters = { ...currentFilters };
+
+    switch (type) {
+      case "category":
+        setSelectedCategory(value);
+        if (value !== "Chọn danh mục") {
+          newFilters.category = value;
+        }
+        break;
+      case "room":
+        setSelectedRoom(value);
+        if (value !== "Chọn phòng") {
+          newFilters.room = value;
+        }
+        break;
+      case "price":
+        setSelectedPrice(value);
+        if (value !== "Chọn giá") {
+          newFilters.price = value;
+        }
+        break;
+      case "color":
+        setSelectedColor(value);
+        if (value !== "Chọn màu") {
+          newFilters.color = value;
+        }
+        break;
+      case "sort":
+        setSelectedSort(value);
+        if (value !== "Sắp xếp") {
+          newFilters.sort = value;
+        }
+        break;
+    }
+
+    setOpenedDropdown(null);
+    setCurrentFilters(newFilters);
+    onFilterChange(newFilters);
   };
+
+  const handleClear = (type: string) => {
+    let newFilters = { ...currentFilters };
+    
+    switch (type) {
+      case "category":
+        setSelectedCategory("Chọn danh mục");
+        delete newFilters.category;
+        break;
+      case "room":
+        setSelectedRoom("Chọn phòng");
+        delete newFilters.room;
+        break;
+      case "price":
+        setSelectedPrice("Chọn giá");
+        delete newFilters.price;
+        break;
+      case "color":
+        setSelectedColor("Chọn màu");
+        delete newFilters.color;
+        break;
+      case "sort":
+        setSelectedSort("Sắp xếp");
+        delete newFilters.sort;
+        break;
+    }
+
+    setOpenedDropdown(null);
+    setCurrentFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
+  const clearAllFilters = () => {
+    setSelectedCategory("Chọn danh mục");
+    setSelectedRoom("Chọn phòng");
+    setSelectedPrice("Chọn giá");
+    setSelectedColor("Chọn màu");
+    setSelectedSort("Sắp xếp");
+    setOpenedDropdown(null);
+    setCurrentFilters({});
+    onFilterChange({});
+  };
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const [catRes, roomRes, colorRes] = await Promise.all([
+          fetch("http://localhost:3501/api/categories/filter/").then((res) =>
+            res.json()
+          ),
+          fetch("http://localhost:3501/api/rooms/filter/").then((res) =>
+            res.json()
+          ),
+          fetch("http://localhost:3501/api/color/filter/").then((res) =>
+            res.json()
+          ),
+        ]);
+
+        setCategories(catRes);
+        setRooms(roomRes);
+        setColors(colorRes);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu bộ lọc:", error);
+      }
+    };
+
+    fetchFilters();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target as Node)
+      ) {
+        setOpenedDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="container">
+    <div className="container" ref={filterRef}>
       <div className="filter-row">
         <div className="filter-left">
           <div className="filter-icon">
@@ -272,18 +165,18 @@ const Filter = () => {
             <span>Bộ lọc:</span>
           </div>
 
-          {/* Dropdown: Category */}
+          {/* Category */}
           <div className="filter-dropdown">
             <div
               className="dropdown-toggle"
-              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              onClick={() => toggleDropdown("category")}
             >
-              {/* Hiển thị icon của category đã chọn */}
               {selectedCategory !== "Chọn danh mục" && (
                 <img
                   src={
-                    categories.find((cat) => cat.name === selectedCategory)
-                      ?.icon
+                    categories.find(
+                      (cat) => cat.category_name === selectedCategory
+                    )?.category_icon
                   }
                   alt={selectedCategory}
                   style={{
@@ -294,161 +187,223 @@ const Filter = () => {
                   }}
                 />
               )}
-              <span>{selectedCategory}</span>
+              <span className="label">{selectedCategory}</span>
               <i
-                className={`dropdown-icon ${isCategoryOpen ? "open" : ""}`}
-              ></i>
+                className={`dropdown-icon ${
+                  openedDropdown === "category" ? "open" : ""
+                }`}
+              />
             </div>
-            {isCategoryOpen && (
-              <div className="dropdown-menu">
-                {categories.map((cat) => (
-                  <div
-                    key={cat.name}
-                    className={`dropdown-item ${
-                      selectedCategory === cat.name ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("category", cat.name)}
-                  >
-                    <img
-                      src={cat.icon}
-                      alt={cat.name}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        marginRight: 8,
-                        verticalAlign: "middle",
-                      }}
-                    />
-                    {cat.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Dropdown: Room */}
-          <div className="filter-dropdown">
             <div
-              className="dropdown-toggle"
-              onClick={() => setIsRoomOpen(!isRoomOpen)}
+              className={`dropdown-menu ${
+                openedDropdown === "category" ? "show" : ""
+              }`}
             >
-              <span>{selectedRoom}</span>
-              <i className={`dropdown-icon ${isRoomOpen ? "open" : ""}`}></i>
-            </div>
-            {isRoomOpen && (
-              <div className="dropdown-menu">
-                {rooms.map((room) => (
-                  <div
-                    key={room}
-                    className={`dropdown-item ${
-                      selectedRoom === room ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("room", room)}
-                  >
-                    {room}
-                  </div>
-                ))}
+              {categories.map((cat) => (
+                <div
+                  key={cat.category_id}
+                  className={`dropdown-item ${
+                    selectedCategory === cat.category_name ? "selected" : ""
+                  }`}
+                  onClick={() => handleSelect("category", cat.category_name)}
+                >
+                  <img
+                    src={cat.category_icon}
+                    alt={cat.category_name}
+                    style={{ width: 24, height: 24, marginRight: 8 }}
+                  />
+
+                  {cat.category_name}
+                </div>
+              ))}
+
+              <div
+                className="dropdown-item clear-item"
+                onClick={() => handleClear("category")}
+              >
+                Xoá bộ lọc
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Dropdown: Price */}
+          {/* Room */}
           <div className="filter-dropdown">
             <div
               className="dropdown-toggle"
-              onClick={() => setIsPriceOpen(!isPriceOpen)}
+              onClick={() => toggleDropdown("room")}
+            >
+              <span className="label">{selectedRoom}</span>
+              <i
+                className={`dropdown-icon ${
+                  openedDropdown === "room" ? "open" : ""
+                }`}
+              />
+            </div>
+            <div
+              className={`dropdown-menu ${
+                openedDropdown === "room" ? "show" : ""
+              }`}
+            >
+              {rooms.map((room) => (
+                <div
+                  key={room.room_id}
+                  className={`dropdown-item ${
+                    selectedRoom === room.room_name ? "selected" : ""
+                  }`}
+                  onClick={() => handleSelect("room", room.room_name)}
+                >
+                  {room.room_name}
+                </div>
+              ))}
+
+              <div
+                className="dropdown-item clear-item"
+                onClick={() => handleClear("room")}
+              >
+                Xoá bộ lọc
+              </div>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="filter-dropdown">
+            <div
+              className="dropdown-toggle"
+              onClick={() => toggleDropdown("price")}
             >
               <span>{selectedPrice}</span>
-              <i className={`dropdown-icon ${isPriceOpen ? "open" : ""}`}></i>
+              <i
+                className={`dropdown-icon ${
+                  openedDropdown === "price" ? "open" : ""
+                }`}
+              />
             </div>
-            {isPriceOpen && (
-              <div className="dropdown-menu">
-                {prices.map((price) => (
-                  <div
-                    key={price}
-                    className={`dropdown-item ${
-                      selectedPrice === price ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("price", price)}
-                  >
-                    {price}
-                  </div>
-                ))}
+            <div
+              className={`dropdown-menu ${
+                openedDropdown === "price" ? "show" : ""
+              }`}
+            >
+              {prices.map((price) => (
+                <div
+                  key={price}
+                  className={`dropdown-item ${
+                    selectedPrice === price ? "selected" : ""
+                  }`}
+                  onClick={() => handleSelect("price", price)}
+                >
+                  {price}
+                </div>
+              ))}
+
+              <div
+                className="dropdown-item clear-item"
+                onClick={() => handleClear("price")}
+              >
+                Xoá bộ lọc
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Dropdown: Color */}
-          {/* Dropdown: Color */}
+          {/* Color */}
           <div className="filter-dropdown">
             <div
               className="dropdown-toggle"
-              onClick={() => setIsColorOpen(!isColorOpen)}
+              onClick={() => toggleDropdown("color")}
             >
               {selectedColor !== "Chọn màu" && (
                 <span
                   className="color-box"
                   style={{
-                    backgroundColor: mapColorNameToHex(selectedColor),
-                    marginRight: "8px",
+                    backgroundColor:
+                      colors.find((color) => color.color_name === selectedColor)
+                        ?.color_hex || "#ccc",
+                    marginRight: 8,
                   }}
                 ></span>
               )}
-              <span>{selectedColor}</span>
-              <i className={`dropdown-icon ${isColorOpen ? "open" : ""}`}></i>
-            </div>
 
-            {isColorOpen && (
-              <div className="dropdown-menu">
-                {colors.map((color) => (
-                  <div
-                    key={color}
-                    className={`dropdown-item ${
-                      selectedColor === color ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("color", color)}
-                  >
-                    <span
-                      className="color-box"
-                      style={{
-                        backgroundColor: mapColorNameToHex(color),
-                        marginRight: "8px",
-                      }}
-                    ></span>
-                    {color}
-                  </div>
-                ))}
+              <span className="label">{selectedColor}</span>
+              <i
+                className={`dropdown-icon ${
+                  openedDropdown === "color" ? "open" : ""
+                }`}
+              />
+            </div>
+            <div
+              className={`dropdown-menu ${
+                openedDropdown === "color" ? "show" : ""
+              }`}
+            >
+              {colors.map((color) => (
+                <div
+                  key={color.color_id}
+                  className={`dropdown-item ${
+                    selectedColor === color.color_name ? "selected" : ""
+                  }`}
+                  onClick={() => handleSelect("color", color.color_name)}
+                >
+                  <span
+                    className="color-box"
+                    style={{
+                      backgroundColor: color.color_hex,
+                      marginRight: 8,
+                    }}
+                  ></span>
+                  {color.color_name}
+                </div>
+              ))}
+
+              <div
+                className="dropdown-item clear-item"
+                onClick={() => handleClear("color")}
+              >
+                Xoá bộ lọc
               </div>
-            )}
+            </div>
           </div>
         </div>
 
+        {/* Sort */}
         <div className="filter-right">
           <div className="filter-sort">
-            <div
-              className="sort-toggle"
-              onClick={() => setIsSortOpen(!isSortOpen)}
-            >
+            <div className="sort-toggle" onClick={() => toggleDropdown("sort")}>
               <img src="/images/products/arrow-down-up.svg" alt="Sort" />
               <span>{selectedSort}</span>
-              <i className={`dropdown-icon ${isSortOpen ? "open" : ""}`}></i>
+              <i
+                className={`dropdown-icon ${
+                  openedDropdown === "sort" ? "open" : ""
+                }`}
+              />
             </div>
+            <div
+              className={`dropdown-menu ${
+                openedDropdown === "sort" ? "show" : ""
+              }`}
+            >
+              {sortOptions.map((option) => (
+                <div
+                  key={option}
+                  className={`dropdown-item ${
+                    selectedSort === option ? "selected" : ""
+                  }`}
+                  onClick={() => handleSelect("sort", option)}
+                >
+                  {option}
+                </div>
+              ))}
 
-            {isSortOpen && (
-              <div className="dropdown-menu">
-                {sortOptions.map((option) => (
-                  <div
-                    key={option}
-                    className={`dropdown-item ${
-                      selectedSort === option ? "selected" : ""
-                    }`}
-                    onClick={() => handleSortSelect(option)}
-                  >
-                    {option}
-                  </div>
-                ))}
+              <div
+                className="dropdown-item clear-item"
+                onClick={() => handleClear("sort")}
+              >
+                Xoá bộ lọc
               </div>
-            )}
+            </div>
+          </div>
+          <div className="filter-clear-all">
+            <button className="clear-all-btn" onClick={clearAllFilters}>
+              Xoá tất cả bộ lọc
+            </button>
           </div>
         </div>
       </div>

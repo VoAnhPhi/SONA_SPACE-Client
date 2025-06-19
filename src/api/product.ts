@@ -18,14 +18,32 @@ const handleApiResponse = (response: any, errorMessage: string) => {
  */
 export const getAllProducts = async (
   page: number = 1,
-  limit: number = 8
+  limit: number = 8,
+  filters?: {
+    category?: string;
+    room?: string;
+    price?: string;
+    color?: string;
+    sort?: string;
+  }
 ): Promise<PaginatedResponse<Product>> => {
   try {
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(filters?.category && { category: filters.category }),
+      ...(filters?.room && { room: filters.room }),
+      ...(filters?.price && { price: filters.price }),
+      ...(filters?.color && { color: filters.color }),
+      ...(filters?.sort && { sort: filters.sort }),
+    });
+
     console.log(
-      `Calling API: GET ${API_URL}/products?page=${page}&limit=${limit}`
+      `Calling API: GET ${API_URL}/products?${queryParams.toString()}`
     );
+    
     const response = await axios.get(`${API_URL}/products`, {
-      params: { page, limit },
+      params: queryParams
     });
 
     const data = handleApiResponse(response, "No data received from API");
