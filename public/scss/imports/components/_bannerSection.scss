@@ -1,4 +1,5 @@
 .hero-banner {
+    margin-top: unset !important;
     .hero-banner__title {
         @include text(64px, M-B, auto, $white-cl, null);
         height: 100%;
