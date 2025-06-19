@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -30,49 +31,62 @@ interface OrderDetails {
 
 const DetailOrder: React.FC = () => {
   // Mock data for order details
-  const [order] = useState<OrderDetails>({
-    id: "12123212",
-    date: "23/5/2023",
-    status: "Đang giao hàng",
-    statusStep: 2,
-    recipientName: "Nguyễn Minh Duy",
-    recipientPhone: "0866453032",
-    address: "123/5 Lê Thương Kiệt / đầu đường 123/14/102 đường 3, quận Tân Bình, Phường 7, Quận Tân Bình, TP. Hồ Chí Minh",
-    subtotal: 15190000,
-    shippingFee: 0,
-    discount: 0,
-    total: 15190000,
-    products: [
-      {
-        id: "1",
-        name: "Sofa Moderno 2.5 seater Sofa",
-        image: "/images/products/sofa-1.jpg",
-        price: 15190000,
-        color: "Màu nâu",
-        size: "Số lượng: 1",
-        quantity: 1
-      },
-      {
-        id: "2",
-        name: "Sofa Moderno 2.5 seater Bàn",
-        image: "/images/products/table-1.jpg",
-        price: 15190000,
-        color: "Màu nâu",
-        size: "Số lượng: 1",
-        quantity: 1
-      },
-      {
-        id: "3",
-        name: "Sofa Moderno 2.5 seater Tủ",
-        image: "/images/products/cabinet-1.jpg",
-        price: 15190000,
-        color: "Màu nâu",
-        size: "Số lượng: 1",
-        quantity: 1
-      }
-    ]
-  });
+  // const [order] = useState<OrderDetails>({
+  //   id: "12123212",
+  //   date: "23/5/2023",
+  //   status: "Đang giao hàng",
+  //   statusStep: 2,
+  //   recipientName: "Nguyễn Minh Duy",
+  //   recipientPhone: "0866453032",
+  //   address: "123/5 Lê Thương Kiệt / đầu đường 123/14/102 đường 3, quận Tân Bình, Phường 7, Quận Tân Bình, TP. Hồ Chí Minh",
+  //   subtotal: 15190000,
+  //   shippingFee: 0,
+  //   discount: 0,
+  //   total: 15190000,
+  //   products: [
+  //     {
+  //       id: "1",
+  //       name: "Sofa Moderno 2.5 seater Sofa",
+  //       image: "/images/products/sofa-1.jpg",
+  //       price: 15190000,
+  //       color: "Màu nâu",
+  //       size: "Số lượng: 1",
+  //       quantity: 1
+  //     },
+  //     {
+  //       id: "2",
+  //       name: "Sofa Moderno 2.5 seater Bàn",
+  //       image: "/images/products/table-1.jpg",
+  //       price: 15190000,
+  //       color: "Màu nâu",
+  //       size: "Số lượng: 1",
+  //       quantity: 1
+  //     },
+  //     {
+  //       id: "3",
+  //       name: "Sofa Moderno 2.5 seater Tủ",
+  //       image: "/images/products/cabinet-1.jpg",
+  //       price: 15190000,
+  //       color: "Màu nâu",
+  //       size: "Số lượng: 1",
+  //       quantity: 1
+  //     }
+  //   ]
+  // });
 
+  const [order, setOrder] = useState<any>(null);
+
+useEffect(() => {
+  const storedOrder = localStorage.getItem("lastOrder");
+  if (storedOrder) {
+    try {
+      const parsedOrder = JSON.parse(storedOrder);
+      setOrder(parsedOrder);
+    } catch (error) {
+      console.error("Lỗi khi đọc dữ liệu đơn hàng:", error);
+    }
+  }
+}, []);
   // Format price with commas
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
@@ -86,7 +100,7 @@ const DetailOrder: React.FC = () => {
           <div className="order-overview">
             <div className="order-header">
               <div className="order-id">
-                <h2>Đơn hàng: {order.id}</h2>
+                <h2>Đơn hàng: {order.orderId}</h2>
                 <p className="order-date">Ngày đặt: {order.date}</p>
               </div>
               <div className="order-actions">
@@ -168,7 +182,7 @@ const DetailOrder: React.FC = () => {
               <h3>Tổng sản phẩm</h3>
             </div>
             <div className="product-list">
-              {order.products.map((product) => (
+              {order.cartItems.map((product: any) => (
                 <div className="product-item" key={product.id}>
                   <div className="product-image">
                     <img src={product.image} alt={product.name} />

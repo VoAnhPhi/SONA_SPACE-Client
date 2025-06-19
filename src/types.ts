@@ -225,6 +225,7 @@ export interface Variant {
   color_hex: string;
   color_priority: number;
   variant_id: number;
+ variantId: number;
   variant_slug: string;
   variant_price: number;
   variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)

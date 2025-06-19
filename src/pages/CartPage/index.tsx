@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import GetInTouch from "../../components/GetInTouch";
 import PolicyProduct from "../../components/Policy";
 
+
 interface CartItemProps {
   id: number;
   name: string;

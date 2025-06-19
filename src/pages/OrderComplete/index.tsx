@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 interface OrderSummaryProps {
@@ -11,22 +10,29 @@ interface OrderSummaryProps {
 }
 
 const OrderComplete: React.FC = () => {
-  // Mock order data
-  const orderSummary: OrderSummaryProps = {
-    orderId: "#105555554",
-    orderDate: "Ngày 2 tháng 8 năm 2023",
-    itemCount: 4,
-    total: 85190000
-  };
+  const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
 
-  // Format price with commas
+  useEffect(() => {
+    const lastOrder = localStorage.getItem("lastOrder");
+    if (lastOrder) {
+      const parsed = JSON.parse(lastOrder);
+      setOrderSummary({
+        orderId: parsed.orderId,
+        orderDate: parsed.orderDate,
+        itemCount: parsed.itemCount,
+        total: parsed.total,
+      });
+    }
+  }, []);
+
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  if (!orderSummary) return <p>Đang tải thông tin đơn hàng...</p>;
+
   return (
     <>
-      {/* <Header /> */}
       <div className="order-Complete-context">
         <div className="order-Complete-text1">
           <img src="/images/Order-Completed/sonaspace.png" alt="" />
@@ -40,12 +46,15 @@ const OrderComplete: React.FC = () => {
           </div>
         </div>
         <div className="order-Complete-text3">
-          <p className="text3-1">Bạn sẽ sớm nhận được email xác nhận với thông tin chi tiết về đơn hàng của bạn. Nếu không nhận </p>
-          <p className="text3-2">được email, vui lòng kiểm tra thư mục thư rác hoặc liên hệ với chúng tôi.
-            <span></span>
+          <p className="text3-1">
+            Bạn sẽ sớm nhận được email xác nhận với thông tin chi tiết về đơn hàng của bạn.
+          </p>
+          <p className="text3-2">
+            Nếu không nhận được email, vui lòng kiểm tra thư mục thư rác hoặc liên hệ với chúng tôi.
           </p>
         </div>
       </div>
+
       <div className="Order-Complete-Bill">
         <div className="container">
           <div className="Order-complete-right">
@@ -68,12 +77,17 @@ const OrderComplete: React.FC = () => {
                 <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
               </div>
               <div className="complete-right-bill-button">
-                <Link to={``}><button type="submit" className="cart-button">Xem chi tiết đơn hàng</button></Link>
+                <Link to={`/chi-tiet-don-hang/${orderSummary.orderId}`}>
+                  <button className="cart-button">Xem chi tiết đơn hàng</button>
+                </Link>
               </div>
             </div>
           </div>
+
           <div className="Order-complete-center">
-            <span>Cảm ơn bạn đã mua sắm với chúng tôi! Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng liên hệ với nhóm hỗ trợ khách hàng của chúng tôi theo địa chỉ: </span>
+            <span>
+              Cảm ơn bạn đã mua sắm với chúng tôi! Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng liên hệ:
+            </span>
             <div className="center-text">
               <span>Email: sona.furniture@gmail.com</span>
               <span>Số điện thoại: 0900909090</span>
@@ -81,7 +95,6 @@ const OrderComplete: React.FC = () => {
           </div>
         </div>
       </div>
-
 
       <Footer />
     </>

@@ -11,7 +11,7 @@ export const getVariantBySlugAndColor = async (
     // Sửa lại URL endpoint cho đúng format
     const response = await axios.get(`${API_URL}/variants/${slug}/${colorId}`);
     if (!response.data) throw new Error("No data received for variant");
-    return response.data;
+    return response.data; 
   } catch (error) {
     console.error(
       `Error fetching variant for slug "${slug}" and colorId ${colorId}:`,
