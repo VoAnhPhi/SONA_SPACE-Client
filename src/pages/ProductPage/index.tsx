@@ -25,59 +25,95 @@ const ProductPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState<{[key: string]: string}>({});
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
-  const fetchProducts = async (pageNumber: number) => {
-    setLoading(true);
+  const fetchProducts = async (pageNumber: number, currentFilters = {}, isLoadMore = false) => {
+    if (isLoadMore) {
+      setIsLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+
     try {
       const { products: newProducts, totalPages } = await fetchAllProducts(
         pageNumber,
-        8
+        8,
+        currentFilters
       );
-      if (pageNumber === 1) {
-        setProducts(newProducts);
+
+      if (isLoadMore) {
+        // Thêm sản phẩm mới vào danh sách hiện tại
+        setProducts(prevProducts => [...prevProducts, ...newProducts]);
       } else {
-        setProducts((prev) => [...prev, ...newProducts]);
+        // Load lại từ đầu (khi thay đổi filter)
+        setProducts(newProducts);
       }
+      
       setTotalPages(totalPages);
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Không thể tải danh sách sản phẩm.");
     } finally {
       setLoading(false);
+      setIsLoadingMore(false);
     }
   };
 
   useEffect(() => {
     const pageParam = parseInt(searchParams.get("page") || "1", 10);
     setPage(pageParam);
-    const fetchAll = async () => {
-      setLoading(true);
-      let allProducts: Product[] = [];
-      let totalPages = 1;
-      for (let i = 1; i <= pageParam; i++) {
-        const { products: newProducts, totalPages: tp } =
-          await fetchAllProducts(i, 8);
-        allProducts = [...allProducts, ...newProducts];
-        totalPages = tp;
-      }
-      setProducts(allProducts);
-      setTotalPages(totalPages);
-      setLoading(false);
-    };
+    
+    // Lấy các tham số lọc từ URL và chỉ lấy các giá trị không rỗng và không phải giá trị mặc định
+    const urlFilters: {[key: string]: string} = {};
+    const category = searchParams.get("category");
+    const room = searchParams.get("room");
+    const price = searchParams.get("price");
+    const color = searchParams.get("color");
+    const sort = searchParams.get("sort");
 
-    fetchAll();
+    if (category && category !== "Chọn danh mục") urlFilters.category = category;
+    if (room && room !== "Chọn phòng") urlFilters.room = room;
+    if (price && price !== "Chọn giá") urlFilters.price = price;
+    if (color && color !== "Chọn màu") urlFilters.color = color;
+    if (sort && sort !== "Sắp xếp") urlFilters.sort = sort;
+    
+    setFilters(urlFilters);
+    fetchProducts(pageParam, urlFilters, false);
   }, []);
 
   useEffect(() => {
-    setSearchParams({ page: page.toString(), limit: "8" });
-    if (page !== parseInt(searchParams.get("page") || "1", 10)) {
-      fetchProducts(page);
-    }
-  }, [page]);
+    // Cập nhật URL với các tham số lọc, chỉ thêm các giá trị không rỗng và không phải giá trị mặc định
+    const params: {[key: string]: string} = {
+      page: page.toString(),
+      limit: "8",
+    };
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && 
+          value !== "Chọn danh mục" && 
+          value !== "Chọn phòng" && 
+          value !== "Chọn giá" && 
+          value !== "Chọn màu" && 
+          value !== "Sắp xếp") {
+        params[key] = value;
+      }
+    });
+
+    setSearchParams(new URLSearchParams(params));
+  }, [page, filters]);
+
+  const handleFilterChange = (newFilters: {[key: string]: string}) => {
+    setPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+    setFilters(newFilters);
+    fetchProducts(1, newFilters, false); // Load lại từ đầu khi thay đổi filter
+  };
 
   const handleSeeMore = () => {
     if (page < totalPages) {
-      setPage((prev) => prev + 1);
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchProducts(nextPage, filters, true); // Load thêm sản phẩm
     }
   };
 
@@ -98,31 +134,37 @@ const ProductPage: React.FC = () => {
       </div>
       {/* Breadcrumb */}
       <div className="breadcrumb-container">
-          <div className="container">
-            <div className="breadcrumb">
-              <Link to="/">Trang chủ</Link>
-              <span>/</span>
-              <span className="active">Sản phẩm</span>
-            </div>
+        <div className="container">
+          <div className="breadcrumb">
+            <Link to="/">Trang chủ</Link>
+            <span>/</span>
+            <span className="active">Sản phẩm</span>
           </div>
         </div>
+      </div>
       <PopularCategory />
       <section className="product-section">
-        <Filter />
+        <Filter onFilterChange={handleFilterChange} />
         <div className="boxProducts">
           <div className="container">
             <div className="section-box-products">
               <div className="box-products-container">
-                {products.map((product) => (
-                  <ProductComponent
-                    key={product.id}
-                    product={product}
-                    slug={product.slug}
-                  />
-                ))}
+                {loading ? (
+                  <p>Đang tải sản phẩm...</p>
+                ) : products.length > 0 ? (
+                  products.map((product) => (
+                    <ProductComponent
+                      key={product.id}
+                      product={product}
+                      slug={product.slug}
+                    />
+                  ))
+                ) : (
+                  <p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc.</p>
+                )}
               </div>
-              {loading && <p>Đang tải thêm sản phẩm...</p>}
-              {!loading && page < totalPages && (
+              {isLoadingMore && <p>Đang tải thêm sản phẩm...</p>}
+              {!loading && !isLoadingMore && page < totalPages && (
                 <Seemore onClick={handleSeeMore} />
               )}
             </div>

@@ -168,10 +168,17 @@ export const formatProductForDisplay = (product: any): Product => {
  */
 export const fetchAllProducts = async (
   page: number = 1,
-  limit: number = 8
+  limit: number = 8,
+  filters: {
+    category?: string;
+    room?: string;
+    price?: string;
+    color?: string;
+    sort?: string;
+  } = {}
 ): Promise<{ products: Product[]; totalPages: number }> => {
   try {
-    const rawProducts = await getAllProducts(page, limit);
+    const rawProducts = await getAllProducts(page, limit, filters);
     const formatted = rawProducts.items.map(formatProductForDisplay);
     console.log("formatted", formatted);
     return {
