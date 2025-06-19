@@ -11,7 +11,7 @@ interface RegisterData {
 
 export const registerUser = async (userData: RegisterData): Promise<ApiResponse<any>> => {
   try {
-    const response = await axios.post('http://localhost:3500/api/auth/register', userData);
+    const response = await axios.post('http://localhost:3501/api/auth/register', userData);
     return {
       success: true,
       data: response.data,
