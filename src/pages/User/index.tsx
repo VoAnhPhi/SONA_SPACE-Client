@@ -3,6 +3,7 @@ import { Link, Links, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
+import axios from "axios";
 // Thay thế toast bằng alert hoặc console.log
 // import { toast } from "react-hot-toast";
 // Define interfaces for our data types
@@ -26,11 +27,13 @@ interface OrderItem {
 }
 
 interface UserInfo {
+  id?: number;
   name: string;
   email: string;
   phone: string;
   address: string | string[];
   full_name?: string;
+  role?: string;
 }
 
 interface PromoCode {
@@ -234,6 +237,9 @@ const User: React.FC = () => {
     address: ["123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"],
   });
 
+  // State để theo dõi khi nào cần tải lại dữ liệu người dùng
+  const [refreshUserData, setRefreshUserData] = useState<boolean>(false);
+
   // Lấy thông tin người dùng từ sessionStorage khi component mount
   useEffect(() => {
     const userDataStr = sessionStorage.getItem("user");
@@ -247,6 +253,7 @@ const User: React.FC = () => {
           phone: userData.phone || "Chưa cập nhật",
           address: userData.address || "Chưa cập nhật địa chỉ",
           full_name: userData.full_name,
+          id: userData.id
         });
         console.log("Đã tải thông tin người dùng từ sessionStorage:", userData);
       } catch (error) {
@@ -258,7 +265,7 @@ const User: React.FC = () => {
     } else {
       console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
     }
-  }, []);
+  }, [refreshUserData]);
 
   // Mock data for promo codes
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
@@ -345,9 +352,67 @@ const User: React.FC = () => {
   };
 
   // Handle user info form submission
-  const handleUserInfoSubmit = (e: React.FormEvent) => {
+  const handleUserInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Thông tin cá nhân đã được cập nhật!");
+    
+    try {
+      // Lấy token từ sessionStorage
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        return;
+      }
+
+      // Lấy thông tin người dùng từ sessionStorage để lấy ID
+      const userDataStr = sessionStorage.getItem("user");
+      if (!userDataStr) {
+        alert("Không tìm thấy thông tin người dùng");
+        return;
+      }
+
+      const userData = JSON.parse(userDataStr);
+      const userId = userData.id;
+
+      // Chuẩn bị dữ liệu để cập nhật
+      const updatedUserInfo = {
+        full_name: userInfo.name,
+        phone: userInfo.phone,
+        address: typeof userInfo.address === "string" ? userInfo.address : userInfo.address[0],
+        // Giữ nguyên mật khẩu và role
+        password: userData.password || "123123123", // Giá trị mặc định nếu không có
+        role: userData.role || "user"
+      };
+
+      // Gọi API cập nhật thông tin người dùng
+      const response = await axios.put(
+        `http://localhost:3501/api/users/${userId}`,
+        updatedUserInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Cập nhật thông tin người dùng trong sessionStorage
+      const updatedUser = {
+        ...userData,
+        full_name: userInfo.name,
+        phone: userInfo.phone,
+        address: typeof userInfo.address === "string" ? userInfo.address : userInfo.address[0]
+      };
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // Cập nhật state để tải lại thông tin người dùng
+      setRefreshUserData(prev => !prev);
+
+      alert("Thông tin cá nhân đã được cập nhật!");
+      setShowEditModal(false);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+      alert("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+    }
   };
 
   // Handle adding new address
@@ -384,14 +449,57 @@ const User: React.FC = () => {
     }
 
     try {
-      // Gọi API đổi mật khẩu ở đây
-      // const response = await changePassword(passwordData);
+      // Lấy token từ sessionStorage
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        return;
+      }
+
+      // Lấy thông tin người dùng từ sessionStorage
+      const userDataStr = sessionStorage.getItem("user");
+      if (!userDataStr) {
+        alert("Không tìm thấy thông tin người dùng");
+        return;
+      }
+
+      const userData = JSON.parse(userDataStr);
+      const userId = userData.id;
+
+      // Gọi API đổi mật khẩu
+      const response = await axios.put(
+        `http://localhost:3501/api/users/${userId}`,
+        {
+          password: passwordData.newPassword,
+          // Giữ nguyên các thông tin khác
+          full_name: userData.full_name || userData.name,
+          phone: userData.phone,
+          address: userData.address,
+          role: userData.role || "user"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Cập nhật thông tin người dùng trong sessionStorage
+      const updatedUser = {
+        ...userData,
+        password: passwordData.newPassword
+      };
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
       // Thông báo thành công
       alert("Đổi mật khẩu thành công");
 
-      // Đóng modal
-      setShowPasswordModal(false);
+      // Cập nhật state để tải lại thông tin người dùng
+      setRefreshUserData(prev => !prev);
+
+      // Đóng form
+      setShowPasswordForm(false);
 
       // Reset form
       setPasswordData({
@@ -401,7 +509,7 @@ const User: React.FC = () => {
       });
     } catch (error) {
       console.error("Lỗi khi đổi mật khẩu:", error);
-      alert("Đổi mật khẩu thất bại");
+      alert("Đổi mật khẩu thất bại. Vui lòng thử lại sau.");
     }
   };
 
@@ -559,6 +667,24 @@ const User: React.FC = () => {
     return promoCodes;
   };
 
+  // Handle user logout
+  const handleLogout = () => {
+    try {
+      // Xóa token và thông tin người dùng khỏi sessionStorage
+      sessionStorage.removeItem('authToken');
+      sessionStorage.removeItem('user');
+      
+      // Thông báo đăng xuất thành công
+      alert("Đăng xuất thành công!");
+      
+      // Chuyển hướng đến trang đăng nhập
+      window.location.href = "/dang-nhap";
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      alert("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -611,7 +737,7 @@ const User: React.FC = () => {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => alert("Đã đăng xuất!")}>
+                  <button onClick={handleLogout}>
                     <i className="icon-logout">
                       <img src="/images/icons/Log_Out.svg" alt="icon-box" />
                     </i>
@@ -826,7 +952,7 @@ const User: React.FC = () => {
                                 })
                               }
                               className="password-input"
-                              placeholder="121212121212121"
+                              placeholder="Mật khẩu cũ"
                               required
                             />
                           </div>
@@ -843,7 +969,7 @@ const User: React.FC = () => {
                                 })
                               }
                               className="password-input"
-                              placeholder="121122112122112"
+                              placeholder="Mật khẩu mới"
                               required
                             />
                           </div>
@@ -862,7 +988,7 @@ const User: React.FC = () => {
                                 })
                               }
                               className="password-input"
-                              placeholder="121122112122112"
+                              placeholder="Nhập lại mật khẩu mới"
                               required
                             />
                           </div>
