@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAllCategories } from "../../api/category";
 import { getAllRooms } from "../../api/room";
 import type { Category, Room } from "../../types";
 import { Link } from "react-router-dom";
+import WishlistSidebar from "../Wishlist/WishlistSidebar";
+import MiniCart from "../MiniCart";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
@@ -14,6 +16,13 @@ const Header = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
   const [loadingRooms, setLoadingRooms] = useState<boolean>(true);
+  // State để quản lý hiển thị sidebar wishlist
+  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  // State để quản lý hiển thị mini cart trên mobile
+  const [isMiniCartOpen, setIsMiniCartOpen] = useState<boolean>(false);
+  
+  // Ref cho mini cart component để truy cập hàm toggleMiniCart
+  const miniCartRef = useRef<any>(null);
 
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -111,6 +120,31 @@ const Header = () => {
     }
     
     return rows;
+  };
+
+  // Toggle wishlist sidebar
+  const toggleWishlist = () => {
+    setIsWishlistOpen(!isWishlistOpen);
+  };
+
+  // Toggle mini cart khi click trên mobile
+  const handleMiniCartClick = (e: React.MouseEvent) => {
+    // Ngăn chặn chuyển hướng khi nhấp vào button
+    e.preventDefault();
+    
+    // Kiểm tra xem có phải là mobile không (dựa theo kích thước màn hình)
+    if (window.innerWidth < 768) {
+      // Ngăn chặn sự kiện lan truyền để không mở link khi click vào button
+      e.stopPropagation();
+      
+      // Toggle mini cart
+      setIsMiniCartOpen(!isMiniCartOpen);
+      
+      // Nếu có ref đến component MiniCart
+      if (miniCartRef.current && typeof miniCartRef.current.toggleMiniCart === 'function') {
+        miniCartRef.current.toggleMiniCart();
+      }
+    }
   };
 
   const categoryRows = getCategoryRows();
@@ -455,12 +489,15 @@ const Header = () => {
                     </div>
                   </div>
                 </button>
-                <button className="btn-icon cart-btn">
-                  <Link to="/gio-hang">
-                  <img src="/images/icons/cart.svg" alt="cart" />
-                  </Link>
-                </button>
-                <button className="btn-icon wishlist-btn">
+                <div className="cart-container">
+                  <button className="btn-icon cart-btn" onClick={handleMiniCartClick}>
+                    <Link to="/gio-hang" onClick={(e) => window.innerWidth < 768 && e.preventDefault()}>
+                      <img src="/images/icons/cart.svg" alt="cart" />
+                    </Link>
+                  </button>
+                  <MiniCart ref={miniCartRef} />
+                </div>
+                <button className="btn-icon wishlist-btn" onClick={toggleWishlist}>
                   <img src="/images/icons/wishlist.svg" alt="wishlist" />
                 </button>
               </div>
@@ -507,6 +544,9 @@ const Header = () => {
           </div>
         </div>
       </header>
+
+      {/* Wishlist Sidebar */}
+      <WishlistSidebar isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
     </>
   );
 };
