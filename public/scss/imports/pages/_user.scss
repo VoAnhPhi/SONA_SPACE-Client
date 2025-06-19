@@ -111,6 +111,11 @@
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
 
+            .aside {
+              display: flex;
+              flex-direction: column;
+            }
+
             .order-info {
               .label {
                 @include text(18px, Be-M, auto, $dark-cl, null);
@@ -124,41 +129,48 @@
             }
 
             .order-status {
-              .status {
+              span.status {
                 display: inline-block;
-                padding: 5px 10px;
-                border-radius: 4px;
-                font-size: 12px;
-                font-family: 'M-M', sans-serif;
+                padding: 6px 15px;
+                border-radius: 20px;
+                @include text(13px, Be-M, 15px, #fff, null);
+                text-transform: capitalize;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+                }
 
                 &.pending {
-                  background-color: #e3f2fd;
-                  color: #1976d2;
+                  background-color: #f8c146;
+                  color: #fff;
                 }
 
                 &.confirmed {
-                  background-color: #e8f5e9;
-                  color: #388e3c;
-                }
-
-                &.completed {
-                  background-color: $yellow-cl;
-                  color: $white-cl;
+                  background-color: #4a90e2;
+                  color: #fff;
                 }
 
                 &.shipping {
-                  background-color: #e3f2fd;
-                  color: #1976d2;
+                  background-color: #50b83c;
+                  color: #fff;
                 }
 
-                &.returned {
-                  background-color: #ffebee;
-                  color: #d32f2f;
+                &.completed {
+                  background-color: #50b83c;
+                  color: #fff;
                 }
 
                 &.cancelled {
-                  background-color: #ffebee;
-                  color: #d32f2f;
+                  background-color: #de4437;
+                  color: #fff;
+                }
+
+                &.returned {
+                  background-color: #de4437;
+                  color: #fff;
                 }
               }
             }
@@ -791,6 +803,56 @@
         margin-bottom: 10px;
       }
 
+      .order-filter-tabs {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+
+        &::-webkit-scrollbar {
+          height: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #ccc;
+          border-radius: 2px;
+        }
+
+        button {
+          padding: 10px 20px;
+          background: none;
+          border: none;
+          font-family: 'Be-M', sans-serif;
+          font-size: 14px;
+          color: #666;
+          cursor: pointer;
+          position: relative;
+          white-space: nowrap;
+
+          &:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+          }
+
+          &.active {
+            color: $yellow-cl;
+
+            &:after {
+              background-color: $yellow-cl;
+            }
+          }
+
+          &:hover:not(.active) {
+            color: darken(#666, 10%);
+          }
+        }
+      }
+
       .promo-description-text {
         @include text(16px, Be-L, 22px, #666, null);
         margin-bottom: 25px;
@@ -894,6 +956,30 @@
               padding: 2px 4px;
               border-radius: 2px;
               margin: 0 2px;
+            }
+
+            // Add animation for low time
+            &.low-time {
+              .time-value {
+                background-color: #ffebee;
+                color: #d32f2f;
+                animation: pulse 1s infinite;
+              }
+            }
+          }
+
+          // Pulse animation for low time
+          @keyframes pulse {
+            0% {
+              opacity: 1;
+            }
+
+            50% {
+              opacity: 0.7;
+            }
+
+            100% {
+              opacity: 1;
             }
           }
         }
@@ -1010,7 +1096,6 @@
         display: flex;
         border-bottom: 1px solid #eee;
         margin-bottom: 20px;
-        overflow-x: auto;
 
         &::-webkit-scrollbar {
           height: 4px;
@@ -1078,41 +1163,57 @@
           background-color: #f9f9f9;
 
           .order-number {
-            @include text(14px, Be-M, 16px, $dark-cl, null);
-
+            @include text(14px, M-R, 16px, $dark-cl, null);
+            // display: none;
             span {
               margin-right: 15px;
+              @include text(14px, Be-M, 16px, $dark-cl, null);
             }
           }
 
           .order-status {
-            span {
+            span.status {
+              display: inline-block;
               padding: 6px 15px;
               border-radius: 20px;
               @include text(13px, Be-M, 15px, #fff, null);
+              text-transform: capitalize;
+              box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
 
-              &.status-pending {
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+              }
+
+              &.pending {
                 background-color: #f8c146;
+                color: #fff;
               }
 
-              &.status-confirmed {
+              &.confirmed {
                 background-color: #4a90e2;
+                color: #fff;
               }
 
-              &.status-shipping {
+              &.shipping {
                 background-color: #50b83c;
+                color: #fff;
               }
 
-              &.status-completed {
+              &.completed {
                 background-color: #50b83c;
+                color: #fff;
               }
 
-              &.status-cancelled {
+              &.cancelled {
                 background-color: #de4437;
+                color: #fff;
               }
 
-              &.status-returned {
+              &.returned {
                 background-color: #de4437;
+                color: #fff;
               }
             }
           }
