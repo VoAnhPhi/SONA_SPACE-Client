@@ -46,11 +46,72 @@ interface PromoCode {
   combinations: string;
 }
 
+// CountdownTimer component
+const CountdownTimer: React.FC<{
+  hours: number;
+  minutes: number;
+  seconds: number;
+  onComplete?: () => void;
+}> = ({
+  hours: initialHours,
+  minutes: initialMinutes,
+  seconds: initialSeconds,
+  onComplete,
+}) => {
+  const [hours, setHours] = useState<number>(initialHours);
+  const [minutes, setMinutes] = useState<number>(initialMinutes);
+  const [seconds, setSeconds] = useState<number>(initialSeconds);
+  const [isLowTime, setIsLowTime] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Check if time is running low (less than 10 minutes)
+    if (hours === 0 && minutes < 10) {
+      setIsLowTime(true);
+    } else {
+      setIsLowTime(false);
+    }
+
+    const interval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      } else if (minutes > 0) {
+        setMinutes(minutes - 1);
+        setSeconds(59);
+      } else if (hours > 0) {
+        setHours(hours - 1);
+        setMinutes(59);
+        setSeconds(59);
+      } else {
+        clearInterval(interval);
+        if (onComplete) {
+          onComplete();
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [hours, minutes, seconds, onComplete]);
+
+  // Format numbers to always have 2 digits
+  const formatNumber = (num: number): string => {
+    return num < 10 ? `0${num}` : `${num}`;
+  };
+
+  return (
+    <div className={`flash-time ${isLowTime ? "low-time" : ""}`}>
+      <span className="time-value">{formatNumber(hours)}</span> h{" "}
+      <span className="time-value">{formatNumber(minutes)}</span> m{" "}
+      <span className="time-value">{formatNumber(seconds)}</span> s
+    </div>
+  );
+};
+
 const User: React.FC = () => {
   // State for active tab
   const [activeTab, setActiveTab] = useState<string>("orders");
   // State for active order filter
   const [activeOrderFilter, setActiveOrderFilter] = useState<string>("all");
+  const [activePromoFilter, setActivePromoFilter] = useState<string>("all");
 
   // Mock data for orders with different statuses
   const [orders] = useState<OrderItem[]>([
@@ -200,80 +261,81 @@ const User: React.FC = () => {
   }, []);
 
   // Mock data for promo codes
-  const [promoCodes] = useState<PromoCode[]>([
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
     {
       code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      discount: "Giảm 5%",
+      description: "CHO TOÀN BỘ ĐƠN HÀNG",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
       isFlashSale: false,
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
     {
-      code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      code: "FLASH_5OFF",
+      discount: "Giảm 5%",
+      description: "FLASH SALE",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
       isFlashSale: true,
       timeRemaining: { hours: 1, minutes: 8, seconds: 59 },
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
     {
       code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      discount: "Giảm 5%",
+      description: "CHO TOÀN BỘ ĐƠN HÀNG",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
       isFlashSale: false,
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
     {
-      code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      code: "FLASH_10OFF",
+      discount: "Giảm 10%",
+      description: "FLASH SALE",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
       isFlashSale: true,
-      timeRemaining: { hours: 1, minutes: 8, seconds: 59 },
+      timeRemaining: { hours: 0, minutes: 45, seconds: 30 },
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
     {
       code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      discount: "Giảm 5%",
+      description: "CHO TOÀN BỘ ĐƠN HÀNG",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
       isFlashSale: false,
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
     {
-      code: "NEWCUSTOMER_1234",
-      discount: "5% OFF",
-      description: "FOR WHOLE ORDER",
-      validUntil: "09/08/2021 12:00",
-      validFrom: "05/08/2021 04:00",
+      code: "FLASH_15OFF",
+      discount: "Giảm 15%",
+      description: "FLASH SALE",
+      validUntil: "12:00 09/08/2021",
+      validFrom: "04:00 05/08/2021",
       minOrder: "169.00",
       used: false,
-      isFlashSale: false,
+      isFlashSale: true,
+      timeRemaining: { hours: 2, minutes: 15, seconds: 0 },
       combinations:
-        "Get 20% off when you spend over $169.00 or get 15% off when you spend.",
+        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
     },
   ]);
 
@@ -294,9 +356,9 @@ const User: React.FC = () => {
     if (newAddress && newAddress.trim() !== "") {
       setUserInfo({
         ...userInfo,
-        address: Array.isArray(userInfo.address) 
-          ? [...userInfo.address, newAddress] 
-          : [userInfo.address, newAddress]
+        address: Array.isArray(userInfo.address)
+          ? [...userInfo.address, newAddress]
+          : [userInfo.address, newAddress],
       });
     }
   };
@@ -387,19 +449,19 @@ const User: React.FC = () => {
   const getStatusButtonClass = (status: string) => {
     switch (status) {
       case "pending":
-        return "status-pending";
+        return "status pending";
       case "confirmed":
-        return "status-confirmed";
+        return "status confirmed";
       case "shipping":
-        return "status-shipping";
+        return "status shipping";
       case "completed":
-        return "status-completed";
+        return "status completed";
       case "cancelled":
-        return "status-cancelled";
+        return "status cancelled";
       case "returned":
-        return "status-returned";
+        return "status returned";
       default:
-        return "";
+        return "status";
     }
   };
 
@@ -452,6 +514,49 @@ const User: React.FC = () => {
       default:
         return <button className="btn-view-details">Xem chi tiết</button>;
     }
+  };
+
+  // Handle when a flash sale countdown completes
+  const handleCountdownComplete = (index: number) => {
+    setPromoCodes((prevCodes) => {
+      const updatedCodes = [...prevCodes];
+      updatedCodes[index] = {
+        ...updatedCodes[index],
+        isFlashSale: false, // End the flash sale when countdown completes
+      };
+      return updatedCodes;
+    });
+  };
+
+  // Copy promo code to clipboard
+  const copyToClipboard = (code: string) => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        alert("Mã giảm giá đã được sao chép!");
+      })
+      .catch((err) => {
+        console.error("Không thể sao chép: ", err);
+        alert("Không thể sao chép mã giảm giá. Vui lòng thử lại.");
+      });
+  };
+
+  // Apply promo code
+  const applyPromoCode = (code: string) => {
+    alert(`Mã giảm giá ${code} đã được áp dụng!`);
+    // Implement actual promo code application logic here
+  };
+
+  // Filter promo codes based on active filter
+  const getFilteredPromoCodes = () => {
+    if (activePromoFilter === "all") {
+      return promoCodes;
+    } else if (activePromoFilter === "flash") {
+      return promoCodes.filter((promo) => promo.isFlashSale);
+    } else if (activePromoFilter === "regular") {
+      return promoCodes.filter((promo) => !promo.isFlashSale);
+    }
+    return promoCodes;
   };
 
   return (
@@ -547,11 +652,9 @@ const User: React.FC = () => {
                             </div>
                             <div className="order-status">
                               <span
-                                className={`status ${order.status
-                                  .toLowerCase()
-                                  .replace(/\s+/g, "-")}`}
+                                className={getStatusButtonClass(order.status)}
                               >
-                                {order.status}
+                                {getStatusButtonText(order.status)}
                               </span>
                             </div>
                           </div>
@@ -599,11 +702,12 @@ const User: React.FC = () => {
                               <div className="total-info">
                                 <span className="label">Địa chỉ: </span>
                                 <span className="value">
-                                  {typeof userInfo.address === 'string' 
-                                    ? userInfo.address 
-                                    : userInfo.address && userInfo.address.length > 0
-                                      ? userInfo.address[0]
-                                      : "Chưa cập nhật địa chỉ"}
+                                  {typeof userInfo.address === "string"
+                                    ? userInfo.address
+                                    : userInfo.address &&
+                                      userInfo.address.length > 0
+                                    ? userInfo.address[0]
+                                    : "Chưa cập nhật địa chỉ"}
                                 </span>
                               </div>
                               <div className="order-actions">
@@ -667,11 +771,11 @@ const User: React.FC = () => {
                         <div className="profile-info-item">
                           <div className="info-label">Địa chỉ</div>
                           <div className="info-value">
-                            {typeof userInfo.address === 'string' 
-                              ? userInfo.address 
+                            {typeof userInfo.address === "string"
+                              ? userInfo.address
                               : userInfo.address && userInfo.address.length > 0
-                                ? userInfo.address[0]
-                                : "Chưa cập nhật địa chỉ"}
+                              ? userInfo.address[0]
+                              : "Chưa cập nhật địa chỉ"}
                           </div>
                         </div>
                       </div>
@@ -853,11 +957,14 @@ const User: React.FC = () => {
                             <input
                               type="text"
                               id="address"
-                              value={typeof userInfo.address === 'string' 
-                                ? userInfo.address 
-                                : userInfo.address && userInfo.address.length > 0
+                              value={
+                                typeof userInfo.address === "string"
+                                  ? userInfo.address
+                                  : userInfo.address &&
+                                    userInfo.address.length > 0
                                   ? userInfo.address[0]
-                                  : ""}
+                                  : ""
+                              }
                               onChange={(e) =>
                                 setUserInfo({
                                   ...userInfo,
@@ -909,7 +1016,9 @@ const User: React.FC = () => {
                               <button
                                 className="btn-link delete"
                                 onClick={() => {
-                                  const newAddresses = [...userInfo.address as string[]];
+                                  const newAddresses = [
+                                    ...(userInfo.address as string[]),
+                                  ];
                                   newAddresses.splice(index, 1);
                                   setUserInfo({
                                     ...userInfo,
@@ -960,8 +1069,32 @@ const User: React.FC = () => {
                     <h3>Mã giảm giá của bạn</h3>
                   </div>
 
+                  {/* Add tab filter for promo codes */}
+                  <div className="order-filter-tabs">
+                    <button
+                      className={activePromoFilter === "all" ? "active" : ""}
+                      onClick={() => setActivePromoFilter("all")}
+                    >
+                      Tất cả
+                    </button>
+                    <button
+                      className={activePromoFilter === "flash" ? "active" : ""}
+                      onClick={() => setActivePromoFilter("flash")}
+                    >
+                      Flash Sale
+                    </button>
+                    <button
+                      className={
+                        activePromoFilter === "regular" ? "active" : ""
+                      }
+                      onClick={() => setActivePromoFilter("regular")}
+                    >
+                      Thường xuyên
+                    </button>
+                  </div>
+
                   <div className="voucher-grid">
-                    {promoCodes.map((promo, index) => (
+                    {getFilteredPromoCodes().map((promo, index) => (
                       <div className="voucher-card" key={index}>
                         <div className="voucher-header">
                           <div className="voucher-discount">
@@ -976,15 +1109,16 @@ const User: React.FC = () => {
                           <span>Code: {promo.code}</span>
                         </div>
 
-                        {promo.isFlashSale && (
+                        {promo.isFlashSale && promo.timeRemaining && (
                           <div className="flash-sale-banner">
                             <div className="flash-icon">⚡</div>
                             <div className="flash-text">Flash sale</div>
-                            <div className="flash-time">
-                              <span className="time-value">01</span> h{" "}
-                              <span className="time-value">08</span> m{" "}
-                              <span className="time-value">59</span> s
-                            </div>
+                            <CountdownTimer
+                              hours={promo.timeRemaining.hours}
+                              minutes={promo.timeRemaining.minutes}
+                              seconds={promo.timeRemaining.seconds}
+                              onComplete={() => handleCountdownComplete(index)}
+                            />
                           </div>
                         )}
 
@@ -996,20 +1130,26 @@ const User: React.FC = () => {
                               </span>
                             </li>
                             <li>
-                              <span>For all products.</span>
+                              <span>Áp dụng cho tất cả sản phẩm.</span>
                             </li>
                             <li>
-                              <span>Combinations: {promo.combinations}</span>
+                              <span>Ưu đãi: {promo.combinations}</span>
                             </li>
                           </ul>
                         </div>
 
                         <div className="voucher-actions">
-                          <button className="btn-copy">
+                          <button
+                            className="btn-copy"
+                            onClick={() => copyToClipboard(promo.code)}
+                          >
                             <img src="/images/icons/content_copy.svg" alt="" />
                             <span>Copy</span>
                           </button>
-                          <button className="btn-apply">
+                          <button
+                            className="btn-apply"
+                            onClick={() => applyPromoCode(promo.code)}
+                          >
                             <span>Apply</span>
                           </button>
                         </div>
