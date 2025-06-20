@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -75,33 +75,36 @@ const DetailOrder: React.FC = () => {
   // });
 
   const [order, setOrder] = useState<any>(null);
-
-useEffect(() => {
-  const storedOrder = localStorage.getItem("lastOrder");
-  if (storedOrder) {
-    try {
-      const parsedOrder = JSON.parse(storedOrder);
-      setOrder(parsedOrder);
-    } catch (error) {
-      console.error("Lỗi khi đọc dữ liệu đơn hàng:", error);
+  const { id } = useParams<{ id: string }>();
+  useEffect(() => {
+    const storedOrder = localStorage.getItem("lastOrder");
+    if (storedOrder) {
+      try {
+        const parsedOrder = JSON.parse(storedOrder);
+        if (parsedOrder.orderId === id) {
+          setOrder(parsedOrder);
+        }
+      } catch (error) {
+        console.error("Lỗi khi đọc dữ liệu đơn hàng:", error);
+      }
     }
-  }
-}, []);
+  }, [id]);
   // Format price with commas
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
   };
-
+  if (!order) return <p>Đang tải đơn hàng...</p>;
   return (
     <>
       <Header />
-      <div className="detail-order-page">
+      
+      <section className="detail-order-page">
         <div className="container">
           <div className="order-overview">
             <div className="order-header">
               <div className="order-id">
                 <h2>Đơn hàng: {order.orderId}</h2>
-                <p className="order-date">Ngày đặt: {order.date}</p>
+                <p className="order-date">Ngày đặt: {order.orderDate}</p>
               </div>
               <div className="order-actions">
                 <button className="btn-order-detail">Chỉnh sửa</button>
@@ -182,15 +185,15 @@ useEffect(() => {
               <h3>Tổng sản phẩm</h3>
             </div>
             <div className="product-list">
-              {order.cartItems.map((product: any) => (
+              {order.products?.map((product: any) => (
                 <div className="product-item" key={product.id}>
                   <div className="product-image">
                     <img src={product.image} alt={product.name} />
                   </div>
-                  <div className="product-details">
+                  <div className="product-detailss">
                     <h4>{product.name}</h4>
                     <div className="product-meta">
-                      <span className="product-color">{product.color}</span>
+                      <span className="product-color"  style={{ backgroundColor: product.color }}></span>
                       <span className="product-size">{product.size}</span>
                     </div>
                   </div>
@@ -208,22 +211,22 @@ useEffect(() => {
           {/* Payment Summary */}
           <div className="payment-summary">
             <div className="summary-row">
-              <span>Tổng tiền hàng:</span>
-              <span>{formatPrice(order.subtotal)}</span>
+              <span className="row1">Tổng tiền hàng:</span>
+              <span className="row2">{formatPrice(order.subtotal)}</span>
             </div>
             <div className="summary-row">
-              <span>Phí vận chuyển:</span>
-              <span>{order.shippingFee === 0 ? "Miễn phí" : formatPrice(order.shippingFee)}</span>
+              <span className="row1">Phí vận chuyển:</span>
+              <span className="row2">{order.shippingFee === 0 ? "Miễn phí" : formatPrice(order.shippingFee)}</span>
             </div>
             {order.discount > 0 && (
               <div className="summary-row discount">
-                <span>Khuyến mãi:</span>
-                <span>-{formatPrice(order.discount)}</span>
+                <span className="row1">Khuyến mãi:</span>
+                <span className="row2">-{formatPrice(order.discount)}</span>
               </div>
             )}
             <div className="summary-row total">
-              <span>Thành tiền:</span>
-              <span>{formatPrice(order.total)}</span>
+              <span className="row1">Thành tiền:</span>
+              <span className="row2">{formatPrice(order.total)}</span>
             </div>
           </div>
 
@@ -243,12 +246,12 @@ useEffect(() => {
                 <h3>Thiết kế cá nhân hóa</h3>
                 <p>Liên hệ ngay để được tư vấn</p>
               </div>
-              
+
               <div className="service-item">
                 <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
                 <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
               </div>
-              
+
               <div className="service-item">
                 <img src="/images/design/design-consultation.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
                 <h3>Bạn cần liên hệ hỗ trợ?</h3>
@@ -256,7 +259,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <Footer />
     </>
   );
