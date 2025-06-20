@@ -107,8 +107,7 @@ const DetailOrder: React.FC = () => {
                 <p className="order-date">Ngày đặt: {order.orderDate}</p>
               </div>
               <div className="order-actions">
-                <button className="btn-order-detail">Chỉnh sửa</button>
-                <button className="btn-order-detail">Liên hệ với SONA</button>
+                <div className="order-status"><span className="status">Chờ xác nhận</span></div>
               </div>
             </div>
 
