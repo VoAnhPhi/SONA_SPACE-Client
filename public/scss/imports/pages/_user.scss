@@ -1354,8 +1354,7 @@
       padding: 40px 0;
 
       p {
-        font-size: 16px;
-        color: #666;
+        @include text(16px, Be-M, 22px, #666, null);
         margin-bottom: 20px;
       }
 
