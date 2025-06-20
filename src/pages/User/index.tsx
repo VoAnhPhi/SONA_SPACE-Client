@@ -4,50 +4,17 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import axios from "axios";
+import type { 
+  OrderItemAPI, 
+  OrderAPI, 
+  OrdersResponse, 
+  OrderItem, 
+  UserInfo, 
+  PromoCodeWithTimer as PromoCode 
+} from "../../types";
 // Thay thế toast bằng alert hoặc console.log
 // import { toast } from "react-hot-toast";
 // Define interfaces for our data types
-interface OrderItem {
-  id: string;
-  name: string;
-  image: string;
-  date: string;
-  price: number;
-  quantity: number;
-  color: string;
-  size: string;
-  status: string;
-  customerInfo?: {
-    name: string;
-    phone: string;
-    address: string;
-  };
-  orderNumber?: string;
-  refundDate?: string;
-}
-
-interface UserInfo {
-  id?: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string | string[];
-  full_name?: string;
-  role?: string;
-}
-
-interface PromoCode {
-  code: string;
-  discount: string;
-  description: string;
-  validUntil: string;
-  validFrom: string;
-  minOrder: string;
-  used: boolean;
-  isFlashSale: boolean;
-  timeRemaining?: { hours: number; minutes: number; seconds: number };
-  combinations: string;
-}
 
 // CountdownTimer component
 const CountdownTimer: React.FC<{
@@ -239,6 +206,11 @@ const User: React.FC = () => {
 
   // State để theo dõi khi nào cần tải lại dữ liệu người dùng
   const [refreshUserData, setRefreshUserData] = useState<boolean>(false);
+  
+  // State cho dữ liệu đơn hàng từ API
+  const [apiOrders, setApiOrders] = useState<OrderAPI[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Lấy thông tin người dùng từ sessionStorage khi component mount
   useEffect(() => {
@@ -253,9 +225,12 @@ const User: React.FC = () => {
           phone: userData.phone || "Chưa cập nhật",
           address: userData.address || "Chưa cập nhật địa chỉ",
           full_name: userData.full_name,
-          id: userData.id
+          id: userData.id,
         });
         console.log("Đã tải thông tin người dùng từ sessionStorage:", userData);
+        
+        // Gọi API để lấy dữ liệu đơn hàng
+        fetchOrders(userData.id);
       } catch (error) {
         console.error(
           "Lỗi khi parse dữ liệu người dùng từ sessionStorage:",
@@ -266,6 +241,41 @@ const User: React.FC = () => {
       console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
     }
   }, [refreshUserData]);
+  
+  // Hàm lấy dữ liệu đơn hàng từ API
+  const fetchOrders = async (userId: number) => {
+    if (!userId) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        setIsLoading(false);
+        return;
+      }
+      
+      const response = await axios.get<OrdersResponse>(
+        `http://localhost:3501/api/orders-id/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      setApiOrders(response.data.orders);
+      console.log("Dữ liệu đơn hàng:", response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu đơn hàng:", error);
+      setError("Không thể lấy dữ liệu đơn hàng. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Mock data for promo codes
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
@@ -351,13 +361,57 @@ const User: React.FC = () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
   };
 
+  // Hàm lấy URL hình ảnh đầu tiên từ chuỗi URL
+  const getFirstImageUrl = (imageUrls: string): string => {
+    if (!imageUrls) return "";
+    
+    // Nếu chuỗi chứa dấu phẩy, lấy URL đầu tiên
+    if (imageUrls.includes(',')) {
+      return imageUrls.split(',')[0];
+    }
+    
+    return imageUrls;
+  };
+  
+  // Hàm tính tổng giá trị đơn hàng
+  const calculateOrderTotal = (order: OrderAPI): number => {
+    return order.items.reduce((total, item) => {
+      return total + (parseFloat(item.product_price) * item.quantity);
+    }, 0);
+  };
+  
+  // Hàm tính tổng số lượng sản phẩm trong đơn hàng
+  const calculateTotalQuantity = (order: OrderAPI): number => {
+    return order.items.reduce((total, item) => total + item.quantity, 0);
+  };
+  
+  // Hàm chuyển đổi trạng thái đơn hàng thành class CSS
+  const getStatusClass = (status: string): string => {
+    switch (status) {
+      case "Chờ xác nhận":
+        return "pending";
+      case "Đã xác nhận":
+        return "confirmed";
+      case "Đang giao hàng":
+        return "shipping";
+      case "Hoàn thành":
+        return "completed";
+      case "Đã hủy":
+        return "cancelled";
+      case "Trả hàng":
+        return "returned";
+      default:
+        return "";
+    }
+  };
+
   // Handle user info form submission
   const handleUserInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem('authToken');
+      const token = sessionStorage.getItem("authToken");
       if (!token) {
         alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
@@ -377,10 +431,13 @@ const User: React.FC = () => {
       const updatedUserInfo = {
         full_name: userInfo.name,
         phone: userInfo.phone,
-        address: typeof userInfo.address === "string" ? userInfo.address : userInfo.address[0],
+        address:
+          typeof userInfo.address === "string"
+            ? userInfo.address
+            : userInfo.address[0],
         // Giữ nguyên mật khẩu và role
         password: userData.password || "123123123", // Giá trị mặc định nếu không có
-        role: userData.role || "user"
+        role: userData.role || "user",
       };
 
       // Gọi API cập nhật thông tin người dùng
@@ -390,8 +447,8 @@ const User: React.FC = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -400,12 +457,15 @@ const User: React.FC = () => {
         ...userData,
         full_name: userInfo.name,
         phone: userInfo.phone,
-        address: typeof userInfo.address === "string" ? userInfo.address : userInfo.address[0]
+        address:
+          typeof userInfo.address === "string"
+            ? userInfo.address
+            : userInfo.address[0],
       };
       sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
       // Cập nhật state để tải lại thông tin người dùng
-      setRefreshUserData(prev => !prev);
+      setRefreshUserData((prev) => !prev);
 
       alert("Thông tin cá nhân đã được cập nhật!");
       setShowEditModal(false);
@@ -450,7 +510,7 @@ const User: React.FC = () => {
 
     try {
       // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem('authToken');
+      const token = sessionStorage.getItem("authToken");
       if (!token) {
         alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
@@ -475,20 +535,20 @@ const User: React.FC = () => {
           full_name: userData.full_name || userData.name,
           phone: userData.phone,
           address: userData.address,
-          role: userData.role || "user"
+          role: userData.role || "user",
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
       // Cập nhật thông tin người dùng trong sessionStorage
       const updatedUser = {
         ...userData,
-        password: passwordData.newPassword
+        password: passwordData.newPassword,
       };
       sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
@@ -496,7 +556,7 @@ const User: React.FC = () => {
       alert("Đổi mật khẩu thành công");
 
       // Cập nhật state để tải lại thông tin người dùng
-      setRefreshUserData(prev => !prev);
+      setRefreshUserData((prev) => !prev);
 
       // Đóng form
       setShowPasswordForm(false);
@@ -515,21 +575,25 @@ const User: React.FC = () => {
 
   // Get filtered orders based on active filter
   const getFilteredOrders = () => {
+    if (apiOrders.length === 0) {
+      return [];
+    }
+    
     if (activeOrderFilter === "all") {
-      return orders;
+      return apiOrders;
     }
 
     const statusMap: Record<string, string> = {
-      pending: "pending",
-      confirmed: "confirmed",
-      shipping: "shipping",
-      completed: "completed",
-      cancelled: "cancelled",
-      returned: "returned",
+      pending: "Chờ xác nhận",
+      confirmed: "Đã xác nhận",
+      shipping: "Đang giao hàng",
+      completed: "Hoàn thành",
+      cancelled: "Đã hủy",
+      returned: "Trả hàng",
     };
 
-    return orders.filter(
-      (order) => order.status === statusMap[activeOrderFilter]
+    return apiOrders.filter(
+      (order) => order.order_status_name === statusMap[activeOrderFilter]
     );
   };
 
@@ -671,12 +735,12 @@ const User: React.FC = () => {
   const handleLogout = () => {
     try {
       // Xóa token và thông tin người dùng khỏi sessionStorage
-      sessionStorage.removeItem('authToken');
-      sessionStorage.removeItem('user');
-      
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("user");
+
       // Thông báo đăng xuất thành công
       alert("Đăng xuất thành công!");
-      
+
       // Chuyển hướng đến trang đăng nhập
       window.location.href = "/dang-nhap";
     } catch (error) {
@@ -761,92 +825,103 @@ const User: React.FC = () => {
                     </div>
                   </div>
 
-                  {orders.length > 0 ? (
+                  {isLoading ? (
+                    <div className="loading-state">
+                      <p>Đang tải dữ liệu đơn hàng...</p>
+                    </div>
+                  ) : error ? (
+                    <div className="error-state">
+                      <p>{error}</p>
+                    </div>
+                  ) : apiOrders.length > 0 ? (
                     <div className="order-list">
-                      {orders.map((order) => (
-                        <div className="order-item" key={order.id}>
+                      {apiOrders.slice(0, 3).map((order, index) => (
+                        <div className="order-item" key={index}>
                           <div className="order-header">
                             <div className="aside">
                               <div className="order-info">
                                 <span className="label">Đơn hàng: </span>
-                                <span className="value">{order.id}</span>
+                                <span className="value">#{order.order_id}</span>
                               </div>
                               <div className="order-info">
                                 <span className="label">Ngày đặt: </span>
-                                <span className="value">{order.date}</span>
+                                <span className="value">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
                               </div>
                             </div>
                             <div className="order-status">
                               <span
-                                className={getStatusButtonClass(order.status)}
+                                className={`status ${getStatusClass(order.order_status_name)}`}
                               >
-                                {getStatusButtonText(order.status)}
+                                {order.order_status_name}
                               </span>
                             </div>
                           </div>
 
-                          <div className="order-content">
-                            <div className="product-image">
-                              <img src={order.image} alt={order.name} />
-                            </div>
+                          {order.items.length > 0 && (
+                            <div className="order-content">
+                              <div className="product-image">
+                                <img 
+                                  src={getFirstImageUrl(order.items[0].product_image)} 
+                                  alt={order.items[0].product_name}
+                                />
+                              </div>
 
-                            <div className="product-details">
-                              <h4>{order.name}</h4>
-                              <span className="product-price">
-                                <span className="label">Thành tiền: </span>
-                                {formatPrice(order.price)}
-                              </span>
-                              <div className="product-meta">
-                                <div className="meta-item">
-                                  <span className="label">Màu:</span>
-                                  <span className="value-color"></span>
+                              <div className="product-details">
+                                <h4>{order.items[0].product_name}</h4>
+                                <span className="product-price">
+                                  <span className="label">Thành tiền: </span>
+                                  {formatPrice(calculateOrderTotal(order))}
+                                </span>
+                                <div className="product-meta">
+                                  <div className="meta-item">
+                                    <span className="label">Số lượng:</span>
+                                    <span className="value">
+                                      {calculateTotalQuantity(order)}
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="meta-item">
-                                  <span className="label">Số lượng:</span>
+                                <div className="product-link">
+                                  <Link to={`/san-pham/${order.items[0].product_id}`}>
+                                    Xem chi tiết
+                                  </Link>
+                                </div>
+                              </div>
+
+                              <div className="order-pricing">
+                                <h4>Thông tin</h4>
+                                <div className="price-info">
+                                  <span className="label">Tên người nhận: </span>
+                                  <span className="value">{userInfo.name}</span>
+                                </div>
+                                <div className="delivery-info">
+                                  <span className="label">Số điện thoại: </span>
+                                  <span className="value">{userInfo.phone}</span>
+                                </div>
+                                <div className="total-info">
+                                  <span className="label">Địa chỉ: </span>
                                   <span className="value">
-                                    {order.quantity}
+                                    {typeof userInfo.address === "string"
+                                      ? userInfo.address
+                                      : userInfo.address &&
+                                        userInfo.address.length > 0
+                                      ? userInfo.address[0]
+                                      : "Chưa cập nhật địa chỉ"}
                                   </span>
                                 </div>
                               </div>
-                              <div className="product-link">
-                                <Link to={`/san-pham/${order.id}`}>
-                                  Xem chi tiết
-                                </Link>
-                              </div>
-                            </div>
-
-                            <div className="order-pricing">
-                              <h4>Thông tin</h4>
-                              <div className="price-info">
-                                <span className="label">Tên người nhận: </span>
-                                <span className="value">{userInfo.name}</span>
-                              </div>
-                              <div className="delivery-info">
-                                <span className="label">Số điện thoại: </span>
-                                <span className="value">{userInfo.phone}</span>
-                              </div>
-                              <div className="total-info">
-                                <span className="label">Địa chỉ: </span>
-                                <span className="value">
-                                  {typeof userInfo.address === "string"
-                                    ? userInfo.address
-                                    : userInfo.address &&
-                                      userInfo.address.length > 0
-                                    ? userInfo.address[0]
-                                    : "Chưa cập nhật địa chỉ"}
-                                </span>
-                              </div>
                               <div className="order-actions">
-                                <button className="btn-outline">Chờ</button>
+                                <button className="btn-outline">
+                                  {order.order_status_name === "Hoàn thành" || order.order_status_name === "Đã hủy" ? "Mua lại" : "Xem trạng thái"}
+                                </button>
                                 <Link
-                                  to={`/chi-tiet-don-hang/${order.id}`}
+                                  to={`/chi-tiet-don-hang/${order.order_id}`}
                                   className="btn-primary"
                                 >
                                   Xem chi tiết
                                 </Link>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1288,7 +1363,7 @@ const User: React.FC = () => {
               {/* Wishlist Tab (renamed to Order Management) */}
               {activeTab === "wishlist" && (
                 <div className="content-section orders-management-section">
-                  <h2>Đơn hàng của</h2>
+                  <h2>Đơn hàng của bạn</h2>
 
                   <div className="order-filter-tabs">
                     <button
@@ -1296,6 +1371,12 @@ const User: React.FC = () => {
                       onClick={() => setActiveOrderFilter("all")}
                     >
                       Tất cả
+                    </button>
+                    <button
+                      className={activeOrderFilter === "confirmed" ? "active" : ""}
+                      onClick={() => setActiveOrderFilter("confirmed")}
+                    >
+                      Đã xác nhận
                     </button>
                     <button
                       className={
@@ -1339,147 +1420,146 @@ const User: React.FC = () => {
                     </button>
                   </div>
 
-                  {getFilteredOrders().length > 0 ? (
+                  {isLoading ? (
+                    <div className="loading-state">
+                      <p>Đang tải dữ liệu đơn hàng...</p>
+                    </div>
+                  ) : error ? (
+                    <div className="error-state">
+                      <p>{error}</p>
+                    </div>
+                  ) : getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
                       {getFilteredOrders().map((order, index) => (
                         <div className="order-item" key={index}>
                           <div className="order-header">
                             <div className="order-number">
-                              <span>Đơn hàng: {order.orderNumber}</span>
-                              <span>Ngày đặt: {order.date}</span>
+                              <span>Đơn hàng: {order.order_id}</span>
+                              <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
                             </div>
                             <div className="order-status">
-                              <span
-                                className={getStatusButtonClass(order.status)}
-                              >
-                                {getStatusButtonText(order.status)}
+                              <span className={`status ${getStatusClass(order.order_status_name)}`}>
+                                {order.order_status_name}
                               </span>
                             </div>
                           </div>
 
-                          <div className="order-content">
-                            <div className="product-image">
-                              <img src={order.image} alt={order.name} />
-                            </div>
-
-                            <div className="product-details">
-                              <h4>{order.name}</h4>
-                              <p className="product-category">Sofa</p>
-                              <div className="product-price">
-                                <span>
-                                  Thành tiền: {formatPrice(order.price)}
-                                </span>
+                          {order.items.length > 0 && (
+                            <div className="order-content">
+                              <div className="product-image">
+                                <img 
+                                  src={getFirstImageUrl(order.items[0].product_image)} 
+                                  alt={order.items[0].product_name} 
+                                />
                               </div>
-                              <div className="product-meta">
-                                <div className="meta-item">
-                                  <span>Màu:</span>
-                                  <span
-                                    className="color-dot"
-                                    style={{ backgroundColor: order.color }}
-                                  ></span>
+
+                              <div className="product-details">
+                                <h4>{order.items[0].product_name}</h4>
+                                <p className="product-category">
+                                  {order.items.length > 1 ? `và ${order.items.length - 1} sản phẩm khác` : ''}
+                                </p>
+                                <div className="product-price">
+                                  <span>
+                                    Thành tiền: {formatPrice(calculateOrderTotal(order))}
+                                  </span>
                                 </div>
-                                <div className="meta-item">
-                                  <span>Số lượng: {order.quantity}</span>
-                                </div>
-                              </div>
-                              <div className="product-link">
-                                <a href="#">Xem chi tiết</a>
-                              </div>
-                            </div>
-
-                            <div className="order-info">
-                              <h4>Thông tin:</h4>
-                              <div className="info-item">
-                                <span className="value">
-                                  {order.customerInfo?.name}
-                                </span>
-                              </div>
-                              <div className="info-item">
-                                <span className="value">
-                                  {order.customerInfo?.phone}
-                                </span>
-                              </div>
-                              <div className="info-item">
-                                <span className="value">
-                                  {order.customerInfo?.address}
-                                </span>
-                              </div>
-
-                              {order.status === "cancelled" &&
-                                order.refundDate && (
-                                  <div className="info-item refund-info">
-                                    <span className="label">
-                                      Đơn hàng đã được hủy
-                                    </span>
-                                    <span className="value">
-                                      Ngày cấp xác: {order.refundDate}
-                                    </span>
+                                <div className="product-meta">
+                                  <div className="meta-item">
+                                    <span>Số lượng: {calculateTotalQuantity(order)}</span>
                                   </div>
-                                )}
+                                </div>
+                                <div className="product-link">
+                                  <Link to={`/san-pham/${order.items[0].product_id}`}>
+                                    Xem chi tiết
+                                  </Link>
+                                </div>
+                              </div>
 
-                              <div className="order-actions">
-                                {order.status === "pending" && (
-                                  <>
-                                    <button className="btn-cancel-order">
-                                      Hủy đơn hàng
-                                    </button>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                              <div className="order-info">
+                                <h4>Thông tin:</h4>
+                                <div className="info-item">
+                                  <span className="label">Mã đơn hàng:</span>
+                                  <span className="value">
+                                    #{order.order_id}
+                                  </span>
+                                </div>
+                                <div className="info-item">
+                                  <span className="label">Ngày đặt:</span>
+                                  <span className="value">
+                                    {new Date(order.created_at).toLocaleDateString('vi-VN')}
+                                  </span>
+                                </div>
+                                <div className="info-item">
+                                  <span className="label">Địa chỉ:</span>
+                                  <span className="value">
+                                    {userInfo.address}
+                                  </span>
+                                </div>
 
-                                {order.status === "confirmed" && (
-                                  <>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                                <div className="order-actions">
+                                  {order.order_status_name === "Chờ xác nhận" && (
+                                    <>
+                                      <button className="btn-cancel-order">
+                                        Hủy đơn hàng
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
 
-                                {order.status === "shipping" && (
-                                  <>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                                  {order.order_status_name === "Đã xác nhận" && (
+                                    <>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
 
-                                {order.status === "completed" && (
-                                  <>
-                                    <button className="btn-action-primary">
-                                      Mua lại
-                                    </button>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                                  {order.order_status_name === "Đang giao hàng" && (
+                                    <>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
 
-                                {order.status === "cancelled" && (
-                                  <>
-                                    <button className="btn-action-primary">
-                                      Mua lại
-                                    </button>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                                  {order.order_status_name === "Hoàn thành" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
 
-                                {order.status === "returned" && (
-                                  <>
-                                    <button className="btn-action-primary">
-                                      Mua lại
-                                    </button>
-                                    <button className="btn-view-details">
-                                      Xem chi tiết
-                                    </button>
-                                  </>
-                                )}
+                                  {order.order_status_name === "Đã hủy" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Trả hàng" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       ))}
                     </div>

@@ -280,3 +280,62 @@ export interface CommentResponse {
     commentsPerPage: number;
   };
 }
+
+// Interface cho dữ liệu đơn hàng từ API
+export interface OrderItemAPI {
+  product_id: number;
+  product_name: string;
+  product_image: string;
+  product_price: string;
+  variant_id: number;
+  quantity: number;
+}
+
+export interface OrderAPI {
+  order_id: number;
+  created_at: string;
+  order_status_name: string;
+  items: OrderItemAPI[];
+}
+
+export interface OrdersResponse {
+  user_id: string;
+  order_count: number;
+  orders: OrderAPI[];
+}
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  image: string;
+  date: string;
+  price: number;
+  quantity: number;
+  color: string;
+  size: string;
+  status: string;
+  customerInfo?: {
+    name: string;
+    phone: string;
+    address: string;
+  };
+  orderNumber?: string;
+  refundDate?: string;
+}
+
+export interface UserInfo {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string | string[];
+  full_name?: string;
+  role?: string;
+}
+
+export interface PromoCodeWithTimer extends PromoCode {
+  validFrom: string;
+  isFlashSale: boolean;
+  timeRemaining?: { hours: number; minutes: number; seconds: number };
+  combinations: string;
+}
