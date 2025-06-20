@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useAuth } from "../../contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -23,8 +25,9 @@ interface CartItemProps {
 const Payment: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("card");
+  const [paymentMethod, setPaymentMethod] = useState<string>("transfer");
 
   // Order summary state
 const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
@@ -68,41 +71,51 @@ const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
   };
 
   // Handle form submission
+
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 
-  // 1. Tạo mã đơn hàng ngẫu nhiên
-  const orderId = "#OD" + Math.floor(100000 + Math.random() * 900000); // 6 chữ số
-  
-  // 2. Lấy thời gian hiện tại (theo định dạng tiếng Việt)
+  if (!agreeToTerms) {
+    alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
+    return;
+  }
+
+  const orderId = "SN" + Math.floor(100000 + Math.random() * 900000);
   const orderDate = new Date().toLocaleString("vi-VN");
 
-  // 3. Tạo dữ liệu đơn hàng
   const orderData = {
     orderId,
     orderDate,
+    status: "Đang xử lý",         // hoặc giá trị mặc định
+    statusStep: 1,
     itemCount: cartItems.length,
+    recipientName: formData.fullName,
+    recipientPhone: formData.phone,
+    address: formData.address,
+    subtotal: orderSummary.subtotal,
+    shippingFee: orderSummary.shipping,
+    discount: orderSummary.discount,
     total: orderSummary.total,
-    cartItems,
-    userInfo: formData,
-    paymentMethod,
+    products: cartItems // 👈 sử dụng key này để đồng bộ với DetailOrder
   };
 
   try {
-    // ✅ Lưu đơn hàng vào localStorage để hiển thị bên OrderComplete
     localStorage.setItem("lastOrder", JSON.stringify(orderData));
-
-    // ✅ Xóa giỏ hàng khỏi localStorage
     localStorage.removeItem("cart");
 
-    // ✅ Điều hướng sang trang hoàn tất đơn hàng
-    navigate("/dat-hang-thanh-cong");
+    toast.success("🎉 Thanh toán thành công! Đang chuyển hướng...", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+
+    setTimeout(() => {
+      navigate("/dat-hang-thanh-cong");
+    }, 2000);
   } catch (error) {
     console.error("Lỗi khi xử lý đơn hàng:", error);
-    alert("Có lỗi xảy ra khi xử lý đơn hàng.");
+    toast.error("❌ Có lỗi xảy ra.");
   }
 };
-
   // Apply promo code
 const applyPromoCode = () => {
   if (formData.promoCode.trim() !== "") {
@@ -123,14 +136,11 @@ const applyPromoCode = () => {
       promoCode: "",
     });
   }
+
+  
 };
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     alert("Bạn cần đăng nhập để thanh toán!");
-  //     navigate("/dang-nhap"); // hoặc điều hướng sang trang đăng nhập
-  //   }
-  // }, [isAuthenticated])
+
 
 useEffect(() => {
   const storedCart = localStorage.getItem("cart");
@@ -256,6 +266,17 @@ useEffect(() => {
 
                 <div className="info-left-title-2">
                   <h5>Phương thức thanh toán</h5>
+                      <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        checked={paymentMethod === 'transfer'}
+                        onChange={() => handlePaymentMethodChange('transfer')}
+                      />
+                      <span className="radio-label">Thanh toán khi nhận hàng</span>
+                    </label>
+                  </div>
                   <div className={`payment-option ${paymentMethod === 'card' ? 'active' : ''}`}>
                     <label>
                       <input
@@ -268,19 +289,14 @@ useEffect(() => {
                     </label>
                   </div>
 
-                  <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
-                    <label>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        checked={paymentMethod === 'transfer'}
-                        onChange={() => handlePaymentMethodChange('transfer')}
-                      />
-                      <span className="radio-label">Thanh toán khi nhận hàng</span>
-                    </label>
-                  </div>
-                </div>
 
+                </div>
+                {paymentMethod === 'transfer' && (
+                  <div className="info-left-clause">
+                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
+                  </div>
+                )}
                 {paymentMethod === 'card' && (
                   <>
                     <div className="info-left-form">
@@ -327,18 +343,13 @@ useEffect(() => {
                       </div>
 
                     </div>
-                    <div className="info-left-clause">
-                      <input type="checkbox" id="clause" required />
-                      <span>Tôi đồng ý với <a href="#">điều khoản và điều kiện</a> của SONA SPACE</span>
-                    </div>
+                  <div className="info-left-clause">
+                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
+                  </div>
                   </>
                 )}
-                {paymentMethod === 'transfer' && (
-                  <div className="info-left-clause">
-                    <input type="checkbox" id="clause" required />
-                    <span>Tôi đồng ý với <a href="#">điều khoản và điều kiện</a> của SONA SPACE</span>
-                  </div>
-                )}
+
 
 
               </form>
@@ -389,6 +400,7 @@ useEffect(() => {
       </div>
 
       <Footer />
+      <ToastContainer />
     </>
   );
 };

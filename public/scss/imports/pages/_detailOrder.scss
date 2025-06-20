@@ -1,110 +1,123 @@
 .detail-order-page {
   padding: 60px 0;
-  
+
   .container {
     max-width: 1140px;
     margin: 0 auto;
     padding: 0 15px;
   }
-  
+
   // Order Overview Section
   .order-overview {
     margin-bottom: 30px;
-    
+
     .order-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 30px;
-      
+
       @media (max-width: 768px) {
         flex-direction: column;
         gap: 15px;
       }
-      
+
       .order-id {
         h2 {
-          font-family: 'M-SB', sans-serif;
+          font-family: 'M-SB';
           font-size: 24px;
           color: #333;
           margin-bottom: 5px;
         }
-        
+
         .order-date {
           font-size: 14px;
           color: #666;
         }
       }
-      
+
       .order-actions {
         display: flex;
         gap: 10px;
-        
+
         .btn-order-detail {
           padding: 8px 16px;
           border-radius: 4px;
-          font-family: 'M-M', sans-serif;
+          font-family: 'M-M';
           font-size: 14px;
           background-color: transparent;
           color: #F5A623;
           border: 1px solid #F5A623;
           cursor: pointer;
           transition: all 0.3s ease;
-          
+
           &:hover {
             background-color: rgba(245, 166, 35, 0.1);
           }
         }
       }
     }
-    
+
     .order-status-progress {
       margin-top: 30px;
-      
+
       .status-timeline {
         display: flex;
         align-items: center;
         justify-content: space-between;
         position: relative;
-        
+
         @media (max-width: 768px) {
           flex-direction: column;
           align-items: flex-start;
           gap: 20px;
         }
-        
+
         .status-step {
           display: flex;
           flex-direction: column;
           align-items: center;
           position: relative;
           z-index: 2;
-          
+
           @media (max-width: 768px) {
             flex-direction: row;
             width: 100%;
-            
+
             .status-label {
               margin-left: 15px;
               margin-top: 0;
+              font-family: 'Be-R';
+
+              span {
+                font-size: 12px;
+                color: #999;
+                font-family: 'Be-R';
+              }
             }
           }
-          
+
           &.active {
             .status-icon {
               background-color: #F5A623;
               border-color: #F5A623;
               color: #fff;
             }
-            
+
             .status-label {
               p {
                 color: #F5A623;
-                font-family: 'M-SB', sans-serif;
+                font-family: 'M-SB';
+              }
+
+              span {
+                font-size: 12px;
+                color: #999;
+                font-family: 'Be-R';
               }
             }
           }
-          
+
           .status-icon {
             width: 40px;
             height: 40px;
@@ -117,35 +130,36 @@
             color: #999;
             font-size: 16px;
           }
-          
+
           .status-label {
             margin-top: 10px;
             text-align: center;
-            
+
             @media (max-width: 768px) {
               text-align: left;
             }
-            
+
             p {
               font-size: 14px;
               color: #666;
               margin-bottom: 5px;
             }
-            
+
             span {
               font-size: 12px;
               color: #999;
+              font-family: 'Be-R';
             }
           }
         }
-        
+
         .status-line {
           flex: 1;
           height: 2px;
           background-color: #ddd;
           position: relative;
           z-index: 1;
-          
+
           @media (max-width: 768px) {
             display: none;
           }
@@ -153,59 +167,60 @@
       }
     }
   }
-  
+
   // Delivery Information Section
   .delivery-info {
     background-color: #f8f8f8;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 30px;
-    
+
     h3 {
-      font-family: 'M-SB', sans-serif;
+      font-family: 'M-SB';
       font-size: 18px;
       color: #333;
       margin-bottom: 15px;
     }
-    
+
     .recipient-info {
       display: grid;
       grid-template-columns: 200px 1fr;
       gap: 20px;
-      
+
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
       }
-      
-      .recipient-name, .recipient-address {
+
+      .recipient-name,
+      .recipient-address {
         p {
           font-size: 14px;
           color: #333;
           line-height: 1.5;
           margin-bottom: 5px;
-          
+
           strong {
-            font-family: 'M-SB', sans-serif;
+            font-family: 'M-SB';
           }
         }
       }
     }
   }
-  
+
   // Order Summary Section
   .order-summary {
     margin-bottom: 30px;
-    
+
     .summary-header {
       margin-bottom: 20px;
-      
+
       h3 {
-        font-family: 'M-SB', sans-serif;
+        font-family: 'M-SB';
         font-size: 18px;
         color: #333;
       }
     }
-    
+
     .product-list {
       .product-item {
         display: grid;
@@ -215,16 +230,17 @@
         border: 1px solid #eee;
         border-radius: 8px;
         margin-bottom: 15px;
-        
+        align-items: center;
+
         @media (max-width: 992px) {
           grid-template-columns: 80px 1fr 120px;
         }
-        
+
         @media (max-width: 768px) {
           grid-template-columns: 80px 1fr;
           grid-row-gap: 15px;
         }
-        
+
         .product-image {
           img {
             width: 100%;
@@ -233,65 +249,78 @@
             border-radius: 4px;
           }
         }
-        
-        .product-details {
+
+        .product-detailss {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+
           h4 {
-            font-family: 'M-SB', sans-serif;
+            font-family: 'M-SB';
             font-size: 16px;
             color: #333;
             margin-bottom: 10px;
           }
-          
+
           .product-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            
+
+            .product-color {
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              cursor: pointer;
+            }
+
             span {
               font-size: 14px;
               color: #666;
             }
           }
         }
-        
+
         .product-price {
+
           @media (max-width: 768px) {
             grid-column: 1 / -1;
           }
-          
+
           p {
             font-size: 14px;
             color: #666;
-            
+            margin: 0;
+
             span {
-              font-family: 'M-SB', sans-serif;
+              font-family: 'M-SB';
               color: #F5A623;
             }
           }
         }
-        
+
         .product-actions {
           @media (max-width: 992px) {
             grid-column: 1 / -1;
             justify-self: end;
           }
-          
+
           @media (max-width: 768px) {
             grid-column: 1 / -1;
             justify-self: start;
           }
-          
+
           .btn-product-action {
             padding: 8px 16px;
             border-radius: 4px;
-            font-family: 'M-M', sans-serif;
+            font-family: 'M-M';
             font-size: 13px;
             background-color: transparent;
             color: #F5A623;
             border: 1px solid #F5A623;
             cursor: pointer;
             transition: all 0.3s ease;
-            
+
             &:hover {
               background-color: rgba(245, 166, 35, 0.1);
             }
@@ -300,101 +329,111 @@
       }
     }
   }
-  
+
   // Payment Summary Section
   .payment-summary {
     background-color: #f8f8f8;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 30px;
-    
+
     .summary-row {
       display: flex;
       justify-content: space-between;
       margin-bottom: 15px;
       font-size: 14px;
       color: #666;
-      
+
+      .row1 {
+        font-size: 16px;
+        font-family: 'Be-B';
+      }
+
+      .row2 {
+        font-size: 16px;
+        font-family: 'Be-R';
+      }
+
       &:last-child {
         margin-bottom: 0;
       }
-      
+
       &.discount {
         color: #4CAF50;
       }
-      
+
       &.total {
-        font-family: 'M-SB', sans-serif;
+        font-family: 'M-SB';
         color: #333;
         font-size: 16px;
-        
+
         span:last-child {
           color: #F5A623;
         }
       }
     }
   }
-  
+
   // Action Buttons
   .order-actions-bottom {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
     margin-bottom: 40px;
-    
+
     @media (max-width: 576px) {
       flex-direction: column;
     }
-    
+
     button {
       padding: 10px 20px;
       border-radius: 4px;
-      font-family: 'M-M', sans-serif;
+      font-family: 'M-M';
       font-size: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
-      
+
       &.btn-primary {
         background-color: #F5A623;
         color: #fff;
         border: none;
-        
+
         &:hover {
           background-color: darken(#F5A623, 10%);
         }
       }
-      
+
       &.btn-outline {
         background-color: transparent;
         color: #F5A623;
         border: 1px solid #F5A623;
-        
+
         &:hover {
           background-color: rgba(245, 166, 35, 0.1);
         }
       }
     }
   }
-  
+
   // Design Services Section
   .design-services {
     margin-top: 80px;
     padding-top: 40px;
     border-top: 1px solid #eee;
-    
+
     .services-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 30px;
-      
+
       @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
       }
-      
+
       @media (max-width: 576px) {
         grid-template-columns: 1fr;
       }
-      
+
       .service-item {
         img {
           width: 100%;
@@ -403,14 +442,14 @@
           border-radius: 8px;
           margin-bottom: 15px;
         }
-        
+
         h3 {
-          font-family: 'M-SB', sans-serif;
+          font-family: 'M-SB';
           font-size: 18px;
           color: #333;
           margin-bottom: 8px;
         }
-        
+
         p {
           font-size: 14px;
           color: #666;
