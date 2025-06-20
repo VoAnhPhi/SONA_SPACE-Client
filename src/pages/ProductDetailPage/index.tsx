@@ -198,7 +198,7 @@ const ProductDetailPage: React.FC = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    toast.success("✅ Đã thêm vào giỏ hàng!", {
+    toast.success("Đã thêm vào giỏ hàng!", {
       position: "top-right",
       autoClose: 2000,
     });
