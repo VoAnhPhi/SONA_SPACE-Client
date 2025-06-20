@@ -210,10 +210,36 @@
 
                             ul {
                                 display: block;
+                                height: 50dvh;
+                                overflow-y: scroll;
+                                direction: rtl; 
+                                padding-left: 20px;
+                                // Scrollbar custom
+                                &::-webkit-scrollbar {
+                                    width: 5px; 
+                                }
+
+                                &::-webkit-scrollbar-track {
+                                    background: transparent;
+                                }
+
+                                &::-webkit-scrollbar-thumb {
+                                    background-color: #7D7D7D; 
+                                    border-radius: 4px;
+                                }
+
+                                &::-webkit-scrollbar-button {
+                                    display: none; 
+                                }
+
+                                >* {
+                                    direction: ltr; 
+                                    text-align: left;
+                                }
 
                                 li {
                                     margin: 0;
-                                    padding: 8px 0;
+                                    padding: 12px 0;
 
                                     a {
                                         color: #333;
@@ -222,7 +248,7 @@
                                         display: block;
                                         @include text(16px, BE-R, auto, #333, null);
                                         position: relative;
-                                        
+
                                         &:after {
                                             content: '';
                                             position: absolute;
@@ -237,9 +263,10 @@
                                         &:hover {
                                             color: $yellow-cl;
                                             width: 100%;
+
                                             &:after {
                                                 display: block;
-                                                width: 50%  ;
+                                                width: 50%;
                                             }
                                         }
                                     }
@@ -250,10 +277,15 @@
                         .sub-menu-products {
                             flex: 1;
 
+                            .title {
+                                padding-bottom: 20px;
+                                @include text(20px, M-SB, auto, $black-cl, null);
+                            }
+
                             .product-row {
                                 display: flex;
                                 gap: 15px;
-                                margin-bottom: 20px;
+                                margin-bottom: 50px;
 
                                 &:last-child {
                                     margin-bottom: 0;
@@ -462,7 +494,7 @@
                                             text-align: initial;
                                             transition: all 0.3s ease;
                                             position: relative;
-                                            
+
                                             &:after {
                                                 content: '';
                                                 position: absolute;
@@ -479,7 +511,7 @@
                                             .product-title {
                                                 color: $yellow-cl;
                                                 transition: all 0.3s ease;
-                                                
+
                                                 &:after {
                                                     width: 100%;
                                                 }
