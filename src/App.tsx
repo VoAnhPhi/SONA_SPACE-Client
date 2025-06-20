@@ -50,6 +50,9 @@ function App() {
           <Route path="/dang-nhap" element={<SignIn />} />
           <Route path="/quen-mat-khau" element={<ForgotPassword />} />
           <Route path="/tai-khoan" element={<User />} />
+          <Route path="/tai-khoan/thong-tin" element={<User />} />
+          <Route path="/tai-khoan/ma-giam-gia" element={<User />} />
+          <Route path="/tai-khoan/don-hang" element={<User />} />
           <Route path="/chi-tiet-don-hang/:id" element={<DetailOrder />} />
           <Route path="/dieu-khoan-su-dung" element={<Privacy />} />
           <Route path="/chinh-sach-bao-mat" element={<Policy />} />
