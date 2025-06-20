@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Links, useNavigate } from "react-router-dom";
+import { Link, Links, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
@@ -77,6 +77,10 @@ const CountdownTimer: React.FC<{
 };
 
 const User: React.FC = () => {
+  // Use location to get current path
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   // State for active tab
   const [activeTab, setActiveTab] = useState<string>("orders");
   // State for active order filter
@@ -749,6 +753,41 @@ const User: React.FC = () => {
     }
   };
 
+  // Update activeTab based on URL path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === "/tai-khoan" || path === "/tai-khoan/") {
+      setActiveTab("orders");
+    } else if (path === "/tai-khoan/thong-tin") {
+      setActiveTab("info");
+    } else if (path === "/tai-khoan/ma-giam-gia") {
+      setActiveTab("promo");
+    } else if (path === "/tai-khoan/don-hang") {
+      setActiveTab("wishlist");
+    }
+  }, [location.pathname]);
+
+  // Handle tab navigation
+  const handleTabNavigation = (tab: string) => {
+    setActiveTab(tab);
+    switch (tab) {
+      case "orders":
+        navigate("/tai-khoan");
+        break;
+      case "info":
+        navigate("/tai-khoan/thong-tin");
+        break;
+      case "promo":
+        navigate("/tai-khoan/ma-giam-gia");
+        break;
+      case "wishlist":
+        navigate("/tai-khoan/don-hang");
+        break;
+      default:
+        navigate("/tai-khoan");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -763,7 +802,7 @@ const User: React.FC = () => {
               </div>
               <ul className="sidebar-menu">
                 <li className={activeTab === "orders" ? "active" : ""}>
-                  <button onClick={() => setActiveTab("orders")}>
+                  <button onClick={() => handleTabNavigation("orders")}>
                     <i className="icon-box">
                       <img src="/images/icons/Puzzle.svg" alt="icon-box" />
                     </i>
@@ -771,7 +810,7 @@ const User: React.FC = () => {
                   </button>
                 </li>
                 <li className={activeTab === "info" ? "active" : ""}>
-                  <button onClick={() => setActiveTab("info")}>
+                  <button onClick={() => handleTabNavigation("info")}>
                     <i className="icon-user">
                       <img src="/images/icons/User_02.svg" alt="icon-box" />
                     </i>
@@ -779,7 +818,7 @@ const User: React.FC = () => {
                   </button>
                 </li>
                 <li className={activeTab === "promo" ? "active" : ""}>
-                  <button onClick={() => setActiveTab("promo")}>
+                  <button onClick={() => handleTabNavigation("promo")}>
                     <i className="icon-gift">
                       <img
                         src="/images/icons/Ticket_Voucher.svg"
@@ -790,7 +829,7 @@ const User: React.FC = () => {
                   </button>
                 </li>
                 <li className={activeTab === "wishlist" ? "active" : ""}>
-                  <button onClick={() => setActiveTab("wishlist")}>
+                  <button onClick={() => handleTabNavigation("wishlist")}>
                     <i className="icon-heart">
                       <img
                         src="/images/icons/Shopping_Cart_02.svg"
