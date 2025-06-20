@@ -834,96 +834,136 @@ const User: React.FC = () => {
                       <p>{error}</p>
                     </div>
                   ) : apiOrders.length > 0 ? (
-                    <div className="order-list">
-                      {apiOrders.slice(0, 3).map((order, index) => (
-                        <div className="order-item" key={index}>
-                          <div className="order-header">
-                            <div className="aside">
-                              <div className="order-info">
-                                <span className="label">Đơn hàng: </span>
-                                <span className="value">#{order.order_id}</span>
+                    <div className="order-list-container">
+                      {getFilteredOrders().flatMap((order, orderIndex) => 
+                        order.items.map((item, itemIndex) => (
+                          <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
+                            <div className="order-header">
+                              <div className="order-number">
+                                <span>Đơn hàng: {order.order_id}</span>
+                                <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
                               </div>
-                              <div className="order-info">
-                                <span className="label">Ngày đặt: </span>
-                                <span className="value">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                              <div className="order-status">
+                                <span className={`status ${getStatusClass(order.order_status_name)}`}>
+                                  {order.order_status_name}
+                                </span>
                               </div>
                             </div>
-                            <div className="order-status">
-                              <span
-                                className={`status ${getStatusClass(order.order_status_name)}`}
-                              >
-                                {order.order_status_name}
-                              </span>
-                            </div>
-                          </div>
 
-                          {order.items.length > 0 && (
                             <div className="order-content">
                               <div className="product-image">
                                 <img 
-                                  src={getFirstImageUrl(order.items[0].product_image)} 
-                                  alt={order.items[0].product_name}
+                                  src={getFirstImageUrl(item.product_image)} 
+                                  alt={item.product_name} 
                                 />
                               </div>
 
                               <div className="product-details">
-                                <h4>{order.items[0].product_name}</h4>
-                                <span className="product-price">
-                                  <span className="label">Thành tiền: </span>
-                                  {formatPrice(calculateOrderTotal(order))}
-                                </span>
+                                <h4>{item.product_name}</h4>
+                                <div className="product-price">
+                                  <span>
+                                    Thành tiền: {formatPrice(parseFloat(item.product_price) * item.quantity)}
+                                  </span>
+                                </div>
                                 <div className="product-meta">
                                   <div className="meta-item">
-                                    <span className="label">Số lượng:</span>
-                                    <span className="value">
-                                      {calculateTotalQuantity(order)}
-                                    </span>
+                                    <span>Số lượng: {item.quantity}</span>
                                   </div>
                                 </div>
                                 <div className="product-link">
-                                  <Link to={`/san-pham/${order.items[0].product_id}`}>
+                                  <Link to={`/san-pham/${item.product_id}`}>
                                     Xem chi tiết
                                   </Link>
                                 </div>
                               </div>
 
-                              <div className="order-pricing">
-                                <h4>Thông tin</h4>
-                                <div className="price-info">
-                                  <span className="label">Tên người nhận: </span>
-                                  <span className="value">{userInfo.name}</span>
-                                </div>
-                                <div className="delivery-info">
-                                  <span className="label">Số điện thoại: </span>
-                                  <span className="value">{userInfo.phone}</span>
-                                </div>
-                                <div className="total-info">
-                                  <span className="label">Địa chỉ: </span>
+                              <div className="order-info">
+                                <h4>Thông tin:</h4>
+                                <div className="info-item">
+                                  <span className="label">Mã đơn hàng:</span>
                                   <span className="value">
-                                    {typeof userInfo.address === "string"
-                                      ? userInfo.address
-                                      : userInfo.address &&
-                                        userInfo.address.length > 0
-                                      ? userInfo.address[0]
-                                      : "Chưa cập nhật địa chỉ"}
+                                    #{order.order_id}
                                   </span>
                                 </div>
-                              </div>
-                              <div className="order-actions">
-                                <button className="btn-outline">
-                                  {order.order_status_name === "Hoàn thành" || order.order_status_name === "Đã hủy" ? "Mua lại" : "Xem trạng thái"}
-                                </button>
-                                <Link
-                                  to={`/chi-tiet-don-hang/${order.order_id}`}
-                                  className="btn-primary"
-                                >
-                                  Xem chi tiết
-                                </Link>
+                                <div className="info-item">
+                                  <span className="label">Ngày đặt:</span>
+                                  <span className="value">
+                                    {new Date(order.created_at).toLocaleDateString('vi-VN')}
+                                  </span>
+                                </div>
+                                <div className="info-item">
+                                  <span className="label">Trạng thái:</span>
+                                  <span className="value">
+                                    {order.order_status_name}
+                                  </span>
+                                </div>
+
+                                <div className="order-actions">
+                                  {order.order_status_name === "Chờ xác nhận" && (
+                                    <>
+                                      <button className="btn-cancel-order">
+                                        Hủy đơn hàng
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Đã xác nhận" && (
+                                    <>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Đang giao hàng" && (
+                                    <>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Hoàn thành" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Đã hủy" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {order.order_status_name === "Trả hàng" && (
+                                    <>
+                                      <button className="btn-action-primary">
+                                        Mua lại
+                                      </button>
+                                      <button className="btn-view-details">
+                                        Xem chi tiết
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
+                          </div>
+                        ))
+                      )}
                     </div>
                   ) : (
                     <div className="empty-state">
@@ -1430,46 +1470,43 @@ const User: React.FC = () => {
                     </div>
                   ) : getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
-                      {getFilteredOrders().map((order, index) => (
-                        <div className="order-item" key={index}>
-                          <div className="order-header">
-                            <div className="order-number">
-                              <span>Đơn hàng: {order.order_id}</span>
-                              <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                      {getFilteredOrders().flatMap((order, orderIndex) => 
+                        order.items.map((item, itemIndex) => (
+                          <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
+                            <div className="order-header">
+                              <div className="order-number">
+                                <span>Đơn hàng: {order.order_id}</span>
+                                <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                              </div>
+                              <div className="order-status">
+                                <span className={`status ${getStatusClass(order.order_status_name)}`}>
+                                  {order.order_status_name}
+                                </span>
+                              </div>
                             </div>
-                            <div className="order-status">
-                              <span className={`status ${getStatusClass(order.order_status_name)}`}>
-                                {order.order_status_name}
-                              </span>
-                            </div>
-                          </div>
 
-                          {order.items.length > 0 && (
                             <div className="order-content">
                               <div className="product-image">
                                 <img 
-                                  src={getFirstImageUrl(order.items[0].product_image)} 
-                                  alt={order.items[0].product_name} 
+                                  src={getFirstImageUrl(item.product_image)} 
+                                  alt={item.product_name} 
                                 />
                               </div>
 
                               <div className="product-details">
-                                <h4>{order.items[0].product_name}</h4>
-                                <p className="product-category">
-                                  {order.items.length > 1 ? `và ${order.items.length - 1} sản phẩm khác` : ''}
-                                </p>
+                                <h4>{item.product_name}</h4>
                                 <div className="product-price">
                                   <span>
-                                    Thành tiền: {formatPrice(calculateOrderTotal(order))}
+                                    Thành tiền: {formatPrice(parseFloat(item.product_price) * item.quantity)}
                                   </span>
                                 </div>
                                 <div className="product-meta">
                                   <div className="meta-item">
-                                    <span>Số lượng: {calculateTotalQuantity(order)}</span>
+                                    <span>Số lượng: {item.quantity}</span>
                                   </div>
                                 </div>
                                 <div className="product-link">
-                                  <Link to={`/san-pham/${order.items[0].product_id}`}>
+                                  <Link to={`/san-pham/${item.product_id}`}>
                                     Xem chi tiết
                                   </Link>
                                 </div>
@@ -1490,9 +1527,9 @@ const User: React.FC = () => {
                                   </span>
                                 </div>
                                 <div className="info-item">
-                                  <span className="label">Địa chỉ:</span>
+                                  <span className="label">Trạng thái:</span>
                                   <span className="value">
-                                    {userInfo.address}
+                                    {order.order_status_name}
                                   </span>
                                 </div>
 
@@ -1559,9 +1596,9 @@ const User: React.FC = () => {
                                 </div>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
+                          </div>
+                        ))
+                      )}
                     </div>
                   ) : (
                     <div className="empty-state">

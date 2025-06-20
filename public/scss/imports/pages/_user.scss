@@ -96,6 +96,270 @@
 
     // Orders Section
     .orders-section {
+      .order-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .order-item {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+        /* From https://css.glass */
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        .order-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px;
+          border-bottom: 1px solid #eee;
+
+          .order-number {
+            @include text(14px, M-R, 16px, $dark-cl, null);
+
+            span {
+              margin-right: 15px;
+              @include text(14px, Be-M, 16px, $dark-cl, null);
+            }
+          }
+
+          .order-status {
+            span.status {
+              display: inline-block;
+              padding: 6px 15px;
+              border-radius: 20px;
+              @include text(13px, Be-M, 15px, #fff, null);
+              text-transform: capitalize;
+              box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
+
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+              }
+
+              &.pending,
+              &.confirmed,
+              &.shipping,
+              &.completed,
+              &.cancelled,
+              &.returned {
+                padding-bottom: 10px;
+                cursor: default;
+              }
+
+              &.pending {
+                background-color: #f8c146;
+                color: #fff;
+              }
+
+              &.confirmed {
+                background-color: #4a90e2;
+                color: #fff;
+              }
+
+              &.shipping {
+                background-color: #50b83c;
+                color: #fff;
+              }
+
+              &.completed {
+                background-color: #50b83c;
+                color: #fff;
+              }
+
+              &.cancelled {
+                background-color: #de4437;
+                color: #fff;
+              }
+
+              &.returned {
+                background-color: #de4437;
+                color: #fff;
+              }
+            }
+          }
+        }
+
+        .order-content {
+          display: grid;
+          grid-template-columns: 0.7fr 1fr 1fr;
+          gap: 20px;
+          column-gap: 20px;
+          padding: 20px;
+
+          @media (max-width: 992px) {
+            grid-template-columns: 150px 1fr;
+          }
+
+          @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            gap: 15px;
+          }
+
+          .product-image {
+            @include mid(true);
+
+            img {
+              width: 100%;
+              height: 120px;
+              object-fit: contain;
+              border-radius: 4px;
+            }
+          }
+
+          .product-details {
+            margin-top: unset;
+            padding: 15px;
+
+            h4 {
+              @include text(16px, Be-M, 19px, $dark-cl, null);
+              margin-bottom: 10px;
+            }
+
+            .product-category {
+              @include text(14px, Be-R, 16px, #666, null);
+              margin-bottom: 10px;
+            }
+
+            .product-price {
+              @include text(15px, Be-M, 18px, $dark-cl, null);
+              margin-bottom: 10px;
+            }
+
+            .product-meta {
+              display: flex;
+              gap: 15px;
+              margin-bottom: 10px;
+
+              .meta-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                @include text(14px, Be-R, 16px, #666, null);
+              }
+            }
+
+            .product-link {
+              margin-top: 15px;
+
+              a {
+                @include text(14px, Be-M, 16px, $yellow-cl, null);
+                text-decoration: none;
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+
+          .order-info {
+            padding: 15px;
+            border-radius: 8px;
+            height: fit-content;
+
+            @media (max-width: 992px) {
+              grid-column: span 2;
+            }
+
+            @media (max-width: 768px) {
+              grid-column: 1;
+            }
+
+            h4 {
+              @include text(16px, Be-M, 19px, $dark-cl, null);
+              margin-bottom: 10px;
+            }
+
+            .info-item {
+              margin-bottom: 8px;
+              display: flex;
+              align-items: center;
+
+              .label {
+                @include text(14px, Be-M, 16px, #666, null);
+                margin-right: 5px;
+              }
+
+              .value {
+                @include text(14px, Be-R, 16px, $dark-cl, null);
+                display: block;
+              }
+            }
+
+            .order-actions {
+              display: flex;
+              gap: 10px;
+              margin-top: 20px;
+              flex-wrap: wrap;
+              justify-content: right;
+
+              button {
+                padding: 8px 15px;
+                border-radius: 4px;
+                @include text(14px, Be-M, 16px, null, null);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+                width: 185px;
+
+                &.btn-action-primary {
+                  background-color: $yellow-cl;
+                  color: #fff;
+                  border: none;
+
+                  &:hover {
+                    background-color: darken($yellow-cl, 5%);
+                  }
+                }
+
+                &.btn-cancel-order {
+                  background-color: #fff;
+                  color: #de4437;
+                  border: 1px solid #de4437;
+
+                  &:hover {
+                    background-color: #fff5f5;
+                  }
+                }
+
+                &.btn-view-details {
+                  background-color: #fff;
+                  color: $dark-cl;
+                  border: none;
+
+                  &:hover {
+                    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
+                    -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
+                    -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
+                    background-color: #fff;
+                  }
+                }
+
+                &.btn-review {
+                  background-color: #fff;
+                  color: $dark-cl;
+                  border: 1px solid #ddd;
+
+                  &:hover {
+                    background-color: #f5f5f5;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
       .order-list {
         .order-item {
           background-color: #fff;
@@ -1272,7 +1536,6 @@
           .order-number {
             @include text(14px, M-R, 16px, $dark-cl, null);
 
-            // display: none;
             span {
               margin-right: 15px;
               @include text(14px, Be-M, 16px, $dark-cl, null);
@@ -1357,11 +1620,10 @@
             @include mid(true);
 
             img {
-              width: 80%;
-              height: auto;
+              width: 100%;
+              height: 120px;
               object-fit: contain;
               border-radius: 4px;
-              max-height: 150px;
             }
           }
 
@@ -1371,7 +1633,7 @@
 
             h4 {
               @include text(16px, Be-M, 19px, $dark-cl, null);
-              margin-bottom: 5px;
+              margin-bottom: 10px;
             }
 
             .product-category {
@@ -1394,14 +1656,6 @@
                 align-items: center;
                 gap: 5px;
                 @include text(14px, Be-R, 16px, #666, null);
-
-                .color-dot {
-                  display: inline-block;
-                  width: 16px;
-                  height: 16px;
-                  border-radius: 50%;
-                  border: 1px solid #ddd;
-                }
               }
             }
 
@@ -1450,18 +1704,6 @@
               .value {
                 @include text(14px, Be-R, 16px, $dark-cl, null);
                 display: block;
-              }
-
-              &.refund-info {
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px dashed #eee;
-
-                .label {
-                  display: block;
-                  margin-bottom: 5px;
-                  color: #de4437;
-                }
               }
             }
 
