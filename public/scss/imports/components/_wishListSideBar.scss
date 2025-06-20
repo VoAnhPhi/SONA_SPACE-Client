@@ -79,6 +79,7 @@
     padding: 40px 20px;
     height: 100%;
     align-content: center;
+
     &-icon {
         margin-bottom: 20px;
 
@@ -91,6 +92,8 @@
 
     p {
         @include text(16px, M-R, auto, #333, null);
+        white-space: nowrap;
+        padding-bottom: 30px;
     }
 
     a {
