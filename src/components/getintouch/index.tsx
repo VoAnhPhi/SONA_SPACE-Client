@@ -1,77 +1,104 @@
 import { useState } from "react";
 
 const accordionData = [
-    {
-        label: "Chat with our Interior Designers",
-        content: "Our design experts are available to help bring your ideas to life. Our design experts are available to help bring your ideas to life. Our design experts are available to help bring your ideas to life. Our design experts are available to help bring your ideas to life."
-    },
-    {
-        label: "Elevate your space with Vietnamese furniture design",
-        content: "Discover unique styles crafted by local artisans for your home."
-    },
-    {
-        label: "A designer furniture store like no other",
-        content: "We combine aesthetic with function to deliver timeless pieces."
-    },
-    {
-        label: "Create your signature look with customization options",
-        content: "Choose your material, color, and style for a personalized touch."
-    }
+  {
+    label: "Trò chuyện với Nhà Thiết Kế Nội Thất",
+    content: `
+            <p>Các chuyên gia thiết kế của chúng tôi luôn sẵn sàng giúp bạn hiện thực hóa ý tưởng của mình. Dù là phong cách nào, chúng tôi đều hỗ trợ tận tình để bạn có được không gian như mong muốn.</p>
+          `,
+  },
+  {
+    label: "Nâng tầm không gian với thiết kế nội thất Việt Nam",
+    content: `
+            <p>Khám phá phong cách độc đáo từ các nghệ nhân địa phương cho ngôi nhà của bạn.</p>
+          `,
+  },
+  {
+    label: "Cửa hàng nội thất thiết kế độc đáo",
+    content: `
+            <p>Chúng tôi kết hợp thẩm mỹ và công năng để tạo nên những sản phẩm vượt thời gian.</p>
+            <p><strong>Giờ mở cửa:</strong> Thứ 2 - Chủ nhật, 9h00 - 20h00</p>
+          `,
+  },
+  {
+    label: "Tạo phong cách riêng với tùy chọn cá nhân hóa",
+    content: `
+            <p>Chọn chất liệu, màu sắc và kiểu dáng để thể hiện dấu ấn cá nhân của bạn.</p>
+          `,
+  },
 ];
 
 const GetInTouch = () => {
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-    const handleToggle = (index: number) => {
-        setOpenIndex(prev => (prev === index ? null : index));
-    };
+  const handleToggle = (index: number) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
 
-    return (
-        <section className="get-in-touch">
-            <div className="container">
-                <h3 className="get-in-touch__title">Get in touch</h3>
-                <div className="get-in-touch__box">
-                    <div className="get-in-touch__intro">
-                        <p className="get-in-touch__description">
-                            Looking for Vietnamese Design Furniture? Our dedicated customer services team is ready to answer any enquiries you may have. Whether it's about our services, products, or something else – we're here to help.
-                        </p>
-                    </div>
+  return (
+    <section className="get-in-touch">
+      <div className="container">
+        <h3 className="get-in-touch__title">Liên hệ với chúng tôi</h3>
+        <div className="get-in-touch__box">
+          <div className="get-in-touch__intro">
+            <p className="get-in-touch__description">
+              Bạn đang tìm kiếm nội thất thiết kế mang dấu ấn Việt? Đội ngũ chăm
+              sóc khách hàng của chúng tôi luôn sẵn sàng giải đáp mọi thắc mắc –
+              từ sản phẩm, dịch vụ đến những yêu cầu đặc biệt khác. Đừng ngần
+              ngại liên hệ với chúng tôi.
+            </p>
+          </div>
 
-                    <div className="get-in-touch__options">
-                        {accordionData.map((item, index) => (
-                            <div key={index} className={`get-in-touch__option ${openIndex === index ? "active" : ""}`} onClick={() => handleToggle(index)}>
-                                <div className="get-in-touch__header">
-                                    <span className="get-in-touch__label">{item.label}</span>
-                                    <i className={`get-in-touch__icon ${openIndex === index ? 'rotate' : ''}`}>
-                                        <svg
-                                            width="15"
-                                            height="8"
-                                            viewBox="0 0 15 8"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M1 1L8 8L15 1"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </i>
-                                </div>
-                                <div className={`get-in-touch__content-wrapper ${openIndex === index ? "expanded" : "collapsed"}`}>
-                                    <div className="get-in-touch__content">
-                                        <p>{item.content}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+          <div className="get-in-touch__options">
+            {accordionData.map((item, index) => (
+              <div
+                key={index}
+                className={`get-in-touch__option ${
+                  openIndex === index ? "active" : ""
+                }`}
+                onClick={() => handleToggle(index)}
+              >
+                <div className="get-in-touch__header">
+                  <span className="get-in-touch__label">{item.label}</span>
+                  <i
+                    className={`get-in-touch__icon ${
+                      openIndex === index ? "rotate" : ""
+                    }`}
+                  >
+                    <svg
+                      width="15"
+                      height="8"
+                      viewBox="0 0 15 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1L8 8L15 1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </i>
                 </div>
-            </div>
-        </section>
-    );
+                <div
+                  className={`get-in-touch__content-wrapper ${
+                    openIndex === index ? "expanded" : "collapsed"
+                  }`}
+                >
+                  <div
+                    className="get-in-touch__content"
+                    dangerouslySetInnerHTML={{ __html: item.content }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default GetInTouch;
