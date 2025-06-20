@@ -20,7 +20,7 @@ const Header = () => {
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   // State để quản lý hiển thị mini cart trên mobile
   const [isMiniCartOpen, setIsMiniCartOpen] = useState<boolean>(false);
-  
+
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
   const miniCartRef = useRef<any>(null);
 
@@ -94,31 +94,31 @@ const Header = () => {
   // Tạo nhóm danh mục theo hàng (5 danh mục mỗi hàng)
   const getCategoryRows = () => {
     if (!categories.length) return [];
-    
+
     // Sắp xếp danh mục theo priority (ưu tiên)
-    const sortedCategories = [...categories].sort((a, b) => 
-      (a.category_priority || 999) - (b.category_priority || 999)
+    const sortedCategories = [...categories].sort(
+      (a, b) => (a.category_priority || 999) - (b.category_priority || 999)
     );
-    
+
     // Chia thành các hàng, mỗi hàng tối đa 5 danh mục
     const rows = [];
     for (let i = 0; i < sortedCategories.length; i += 5) {
       rows.push(sortedCategories.slice(i, i + 5));
     }
-    
+
     return rows;
   };
 
   // Tạo nhóm phòng theo hàng (5 phòng mỗi hàng)
   const getRoomRows = () => {
     if (!rooms.length) return [];
-    
+
     // Chia thành các hàng, mỗi hàng tối đa 5 phòng
     const rows = [];
     for (let i = 0; i < rooms.length; i += 5) {
       rows.push(rooms.slice(i, i + 5));
     }
-    
+
     return rows;
   };
 
@@ -131,17 +131,20 @@ const Header = () => {
   const handleMiniCartClick = (e: React.MouseEvent) => {
     // Ngăn chặn chuyển hướng khi nhấp vào button
     e.preventDefault();
-    
+
     // Kiểm tra xem có phải là mobile không (dựa theo kích thước màn hình)
     if (window.innerWidth < 768) {
       // Ngăn chặn sự kiện lan truyền để không mở link khi click vào button
       e.stopPropagation();
-      
+
       // Toggle mini cart
       setIsMiniCartOpen(!isMiniCartOpen);
-      
+
       // Nếu có ref đến component MiniCart
-      if (miniCartRef.current && typeof miniCartRef.current.toggleMiniCart === 'function') {
+      if (
+        miniCartRef.current &&
+        typeof miniCartRef.current.toggleMiniCart === "function"
+      ) {
         miniCartRef.current.toggleMiniCart();
       }
     }
@@ -187,18 +190,28 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               {loadingCategories ? (
-                                <li><span>Đang tải danh mục...</span></li>
+                                <li>
+                                  <span>Đang tải danh mục...</span>
+                                </li>
                               ) : (
                                 categories
-                                  .sort((a, b) => (a.category_priority || 999) - (b.category_priority || 999))
+                                  .sort(
+                                    (a, b) =>
+                                      (a.category_priority || 999) -
+                                      (b.category_priority || 999)
+                                  )
                                   .slice(0, 10)
                                   .map((category) => (
-                                    <li key={`product-sidebar-${category.category_id}`}>
+                                    <li
+                                      key={`product-sidebar-${category.category_id}`}
+                                    >
                                       <a
                                         href={`/san-pham/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleNavClick(`/san-pham/${category.slug}`);
+                                          handleNavClick(
+                                            `/san-pham/${category.slug}`
+                                          );
                                         }}
                                       >
                                         {category.category_name}
@@ -209,29 +222,42 @@ const Header = () => {
                             </ul>
                           </div>
                           <div className="sub-menu-products">
+                            <h4 className="title">Sản phẩm nội thất HOT</h4>
                             {loadingCategories ? (
-                              <div className="loading-categories">Đang tải danh mục...</div>
+                              <div className="loading-categories">
+                                Đang tải danh mục...
+                              </div>
                             ) : (
                               categoryRows.map((row, rowIndex) => (
-                                <div className="product-row" key={`row-${rowIndex}`}>
+                                <div
+                                  className="product-row"
+                                  key={`row-${rowIndex}`}
+                                >
                                   {row.map((category) => (
-                                    <div className="product-item" key={`cat-${category.category_id}`}>
-                                      <a 
+                                    <div
+                                      className="product-item"
+                                      key={`cat-${category.category_id}`}
+                                    >
+                                      <a
                                         href={`/san-pham/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleNavClick(`/san-pham/${category.slug}`);
+                                          handleNavClick(
+                                            `/san-pham/${category.slug}`
+                                          );
                                         }}
                                       >
-                                        <div 
-                                          className="product-image" 
-                                          style={{ 
+                                        <div
+                                          className="product-image"
+                                          style={{
                                             backgroundImage: `url(${category.category_image})`,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center'
+                                            backgroundSize: "cover",
+                                            backgroundPosition: "center",
                                           }}
                                         ></div>
-                                        <div className="product-title">{category.category_name}</div>
+                                        <div className="product-title">
+                                          {category.category_name}
+                                        </div>
                                       </a>
                                     </div>
                                   ))}
@@ -258,50 +284,65 @@ const Header = () => {
                           <div className="sub-menu-column">
                             <ul>
                               {loadingRooms ? (
-                                <li><span>Đang tải không gian...</span></li>
+                                <li>
+                                  <span>Đang tải không gian...</span>
+                                </li>
                               ) : (
-                                rooms
-                                  .slice(0, 10)
-                                  .map((room) => (
-                                    <li key={`space-sidebar-${room.room_id}`}>
-                                      <a
-                                        href={`/khong-gian/${room.slug}`}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleNavClick(`/khong-gian/${room.slug}`);
-                                        }}
-                                      >
-                                        {room.room_name}
-                                      </a>
-                                    </li>
-                                  ))
+                                rooms.slice(0, 10).map((room) => (
+                                  <li key={`space-sidebar-${room.room_id}`}>
+                                    <a
+                                      href={`/khong-gian/${room.slug}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNavClick(
+                                          `/khong-gian/${room.slug}`
+                                        );
+                                      }}
+                                    >
+                                      {room.room_name}
+                                    </a>
+                                  </li>
+                                ))
                               )}
                             </ul>
                           </div>
                           <div className="sub-menu-products">
+                            <h4 className="title">Không gian nội thất</h4>
                             {loadingRooms ? (
-                              <div className="loading-categories">Đang tải không gian...</div>
+                              <div className="loading-categories">
+                                Đang tải không gian...
+                              </div>
                             ) : (
                               roomRows.map((row, rowIndex) => (
-                                <div className="product-row" key={`space-row-${rowIndex}`}>
+                                <div
+                                  className="product-row"
+                                  key={`space-row-${rowIndex}`}
+                                >
                                   {row.map((room) => (
-                                    <div className="product-item" key={`space-room-${room.room_id}`}>
-                                      <a 
+                                    <div
+                                      className="product-item"
+                                      key={`space-room-${room.room_id}`}
+                                    >
+                                      <a
                                         href={`/khong-gian/${room.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleNavClick(`/khong-gian/${room.slug}`);
+                                          handleNavClick(
+                                            `/khong-gian/${room.slug}`
+                                          );
                                         }}
                                       >
-                                        <div 
-                                          className="product-image" 
-                                          style={{ 
+                                        <div
+                                          className="product-image"
+                                          style={{
                                             backgroundImage: `url(${room.room_image})`,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center'
+                                            backgroundSize: "cover",
+                                            backgroundPosition: "center",
                                           }}
                                         ></div>
-                                        <div className="product-title">{room.room_name}</div>
+                                        <div className="product-title">
+                                          {room.room_name}
+                                        </div>
                                       </a>
                                     </div>
                                   ))}
@@ -424,60 +465,84 @@ const Header = () => {
                           {/* Hàng đầu tiên hiển thị categories */}
                           <h3>Danh mục sản phẩm</h3>
                           {loadingCategories ? (
-                            <div className="loading-categories">Đang tải danh mục...</div>
+                            <div className="loading-categories">
+                              Đang tải danh mục...
+                            </div>
                           ) : (
                             categoryRows.slice(0, 1).map((row, rowIndex) => (
-                              <div className="product-row" key={`search-cat-row-${rowIndex}`}>
+                              <div
+                                className="product-row"
+                                key={`search-cat-row-${rowIndex}`}
+                              >
                                 {row.map((category) => (
-                                  <div className="product-item" key={`search-cat-${category.category_id}`}>
-                                    <a 
+                                  <div
+                                    className="product-item"
+                                    key={`search-cat-${category.category_id}`}
+                                  >
+                                    <a
                                       href={`/san-pham/${category.slug}`}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleNavClick(`/san-pham/${category.slug}`);
+                                        handleNavClick(
+                                          `/san-pham/${category.slug}`
+                                        );
                                       }}
                                     >
-                                      <div 
-                                        className="product-image" 
-                                        style={{ 
+                                      <div
+                                        className="product-image"
+                                        style={{
                                           backgroundImage: `url(${category.category_image})`,
-                                          backgroundSize: 'cover',
-                                          backgroundPosition: 'center'
+                                          backgroundSize: "cover",
+                                          backgroundPosition: "center",
                                         }}
                                       ></div>
-                                      <div className="product-title">{category.category_name}</div>
+                                      <div className="product-title">
+                                        {category.category_name}
+                                      </div>
                                     </a>
                                   </div>
                                 ))}
                               </div>
                             ))
                           )}
-                          
+
                           {/* Hàng thứ hai hiển thị rooms */}
                           <h3 className="mt-4">Không gian</h3>
                           {loadingRooms ? (
-                            <div className="loading-categories">Đang tải không gian...</div>
+                            <div className="loading-categories">
+                              Đang tải không gian...
+                            </div>
                           ) : (
                             roomRows.slice(0, 1).map((row, rowIndex) => (
-                              <div className="product-row" key={`search-room-row-${rowIndex}`}>
+                              <div
+                                className="product-row"
+                                key={`search-room-row-${rowIndex}`}
+                              >
                                 {row.map((room) => (
-                                  <div className="product-item" key={`search-room-${room.room_id}`}>
-                                    <a 
+                                  <div
+                                    className="product-item"
+                                    key={`search-room-${room.room_id}`}
+                                  >
+                                    <a
                                       href={`/khong-gian/${room.slug}`}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleNavClick(`/khong-gian/${room.slug}`);
+                                        handleNavClick(
+                                          `/khong-gian/${room.slug}`
+                                        );
                                       }}
                                     >
-                                      <div 
-                                        className="product-image" 
-                                        style={{ 
+                                      <div
+                                        className="product-image"
+                                        style={{
                                           backgroundImage: `url(${room.room_image})`,
-                                          backgroundSize: 'cover',
-                                          backgroundPosition: 'center'
+                                          backgroundSize: "cover",
+                                          backgroundPosition: "center",
                                         }}
                                       ></div>
-                                      <div className="product-title">{room.room_name}</div>
+                                      <div className="product-title">
+                                        {room.room_name}
+                                      </div>
                                     </a>
                                   </div>
                                 ))}
@@ -490,14 +555,25 @@ const Header = () => {
                   </div>
                 </button>
                 <div className="cart-container">
-                  <button className="btn-icon cart-btn" onClick={handleMiniCartClick}>
-                    <Link to="/gio-hang" onClick={(e) => window.innerWidth < 768 && e.preventDefault()}>
+                  <button
+                    className="btn-icon cart-btn"
+                    onClick={handleMiniCartClick}
+                  >
+                    <Link
+                      to="/gio-hang"
+                      onClick={(e) =>
+                        window.innerWidth < 768 && e.preventDefault()
+                      }
+                    >
                       <img src="/images/icons/cart.svg" alt="cart" />
                     </Link>
                   </button>
                   <MiniCart ref={miniCartRef} />
                 </div>
-                <button className="btn-icon wishlist-btn" onClick={toggleWishlist}>
+                <button
+                  className="btn-icon wishlist-btn"
+                  onClick={toggleWishlist}
+                >
                   <img src="/images/icons/wishlist.svg" alt="wishlist" />
                 </button>
               </div>
@@ -511,16 +587,37 @@ const Header = () => {
                     </div>
                     <div className="user-dropdown">
                       <ul>
-                        <li><a href="/tai-khoan">Tài khoản</a></li>
-                        <li><a href="/tai-khoan/thong-tin">Thông tin cá nhân</a></li>
-                        <li><a href="/tai-khoan/ma-giam-gia">Quản lý mã giảm giá</a></li>
-                        <li><a href="/tai-khoan/don-hang">Quản lý đơn hàng</a></li>
-                        <li><a href="/san-pham-yeu-thich">Danh sách yêu thích</a></li>
-                        <li><a href="/gio-hang">Giỏ hàng</a></li>
-                        <li><a href="#" onClick={(e) => {
-                          e.preventDefault();
-                          logout();
-                        }}>Đăng xuất</a></li>
+                        <li>
+                          <a href="/tai-khoan">Tài khoản</a>
+                        </li>
+                        <li>
+                          <a href="/tai-khoan/thong-tin">Thông tin cá nhân</a>
+                        </li>
+                        <li>
+                          <a href="/tai-khoan/ma-giam-gia">
+                            Quản lý mã giảm giá
+                          </a>
+                        </li>
+                        <li>
+                          <a href="/tai-khoan/don-hang">Quản lý đơn hàng</a>
+                        </li>
+                        <li>
+                          <a href="/san-pham-yeu-thich">Danh sách yêu thích</a>
+                        </li>
+                        <li>
+                          <a href="/gio-hang">Giỏ hàng</a>
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              logout();
+                            }}
+                          >
+                            Đăng xuất
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -546,7 +643,10 @@ const Header = () => {
       </header>
 
       {/* Wishlist Sidebar */}
-      <WishlistSidebar isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
+      <WishlistSidebar
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+      />
     </>
   );
 };
