@@ -5,7 +5,7 @@ import { getAllRooms } from "../../api/room";
 import type { Category, Room } from "../../types";
 import { Link } from "react-router-dom";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
-import MiniCart from "../MiniCart";
+import MiniCart from "../../components/MiniCart";
 
 const Header = () => {
   // State để lưu trạng thái active của nav item

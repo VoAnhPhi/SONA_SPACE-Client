@@ -9,7 +9,7 @@ interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
   discount: number;
-  discountPercent: number;
+  // discountPercent: number;
   total: number;
 }
 interface CartItemProps {
@@ -30,13 +30,13 @@ const Payment: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("transfer");
 
   // Order summary state
-const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
-  subtotal: 0,
-  shipping: 30000,
-  discount: 0,
-  discountPercent: 10,
-  total: 30000, // subtotal = 0 + shipping = 30000
-});
+  const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
+    subtotal: 0,
+    shipping: 30000,
+    discount: 0,
+    // discountPercent: 10,
+    total: 30000, // subtotal = 0 + shipping = 30000
+  });
 
   // Form data
   const [formData, setFormData] = useState({
@@ -72,105 +72,105 @@ const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
 
   // Handle form submission
 
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!agreeToTerms) {
-    alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
-    return;
-  }
+    if (!agreeToTerms) {
+      alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
+      return;
+    }
 
-  const orderId = "SN" + Math.floor(100000 + Math.random() * 900000);
-  const orderDate = new Date().toLocaleString("vi-VN");
+    const orderId = "SN" + Math.floor(100000 + Math.random() * 900000);
+    const orderDate = new Date().toLocaleString("vi-VN");
 
-  const orderData = {
-    orderId,
-    orderDate,
-    status: "Đang xử lý",         // hoặc giá trị mặc định
-    statusStep: 1,
-    itemCount: cartItems.length,
-    recipientName: formData.fullName,
-    recipientPhone: formData.phone,
-    address: formData.address,
-    subtotal: orderSummary.subtotal,
-    shippingFee: orderSummary.shipping,
-    discount: orderSummary.discount,
-    total: orderSummary.total,
-    products: cartItems // 👈 sử dụng key này để đồng bộ với DetailOrder
-  };
+    const orderData = {
+      orderId,
+      orderDate,
+      status: "Đang xử lý",         // hoặc giá trị mặc định
+      statusStep: 1,
+      itemCount: cartItems.length,
+      recipientName: formData.fullName,
+      recipientPhone: formData.phone,
+      address: formData.address,
+      subtotal: orderSummary.subtotal,
+      shippingFee: orderSummary.shipping,
+      discount: orderSummary.discount,
+      total: orderSummary.total,
+      products: cartItems // 👈 sử dụng key này để đồng bộ với DetailOrder
+    };
 
-  try {
-    localStorage.setItem("lastOrder", JSON.stringify(orderData));
-    localStorage.removeItem("cart");
-
-    toast.success("🎉 Thanh toán thành công! Đang chuyển hướng...", {
-      position: "top-center",
-      autoClose: 2000,
-    });
-
-    setTimeout(() => {
-      navigate("/dat-hang-thanh-cong");
-    }, 2000);
-  } catch (error) {
-    console.error("Lỗi khi xử lý đơn hàng:", error);
-    toast.error("❌ Có lỗi xảy ra.");
-  }
-};
-  // Apply promo code
-const applyPromoCode = () => {
-  if (formData.promoCode.trim() !== "") {
-    const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const discount = subtotal * (orderSummary.discountPercent / 100);
-    const total = subtotal + orderSummary.shipping - discount;
-
-    alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
-
-    setOrderSummary({
-      ...orderSummary,
-      discount,
-      total,
-    });
-
-    setFormData({
-      ...formData,
-      promoCode: "",
-    });
-  }
-
-  
-};
-
-
-
-useEffect(() => {
-  const storedCart = localStorage.getItem("cart");
-  if (storedCart) {
     try {
-      const parsedCart = JSON.parse(storedCart);
-      setCartItems(parsedCart);
+      localStorage.setItem("lastOrder", JSON.stringify(orderData));
+      localStorage.removeItem("cart");
 
-      const subtotal = parsedCart.reduce(
-        (total: number, item: CartItemProps) => total + item.price * item.quantity,
-        0
-      );
+      toast.success("🎉 Thanh toán thành công! Đang chuyển hướng...", {
+        position: "top-right",
+        autoClose: 2000,
+      });
 
-      const shipping = 30000;
-      const discountPercent = 10; // Đồng bộ với CartPage
-      const discount = subtotal * (discountPercent / 100);
-      const total = subtotal + shipping - discount;
+      setTimeout(() => {
+        navigate("/dat-hang-thanh-cong");
+      }, 2000);
+    } catch (error) {
+      console.error("Lỗi khi xử lý đơn hàng:", error);
+      toast.error("❌ Có lỗi xảy ra.");
+    }
+  };
+  // Apply promo code
+  const applyPromoCode = () => {
+    if (formData.promoCode.trim() !== "") {
+      const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+      const discount = 0;
+      const total = subtotal + orderSummary.shipping - discount;
+
+      alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
 
       setOrderSummary({
-        subtotal,
-        shipping,
+        ...orderSummary,
         discount,
-        discountPercent,
         total,
       });
-    } catch (error) {
-      console.error("Lỗi khi đọc giỏ hàng từ localStorage:", error);
+
+      setFormData({
+        ...formData,
+        promoCode: "",
+      });
     }
-  }
-}, []);
+
+
+  };
+
+
+
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      try {
+        const parsedCart = JSON.parse(storedCart);
+        setCartItems(parsedCart);
+
+        const subtotal = parsedCart.reduce(
+          (total: number, item: CartItemProps) => total + item.price * item.quantity,
+          0
+        );
+
+        const shipping = 30000;
+        // const discountPercent = 10; // Đồng bộ với CartPage
+        const discount = 0;
+        const total = subtotal + shipping - discount;
+
+        setOrderSummary({
+          subtotal,
+          shipping,
+          discount,
+          // discountPercent,
+          total,
+        });
+      } catch (error) {
+        console.error("Lỗi khi đọc giỏ hàng từ localStorage:", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (user && isAuthenticated) {
@@ -266,7 +266,7 @@ useEffect(() => {
 
                 <div className="info-left-title-2">
                   <h5>Phương thức thanh toán</h5>
-                      <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
+                  <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
                     <label>
                       <input
                         type="radio"
@@ -343,17 +343,49 @@ useEffect(() => {
                       </div>
 
                     </div>
-                  <div className="info-left-clause">
-                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
-                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
-                  </div>
+                    <div className="info-left-clause">
+                      <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                      <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
+                    </div>
                   </>
                 )}
 
 
 
               </form>
-              <div className="pay-info-right">
+              <div className="cart-summary">
+                <div className="summary-title">Đơn hàng</div>
+                <div className="summary-row">
+                  <span className="label">Tổng tiền:</span>
+                  <span className="value">
+                    {formatPrice(orderSummary.subtotal)} đ
+                  </span>
+                </div>
+                <div className="summary-row">
+                  <span className="label">Vận chuyển:</span>
+                  <span className="value">
+                    {formatPrice(orderSummary.shipping)} đ
+                  </span>
+                </div>
+                <div className="summary-row promo-code">
+                  <span className="label">Mã giảm giá:</span>
+                  <div className="promo-input">
+                    <input type="text" placeholder="Nhập mã giảm giá" />
+                    <button className="apply-btn">Áp dụng</button>
+                  </div>
+                </div>
+                <div className="summary-total">
+                  <span className="label">Tổng cộng</span>
+                  <span className="value">
+                    {formatPrice(orderSummary.total)} đ
+                  </span>
+                </div>
+                <div className="checkout-btn" onClick={handleSubmit}>
+                  Tiến hành thanh toán
+                </div>
+              </div>
+
+              {/* <div className="pay-info-right">
                 <div className="info-right-bill">
                   <h4>Đơn hàng</h4>
 
@@ -392,7 +424,7 @@ useEffect(() => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
           </div>
@@ -400,7 +432,9 @@ useEffect(() => {
       </div>
 
       <Footer />
-      <ToastContainer />
+      <ToastContainer position="top-right"
+        autoClose={3000}
+        style={{ marginTop: "100px" }} />
     </>
   );
 };
