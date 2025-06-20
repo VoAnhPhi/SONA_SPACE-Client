@@ -32,7 +32,7 @@ const CartPage: React.FC = () => {
     subtotal: 0,
     shipping: 30000,
     discount: 0,
-    discountPercent: 10,
+    // discountPercent: 10,
     total: 0,
   });
 
@@ -88,7 +88,7 @@ const CartPage: React.FC = () => {
 
     // Tính lại tổng đơn hàng
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const discount = subtotal * (cartSummary.discountPercent / 100);
+    const discount = 0;
     const total = subtotal + cartSummary.shipping - discount;
 
     setCartSummary(prev => ({
@@ -220,12 +220,12 @@ const CartPage: React.FC = () => {
                       {formatPrice(cartSummary.shipping)} đ
                     </span>
                   </div>
-                  <div className="summary-row discount">
+                  {/* <div className="summary-row discount">
                     <span className="label">Thành viên giảm giá:</span>
                     <span className="value">
                       -{cartSummary.discountPercent}%
                     </span>
-                  </div>
+                  </div> */}
                   <div className="summary-row promo-code">
                     <span className="label">Mã giảm giá:</span>
                     <div className="promo-input">

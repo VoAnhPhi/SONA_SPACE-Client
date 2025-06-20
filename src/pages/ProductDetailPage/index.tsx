@@ -1,6 +1,6 @@
 "use client";
 // Import necessary libraries
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
 // import components
@@ -18,9 +18,11 @@ import type { Product, Variant } from "../../types";
 import Comment from "../../components/Comment";
 import { getProductComments } from "../../api/comment";
 import type { CommentResponse } from "../../types";
+import { toast, ToastContainer } from "react-toastify";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
+  const miniCartRef = useRef<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -160,41 +162,47 @@ const ProductDetailPage: React.FC = () => {
     return stars;
   };
 
-const addToCart = () => {
-  const image = selectedVariant?.listImage?.split(",")[0] || product?.images?.[0] || "";
+  const addToCart = () => {
+    const image = selectedVariant?.listImage?.split(",")[0] || product?.images?.[0] || "";
 
-  const productToAdd = {
-    id: product?.id || 0,
-    name: product?.name || "",
-    price: selectedVariant?.variant_price || product?.price || 0,
-    oldPrice: product?.price_sale,
-    image: image ,
-    color: selectedVariant?.color_hex || "",
-    category: product?.category?.name || "",
-    quantity: quantity,
-  };
+    const productToAdd = {
+      id: product?.id || 0,
+      name: product?.name || "",
+      price: selectedVariant?.variant_price || product?.price || 0,
+      oldPrice: product?.price_sale,
+      image: image,
+      color: selectedVariant?.color_hex || "",
+      category: product?.category?.name || "",
+      quantity: quantity,
+    };
 
-  const storedCart = localStorage.getItem("cart");
-  let cart = storedCart ? JSON.parse(storedCart) : [];
+    const storedCart = localStorage.getItem("cart");
+    let cart = storedCart ? JSON.parse(storedCart) : [];
 
-  const existingIndexSameId = cart.findIndex(
-    (item: any) => item.id === productToAdd.id
-  );
-
-  if (existingIndexSameId >= 0) {
-    const existingItem = cart[existingIndexSameId];
-    if (existingItem.color === productToAdd.color) {
-      cart[existingIndexSameId].quantity += productToAdd.quantity;
+    const existingIndexSameId = cart.findIndex(
+      (item: any) => item.id === productToAdd.id
+    );
+    if (miniCartRef.current?.refreshCart) {
+      miniCartRef.current.refreshCart();
+      miniCartRef.current.toggleMiniCart(); // nếu muốn mở luôn
+    }
+    if (existingIndexSameId >= 0) {
+      const existingItem = cart[existingIndexSameId];
+      if (existingItem.color === productToAdd.color) {
+        cart[existingIndexSameId].quantity += productToAdd.quantity;
+      } else {
+        cart.push(productToAdd);
+      }
     } else {
       cart.push(productToAdd);
     }
-  } else {
-    cart.push(productToAdd);
-  }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-  alert("Đã thêm vào giỏ hàng");
-};
+    localStorage.setItem("cart", JSON.stringify(cart));
+    toast.success("✅ Đã thêm vào giỏ hàng!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+  };
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
   return (
@@ -460,6 +468,9 @@ const addToCart = () => {
         </div>
       </div>
       <Footer />
+      <ToastContainer position="top-right"
+        autoClose={3000}
+        style={{ marginTop: "100px" }} />
     </>
   );
 };
