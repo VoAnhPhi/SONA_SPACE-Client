@@ -86,7 +86,7 @@ const MiniCart = forwardRef<MiniCartHandle>((_, ref) => {
                       <span>Màu:</span>
                       <div className="item-color" style={{ backgroundColor: item.color }}></div>
                     </div>
-                    <div className="item-quantity"><span>SL:</span> {item.quantity}</div>
+                    <div className="item-quantity"><span>SL: {item.quantity}</span></div>
                   </div>
                   <div className="item-price">{formatPrice(item.price)}</div>
                 </div>
