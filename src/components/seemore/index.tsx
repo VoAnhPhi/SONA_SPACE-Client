@@ -16,6 +16,7 @@ const Seemore: React.FC<SeemoreProps> = ({ onClick }) => {
         <div className="arow-seemore">
           <img src="/images/products/arow.svg" alt="arrow" />
           <img src="/images/products/arow.svg" alt="arrow" />
+          
         </div>
       </div>
     </div>

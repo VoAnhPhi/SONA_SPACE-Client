@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import CategorySlider from "../../components/CategorySlider";
+import RoomSlider from "../../components/RoomSlider";
 import Filter from "../../components/Filter";
 import ProductComponent from "../../components/Product";
 import { fetchRoomBySlug, fetchProductsByRoom } from "../../services/roomService";
@@ -18,6 +18,10 @@ const RoomDetail: React.FC = () => {
 
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const handleFilterChange = (newFilters: { [key: string]: string }) => {
+    console.log("New filters:", newFilters);
+  };
 
   useEffect(() => {
     if (!slug) {
@@ -93,7 +97,7 @@ const RoomDetail: React.FC = () => {
 
         {/* Product Section */}
         <section className="product-section">
-          <Filter />
+          <Filter onFilterChange={handleFilterChange} />
           <div className="boxProducts">
             <div className="container">
               <div className="section-box-products">
@@ -164,7 +168,7 @@ const RoomDetail: React.FC = () => {
         <section className="categories-section">
           <div className="container">
             <h2 className="section-title">Khám phá thêm các căn phòng</h2>
-            <CategorySlider />
+            <RoomSlider />
           </div>
         </section>
       </div>

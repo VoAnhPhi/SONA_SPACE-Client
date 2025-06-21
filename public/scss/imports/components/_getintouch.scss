@@ -1,7 +1,7 @@
 .get-in-touch {
   .get-in-touch__title {
     text-align: left;
-    @include text(30px, M-B, normal, $text-cl, null);
+    @include text(30px, M-SB, normal, $text-cl, null);
   }
 
   .get-in-touch__box {

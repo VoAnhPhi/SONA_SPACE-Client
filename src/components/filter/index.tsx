@@ -17,7 +17,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const [selectedPrice, setSelectedPrice] = useState<string>("Chọn giá");
   const [selectedColor, setSelectedColor] = useState<string>("Chọn màu");
   const [selectedSort, setSelectedSort] = useState<string>("Sắp xếp");
-  const [currentFilters, setCurrentFilters] = useState<{[key: string]: string}>({});
+  const [currentFilters, setCurrentFilters] = useState<{ [key: string]: string }>({});
 
   const prices = ["Dưới 10 triệu", "10 - 30 triệu", "Trên 30 triệu"];
   const sortOptions = ["Giá tăng dần", "Giá giảm dần", "Mới nhất", "Giảm giá"];
@@ -77,7 +77,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
 
   const handleClear = (type: string) => {
     let newFilters = { ...currentFilters };
-    
+
     switch (type) {
       case "category":
         setSelectedCategory("Chọn danh mục");
@@ -189,22 +189,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
               )}
               <span className="label">{selectedCategory}</span>
               <i
-                className={`dropdown-icon ${
-                  openedDropdown === "category" ? "open" : ""
-                }`}
+                className={`dropdown-icon ${openedDropdown === "category" ? "open" : ""
+                  }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${
-                openedDropdown === "category" ? "show" : ""
-              }`}
+              className={`dropdown-menu ${openedDropdown === "category" ? "show" : ""
+                }`}
             >
               {categories.map((cat) => (
                 <div
                   key={cat.category_id}
-                  className={`dropdown-item ${
-                    selectedCategory === cat.category_name ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${selectedCategory === cat.category_name ? "selected" : ""
+                    }`}
                   onClick={() => handleSelect("category", cat.category_name)}
                 >
                   <img
@@ -234,22 +231,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
             >
               <span className="label">{selectedRoom}</span>
               <i
-                className={`dropdown-icon ${
-                  openedDropdown === "room" ? "open" : ""
-                }`}
+                className={`dropdown-icon ${openedDropdown === "room" ? "open" : ""
+                  }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${
-                openedDropdown === "room" ? "show" : ""
-              }`}
+              className={`dropdown-menu ${openedDropdown === "room" ? "show" : ""
+                }`}
             >
               {rooms.map((room) => (
                 <div
                   key={room.room_id}
-                  className={`dropdown-item ${
-                    selectedRoom === room.room_name ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${selectedRoom === room.room_name ? "selected" : ""
+                    }`}
                   onClick={() => handleSelect("room", room.room_name)}
                 >
                   {room.room_name}
@@ -273,22 +267,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
             >
               <span>{selectedPrice}</span>
               <i
-                className={`dropdown-icon ${
-                  openedDropdown === "price" ? "open" : ""
-                }`}
+                className={`dropdown-icon ${openedDropdown === "price" ? "open" : ""
+                  }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${
-                openedDropdown === "price" ? "show" : ""
-              }`}
+              className={`dropdown-menu ${openedDropdown === "price" ? "show" : ""
+                }`}
             >
               {prices.map((price) => (
                 <div
                   key={price}
-                  className={`dropdown-item ${
-                    selectedPrice === price ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${selectedPrice === price ? "selected" : ""
+                    }`}
                   onClick={() => handleSelect("price", price)}
                 >
                   {price}
@@ -324,22 +315,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
 
               <span className="label">{selectedColor}</span>
               <i
-                className={`dropdown-icon ${
-                  openedDropdown === "color" ? "open" : ""
-                }`}
+                className={`dropdown-icon ${openedDropdown === "color" ? "open" : ""
+                  }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${
-                openedDropdown === "color" ? "show" : ""
-              }`}
+              className={`dropdown-menu ${openedDropdown === "color" ? "show" : ""
+                }`}
             >
               {colors.map((color) => (
                 <div
                   key={color.color_id}
-                  className={`dropdown-item ${
-                    selectedColor === color.color_name ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${selectedColor === color.color_name ? "selected" : ""
+                    }`}
                   onClick={() => handleSelect("color", color.color_name)}
                 >
                   <span
@@ -370,22 +358,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
               <img src="/images/products/arrow-down-up.svg" alt="Sort" />
               <span>{selectedSort}</span>
               <i
-                className={`dropdown-icon ${
-                  openedDropdown === "sort" ? "open" : ""
-                }`}
+                className={`dropdown-icon ${openedDropdown === "sort" ? "open" : ""
+                  }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${
-                openedDropdown === "sort" ? "show" : ""
-              }`}
+              className={`dropdown-menu ${openedDropdown === "sort" ? "show" : ""
+                }`}
             >
               {sortOptions.map((option) => (
                 <div
                   key={option}
-                  className={`dropdown-item ${
-                    selectedSort === option ? "selected" : ""
-                  }`}
+                  className={`dropdown-item ${selectedSort === option ? "selected" : ""
+                    }`}
                   onClick={() => handleSelect("sort", option)}
                 >
                   {option}

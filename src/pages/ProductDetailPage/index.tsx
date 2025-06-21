@@ -1,7 +1,7 @@
 "use client";
 // Import necessary libraries
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
 
 // import components
 import Header from "../../components/Header";
@@ -209,11 +209,12 @@ const ProductDetailPage: React.FC = () => {
     <>
       <Header />
       <div className="product-details">
-        <div className="detail-page-link">
+        <div className="breadcrumb-container">
           <div className="container">
-            <div className="detail-link">
-              <span className="link1">Sản phẩm | </span>
-              <span className="link2">{product.name}</span>
+            <div className="breadcrumb">
+              <Link to="/san-pham">Sản phẩm</Link>
+              <span>/</span>
+              <span className="active">{product.name}</span>
             </div>
           </div>
         </div>

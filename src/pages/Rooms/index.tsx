@@ -22,17 +22,17 @@ const Rooms: React.FC = () => {
         setLoading(true);
         const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
         console.log("Fetched newest products:", products);
-        
+
         // Format sản phẩm để phù hợp với component Product
         const formattedProducts = products.map((product, index) => {
           return formatProductForDisplay(product);
         });
-        
+
         // Đảm bảo các id là duy nhất
-        const uniqueProducts = formattedProducts.filter((product, index, self) => 
+        const uniqueProducts = formattedProducts.filter((product, index, self) =>
           index === self.findIndex(p => p.id === product.id)
         );
-        
+
         console.log("Formatted products:", uniqueProducts);
         setNewestProducts(uniqueProducts);
         setError(null);
@@ -53,10 +53,8 @@ const Rooms: React.FC = () => {
 
         {/* Banner */}
         <section className="room-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img src="/images/rooms/banner_room.jpg" alt="Khám phá không gian sống" />
-            </div>
+          <div className="banner-image">
+            <img src="/images/rooms/banner_room.jpg" alt="Khám phá không gian sống" />
           </div>
         </section>
 
@@ -89,7 +87,7 @@ const Rooms: React.FC = () => {
               <div className="box-products-container">
                 {newestProducts.map((product) => (
                   <Product
-                    key={`new-${product.id}`} 
+                    key={`new-${product.id}`}
                     product={{
                       id: product.id,
                       name: product.name,
@@ -104,7 +102,7 @@ const Rooms: React.FC = () => {
                       isWishlist: product.isWishlist,
                       category: product.category
                     }}
-                    slug={product.slug} 
+                    slug={product.slug}
                   />
                 ))}
               </div>

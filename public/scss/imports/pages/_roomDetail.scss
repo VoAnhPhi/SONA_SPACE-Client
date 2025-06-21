@@ -32,7 +32,7 @@
 
       .inspiration-text {
         h2 {
-          @include text(24px, M-B, normal, $text-cl, null);
+          @include text(24px, M-SB, normal, $text-cl, null);
           margin-bottom: 32px;
         }
 
@@ -90,7 +90,7 @@
     .section-title {
       margin-bottom: 30px;
       text-align: left;
-      @include text(24px, M-EB, auto, $text-cl, none);
+      @include text(24px, M-SB, auto, $text-cl, none);
     }
   }
 }

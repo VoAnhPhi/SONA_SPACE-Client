@@ -39,6 +39,7 @@ const GetInTouch = () => {
     <section className="get-in-touch">
       <div className="container">
         <h3 className="get-in-touch__title">Liên hệ với chúng tôi</h3>
+
         <div className="get-in-touch__box">
           <div className="get-in-touch__intro">
             <p className="get-in-touch__description">
@@ -53,17 +54,15 @@ const GetInTouch = () => {
             {accordionData.map((item, index) => (
               <div
                 key={index}
-                className={`get-in-touch__option ${
-                  openIndex === index ? "active" : ""
-                }`}
+                className={`get-in-touch__option ${openIndex === index ? "active" : ""
+                  }`}
                 onClick={() => handleToggle(index)}
               >
                 <div className="get-in-touch__header">
                   <span className="get-in-touch__label">{item.label}</span>
                   <i
-                    className={`get-in-touch__icon ${
-                      openIndex === index ? "rotate" : ""
-                    }`}
+                    className={`get-in-touch__icon ${openIndex === index ? "rotate" : ""
+                      }`}
                   >
                     <svg
                       width="15"
@@ -83,9 +82,8 @@ const GetInTouch = () => {
                   </i>
                 </div>
                 <div
-                  className={`get-in-touch__content-wrapper ${
-                    openIndex === index ? "expanded" : "collapsed"
-                  }`}
+                  className={`get-in-touch__content-wrapper ${openIndex === index ? "expanded" : "collapsed"
+                    }`}
                 >
                   <div
                     className="get-in-touch__content"

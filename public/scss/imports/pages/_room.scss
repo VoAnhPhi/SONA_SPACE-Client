@@ -21,12 +21,11 @@
 
   // Room Categories
   .room-categories {
-    padding: 0 0 44px;
     margin-bottom: 44px;
     overflow: visible;
 
     .section-title {
-      @include text(24px, M-EB, normal, $text-cl, null);
+      @include text(24px, M-SB, normal, $text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }
@@ -38,7 +37,7 @@
     margin-bottom: 44px;
 
     .section-title {
-      @include text(24px, M-EB, normal, $text-cl, null);
+      @include text(24px, M-SB, normal, $text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }

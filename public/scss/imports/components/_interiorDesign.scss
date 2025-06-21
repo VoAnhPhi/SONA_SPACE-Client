@@ -6,7 +6,7 @@
 
             .title {
                   margin-bottom: 12px;
-                  @include text(24px, M-B, normal, $text-cl, null);
+                  @include text(24px, M-SB, normal, $text-cl, null);
             }
 
             .description {
@@ -44,7 +44,7 @@
                   .design-content {
                         h3 {
                               margin: 24px 0 12px 0;
-                              @include text(20px, M-B, normal, $text-cl, null);
+                              @include text(20px, M-SB, normal, $text-cl, null);
                         }
 
                         p {
