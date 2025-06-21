@@ -22,3 +22,5 @@ export const getProductComments = async (productId: number, page = 1) => {
     throw error;
   }
 };
+
+export default getProductComments;
