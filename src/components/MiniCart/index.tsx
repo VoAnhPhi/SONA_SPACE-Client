@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Link } from 'react-router-dom';
+import { loadCartService } from '../../services/cartService';
 
 interface CartItem {
   id: number;
@@ -9,61 +10,75 @@ interface CartItem {
   color: string;
   image: string;
 }
-
-interface MiniCartHandle {
+interface MiniCartProps {
+  userId?: number;
+}
+export interface MiniCartHandle {
   toggleMiniCart: () => void;
   closeMiniCart: () => void;
   isVisible: boolean;
+  refreshCart: () => void;
 }
 
-const MiniCart = forwardRef<MiniCartHandle>((_, ref) => {
+const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Expose methods to parent via ref
+  // expose methods to parent
   useImperativeHandle(ref, () => ({
-    toggleMiniCart: () => setIsVisible(prev => !prev),
+    toggleMiniCart: () => {
+      setIsVisible(prev => !prev);
+      refreshCart();
+    },
     closeMiniCart: () => setIsVisible(false),
     isVisible,
-    refreshCart: () => {
-      const stored = localStorage.getItem("cart");
-      setCartItems(stored ? JSON.parse(stored) : []);
-    }
+    refreshCart,
   }));
 
-  // Load cart from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    if (stored) {
-      try {
-        setCartItems(JSON.parse(stored));
-      } catch {
-        setCartItems([]);
+  const refreshCart = async () => {
+    try {
+const { success, wishlistItems } = await loadCartService();
+      if (success && wishlistItems) {
+        console.log("MiniCart raw:", wishlistItems);
+        
+        const formatted = wishlistItems
+          // ✅ giữ điều kiện này nếu bạn chắc chắn API trả về status: 0 cho giỏ hàng
+          .filter((item: any) => item.status === 0)
+          .map((item: any, index: number) => ({
+            id: item.wishlist_id || index,
+            name: item.product_name,
+            price: item.price,
+            quantity: item.quantity,
+            color: item.color_hex || '',
+            image: item.image?.split(',')[0] || '/images/default.jpg',
+          }));
+        setCartItems(formatted);
+        console.log("mini",formatted);
       }
+    } catch (error) {
+      console.error("Lỗi khi tải MiniCart:", error);
     }
-  }, [isVisible]); // Refresh every time MiniCart opens
+  };
 
-  // Format VND
+  useEffect(() => {
+    if (isVisible) refreshCart();
+  }, [isVisible]);
+
   const formatPrice = (price: number) =>
-    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
       .format(price)
-      .replace('₫', 'đ');
+      .replace("₫", "đ");
 
-  // Calculate total
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  // Delete item (optional)
-  const handleRemoveItem = (id: number) => {
-    const updatedCart = cartItems.filter(item => item.id !== id);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
-
   return (
-    <div className={`mini-cart ${isVisible ? 'show' : ''}`}>
+    <div className={`mini-cart ${isVisible ? "show" : ""}`}>
       <div className="mini-cart-content">
         <div className="mini-cart-header">
           <h3>Giỏ hàng của bạn ({cartItems.length})</h3>
@@ -84,19 +99,17 @@ const MiniCart = forwardRef<MiniCartHandle>((_, ref) => {
                   <div className="item-details">
                     <div className="item-coloss">
                       <span>Màu:</span>
-                      <div className="item-color" style={{ backgroundColor: item.color }}></div>
+                      <div
+                        className="item-color"
+                        style={{ backgroundColor: item.color }}
+                      ></div>
                     </div>
-                    <div className="item-quantity"><span>SL: {item.quantity}</span></div>
+                    <div className="item-quantity">
+                      <span>SL: {item.quantity}</span>
+                    </div>
                   </div>
                   <div className="item-price">{formatPrice(item.price)}</div>
                 </div>
-                <button
-                  className="remove-item"
-                  onClick={() => handleRemoveItem(item.id)}
-                  aria-label="Xóa sản phẩm"
-                >
-                  <img src="/images/icons/close.svg" alt="Xóa" />
-                </button>
               </div>
             ))
           ) : (
@@ -105,7 +118,9 @@ const MiniCart = forwardRef<MiniCartHandle>((_, ref) => {
                 <img src="/images/icons/empty-cart.svg" alt="Giỏ hàng trống" />
               </div>
               <p>Giỏ hàng của bạn đang trống</p>
-              <Link to="/san-pham" className="btn-browse">Mua sắm ngay</Link>
+              <Link to="/san-pham" className="btn-browse">
+                Mua sắm ngay
+              </Link>
             </div>
           )}
         </div>
@@ -117,8 +132,12 @@ const MiniCart = forwardRef<MiniCartHandle>((_, ref) => {
               <span className="total-amount">{formatPrice(totalAmount)}</span>
             </div>
             <div className="mini-cart-actions">
-              <Link to="/gio-hang" className="view-cart-btn">Xem giỏ hàng</Link>
-              <Link to="/thanh-toan" className="checkout-btn">Thanh toán</Link>
+              <Link to="/gio-hang" className="view-cart-btn">
+                Xem giỏ hàng
+              </Link>
+              <Link to="/thanh-toan" className="checkout-btn">
+                Thanh toán
+              </Link>
             </div>
           </div>
         )}

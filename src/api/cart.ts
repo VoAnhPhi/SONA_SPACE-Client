@@ -1,31 +1,48 @@
+// api/cart.ts
 import axios from "axios";
 
-const API_URL = "http://localhost:3501/api";
+export const saveToCart = async (data: { status: number; cartItems: any[] }) => {
+  const token = sessionStorage.getItem("authToken");
 
-export const saveToCart = async ({
-  variant_id,
-  status,
-}: {
-  variant_id: number;
-  status: number;
-}) => {
-  try {
-const token = localStorage.getItem("authToken");
-
-    const response = await axios.post(
-      `${API_URL}/wishlists`,
-      { variant_id, status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    return response.data;
-  } catch (err) {
-    console.error("API saveToCart error:", err);
-    throw err;
+  if (!token) {
+    throw new Error("Token không tồn tại, vui lòng đăng nhập.");
   }
+
+  // Kiểm tra dữ liệu đầu vào trước khi gửi
+  if (!Array.isArray(data.cartItems) || data.cartItems.length === 0) {
+    throw new Error("Không có sản phẩm trong cartItems.");
+  }
+  
+const cartItem = data.cartItems[0]; // Lấy item đầu tiên từ mảng cartItems
+console.log('variant_id gửi lên:', cartItem.variant_id);
+const response = await axios.post(
+  "http://localhost:3501/api/wishlists",
+  {
+    variant_id: cartItem.variant_id,
+    quantity: cartItem.quantity,
+    status: data.status,
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  }
+);
+
+  return response.data;
 };
 
+
+export const fetchCartFromDatabase = async () => {
+  const token = sessionStorage.getItem("authToken");
+  if (!token) throw new Error("Bạn chưa đăng nhập");
+
+  const response = await axios.get("http://localhost:3501/api/wishlists?status=0", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

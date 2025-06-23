@@ -23,7 +23,9 @@ const Header = () => {
 
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
   const miniCartRef = useRef<any>(null);
-
+  const openMiniCart = () => {
+    miniCartRef.current?.toggleMiniCart(); // Phải gọi hàm này để show & load
+  };
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
     if (!fullName) return "";
