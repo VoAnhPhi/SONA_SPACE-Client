@@ -200,14 +200,17 @@ const Payment: React.FC = () => {
     <>
       <Header />
       <div className="bill-payment">
-        <div className="detail-page-link">
-          <div className="container">
-            <div className="detail-link">
-              <span className="link1">Giỏ hàng | </span>
-              <span className="link2">Thanh toán</span>
+
+            {/* Breadcrumb */}
+            <div className="breadcrumb-container">
+              <div className="container">
+                <div className="breadcrumb">
+                  <Link to="/">Trang chủ</Link>
+                  <span>/</span>
+                  <span className="active">Thanh toán</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
         <div className="pay-cart">
           <div className="container">

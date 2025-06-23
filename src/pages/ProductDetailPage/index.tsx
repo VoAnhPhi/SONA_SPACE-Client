@@ -19,6 +19,7 @@ import Comment from "../../components/Comment";
 import { getProductComments } from "../../api/comment";
 import type { CommentResponse } from "../../types";
 import { toast, ToastContainer } from "react-toastify";
+import { saveToOrCart } from "../../services/cartService";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -38,11 +39,13 @@ const ProductDetailPage: React.FC = () => {
         prev.set("color", colorId.toString());
         return prev;
       });
-
+      console.log("aaaaa", selectedVariant);
       if (slug) {
         const variant = await fetchVariantBySlugAndColor(slug, colorId);
+
         if (variant) {
           setSelectedVariant({
+            variant_id: variant.variant_id,
             variant_price: variant.price,
             variant_price_sale: variant.priceSale,
             listImage: variant.images.join(","),
@@ -59,22 +62,26 @@ const ProductDetailPage: React.FC = () => {
   const imageList = selectedVariant?.listImage
     ? selectedVariant.listImage.split(",")
     : product?.images || [];
+
   useEffect(() => {
     if (!slug) return;
     (async () => {
       try {
         const res = await getProductBySlug(slug);
+
+        // Format lại product
         const formattedProduct = formatProductForDisplay({
           ...res.product,
           price: parseFloat(res.product.defaultPrice),
           price_sale: parseFloat(res.product.defaultPriceSale),
           images: res.product.defaultImages,
-
+          variant_id: res.product.variant_id || res.colors?.[0]?.variant_id || 0,
           variants: res.colors.map((c: any) => ({
             color_id: c.colorId,
             color_name: c.colorName,
             color_hex: c.colorHex,
-            slug: c.slug,
+            color_priority: c.colorPriority || 0,
+            variant_id: c.variant_id,
           })),
           stock: res.product.defaultQuantity,
           sold: res.product.sold,
@@ -89,25 +96,39 @@ const ProductDetailPage: React.FC = () => {
         });
 
         setProduct(formattedProduct);
-        console.log("Formatted Product:", formattedProduct); // Thêm dòng này
         setRelatedProducts(res.related_products || []);
 
-        // Hiển thị mặc định thông tin sản phẩm trước khi chọn màu
-        setSelectedColor(res.product.defaultColorHex);
+        // Lấy từ URL nếu có ?color, nếu không thì dùng màu mặc định
+        const colorIdFromUrl = searchParams.get("color");
+        const defaultColor = formattedProduct.variants?.[0];
 
-        setSelectedVariant({
-          variant_price: parseFloat(res.product.defaultPrice),
-          variant_price_sale: parseFloat(res.product.defaultPriceSale),
-          listImage: res.product.defaultImages.join(","),
-          quantity: res.product.defaultQuantity,
-          color_hex: res.product.defaultColorHex,
-          color_name: res.product.defaultColorName,
-        });
+        const selectedColorId = colorIdFromUrl
+          ? parseInt(colorIdFromUrl)
+          : defaultColor?.color_id;
+
+        const selectedColorHex = formattedProduct.variants?.find(
+          (v) => v.color_id === selectedColorId
+        )?.color_hex;
+
+        // Set search param nếu chưa có
+        if (!colorIdFromUrl && selectedColorId) {
+          setSearchParams((prev) => {
+            prev.set("color", selectedColorId.toString());
+            return prev;
+          });
+        }
+
+        // Gọi handle để set Variant chính xác
+        if (selectedColorHex && selectedColorId) {
+          await handleColorSelect(selectedColorHex, selectedColorId);
+        }
       } catch (err) {
         console.error("Lỗi khi fetch product:", err);
       }
     })();
   }, [slug]);
+
+
   useEffect(() => {
     if (!product?.variants) return;
 
@@ -162,47 +183,47 @@ const ProductDetailPage: React.FC = () => {
     return stars;
   };
 
-  const addToCart = () => {
-    const image = selectedVariant?.listImage?.split(",")[0] || product?.images?.[0] || "";
+  const addToCart = async () => {
+    if (!product || !selectedVariant) return;
 
-    const productToAdd = {
-      id: product?.id || 0,
-      name: product?.name || "",
-      price: selectedVariant?.variant_price || product?.price || 0,
-      oldPrice: product?.price_sale,
-      image: image,
-      color: selectedVariant?.color_hex || "",
-      category: product?.category?.name || "",
-      quantity: quantity,
-    };
-
-    const storedCart = localStorage.getItem("cart");
-    let cart = storedCart ? JSON.parse(storedCart) : [];
-
-    const existingIndexSameId = cart.findIndex(
-      (item: any) => item.id === productToAdd.id
-    );
-    if (miniCartRef.current?.refreshCart) {
-      miniCartRef.current.refreshCart();
-      miniCartRef.current.toggleMiniCart(); // nếu muốn mở luôn
+    const variant_id = selectedVariant?.variant_id;
+    if (!variant_id || isNaN(variant_id)) {
+      toast.error("Không tìm thấy biến thể sản phẩm");
+      return;
     }
-    if (existingIndexSameId >= 0) {
-      const existingItem = cart[existingIndexSameId];
-      if (existingItem.color === productToAdd.color) {
-        cart[existingIndexSameId].quantity += productToAdd.quantity;
+
+    try {
+      const response = await saveToOrCart({
+        status: 0, // 0 = giỏ hàng
+        cartItems: [
+          {
+            variant_id: Number(selectedVariant.variant_id),
+            quantity: Number(quantity),
+          },
+        ],
+      });
+      console.log(response);
+      if (response.success) {
+        toast.success("Đã thêm vào giỏ hàng!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+        // Cập nhật mini cart nếu có
+        if (miniCartRef.current?.refreshCart) {
+          miniCartRef.current.refreshCart();
+          miniCartRef.current.toggleMiniCart();
+        }
       } else {
-        cart.push(productToAdd);
-      }
-    } else {
-      cart.push(productToAdd);
-    }
+        toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    toast.success("Đã thêm vào giỏ hàng!", {
-      position: "top-right",
-      autoClose: 2000,
-    });
+      }
+    } catch (error: any) {
+      console.error("Add to cart error:", error);
+      toast.error("Lỗi khi thêm vào giỏ hàng.");
+    }
   };
+
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
   return (

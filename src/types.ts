@@ -38,6 +38,7 @@ export interface Product {
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];
   variants?: Variant[];
+  variant_id: number
 }
 
 export interface ProductSpecification {

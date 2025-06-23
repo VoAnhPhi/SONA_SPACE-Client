@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import GetInTouch from "../../components/GetInTouch";
 import PolicyProduct from "../../components/Policy";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import {  loadCartService,updateCartQuantityService, removeFromCartService, clearCartService  } from "../../services/cartService";
 
 interface CartItemProps {
-  id: number;
+  id: number; 
+  variant_id: string;
   name: string;
   price: number;
   oldPrice?: number;
@@ -18,86 +19,103 @@ interface CartItemProps {
   category: string;
 }
 
+
 const CartPage: React.FC = () => {
-  // Mock cart items
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [cartItems, setCartItems] = useState<CartItemProps[]>(() => {
-    const storedCart = localStorage.getItem('cart');
-    return storedCart ? JSON.parse(storedCart) : [];
-  });
-
-  // Cart summary state
+  const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
   const [cartSummary, setCartSummary] = useState({
     subtotal: 0,
     shipping: 30000,
     discount: 0,
-    // discountPercent: 10,
     total: 0,
   });
 
-  const handleProceedToCheckout = () => {
-    if (isAuthenticated) {
-      navigate("/thanh-toan"); // hoặc route đến trang thanh toán của bạn
+  
+const loadWishlist = async () => {
+    const { success, wishlistItems, message } = await loadCartService();
+    if (success && wishlistItems) {
+      console.log("Danh sách sản phẩm trong wishlist:", wishlistItems);
+
+      const formattedItems = wishlistItems.map((item: any, index: number) => ({
+        id: item.wishlist_id || index,
+        variant_id: item.variant_id,
+        name: item.product_name,
+        price: item.price,
+        oldPrice: item.price_sale || "",
+        image: item.image?.split(",")[0] || "/images/default.jpg",
+        color: item.color_hex || "#ccc",
+        quantity: item.quantity,
+        category: item.category || "Chưa phân loại",
+      }));
+
+      setCartItems(formattedItems);
+
+      const subtotal = formattedItems.reduce(
+        (total: number, item: any) => total + item.price * item.quantity,
+        0
+      );
+
+      setCartSummary({
+        subtotal,
+        shipping: 30000,
+        discount: 0,
+        total: subtotal + 30000,
+      });
     } else {
-      alert("Bạn cần đăng nhập để thanh toán.");
-      navigate("/dang-nhap");
+      console.error("Lỗi khi load wishlist:", message);
     }
   };
-  // Format price with commas
+
+  useEffect(() => {
+    loadWishlist();
+  }, []);
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
-  // Update quantity of an item
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
+const updateQuantity = async (id: number, newQuantity: number) => {
+  if (newQuantity < 1) return;
 
-    setCartItems(
-      cartItems.map((item) =>
+  try {
+    await updateCartQuantityService(id, newQuantity);
+    setCartItems((prev) =>
+      prev.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
-  };
+  } catch (error) {
+    console.error("Lỗi khi cập nhật số lượng:", error);
+  }
+};
 
-  // Remove item from cart
-  const removeItem = (id: number) => {
+const removeItem = async (id: number) => {
+  try {
+    await removeFromCartService(id);
     setCartItems(cartItems.filter((item) => item.id !== id));
-  };
+  } catch (error) {
+    console.error("Lỗi khi xóa sản phẩm:", error);
+  }
+};
+const handleDeleteAll = async () => {
+  const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?");
+  if (!confirmDelete) return; 
 
-  const handleDeleteAll = () => {
-    setCartItems([]);
-  };
-
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      try {
-        const parsedCart = JSON.parse(storedCart);
-        setCartItems(parsedCart);
-      } catch (error) {
-        console.error("Lỗi khi parse cart từ localStorage:", error);
-        setCartItems([]);
-      }
+  try {
+    const result = await clearCartService();
+    if (result.success !== false) {
+      await loadWishlist();
+    } else {
+      console.log(result.message);
     }
-  }, []);
-  // Calculate cart summary
-  useEffect(() => {
-    // Cập nhật localStorage
-    localStorage.setItem("cart", JSON.stringify(cartItems));
+  } catch (error) {
+    alert("Lỗi khi xóa giỏ hàng.");
+  }
+};
 
-    // Tính lại tổng đơn hàng
-    const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const discount = 0;
-    const total = subtotal + cartSummary.shipping - discount;
 
-    setCartSummary(prev => ({
-      ...prev,
-      subtotal,
-      discount,
-      total
-    }));
-  }, [cartItems]);
+
+
 
   return (
     <>
@@ -239,7 +257,7 @@ const CartPage: React.FC = () => {
                       {formatPrice(cartSummary.total)} đ
                     </span>
                   </div>
-                  <div className="checkout-btn" onClick={handleProceedToCheckout}>
+                  <div className="checkout-btn" >
                     Tiến hành thanh toán
                   </div>
                 </div>
