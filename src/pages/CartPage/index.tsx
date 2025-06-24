@@ -31,6 +31,16 @@ const CartPage: React.FC = () => {
     total: 0,
   });
 
+const recalculateSummary = (items: CartItemProps[]) => {
+  const subtotal = items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const shipping = 30000;
+  const discount = 0;
+  const total = subtotal + shipping - discount;
+  setCartSummary({ subtotal, shipping, discount, total });
+};
 
   const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
@@ -56,12 +66,8 @@ const CartPage: React.FC = () => {
         0
       );
 
-      setCartSummary({
-        subtotal,
-        shipping: 30000,
-        discount: 0,
-        total: subtotal + 30000,
-      });
+      recalculateSummary(formattedItems);
+
     } else {
       console.error("Lỗi khi load wishlist:", message);
     }
@@ -79,24 +85,30 @@ const CartPage: React.FC = () => {
 
     try {
       await updateCartQuantityService(id, newQuantity);
-      setCartItems((prev) =>
-        prev.map((item) =>
+      setCartItems((prev) => {
+        const updatedItems = prev.map((item) =>
           item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-      );
+        );
+        recalculateSummary(updatedItems); // ← cập nhật lại tổng tiền
+        return updatedItems;
+      });
     } catch (error) {
       console.error("Lỗi khi cập nhật số lượng:", error);
     }
   };
 
+
   const removeItem = async (id: number) => {
     try {
       await removeFromCartService(id);
-      setCartItems(cartItems.filter((item) => item.id !== id));
+      const updatedItems = cartItems.filter((item) => item.id !== id);
+      setCartItems(updatedItems);
+      recalculateSummary(updatedItems); // ← cập nhật lại tổng tiền
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm:", error);
     }
   };
+
   const handleDeleteAll = async () => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?");
     if (!confirmDelete) return;
