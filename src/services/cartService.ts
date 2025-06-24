@@ -32,7 +32,9 @@ export const loadCartService = async () => {
     return {
       success: true,
       wishlistItems: data,
+      
     };
+    
   } catch (error: any) {
     return {
       success: false,

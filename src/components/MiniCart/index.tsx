@@ -34,35 +34,40 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => 
     isVisible,
     refreshCart,
   }));
-
+  useEffect(() => {
+    if (isVisible) {
+      const token = sessionStorage.getItem("authToken");
+      if (token) {
+        refreshCart();
+      } else {
+        console.warn("Token chưa tồn tại. Không thể load cart.");
+      }
+    }
+  }, [isVisible]);
   const refreshCart = async () => {
     try {
-const { success, wishlistItems } = await loadCartService();
+      const { success, wishlistItems } = await loadCartService();
       if (success && wishlistItems) {
         console.log("MiniCart raw:", wishlistItems);
-        
-        const formatted = wishlistItems
-          // ✅ giữ điều kiện này nếu bạn chắc chắn API trả về status: 0 cho giỏ hàng
-          .filter((item: any) => item.status === 0)
-          .map((item: any, index: number) => ({
-            id: item.wishlist_id || index,
-            name: item.product_name,
-            price: item.price,
-            quantity: item.quantity,
-            color: item.color_hex || '',
-            image: item.image?.split(',')[0] || '/images/default.jpg',
-          }));
+        wishlistItems.forEach((item: any) => {
+          console.log("Item status:", item.status);
+        });
+        const formatted = wishlistItems.map((item: any, index: number) => ({
+          id: item.wishlist_id || index,
+          name: item.product_name,
+          price: item.price,
+          quantity: item.quantity,
+          color: item.color_hex || '',
+          image: item.image?.split(',')[0] || '/images/default.jpg',
+        }));
         setCartItems(formatted);
-        console.log("mini",formatted);
+        console.log("mini", formatted);
       }
     } catch (error) {
       console.error("Lỗi khi tải MiniCart:", error);
     }
   };
 
-  useEffect(() => {
-    if (isVisible) refreshCart();
-  }, [isVisible]);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("vi-VN", {
