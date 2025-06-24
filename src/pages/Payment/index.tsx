@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { loadCartService } from "../../services/cartService";
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -117,100 +118,97 @@ const Payment: React.FC = () => {
     }
   };
   // Apply promo code
-  const applyPromoCode = () => {
-    if (formData.promoCode.trim() !== "") {
-      const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-      const discount = 0;
-      const total = subtotal + orderSummary.shipping - discount;
+  // const applyPromoCode = () => {
+  //   if (formData.promoCode.trim() !== "") {
+  //     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  //     const discount = 0;
+  //     const total = subtotal + orderSummary.shipping - discount;
 
-      alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
+  //     alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
 
-      setOrderSummary({
-        ...orderSummary,
-        discount,
-        total,
-      });
+  //     setOrderSummary({
+  //       ...orderSummary,
+  //       discount,
+  //       total,
+  //     });
 
-      setFormData({
-        ...formData,
-        promoCode: "",
-      });
-    }
-
-
-  };
+  //     setFormData({
+  //       ...formData,
+  //       promoCode: "",
+  //     });
+  //   }
 
 
-
+  // };
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
+  if (user && isAuthenticated) {
+    setFormData(prev => ({
+      ...prev,
+      fullName: user.full_name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      address: user.address || ""
+    }));
+  }
+}, [user, isAuthenticated]);
+  useEffect(() => {
+    const fetchCartFromDatabase = async () => {
       try {
-        const parsedCart = JSON.parse(storedCart);
-        setCartItems(parsedCart);
+        const { success, wishlistItems } = await loadCartService();
+        if (success && wishlistItems) {
+          const formatted = wishlistItems.map((item: any, index: number) => ({
+            id: item.wishlist_id || index,
+            name: item.product_name,
+            price: item.price,
+            oldPrice: item.price_sale || "",
+            image: item.image?.split(",")[0] || "/images/default.jpg",
+            color: item.color_hex || "#ccc",
+            quantity: item.quantity,
+            category: item.category || "Chưa phân loại",
+          }));
+          setCartItems(formatted);
 
-        const subtotal = parsedCart.reduce(
-          (total: number, item: CartItemProps) => total + item.price * item.quantity,
-          0
-        );
+          const subtotal = formatted.reduce(
+            (total: number, item: { price: number; quantity: number }) => total + item.price * item.quantity,
+            0
+          )
 
-        const shipping = 30000;
-        // const discountPercent = 10; // Đồng bộ với CartPage
-        const discount = 0;
-        const total = subtotal + shipping - discount;
+          const shipping = 30000;
+          const discount = 0;
+          const total = subtotal + shipping - discount;
 
-        setOrderSummary({
-          subtotal,
-          shipping,
-          discount,
-          // discountPercent,
-          total,
-        });
+          setOrderSummary({
+            subtotal,
+            shipping,
+            discount,
+            total,
+          });
+        }
       } catch (error) {
-        console.error("Lỗi khi đọc giỏ hàng từ localStorage:", error);
+        console.error("Lỗi khi load giỏ hàng từ DB:", error);
       }
-    }
+    };
+
+    fetchCartFromDatabase();
   }, []);
 
-  useEffect(() => {
-    if (user && isAuthenticated) {
-      setFormData(prev => ({
-        ...prev,
-        fullName: user.full_name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || ""
-      }));
-    }
-  }, [user, isAuthenticated]);
 
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      try {
-        setCartItems(JSON.parse(storedCart));
-      } catch (error) {
-        console.error("Lỗi khi parse giỏ hàng:", error);
-        setCartItems([]);
-      }
-    }
-  }, []);
 
   return (
     <>
       <Header />
       <div className="bill-payment">
 
-            {/* Breadcrumb */}
-            <div className="breadcrumb-container">
-              <div className="container">
-                <div className="breadcrumb">
-                  <Link to="/">Trang chủ</Link>
-                  <span>/</span>
-                  <span className="active">Thanh toán</span>
-                </div>
-              </div>
+        {/* Breadcrumb */}
+        <div className="breadcrumb-container">
+          <div className="container">
+            <div className="breadcrumb">
+              <Link to="/">Trang chủ</Link>
+              <span>/</span>
+              <span className="active">Thanh toán</span>
             </div>
+          </div>
+        </div>
 
         <div className="pay-cart">
           <div className="container">

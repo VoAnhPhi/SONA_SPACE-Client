@@ -5,10 +5,10 @@ import Footer from "../../components/Footer";
 import GetInTouch from "../../components/GetInTouch";
 import PolicyProduct from "../../components/Policy";
 import { useAuth } from "../../contexts/AuthContext";
-import {  loadCartService,updateCartQuantityService, removeFromCartService, clearCartService  } from "../../services/cartService";
+import { loadCartService, updateCartQuantityService, removeFromCartService, clearCartService } from "../../services/cartService";
 
 interface CartItemProps {
-  id: number; 
+  id: number;
   variant_id: string;
   name: string;
   price: number;
@@ -31,8 +31,8 @@ const CartPage: React.FC = () => {
     total: 0,
   });
 
-  
-const loadWishlist = async () => {
+
+  const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
     if (success && wishlistItems) {
       console.log("Danh sách sản phẩm trong wishlist:", wishlistItems);
@@ -74,44 +74,44 @@ const loadWishlist = async () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
-const updateQuantity = async (id: number, newQuantity: number) => {
-  if (newQuantity < 1) return;
+  const updateQuantity = async (id: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
 
-  try {
-    await updateCartQuantityService(id, newQuantity);
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  } catch (error) {
-    console.error("Lỗi khi cập nhật số lượng:", error);
-  }
-};
-
-const removeItem = async (id: number) => {
-  try {
-    await removeFromCartService(id);
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  } catch (error) {
-    console.error("Lỗi khi xóa sản phẩm:", error);
-  }
-};
-const handleDeleteAll = async () => {
-  const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?");
-  if (!confirmDelete) return; 
-
-  try {
-    const result = await clearCartService();
-    if (result.success !== false) {
-      await loadWishlist();
-    } else {
-      console.log(result.message);
+    try {
+      await updateCartQuantityService(id, newQuantity);
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+      );
+    } catch (error) {
+      console.error("Lỗi khi cập nhật số lượng:", error);
     }
-  } catch (error) {
-    alert("Lỗi khi xóa giỏ hàng.");
-  }
-};
+  };
+
+  const removeItem = async (id: number) => {
+    try {
+      await removeFromCartService(id);
+      setCartItems(cartItems.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
+    }
+  };
+  const handleDeleteAll = async () => {
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?");
+    if (!confirmDelete) return;
+
+    try {
+      const result = await clearCartService();
+      if (result.success !== false) {
+        await loadWishlist();
+      } else {
+        console.log(result.message);
+      }
+    } catch (error) {
+      alert("Lỗi khi xóa giỏ hàng.");
+    }
+  };
 
 
 
@@ -257,9 +257,7 @@ const handleDeleteAll = async () => {
                       {formatPrice(cartSummary.total)} đ
                     </span>
                   </div>
-                  <div className="checkout-btn" >
-                    Tiến hành thanh toán
-                  </div>
+                  <Link to="/thanh-toan" className="checkout-btn">Tiến hành thanh toán</Link>
                 </div>
               </div>
             ) : (

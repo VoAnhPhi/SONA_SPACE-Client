@@ -30,11 +30,11 @@
       margin-bottom: 42px;
 
       h1 {
-        @include text(32px,"M-SB", normal, $black-cl, null);
+        @include text(32px, "M-SB", normal, $black-cl, null);
       }
 
       .items-count {
-        @include text(16px,"M-R", normal, $black-cl, null);
+        @include text(16px, "M-R", normal, $black-cl, null);
         margin: 0;
 
       }
@@ -42,7 +42,7 @@
     }
 
     .delete-all {
-      @include text(16px,"M-R", normal, $error-cl, null);
+      @include text(16px, "M-R", normal, $error-cl, null);
       margin: 0 12px;
       cursor: pointer;
     }
@@ -218,6 +218,16 @@
               }
             }
           }
+        }
+
+        p {
+          font-size: 16px;
+          font-family: "M-R";
+          line-height: normal;
+          color: #D83B01;
+          margin: 0 12px;
+          cursor: pointer;
+          width: fit-content;
         }
       }
 
