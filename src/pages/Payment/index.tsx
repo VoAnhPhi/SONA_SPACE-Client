@@ -6,15 +6,17 @@ import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService } from "../../services/cartService";
+
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
   discount: number;
-  // discountPercent: number;
   total: number;
 }
+
 interface CartItemProps {
   id: number;
+  variant_id: string;
   name: string;
   price: number;
   oldPrice?: number;
@@ -23,23 +25,21 @@ interface CartItemProps {
   quantity: number;
   category: string;
 }
+
 const Payment: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("transfer");
+  const [paymentMethod, setPaymentMethod] = useState("transfer");
 
-  // Order summary state
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
     shipping: 30000,
     discount: 0,
-    // discountPercent: 10,
-    total: 30000, // subtotal = 0 + shipping = 30000
+    total: 30000,
   });
 
-  // Form data
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -49,31 +49,22 @@ const Payment: React.FC = () => {
     cardNumber: "",
     cvv: "",
     expiryDate: "",
-    promoCode: ""
+    promoCode: "",
   });
 
-  // Format price with commas
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
+  const formatPrice = (price: number): string =>
+    price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle payment method change
   const handlePaymentMethodChange = (method: string) => {
     setPaymentMethod(method);
   };
 
-  // Handle form submission
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!agreeToTerms) {
@@ -87,7 +78,7 @@ const Payment: React.FC = () => {
     const orderData = {
       orderId,
       orderDate,
-      status: "Đang xử lý",         // hoặc giá trị mặc định
+      status: "Đang xử lý",
       statusStep: 1,
       itemCount: cartItems.length,
       recipientName: formData.fullName,
@@ -97,13 +88,11 @@ const Payment: React.FC = () => {
       shippingFee: orderSummary.shipping,
       discount: orderSummary.discount,
       total: orderSummary.total,
-      products: cartItems // 👈 sử dụng key này để đồng bộ với DetailOrder
+      products: cartItems,
     };
 
     try {
       localStorage.setItem("lastOrder", JSON.stringify(orderData));
-      localStorage.removeItem("cart");
-
       toast.success("🎉 Thanh toán thành công! Đang chuyển hướng...", {
         position: "top-right",
         autoClose: 2000,
@@ -117,47 +106,27 @@ const Payment: React.FC = () => {
       toast.error("❌ Có lỗi xảy ra.");
     }
   };
-  // Apply promo code
-  // const applyPromoCode = () => {
-  //   if (formData.promoCode.trim() !== "") {
-  //     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  //     const discount = 0;
-  //     const total = subtotal + orderSummary.shipping - discount;
 
-  //     alert(`Mã giảm giá "${formData.promoCode}" đã được áp dụng!`);
-
-  //     setOrderSummary({
-  //       ...orderSummary,
-  //       discount,
-  //       total,
-  //     });
-
-  //     setFormData({
-  //       ...formData,
-  //       promoCode: "",
-  //     });
-  //   }
-
-
-  // };
   useEffect(() => {
-  if (user && isAuthenticated) {
-    setFormData(prev => ({
-      ...prev,
-      fullName: user.full_name || "",
-      email: user.email || "",
-      phone: user.phone || "",
-      address: user.address || ""
-    }));
-  }
-}, [user, isAuthenticated]);
+    if (user && isAuthenticated) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: user.full_name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || "",
+      }));
+    }
+  }, [user, isAuthenticated]);
+
   useEffect(() => {
-    const fetchCartFromDatabase = async () => {
+    const loadCartFromDatabase = async () => {
       try {
         const { success, wishlistItems } = await loadCartService();
         if (success && wishlistItems) {
           const formatted = wishlistItems.map((item: any, index: number) => ({
             id: item.wishlist_id || index,
+            variant_id: item.variant_id,
             name: item.product_name,
             price: item.price,
             oldPrice: item.price_sale || "",
@@ -166,32 +135,27 @@ const Payment: React.FC = () => {
             quantity: item.quantity,
             category: item.category || "Chưa phân loại",
           }));
+
           setCartItems(formatted);
 
           const subtotal = formatted.reduce(
-            (total: number, item: { price: number; quantity: number }) => total + item.price * item.quantity,
+            (total, item) => total + item.price * item.quantity,
             0
-          )
+          );
 
           const shipping = 30000;
           const discount = 0;
           const total = subtotal + shipping - discount;
 
-          setOrderSummary({
-            subtotal,
-            shipping,
-            discount,
-            total,
-          });
+          setOrderSummary({ subtotal, shipping, discount, total });
         }
       } catch (error) {
-        console.error("Lỗi khi load giỏ hàng từ DB:", error);
+        console.error("Lỗi khi load giỏ hàng:", error);
       }
     };
 
-    fetchCartFromDatabase();
+    loadCartFromDatabase();
   }, []);
-
 
 
   return (
@@ -221,7 +185,7 @@ const Payment: React.FC = () => {
             <div className="pay-info">
               <form onSubmit={handleSubmit} className="pay-info-left">
                 <div className="info-left-title">
-                  <h5>Thông tin giao hàng</h5>
+                  <h5>THÔNG TIN GIAO HÀNG</h5>
                 </div>
                 <div className="info-left-form">
                   <div className="form-info">
@@ -266,39 +230,60 @@ const Payment: React.FC = () => {
                 </div>
 
                 <div className="info-left-title-2">
-                  <h5>Phương thức thanh toán</h5>
+                  <h5>PHƯƠNG THỨC THANH TOÁN</h5>
                   <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
-                    <label>
+                    <div className="method-option">
                       <input
+                      className="input-radio"
                         type="radio"
                         name="paymentMethod"
                         checked={paymentMethod === 'transfer'}
                         onChange={() => handlePaymentMethodChange('transfer')}
                       />
+                      <img src="/images/icons/cod.svg" alt="" width={30} height={30} />
                       <span className="radio-label">Thanh toán khi nhận hàng</span>
-                    </label>
+                    </div>
                   </div>
                   <div className={`payment-option ${paymentMethod === 'card' ? 'active' : ''}`}>
-                    <label>
+                    <div className="method-option">
                       <input
+                        className="input-radio"
                         type="radio"
                         name="paymentMethod"
                         checked={paymentMethod === 'card'}
                         onChange={() => handlePaymentMethodChange('card')}
                       />
-                      <span className="radio-label">Chuyển khoản qua ngân hàng</span>
-                    </label>
+                      <img src="/images/icons/momo.svg" alt="" width={30} height={30} />
+                      <span className="radio-label">Thanh toán qua ví momo</span>
+                    </div>
+                  </div>
+                  <div className={`payment-option ${paymentMethod === 'VNpay' ? 'active' : ''}`}>
+                    <div className="method-option">
+                      <input
+                        className="input-radio"
+                        type="radio"
+                        name="paymentMethod"
+                        checked={paymentMethod === 'VNpay'}
+                        onChange={() => handlePaymentMethodChange('VNpay')}
+                      />
+                      <img src="/images/icons/vnpay.svg" alt="" width={30} height={30} />
+                      <span className="radio-label">Thanh toán qua cổng VNPay</span>
+                    </div>
                   </div>
 
 
                 </div>
-                {paymentMethod === 'transfer' && (
                   <div className="info-left-clause">
                     <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
                     <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
                   </div>
-                )}
-                {paymentMethod === 'card' && (
+                {/* {paymentMethod === 'transfer' && (
+                  <div className="info-left-clause">
+                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
+                  </div>
+                )} */}
+                {/* {paymentMethod === 'card' && (
                   <>
                     <div className="info-left-form">
                       <div className="form-info">
@@ -349,7 +334,7 @@ const Payment: React.FC = () => {
                       <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
                     </div>
                   </>
-                )}
+                )} */}
 
 
 

@@ -50,7 +50,7 @@
       row-gap: 15px;
       column-gap: 100px;
       justify-content: space-between;
-      margin: 30px 40px 0 40px;
+      margin: 30px 40px 30px 40px;
 
       & label {
         color: #0F172A;
@@ -82,7 +82,10 @@
     }
 
     & .info-left-title-2 {
-      margin: 30px 40px 0 40px;
+      margin: 30px 40px 30px 40px;
+      row-gap: 10px;
+      display: flex;
+      flex-direction: column;
 
       h5 {
         font-size: 20px;
@@ -91,10 +94,41 @@
 
       .payment-option {
         margin: 10px 0 0 20px;
+
+        .method-option {
+          display: flex;
+          align-self: center;
+          gap: 10px;
+          align-items: center;
+
+          .input-radio {
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            cursor: pointer;
+            vertical-align: -4px;
+            outline: 0;
+            border: solid 1px #d9d9d9;
+
+
+            &:checked {
+              box-shadow: unset;
+              border: 1px solid #F0A00A;
+              border-radius: 100%;
+              background: transparent ! IMPORTANT;
+              accent-color: rgb(193 129 10);
+            }
+
+            &:active {
+              background-color: #fff;
+
+            }
+          }
+        }
       }
 
       span {
-        padding-left: 10px;
         font-size: 16px;
         font-family: 'Be-R';
       }
@@ -103,18 +137,18 @@
     }
 
     & .info-left-clause {
-      margin: 30px 0 10px 40px;
+      margin: 30px 40px 20px 40px;
       display: flex;
       align-items: center;
 
-      & input {
+       input {
         width: 20px;
         height: 20px;
         margin-right: 10px;
       }
 
-      & span {
-        font-size: 14px;
+       span {
+        font-size: 16px;
         color: #0F172A;
         font-family: 'Be-R';
 
