@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { getOrderByHash } from "../../services/ordersCompleteService";
 import Footer from "../../components/Footer";
 
 interface OrderSummaryProps {
@@ -10,20 +11,25 @@ interface OrderSummaryProps {
 }
 
 const OrderComplete: React.FC = () => {
+  const { orderId } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
 
   useEffect(() => {
-    const lastOrder = localStorage.getItem("lastOrder");
-    if (lastOrder) {
-      const parsed = JSON.parse(lastOrder);
-      setOrderSummary({
-        orderId: parsed.orderId,
-        orderDate: parsed.orderDate,
-        itemCount: parsed.itemCount,
-        total: parsed.total,
-      });
-    }
-  }, []);
+    const fetchOrder = async () => {
+      if (!orderId) return;
+      const res = await getOrderByHash(orderId);
+      if (res.success && res.order) {
+        setOrderSummary({
+          orderId: res.order.order_hash,
+          orderDate: new Date(res.order.created_at).toLocaleString(),
+          itemCount: res.order.total_quantity,
+          total: res.order.order_total_final,
+        });
+      }
+    };
+
+    fetchOrder();
+  }, [orderId]);
 
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");

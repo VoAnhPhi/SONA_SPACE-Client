@@ -48,7 +48,6 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => 
     try {
       const { success, wishlistItems } = await loadCartService();
       if (success && wishlistItems) {
-        console.log("MiniCart raw:", wishlistItems);
         wishlistItems.forEach((item: any) => {
           console.log("Item status:", item.status);
         });
@@ -61,7 +60,6 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => 
           image: item.image?.split(',')[0] || '/images/default.jpg',
         }));
         setCartItems(formatted);
-        console.log("mini", formatted);
       }
     } catch (error) {
       console.error("Lỗi khi tải MiniCart:", error);
