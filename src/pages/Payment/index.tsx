@@ -6,7 +6,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService } from "../../services/cartService";
-
+import { createOrderService } from "../../services/ordersService";
+import axios from "axios";
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -32,6 +33,8 @@ const Payment: React.FC = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("transfer");
+  const [prevAddress, setPrevAddress] = useState("");
+  const [prevPhone, setPrevPhone] = useState("");
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
@@ -64,58 +67,85 @@ const Payment: React.FC = () => {
     setPaymentMethod(method);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!agreeToTerms) {
-      alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
+  if (!agreeToTerms) {
+    alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
+    return;
+  }
+
+  const orderId = "SN" + Math.floor(10000000 + Math.random() * 90000000);
+
+  const method =
+    paymentMethod === "card"
+      ? "MOMO"
+      : paymentMethod === "VNpay"
+        ? "VNPAY"
+        : "COD";
+
+  try {
+    const payload: any = {
+      order_id: orderId,
+      user_id: user?.id,
+      recipient_name: formData.fullName,
+      order_total: orderSummary.total,
+      order_status: "Đang xử lý",
+      method,
+      amount: orderSummary.total,
+
+      // luôn gửi địa chỉ cũ và số cũ
+      order_address_old: prevAddress,
+      order_number1: prevPhone,
+    };
+
+    // chỉ gửi địa chỉ mới nếu người dùng sửa
+    if (formData.address.trim() !== prevAddress.trim()) {
+      payload.order_address_new = formData.address.trim();
+    }
+
+    // chỉ cập nhật số mới nếu khác số cũ
+    if (formData.phone.trim() !== prevPhone.trim()) {
+      payload.order_number2 = formData.phone.trim(); // override số cũ
+    }
+
+    const res = await createOrderService(payload);
+
+    if (!res?.order_id) {
+      toast.error("Không thể tạo đơn hàng");
       return;
     }
 
-    const orderId = "SN" + Math.floor(100000 + Math.random() * 900000);
-    const orderDate = new Date().toLocaleString("vi-VN");
-
-    const orderData = {
-      orderId,
-      orderDate,
-      status: "Đang xử lý",
-      statusStep: 1,
-      itemCount: cartItems.length,
-      recipientName: formData.fullName,
-      recipientPhone: formData.phone,
-      address: formData.address,
-      subtotal: orderSummary.subtotal,
-      shippingFee: orderSummary.shipping,
-      discount: orderSummary.discount,
-      total: orderSummary.total,
-      products: cartItems,
-    };
-
-    try {
-      localStorage.setItem("lastOrder", JSON.stringify(orderData));
-      toast.success("🎉 Thanh toán thành công! Đang chuyển hướng...", {
-        position: "top-right",
+    if (res.payUrl) {
+      window.location.href = res.payUrl;
+    } else {
+      toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", {
         autoClose: 2000,
       });
-
       setTimeout(() => {
-        navigate("/dat-hang-thanh-cong");
+        navigate(`/dat-hang-thanh-cong/${res.order_id}`);
       }, 2000);
-    } catch (error) {
-      console.error("Lỗi khi xử lý đơn hàng:", error);
-      toast.error("❌ Có lỗi xảy ra.");
     }
-  };
+  } catch (error) {
+    toast.error("❌ Có lỗi xảy ra khi xử lý đơn hàng.");
+  }
+};
 
   useEffect(() => {
     if (user && isAuthenticated) {
+      const defaultAddress = user.address || "";
+      const defaultPhone = user.phone || "";
+
       setFormData((prev) => ({
         ...prev,
         fullName: user.full_name || "",
         email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || "",
+        phone: defaultPhone,
+        address: defaultAddress,
       }));
+
+      setPrevAddress(defaultAddress);
+      setPrevPhone(defaultPhone);
     }
   }, [user, isAuthenticated]);
 
@@ -234,7 +264,7 @@ const Payment: React.FC = () => {
                   <div className={`payment-option ${paymentMethod === 'transfer' ? 'active' : ''}`}>
                     <div className="method-option">
                       <input
-                      className="input-radio"
+                        className="input-radio"
                         type="radio"
                         name="paymentMethod"
                         checked={paymentMethod === 'transfer'}
@@ -273,68 +303,10 @@ const Payment: React.FC = () => {
 
 
                 </div>
-                  <div className="info-left-clause">
-                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
-                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
-                  </div>
-                {/* {paymentMethod === 'transfer' && (
-                  <div className="info-left-clause">
-                    <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
-                    <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
-                  </div>
-                )} */}
-                {/* {paymentMethod === 'card' && (
-                  <>
-                    <div className="info-left-form">
-                      <div className="form-info">
-                        <label >Tên chủ thẻ</label><br />
-                        <input type="text"
-                          id="cardName"
-                          name="cardName"
-                          placeholder="Nhập họ và tên"
-                          value={formData.cardName}
-                          onChange={handleInputChange}
-                          required />
-                      </div>
-                      <div className="form-info">
-                        <label >Số thẻ</label><br />
-                        <input type="text"
-                          id="cardNumber"
-                          name="cardNumber"
-                          placeholder="Nhập số thẻ"
-                          value={formData.cardNumber}
-                          onChange={handleInputChange}
-                          required />
-                      </div>
-                      <div className="form-info">
-                        <label >Nhập CCV</label><br />
-                        <input type="text"
-                          id="cvv"
-                          name="cvv"
-                          placeholder="Nhập CVV"
-                          value={formData.cvv}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="form-info">
-                        <label >Ngày hết hạn</label><br />
-                        <input type="text"
-                          id="expiryDate"
-                          name="expiryDate"
-                          placeholder="Nhập ngày hết hạn"
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          required />
-                      </div>
-
-                    </div>
-                    <div className="info-left-clause">
-                      <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
-                      <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
-                    </div>
-                  </>
-                )} */}
+                <div className="info-left-clause">
+                  <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                  <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
+                </div>
 
 
 
@@ -371,46 +343,7 @@ const Payment: React.FC = () => {
                 </div>
               </div>
 
-              {/* <div className="pay-info-right">
-                <div className="info-right-bill">
-                  <h4>Đơn hàng</h4>
 
-                  <div className="info-right-bill-sum">
-                    <span className="sum1">Tổng giá</span>
-                    <span className="sum2">{formatPrice(orderSummary.subtotal)} đ</span>
-                  </div>
-                  <div className="info-right-bill-shipping">
-                    <span className="shipping1">Vận chuyển</span>
-                    <span className="shipping2">{formatPrice(orderSummary.shipping)} đ</span>
-                  </div>
-                  <div className="info-right-bill-discount">
-                    <span className="discount1">Thành viên  giảm giá</span>
-                    <span className="discount2">-{orderSummary.discountPercent}%</span>
-                  </div>
-                  <div className="info-right-bill-discount-code">
-                    <input
-                      type="text"
-                      name="promoCode"
-                      placeholder="Nhập mã giảm giá"
-                      value={formData.promoCode}
-                      onChange={handleInputChange}
-                      className="discount-code"
-                    />
-                    <button type="button"
-                      className="apply-btn"
-                      onClick={applyPromoCode}>Áp dụng</button>
-                  </div>
-                  <div className="info-right-bill-total">
-                    <span className="total1">Tổng cộng</span>
-                    <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
-                  </div>
-                  <div className="info-right-bill-button">
-                    <button type="submit" className="cart-button" onClick={handleSubmit}>
-                      Tiến hành thanh toán
-                    </button>
-                  </div>
-                </div>
-              </div> */}
             </div>
 
           </div>

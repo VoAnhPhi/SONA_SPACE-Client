@@ -62,7 +62,6 @@
 
       .form-info {
         input {
-          font-size: 14px;
           font-family: 'Be-R';
           width: 350px;
           height: 50px;
@@ -70,7 +69,7 @@
           border-radius: 10px;
           padding-left: 20px;
           margin-top: 7px;
-          font-size: 14px;
+          font-size: 16px;
           color: #0F172A;
 
           &:focus {
@@ -93,7 +92,7 @@
       }
 
       .payment-option {
-        margin: 10px 0 0 20px;
+        margin-top: 10px;
 
         .method-option {
           display: flex;
@@ -102,8 +101,8 @@
           align-items: center;
 
           .input-radio {
-            width: 20px;
-            height: 20px;
+            width: 23px;
+            height: 23px;
             transition: all 0.2s ease-in-out;
             position: relative;
             cursor: pointer;
@@ -129,7 +128,7 @@
       }
 
       span {
-        font-size: 16px;
+        font-size: 18px;
         font-family: 'Be-R';
       }
 
@@ -137,7 +136,7 @@
     }
 
     & .info-left-clause {
-      margin: 30px 40px 20px 40px;
+      margin: 40px 40px 20px 40px;
       display: flex;
       align-items: center;
 
