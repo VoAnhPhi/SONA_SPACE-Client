@@ -66,7 +66,9 @@
           display: flex;
           align-self: center;
           gap: 10px;
+          z-index: 10;
           cursor: pointer;
+          position: relative;
 
           span {
             font-family: 'Be-M';
@@ -75,6 +77,10 @@
           }
 
           img {
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 20;
+            position: relative;
             color: #d9d9d9;
           }
         }
@@ -245,7 +251,8 @@
 
   @include md {
     .box-products-container {
-      grid-template-columns: repeat(3,1fr);
+      grid-template-columns: repeat(3, 1fr);
+
       .box-products-frame {
         .products-frame-news {
           .news-t {

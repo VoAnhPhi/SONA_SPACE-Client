@@ -1,19 +1,73 @@
 //Product
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import type { Product, Variant } from "../../types";
-
+import { removeFromWishlistService } from "../../services/wishlistService";
+import { saveToOrCart } from "../../services/cartService";
+import { toast, ToastContainer } from "react-toastify";
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
-  const [wishlist, setWishlist] = useState<boolean>(
-    product.isWishlist || false
-  );
+  const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
   const [hoveredColor, setHoveredColor] = useState<string | null>(null);
+  const defaultVariantId = product.variant_id;
 
-  const toggleWishlist = () => {
-    setWishlist(!wishlist);
-    // Có thể gọi API để lưu trạng thái wishlist ở backend
+
+  useEffect(() => {
+    setWishlist(product.isWishlist || false);
+  }, [product.isWishlist]);
+
+  const addItemToWishlist = async () => {
+    try {
+      const response = await saveToOrCart({
+        status: 1,
+        cartItems: [{ variant_id: product.variant_id, quantity: 1 }],
+      });
+
+      if (response.success) {
+        setWishlist(true);
+        toast.success("Đã thêm vào wishlist!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.error("Thêm vào wishlist thất bại: " + response.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào wishlist:", error);
+      toast.error("Có lỗi khi thêm vào wishlist.");
+    }
   };
+
+  const removeItemFromWishlist = async () => {
+    try {
+      if (!product.variant_id) {
+        toast.error("Không tìm thấy ID sản phẩm trong wishlist.");
+        return;
+      }
+
+      await removeFromWishlistService(product.variant_id);
+      setWishlist(false);
+      toast.success("Đã xóa khỏi wishlist!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+      console.log("Đã xoá khỏi wishlist!");
+    } catch (error) {
+      console.error("Lỗi khi xoá khỏi wishlist:", error);
+      toast.error("Có lỗi khi xoá khỏi wishlist.");
+    }
+  };
+
+
+  const toggleWishlist = async () => {
+    if (!product.variant_id) return;
+    if (wishlist) {
+      await removeItemFromWishlist();
+    } else {
+      await addItemToWishlist();
+    }
+  };
+
+
 
   const today = new Date();
   const threeDaysAgo = new Date();
@@ -50,10 +104,10 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   // Tìm tên màu dựa vào mã hex
   const findColorName = (hexColor: string): string => {
     if (!product.variants) return "";
-    
-    const variant = product.variants.find((v) => 
+
+    const variant = product.variants.find((v) =>
       v.color_hex && v.color_hex.toLowerCase() === hexColor.toLowerCase());
-    
+
     return variant?.color_name || "";
   };
 
@@ -75,15 +129,13 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
               <span className="news-tt-1">Giảm {discountPercent}% </span>
             )}
           </div>
-          <div className="news-icon" onClick={toggleWishlist}>
+          <div className="news-icon" >
             <img
-              src={
-                wishlist
-                  ? "/images/products/heart-red.svg" // hình trái tim đỏ
-                  : "/images/products/heart.svg" // trái tim màu thường
-              }
-              alt=""
-              style={{ width: "20px", height: "20px" }}
+              key={wishlist ? "heart-red" : "heart"}
+              src={wishlist ? "/images/products/heart-red.svg" : "/images/products/heart.svg"}
+              alt="wishlist"
+              onClick={toggleWishlist}
+              style={{ width: "20px", height: "20px", cursor: "pointer" }}
             />
           </div>
         </div>
@@ -109,7 +161,7 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
                 <span
                   key={index}
                   className={`color-${index + 1}`}
-                  style={{ 
+                  style={{
                     backgroundColor: color,
                     cursor: 'pointer',
                     position: 'relative',
@@ -149,6 +201,7 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
           </div>
         </div>
       </div>
+
     </>
   );
 };

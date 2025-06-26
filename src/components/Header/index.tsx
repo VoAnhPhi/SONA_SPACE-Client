@@ -23,7 +23,6 @@ const Header = () => {
 
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
   const miniCartRef = useRef<any>(null);
-  console.log("MiniCartRef", miniCartRef.current);
   miniCartRef.current?.toggleMiniCart();
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -176,6 +175,7 @@ const Header = () => {
                     Trang Chủ
                   </a>
                 </li>
+                
                 <li>
                   <a
                     href="/san-pham"
@@ -270,6 +270,7 @@ const Header = () => {
                       </div>
                     </div>
                   </a>
+                  
                 </li>
                 <li>
                   <a

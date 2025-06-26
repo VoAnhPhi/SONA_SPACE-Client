@@ -11,6 +11,7 @@ import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
 import PopularCategory from "../../components/PopularCategory";
 import Seemore from "../../components/SeeMore";
+import { toast, ToastContainer } from "react-toastify";
 
 // Type
 import type { Product } from "../../types";
@@ -174,6 +175,9 @@ const ProductPage: React.FC = () => {
       <PolicyProduct />
       <GetInTouch />
       <Footer />
+            <ToastContainer position="top-right"
+        autoClose={3000}
+        style={{ marginTop: "100px" }} />
     </>
   );
 };
