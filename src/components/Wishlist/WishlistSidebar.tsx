@@ -11,15 +11,15 @@ interface WishlistItem {
   created_at: string;
   variant_id: number;
   product_id: number;
-  variant_product_price: string;
-  variant_product_price_sale: string | null;
-  variant_product_list_image: string;
-  user_id: number;
-  user_name: string;
-  user_gmail: string;
-  user_address: string;
-  product_name?: string; // Thêm trường tên sản phẩm
+  price: string;
+  price_sale: string | null;
+  image: string;
+  product_name: string;
+  category: string;
+  color_name?: string;
+  color_hex?: string;
 }
+
 
 // Định nghĩa kiểu dữ liệu cho product
 interface Product {
@@ -59,25 +59,25 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
   // Lấy tên sản phẩm từ API
   const fetchProductNames = async (productIds: number[]) => {
     if (productIds.length === 0) return;
-    
+
     try {
       // Lấy token từ sessionStorage
       const token = sessionStorage.getItem('authToken');
       if (!token) return;
-      
+
       // Tạo một đối tượng để lưu trữ tên sản phẩm
       const names: Record<number, string> = {};
-      
+
       // Lấy tên sản phẩm cho từng product_id
       await Promise.all(productIds.map(async (productId) => {
         try {
-          const response = await axios.get(`http://localhost:3501/api/products/${productId}`, {
+          const response = await axios.get(`http://localhost:3501/api/wishlists?status=1`, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           });
-          
+
           if (response.data && response.data.product_name) {
             names[productId] = response.data.product_name;
           } else {
@@ -88,7 +88,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
           names[productId] = `Sản phẩm #${productId}`;
         }
       }));
-      
+
       // Cập nhật state
       setProductNames(names);
     } catch (err) {
@@ -101,83 +101,32 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
     try {
       setLoading(true);
       setError(null);
-      
-      // Lấy user_id từ sessionStorage
-      const userDataStr = sessionStorage.getItem('user');
-      if (!userDataStr) {
-        setError('Bạn cần đăng nhập để xem danh sách yêu thích');
-        setLoading(false);
-        return;
-      }
-      
-      const userData = JSON.parse(userDataStr);
-      const userId = userData.id;
-      
-      // Lấy token từ sessionStorage
+
       const token = sessionStorage.getItem('authToken');
       if (!token) {
         setError('Phiên đăng nhập đã hết hạn');
         setLoading(false);
         return;
       }
-      
-      // Gọi API để lấy danh sách wishlist
-      const response = await axios.get(`http://localhost:3501/api/wishlists-id/${userId}`, {
+
+      const response = await axios.get(`http://localhost:3501/api/wishlists?status=1`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        },
       });
-      
-      // Log dữ liệu trả về để kiểm tra cấu trúc
-      console.log('API Response:', response.data);
-      
-      let items: WishlistItem[] = [];
-      
-      // Kiểm tra cấu trúc dữ liệu và đảm bảo wishlistItems luôn là một mảng
-      if (response.data) {
-        if (Array.isArray(response.data)) {
-          // Nếu response.data là mảng, sử dụng trực tiếp
-          items = response.data;
-        } else if (response.data.wishlists && Array.isArray(response.data.wishlists)) {
-          // Nếu response.data có thuộc tính wishlists là mảng
-          items = response.data.wishlists;
-        } else if (typeof response.data === 'object') {
-          // Nếu response.data là một đối tượng, tìm thuộc tính là mảng
-          const possibleArrays = Object.values(response.data).filter(Array.isArray);
-          if (possibleArrays.length > 0) {
-            // Sử dụng mảng đầu tiên tìm thấy
-            items = possibleArrays[0];
-          } else {
-            // Nếu không tìm thấy mảng nào, đặt là mảng rỗng
-            console.error('Không tìm thấy mảng trong dữ liệu API:', response.data);
-            items = [];
-          }
-        } else {
-          // Trường hợp khác, đặt là mảng rỗng
-          console.error('Dữ liệu API không phải là mảng hoặc không chứa mảng:', response.data);
-          items = [];
-        }
-      } else {
-        // Nếu không có dữ liệu, đặt là mảng rỗng
-        items = [];
-      }
-      
+
+      const items: WishlistItem[] = Array.isArray(response.data) ? response.data : [];
+
       setWishlistItems(items);
-      
-      // Lấy danh sách product_id để lấy tên sản phẩm
-      if (items.length > 0) {
-        const productIds = items.map(item => item.product_id);
-        fetchProductNames(productIds);
-      }
     } catch (err) {
       console.error('Lỗi khi lấy danh sách yêu thích:', err);
       setError('Không thể lấy danh sách yêu thích. Vui lòng thử lại sau.');
-      setWishlistItems([]); // Đảm bảo wishlistItems là mảng rỗng khi có lỗi
+      setWishlistItems([]);
     } finally {
       setLoading(false);
     }
   };
+
 
   // Xử lý xóa sản phẩm khỏi wishlist
   const handleRemoveFromWishlist = async (wishlistId: number) => {
@@ -188,7 +137,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
         setError('Phiên đăng nhập đã hết hạn');
         return;
       }
-      
+
       // Gọi API để xóa sản phẩm khỏi wishlist
       await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
         headers: {
@@ -196,7 +145,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
           'Content-Type': 'application/json'
         }
       });
-      
+
       // Cập nhật lại danh sách wishlist
       setWishlistItems(wishlistItems.filter(item => item.wishlist_id !== wishlistId));
     } catch (err) {
@@ -208,12 +157,12 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
   // Lấy URL hình ảnh đầu tiên từ chuỗi URL
   const getFirstImageUrl = (imageUrls: string): string => {
     if (!imageUrls) return "";
-    
+
     // Nếu chuỗi chứa dấu phẩy, lấy URL đầu tiên
     if (imageUrls.includes(',')) {
       return imageUrls.split(',')[0];
     }
-    
+
     return imageUrls;
   };
 
@@ -231,7 +180,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
   };
 
   return (
-    <div 
+    <div
       className={`wishlist-sidebar-container ${isOpen ? 'open' : ''}`}
       onClick={handleOverlayClick}
     >
@@ -265,7 +214,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
                 <div className="wishlist-item" key={item.wishlist_id}>
                   <div className="wishlist-item-image">
                     <Link to={`/san-pham/${item.product_id}`}>
-                      <img src={getFirstImageUrl(item.variant_product_list_image)} alt="Product" />
+                      <img src={getFirstImageUrl(item.image)} alt="Product" />
                     </Link>
                   </div>
                   <div className="wishlist-item-info">
@@ -273,17 +222,17 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
                       {item.product_name || productNames[item.product_id] || `Sản phẩm #${item.product_id}`}
                     </Link>
                     <div className="wishlist-item-price">
-                      {item.variant_product_price_sale ? (
+                      {item.price_sale ? (
                         <>
-                          <span className="sale-price">{formatPrice(item.variant_product_price_sale)}</span>
-                          <span className="original-price">{formatPrice(item.variant_product_price)}</span>
+                          <span className="sale-price">{formatPrice(item.price_sale)}</span>
+                          <span className="original-price">{formatPrice(item.price)}</span>
                         </>
                       ) : (
-                        <span className="regular-price">{formatPrice(item.variant_product_price)}</span>
+                        <span className="regular-price">{formatPrice(item.price)}</span>
                       )}
                     </div>
                     <div className="wishlist-item-actions">
-                      <button 
+                      <button
                         className="remove-button"
                         onClick={() => handleRemoveFromWishlist(item.wishlist_id)}
                       >

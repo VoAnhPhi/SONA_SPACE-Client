@@ -9,7 +9,10 @@ export const formatProductForDisplay = (product: any): Product => {
   // Xử lý mảng màu sắc
 
   let colorHexArray: string[] = [];
-  const variant_id = product.variant_id || product.defaultVariantId
+  let variant_id = product.variant_id || product.defaultVariantId;
+  if (!variant_id && Array.isArray(product.variants) && product.variants.length > 0) {
+    variant_id = product.variants[0].variant_id;
+  }
   // Trường hợp 1: Lấy màu từ variants nếu có
   if (Array.isArray(product.variants) && product.variants.length > 0) {
     // Lấy các màu không trùng lặp từ variants
@@ -151,7 +154,7 @@ export const formatProductForDisplay = (product: any): Product => {
     image: image,
     isNew,
     isSale,
-    isWishlist: false,
+    isWishlist: product.isWishlist === true || product.isWishlist === 1,
     created_at: product.created_at,
     updated_at: product.updated_at,
     category: category,
