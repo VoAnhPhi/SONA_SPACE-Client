@@ -13,7 +13,7 @@
   margin-top: 50px;
 
   & h3 {
-    font-size: 40px;
+    font-size: 32px;
     font-family: 'M-B';
   }
 }
@@ -31,42 +31,39 @@
 
   &-left {
     // width: 70%;
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     padding: 30px;
     background-color: #fff;
 
-    & .info-left-title h5 {
-      margin: 10px 0 0 40px;
+    & .info-left-title {
+      margin-bottom: 20px;
+      h5 {
       font-size: 20px;
       font-family: 'M-SB';
 
+    }
     }
 
     & .info-left-form {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      row-gap: 15px;
-      column-gap: 100px;
+      gap: 30px;
       justify-content: space-between;
-      margin: 30px 40px 30px 40px;
-
+      margin-bottom: 40px;
       & label {
         color: #0F172A;
         font-size: 14px;
         font-family: 'Be-R'
       }
-
-
-
       .form-info {
         input {
           font-family: 'Be-R';
-          width: 350px;
+          width: 100%;
           height: 50px;
           border: 1px solid #CBD5E1;
-          border-radius: 10px;
+          border-radius: 8px;
           padding-left: 20px;
           margin-top: 7px;
           font-size: 16px;
@@ -81,10 +78,10 @@
     }
 
     & .info-left-title-2 {
-      margin: 30px 40px 30px 40px;
       row-gap: 10px;
       display: flex;
       flex-direction: column;
+      margin-bottom: 30px;
 
       h5 {
         font-size: 20px;
@@ -93,6 +90,7 @@
 
       .payment-option {
         margin-top: 10px;
+        margin-left: 20px;
 
         .method-option {
           display: flex;
@@ -101,8 +99,8 @@
           align-items: center;
 
           .input-radio {
-            width: 23px;
-            height: 23px;
+            width: 24px;
+            height: 24px;
             transition: all 0.2s ease-in-out;
             position: relative;
             cursor: pointer;
@@ -136,7 +134,6 @@
     }
 
     & .info-left-clause {
-      margin: 40px 40px 20px 40px;
       display: flex;
       align-items: center;
 
