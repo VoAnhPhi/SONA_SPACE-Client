@@ -229,7 +229,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
                         </>
                       ) : (
                         <span className="regular-price">{formatPrice(item.price)}</span>
-                      )}
+                      )}                                                                                                                                                                                                                                                                                      
                     </div>
                     <div className="wishlist-item-actions">
                       <button
