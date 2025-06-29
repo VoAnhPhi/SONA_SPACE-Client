@@ -1,6 +1,7 @@
 //Product
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { Product, Variant } from "../../types";
 import { removeFromWishlistService } from "../../services/wishlistService";
 import { saveToOrCart } from "../../services/cartService";
@@ -9,33 +10,49 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
   const [hoveredColor, setHoveredColor] = useState<string | null>(null);
   const defaultVariantId = product.variant_id;
+  const navigate = useNavigate();
 
 
   useEffect(() => {
     setWishlist(product.isWishlist || false);
   }, [product.isWishlist]);
 
-  const addItemToWishlist = async () => {
-    try {
-      const response = await saveToOrCart({
-        status: 1,
-        cartItems: [{ variant_id: product.variant_id, quantity: 1 }],
-      });
+const addItemToWishlist = async () => {
+  const token = sessionStorage.getItem("authToken");
 
-      if (response.success) {
-        setWishlist(true);
-        toast.success("Đã thêm vào wishlist!", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-      } else {
-        toast.error("Thêm vào wishlist thất bại: " + response.message);
-      }
-    } catch (error) {
-      console.error("Lỗi khi thêm vào wishlist:", error);
-      toast.error("Có lỗi khi thêm vào wishlist.");
+  if (!token) {
+    toast.warning("Vui lòng đăng nhập để thêm vào wishlist!", {
+      position: "top-right",
+      autoClose: 1000,
+    });
+
+    setTimeout(() => {
+      navigate("/dang-nhap"); 
+    }, 1000);
+    return;
+  }
+
+  try {
+    const response = await saveToOrCart({
+      status: 1,
+      cartItems: [{ variant_id: product.variant_id, quantity: 1 }],
+    });
+
+    if (response.success) {
+      setWishlist(true);
+      toast.success("Đã thêm vào wishlist!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } else {
+      toast.error("Thêm vào wishlist thất bại: " + response.message);
     }
-  };
+  } catch (error) {
+    console.error("Lỗi khi thêm vào wishlist:", error);
+    toast.error("Có lỗi khi thêm vào wishlist.");
+  }
+};
+
 
   const removeItemFromWishlist = async () => {
     try {
