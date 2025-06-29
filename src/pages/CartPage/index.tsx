@@ -45,7 +45,7 @@ const recalculateSummary = (items: CartItemProps[]) => {
   const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
     if (success && wishlistItems) {
-      console.log("Danh sách sản phẩm trong wishlist:", wishlistItems);
+      console.log("Danh sách sản phẩm trong cart:", wishlistItems);
 
       const formattedItems = wishlistItems.map((item: any, index: number) => ({
         id: item.wishlist_id || index,
