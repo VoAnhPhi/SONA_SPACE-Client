@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Link } from 'react-router-dom';
-import { loadCartService } from '../../services/cartService';
+import { loadCartService, removeFromCartService } from '../../services/cartService';
 
 interface CartItem {
   id: number;
@@ -23,17 +23,27 @@ export interface MiniCartHandle {
 const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
+  const [cartChanged, setCartChanged] = useState(false);
   // expose methods to parent
-  useImperativeHandle(ref, () => ({
-    toggleMiniCart: () => {
-      setIsVisible(prev => !prev);
+useImperativeHandle(ref, () => ({
+  toggleMiniCart: () => {
+    setIsVisible(prev => !prev);
+    refreshCart();
+  },
+  closeMiniCart: () => setIsVisible(false),
+  isVisible,
+  refreshCart,
+  notifyCartChanged: () => setCartChanged(prev => !prev), // ✅ dòng này đúng
+}));
+
+
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("authToken");
+    if (token) {
       refreshCart();
-    },
-    closeMiniCart: () => setIsVisible(false),
-    isVisible,
-    refreshCart,
-  }));
+    }
+  }, [cartChanged]);
   useEffect(() => {
     if (isVisible) {
       const token = sessionStorage.getItem("authToken");
@@ -63,6 +73,15 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => 
       }
     } catch (error) {
       console.error("Lỗi khi tải MiniCart:", error);
+    }
+  };
+  const removeItem = async (id: number) => {
+    try {
+      await removeFromCartService(id);
+      const updatedItems = cartItems.filter((item) => item.id !== id);
+      setCartItems(updatedItems);
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
     }
   };
 
@@ -100,15 +119,20 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => 
                 <div className="item-info">
                   <h4 className="item-name">{item.name}</h4>
                   <div className="item-details">
-                    <div className="item-coloss">
-                      <span>Màu:</span>
-                      <div
-                        className="item-color"
-                        style={{ backgroundColor: item.color }}
-                      ></div>
+                    <div className="items-tt">
+                      <div className="item-coloss">
+                        <span>Màu:</span>
+                        <div
+                          className="item-color"
+                          style={{ backgroundColor: item.color }}
+                        ></div>
+                      </div>
+                      <div className="item-quantity">
+                        <span>SL: {item.quantity}</span>
+                      </div>
                     </div>
-                    <div className="item-quantity">
-                      <span>SL: {item.quantity}</span>
+                    <div className="item-remove" onClick={() => removeItem(item.id)}>
+                      <img src="/images/icons/close.svg" alt="Xóa" />
                     </div>
                   </div>
                   <div className="item-price">{formatPrice(item.price)}</div>

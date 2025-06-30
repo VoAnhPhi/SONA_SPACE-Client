@@ -5,28 +5,12 @@ import InteriorDesign from "../../components/InteriorDesign";
 import GetInTouch from "../../components/GetInTouch";
 import CategorySlider from "../../components/CategorySlider";
 import type { Product as ProductType } from "../../types";
-import Product from "../../components/Product";
+import ProductComponent from "../../components/Product";
 import { getNewestProducts } from "../../api/product";
 import { formatProductForDisplay } from "../../services/productService";
 
 // Định nghĩa kiểu dữ liệu phù hợp với component Product
-interface ProductComponentProps {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  colors: string[];
-  isNew?: boolean;
-  isSale?: boolean;
-  createdAt?: string;
-  priceSale?: number;
-  slug: string;
-  isWishlist?: boolean;
-  category: {
-    id: number;
-    name: string;
-  };
-}
+
 
 const HomePage = () => {
   const [newestProducts, setNewestProducts] = useState<ProductType[]>([]);
@@ -206,24 +190,10 @@ const HomePage = () => {
               {error && <div className="error-message">{error}</div>}
               <div className="box-products-container">
                 {newestProducts.map((product) => (
-                  <Product 
+                  <ProductComponent 
                     key={`new-${product.id}`} 
-                    product={{
-                      id: product.id,
-                      name: product.name,
-                      price: product.price || 0,
-                      image: product.image,
-                      colors: product.colors || [],
-                      isNew: true,
-                      isSale: product.price_sale !== null && product.price_sale !== undefined && product.price_sale > 0,
-                      created_at: product.created_at,
-                      priceSale: product.price_sale || undefined,
-                      slug: product.slug,
-                      isWishlist: product.isWishlist,
-                      category: product.category,
-                      variants: product.variants
-                    }}
-                    slug={product.slug} 
+                    product={product}
+                    slug={product.slug}
                   />
                 ))}
               </div>
@@ -238,23 +208,10 @@ const HomePage = () => {
               <h5>Sản Phẩm Hot</h5>
               <div className="box-products-container">
                 {hotProducts.map((product, index) => (
-                  <Product 
+                  <ProductComponent 
                     key={`hot-${product.id}-${index}`}
-                    product={{
-                      id: product.id,
-                      name: product.name,
-                      price: product.price || 0,
-                      image: product.image,
-                      colors: product.colors || [],
-                      isNew: false,
-                      isSale: product.price_sale !== null && product.price_sale !== undefined && product.price_sale > 0,
-                      created_at: product.created_at,
-                      priceSale: product.price_sale || undefined,
-                      slug: product.slug,
-                      isWishlist: product.isWishlist,
-                      category: product.category
-                    }}
-                    slug={product.slug} 
+                    product={product}
+                      slug={product.slug}
                   />
                 ))}
               </div>

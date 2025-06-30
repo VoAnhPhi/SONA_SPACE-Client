@@ -7,6 +7,14 @@ import { Link } from "react-router-dom";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
 import MiniCart from "../../components/MiniCart";
 
+export interface MiniCartHandle {
+  toggleMiniCart: () => void;
+  closeMiniCart: () => void;
+  isVisible: boolean;
+  refreshCart: () => void;
+  notifyCartChanged: () => void; 
+}
+
 const Header = () => {
   // State để lưu trạng thái active của nav item
   const [activeNavItem, setActiveNavItem] = useState<string>("/");
@@ -22,8 +30,10 @@ const Header = () => {
   const [isMiniCartOpen, setIsMiniCartOpen] = useState<boolean>(false);
 
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
-  const miniCartRef = useRef<any>(null);
-  miniCartRef.current?.toggleMiniCart();
+const miniCartRef = useRef<MiniCartHandle>(null);
+
+  miniCartRef.current?.notifyCartChanged();
+
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
     if (!fullName) return "";
@@ -175,7 +185,7 @@ const Header = () => {
                     Trang Chủ
                   </a>
                 </li>
-                
+
                 <li>
                   <a
                     href="/san-pham"
@@ -270,7 +280,7 @@ const Header = () => {
                       </div>
                     </div>
                   </a>
-                  
+
                 </li>
                 <li>
                   <a
