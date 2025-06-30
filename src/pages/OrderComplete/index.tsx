@@ -11,30 +11,32 @@ interface OrderSummaryProps {
 }
 
 const OrderComplete: React.FC = () => {
-  const { orderId } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
+const { orderHash } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      if (!orderId) return;
-      const res = await getOrderByHash(orderId);
-      if (res.success && res.order) {
-        setOrderSummary({
-          orderId: res.order.order_hash,
-          orderDate: new Date(res.order.created_at).toLocaleString(),
-          itemCount: res.order.total_quantity,
-          total: res.order.order_total_final,
-        });
-      }
-    };
+useEffect(() => {
+  const fetchOrder = async () => {
+    if (!orderHash) return;
+    const res = await getOrderByHash(orderHash);
+    console.log("Order data:", res);
+    console.log("Order hash:", orderHash);
+    if (res.success && res.order) {
+      setOrderSummary({
+        orderId: res.order.order_hash,
+        orderDate: new Date(res.order.created_at).toLocaleString(),
+        itemCount: res.order.total_quantity,
+        total: res.order.order_total_final,
+      });
+    }
+  };
 
-    fetchOrder();
-  }, [orderId]);
+  fetchOrder();
+}, [orderHash]);
+
 
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
-
   if (!orderSummary) return <p>Đang tải thông tin đơn hàng...</p>;
 
   return (

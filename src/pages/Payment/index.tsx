@@ -88,17 +88,15 @@ const handleSubmit = async (e: React.FormEvent) => {
     const payload: any = {
       order_id: orderId,
       user_id: user?.id,
-      recipient_name: formData.fullName,
+      order_name: formData.fullName,
       order_total: orderSummary.total,
       order_status: "Đang xử lý",
       method,
       amount: orderSummary.total,
-
-      // luôn gửi địa chỉ cũ và số cũ
       order_address_old: prevAddress,
       order_number1: prevPhone,
     };
-
+    console.log("Submitting order with payload:", payload);
     // chỉ gửi địa chỉ mới nếu người dùng sửa
     if (formData.address.trim() !== prevAddress.trim()) {
       payload.order_address_new = formData.address.trim();
@@ -123,7 +121,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         autoClose: 2000,
       });
       setTimeout(() => {
-        navigate(`/dat-hang-thanh-cong/${res.order_id}`);
+        navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
       }, 2000);
     }
   } catch (error) {
