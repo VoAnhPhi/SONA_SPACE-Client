@@ -184,58 +184,58 @@ const ProductDetailPage: React.FC = () => {
     return stars;
   };
 
-const addToCart = async () => {
-  if (!product || !selectedVariant) return;
+  const addToCart = async () => {
+    if (!product || !selectedVariant) return;
 
-  const variant_id = selectedVariant?.variant_id;
-  if (!variant_id || isNaN(variant_id)) {
-    toast.error("Không tìm thấy biến thể sản phẩm");
-    return;
-  }
+    const variant_id = selectedVariant?.variant_id;
+    if (!variant_id || isNaN(variant_id)) {
+      toast.error("Không tìm thấy biến thể sản phẩm");
+      return;
+    }
 
-  const token = sessionStorage.getItem("authToken");
-  if (!token) {
-    toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng", {
-      position: "top-right",
-      autoClose: 1000,
-    });
-
-    setTimeout(() => {
-      navigate("/dang-nhap"); 
-    }, 2000); 
-
-    return;
-  }
-
-  try {
-    const response = await saveToOrCart({
-      status: 0, // 0 = giỏ hàng
-      cartItems: [
-        {
-          variant_id: Number(selectedVariant.variant_id),
-          quantity: Number(quantity),
-        },
-      ],
-    });
-
-    if (response.success) {
-      toast.success("Đã thêm vào giỏ hàng!", {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
       });
 
-      if (miniCartRef.current?.refreshCart) {
-        miniCartRef.current.refreshCart();
-        miniCartRef.current.toggleMiniCart();
-      }
-    } else {
-      toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
+      setTimeout(() => {
+        navigate("/dang-nhap");
+      }, 2000);
+
+      return;
     }
-  } catch (error: any) {
-    console.error("Add to cart error:", error);
-    toast.error("Lỗi khi thêm vào giỏ hàng.");
-  }
-};
+
+    try {
+      const response = await saveToOrCart({
+        status: 0,
+        cartItems: [
+          {
+            variant_id: Number(selectedVariant.variant_id),
+            quantity: Number(quantity),
+          },
+        ],
+      });
+      if (miniCartRef.current) {
+        miniCartRef.current.notifyCartChanged(); // Cập nhật cart
+         miniCartRef.current?.toggleMiniCart();
+      }
+      if (response.success) {
+        toast.success("Đã thêm vào giỏ hàng!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+      } else {
+        toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
+      }
+
+    } catch (error: any) {
+      console.error("Add to cart error:", error);
+      toast.error("Lỗi khi thêm vào giỏ hàng.");
+    }
+  };
 
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;

@@ -107,7 +107,13 @@
         flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 5px;
+        justify-content: space-between;
+        align-items: center;
 
+        .items-tt{
+          display: flex;
+          gap: 10px;
+        }
         span {
           color: $gray-cl-5;
         }
@@ -121,6 +127,14 @@
           }
         }
 
+        .item-remove{
+          img{
+            width: 15px;
+            height: 15px;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+          }
+        }
         .item-color {
           @include size(16px);
           border-radius: 50%;

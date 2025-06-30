@@ -152,50 +152,25 @@ export const searchProducts = async (
  */
 export const getNewestProducts = async (limit: number = 8): Promise<Product[]> => {
   try {
-    console.log(`Calling API: GET ${API_URL}/products/newest?limit=${limit}`);
+    const token = sessionStorage.getItem("authToken"); // hoặc localStorage.getItem()
+
     const response = await axios.get(`${API_URL}/products/newest`, {
       params: { limit },
+      headers: token
+        ? { Authorization: `Bearer ${token}` }
+        : undefined,
     });
 
-    // Kiểm tra phản hồi và xử lý các cấu trúc khác nhau
     const data = response.data;
 
-    if (!data) {
-      console.error("No data received from API");
-      return [];
-    }
+    if (!data) return [];
 
-    // Trường hợp 1: API trả về mảng products trực tiếp
-    if (Array.isArray(data)) {
-      console.log("API returned an array directly:", data.length, "products");
-      return data;
-    }
+    if (Array.isArray(data)) return data;
+    if (data.products && Array.isArray(data.products)) return data.products;
+    if (data.data && data.data.products && Array.isArray(data.data.products)) return data.data.products;
+    if (data.data && Array.isArray(data.data)) return data.data;
+    if (data.product_id || data.id) return [data];
 
-    // Trường hợp 2: API trả về object chứa mảng products
-    if (data.products && Array.isArray(data.products)) {
-      console.log("API returned object with products array:", data.products.length, "products");
-      return data.products;
-    }
-
-    // Trường hợp 3: API trả về object có data.products
-    if (data.data && data.data.products && Array.isArray(data.data.products)) {
-      console.log("API returned object with data.products array:", data.data.products.length, "products");
-      return data.data.products;
-    }
-
-    // Trường hợp 4: API trả về object có data là mảng
-    if (data.data && Array.isArray(data.data)) {
-      console.log("API returned object with data array:", data.data.length, "products");
-      return data.data;
-    }
-
-    // Nếu đây là một object duy nhất (single product), chuyển đổi thành mảng
-    if (data.product_id || data.id) {
-      console.log("API returned a single product object, converting to array");
-      return [data];
-    }
-
-    console.error("Invalid API response structure for newest products:", data);
     return [];
   } catch (error) {
     console.error("Error fetching newest products:", error);
