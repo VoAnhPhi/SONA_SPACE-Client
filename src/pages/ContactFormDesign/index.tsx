@@ -41,14 +41,10 @@ const ContactFormDesign: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreeToTerms) {
-      toast.error("Vui lòng đồng ý với điều khoản và chính sách");
-      return;
-    }
     setIsLoading(true);
     try {
       const response = await sendContactFormDesignService(formData);
-      if (response.success) {
+      if (response) {
         toast.success("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
         setFormData({
           name: "",
@@ -62,8 +58,6 @@ const ContactFormDesign: React.FC = () => {
           different_information: "",
         });
         setAgreeToTerms(false);
-      } else {
-        toast.error(response.error || "Gửi yêu cầu thất bại");
       }
     } catch (error: any) {
       const msg = error?.response?.data?.error || error?.message || "Gửi yêu cầu thất bại";
@@ -75,9 +69,9 @@ const ContactFormDesign: React.FC = () => {
 
   return (
     <>
-      <ToastContainer position="top-right"
+      {/* <ToastContainer position="top-right"
         autoClose={5000}
-        style={{ marginTop: "100px" }} />
+        style={{ marginTop: "100px" }} /> */}
       <Header />
       <div className="contact-form-page">
         {/* Banner Section */}
