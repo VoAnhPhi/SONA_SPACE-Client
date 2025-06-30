@@ -40,7 +40,7 @@ function App() {
           <Route path="/san-pham-yeu-thich" element={<Wishlist />} />
           <Route path="/gio-hang" element={<CartPage />} />
           <Route path="/thanh-toan" element={<Payment />} />
-          <Route path="/dat-hang-thanh-cong" element={<OrderComplete />} />
+          <Route path="/dat-hang-thanh-cong/:orderHash" element={<OrderComplete />} />
           <Route path="/khong-gian" element={<Rooms />} />
           <Route path="/khong-gian/:slug" element={<RoomDetail />} />
           <Route path="/dich-vu-thiet-ke" element={<ContactFormDesign />} />

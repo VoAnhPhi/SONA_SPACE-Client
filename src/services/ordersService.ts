@@ -2,11 +2,11 @@
 import axios from "axios";
 
 export const createOrderService = async (orderData: any) => {
-  const token = sessionStorage.getItem("authToken"); // ← Lấy token từ localStorage
+  const token = sessionStorage.getItem("authToken"); 
   try {
     const res = await axios.post("http://localhost:3501/api/orders", orderData, {
       headers: {
-        Authorization: `Bearer ${token}`, // ← Thêm token vào header
+        Authorization: `Bearer ${token}`, 
       },
     });
     return res.data;

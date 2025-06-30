@@ -1,8 +1,14 @@
 import axios from 'axios';
 
 export const getOrderByHash = async (orderHash: string) => {
+    const token = sessionStorage.getItem("authToken"); 
   try {
-    const response = await axios.get(`http://localhost:3501/api/orders/${orderHash}`);
+    const response = await axios.get(`http://localhost:3501/api/orders/hash/${orderHash}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // ← Thêm token vào header
+      },
+    });
+    console.log(" Dữ liệu từ API:", response.data);
     return response.data;
   } catch (error: any) {
     console.error("Lỗi khi lấy đơn hàng:", error);
