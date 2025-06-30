@@ -2,33 +2,23 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
-interface FormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  space: string;
-  description: string;
-  style: string;
-  requirements: string;
-  budget: string;
-  note: string;
-  agreeToTerms: boolean;
-}
-
+import type { ContactFormDesign } from "../../types";
+import { sendContactFormDesignService } from "../../services/contactService";
+import { toast, ToastContainer } from "react-toastify";
 
 const ContactFormDesign: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    fullName: "",
+  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [formData, setFormData] = useState<ContactFormDesign>({
+    name: "",
     email: "",
     phone: "",
-    space: "",
-    description: "",
-    style: "",
-    requirements: "",
+    room_name: "",
+    design_description: "",
+    require_design: "",
+    style_design: "",
     budget: "",
-    note: "",
-    agreeToTerms: false
+    different_information: "",
   });
 
 
@@ -46,24 +36,55 @@ const ContactFormDesign: React.FC = () => {
       ...formData,
       [name]: checked
     });
+    setAgreeToTerms(checked);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
-    alert("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
+    if (!agreeToTerms) {
+      toast.error("Vui lòng đồng ý với điều khoản và chính sách");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const response = await sendContactFormDesignService(formData);
+      if (response.success) {
+        toast.success("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          room_name: "",
+          design_description: "",
+          style_design: "",
+          require_design: "",
+          budget: "",
+          different_information: "",
+        });
+        setAgreeToTerms(false);
+      } else {
+        toast.error(response.error || "Gửi yêu cầu thất bại");
+      }
+    } catch (error: any) {
+      const msg = error?.response?.data?.error || error?.message || "Gửi yêu cầu thất bại";
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
+      <ToastContainer position="top-right"
+        autoClose={5000}
+        style={{ marginTop: "100px" }} />
       <Header />
       <div className="contact-form-page">
         {/* Banner Section */}
         <div className="banner-section">
           <div className="container-fluid">
             <div className="container">
-              <img src="/images/ContactFormDesign/banner_design.jpg" alt="Thiết kế nội thất" />
+              <img src="/images/ContactFormDesign/banner.jpg" alt="Thiết kế nội thất" />
             </div>
           </div>
         </div>
@@ -181,14 +202,14 @@ const ContactFormDesign: React.FC = () => {
                 <div className="form-group floating-label">
                   <input
                     type="text"
-                    id="fullName"
-                    name="fullName"
+                    id="name"
+                    name="name"
                     placeholder=" "
-                    value={formData.fullName}
+                    value={formData.name}
                     onChange={handleChange}
                     required
                   />
-                  <label htmlFor="fullName">Họ và tên *</label>
+                  <label htmlFor="name">Họ và tên *</label>
                 </div>
 
                 <div className="form-group floating-label">
@@ -209,14 +230,14 @@ const ContactFormDesign: React.FC = () => {
                 <div className="form-group floating-label">
                   <input
                     type="text"
-                    id="space"
-                    name="space"
+                    id="room_name"
+                    name="room_name"
                     placeholder=" "
-                    value={formData.space}
+                    value={formData.room_name}
                     onChange={handleChange}
                     required
                   />
-                  <label htmlFor="space">Không gian</label>
+                  <label htmlFor="room_name">Không gian</label>
                 </div>
                 <div className="form-group floating-label">
                   <input
@@ -234,38 +255,38 @@ const ContactFormDesign: React.FC = () => {
 
               <div className="form-group full-width floating-label">
                 <textarea
-                  id="description"
-                  name="description"
+                  id="design_description"
+                  name="design_description"
                   placeholder=" "
                   rows={5}
-                  value={formData.description}
+                  value={formData.design_description}
                   onChange={handleChange}
                 ></textarea>
-                <label htmlFor="description">Mô tả sơ lược về yêu cầu thiết kế</label>
+                <label htmlFor="design_description">Mô tả sơ lược về yêu cầu thiết kế</label>
               </div>
 
               <div className="form-group floating-label">
                 <input
                   type="text"
-                  id="style"
-                  name="style"
+                  id="style_design"
+                  name="style_design"
                   placeholder=" "
-                  value={formData.style}
+                  value={formData.style_design}
                   onChange={handleChange}
                 />
-                <label htmlFor="style">Phong cách bạn muốn</label>
+                <label htmlFor="style_design">Phong cách bạn muốn</label>
               </div>
 
               <div className="form-group floating-label">
                 <input
                   type="text"
-                  id="requirements"
-                  name="requirements"
+                  id="require_design"
+                  name="require_design"
                   placeholder=" "
-                  value={formData.requirements}
+                  value={formData.require_design}
                   onChange={handleChange}
                 />
-                <label htmlFor="requirements">Yêu cầu khác</label>
+                <label htmlFor="require_design">Yêu cầu khác</label>
               </div>
 
               <div className={`form-group floating-label ${formData.budget ? 'has-value' : ''}`}>
@@ -277,11 +298,11 @@ const ContactFormDesign: React.FC = () => {
                   required
                 >
                   <option value="" disabled hidden>Chọn ngân sách</option>
-                  <option value="under-100m">Dưới 100 triệu</option>
-                  <option value="100m-300m">100 - 300 triệu</option>
-                  <option value="300m-500m">300 - 500 triệu</option>
-                  <option value="500m-1b">500 triệu - 1 tỷ</option>
-                  <option value="over-1b">Trên 1 tỷ</option>
+                  <option value="30000000">Dưới 30 triệu</option>
+                  <option value="50000000">30 - 50 triệu</option>
+                  <option value="100000000">50 - 100 triệu</option>
+                  <option value="200000000">100 - 200 triệu</option>
+                  <option value="300000000">Trên 200 triệu</option>
                 </select>
                 <label htmlFor="budget">Ngân sách</label>
               </div>
@@ -289,13 +310,13 @@ const ContactFormDesign: React.FC = () => {
 
               <div className="form-group full-width floating-label">
                 <textarea
-                  id="note"
-                  name="note"
+                  id="different_information"
+                  name="different_information"
                   placeholder=" "
-                  value={formData.note}
+                  value={formData.different_information}
                   onChange={handleChange}
                 ></textarea>
-                <label htmlFor="note">Lưu ý khác</label>
+                <label htmlFor="different_information">Lưu ý khác</label>
               </div>
 
               <div className="form-group checkbox-group">
@@ -303,7 +324,7 @@ const ContactFormDesign: React.FC = () => {
                   type="checkbox"
                   id="agreeToTerms"
                   name="agreeToTerms"
-                  checked={formData.agreeToTerms}
+                  checked={agreeToTerms}
                   onChange={handleCheckboxChange}
                   required
                 />
@@ -313,7 +334,9 @@ const ContactFormDesign: React.FC = () => {
                   <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
                 </div>
               </div>
-              <button type="submit" className="submit-btn">Gửi</button>
+              <button disabled={isLoading} type="submit" className="submit-btn">
+                {isLoading ? "Đang gửi..." : "Gửi"} 
+              </button>
             </form>
           </div>
         </section>

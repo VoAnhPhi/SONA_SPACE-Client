@@ -139,6 +139,18 @@ export interface ArchitectFormData extends ContactFormData {
   portfolio?: string;
 }
 
+export interface ContactFormDesign {
+  name: string;
+  email: string;
+  phone: string;
+  room_name: string;
+  design_description: string;
+  require_design: string;
+  style_design: string;
+  budget: string;
+  different_information: string;
+}
+
 export interface Experience {
   position: string;
   company: string;
