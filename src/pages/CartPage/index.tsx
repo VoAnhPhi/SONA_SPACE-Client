@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import GetInTouch from "../../components/GetInTouch";
 import PolicyProduct from "../../components/Policy";
 import { useAuth } from "../../contexts/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
 import { loadCartService, updateCartQuantityService, removeFromCartService, clearCartService } from "../../services/cartService";
 
 interface CartItemProps {
@@ -45,7 +46,7 @@ const recalculateSummary = (items: CartItemProps[]) => {
   const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
     if (success && wishlistItems) {
-      console.log("Danh sách sản phẩm trong wishlist:", wishlistItems);
+      console.log("Danh sách sản phẩm trong cart:", wishlistItems);
 
       const formattedItems = wishlistItems.map((item: any, index: number) => ({
         id: item.wishlist_id || index,
@@ -103,7 +104,8 @@ const recalculateSummary = (items: CartItemProps[]) => {
       await removeFromCartService(id);
       const updatedItems = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedItems);
-      recalculateSummary(updatedItems); // ← cập nhật lại tổng tiền
+      recalculateSummary(updatedItems); 
+          toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm:", error);
     }
@@ -117,8 +119,10 @@ const recalculateSummary = (items: CartItemProps[]) => {
       const result = await clearCartService();
       if (result.success !== false) {
         await loadWishlist();
+         toast.success("Đã xóa toàn bộ giỏ hàng!");
       } else {
         console.log(result.message);
+          toast.error(result.message || "Không thể xóa giỏ hàng.");
       }
     } catch (error) {
       alert("Lỗi khi xóa giỏ hàng.");

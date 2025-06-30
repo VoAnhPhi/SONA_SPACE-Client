@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
 // Loại bỏ import CSS, sử dụng SCSS chung của dự án
 // Các styles sẽ được lấy từ file public/scss/imports/components/_wishListSideBar.scss
 
@@ -127,6 +128,51 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
     }
   };
 
+  const handleAddToCart = async (variantId: number) => {
+    try {
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        setError('Vui lòng đăng nhập để thêm vào giỏ hàng.');
+        return;
+      }
+
+      const response = await axios.post(
+        'http://localhost:3501/api/wishlists',
+        {
+          status: 0, // 0 = cart
+          variant_id: variantId,
+          quantity: 1, // số lượng mặc định
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data?.cartItem || response.data?.message) {
+        toast.success("Đã thêm vào giỏ hàng!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.error("Không thể thêm vào giỏ hàng.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+    } catch (error: any) {
+      console.error('Lỗi khi thêm vào giỏ hàng:', error);
+      setError('Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.');
+      toast.error("Lỗi khi thêm vào giỏ hàng.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
+
+
 
   // Xử lý xóa sản phẩm khỏi wishlist
   const handleRemoveFromWishlist = async (wishlistId: number) => {
@@ -180,80 +226,90 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
   };
 
   return (
-    <div
-      className={`wishlist-sidebar-container ${isOpen ? 'open' : ''}`}
-      onClick={handleOverlayClick}
-    >
-      <div className="wishlist-sidebar">
-        <div className="wishlist-sidebar-header">
-          <h2>Danh sách yêu thích</h2>
-          <button className="close-button" onClick={onClose}>
-            <img src="/images/icons/close.svg" alt="Đóng" />
-          </button>
-        </div>
-        <div className="wishlist-sidebar-content">
-          {loading ? (
-            <div className="loading-state">
-              <p>Đang tải danh sách yêu thích...</p>
-            </div>
-          ) : error ? (
-            <div className="error-state">
-              <p>{error}</p>
-            </div>
-          ) : wishlistItems.length === 0 ? (
-            <div className="empty-wishlist">
-              <div className="empty-wishlist-icon">
-                <img src="/images/icons/wishlist-empty.svg" alt="Danh sách trống" />
+    <>
+      <div
+        className={`wishlist-sidebar-container ${isOpen ? 'open' : ''}`}
+        onClick={handleOverlayClick}
+      >
+        <div className="wishlist-sidebar">
+          <div className="wishlist-sidebar-header">
+            <h2>Danh sách yêu thích</h2>
+            <button className="close-button" onClick={onClose}>
+              <img src="/images/icons/close.svg" alt="Đóng" />
+            </button>
+          </div>
+          <div className="wishlist-sidebar-content">
+            {loading ? (
+              <div className="loading-state">
+                <p>Đang tải danh sách yêu thích...</p>
               </div>
-              <p>Danh sách yêu thích của bạn đang trống</p>
-              <a href="/san-pham" className="btn-browse">Khám phá sản phẩm</a>
-            </div>
-          ) : (
-            <div className="wishlist-items">
-              {Array.isArray(wishlistItems) ? wishlistItems.map((item) => (
-                <div className="wishlist-item" key={item.wishlist_id}>
-                  <div className="wishlist-item-image">
-                    <Link to={`/san-pham/${item.product_id}`}>
-                      <img src={getFirstImageUrl(item.image)} alt="Product" />
-                    </Link>
-                  </div>
-                  <div className="wishlist-item-info">
-                    <Link to={`/san-pham/${item.product_id}`} className="wishlist-item-name">
-                      {item.product_name || productNames[item.product_id] || `Sản phẩm #${item.product_id}`}
-                    </Link>
-                    <div className="wishlist-item-price">
-                      {item.price_sale ? (
-                        <>
-                          <span className="sale-price">{formatPrice(item.price_sale)}</span>
-                          <span className="original-price">{formatPrice(item.price)}</span>
-                        </>
-                      ) : (
-                        <span className="regular-price">{formatPrice(item.price)}</span>
-                      )}                                                                                                                                                                                                                                                                                      
-                    </div>
-                    <div className="wishlist-item-actions">
-                      <button
-                        className="remove-button"
-                        onClick={() => handleRemoveFromWishlist(item.wishlist_id)}
-                      >
-                        <img src="/images/icons/trash-2.svg" alt="Xóa" />
-                      </button>
-                      <button className="add-to-cart-button">
-                        <img src="/images/icons/shopping-basket.svg" alt="Thêm vào giỏ hàng" />
-                      </button>
-                    </div>
-                  </div>
+            ) : error ? (
+              <div className="error-state">
+                <p>{error}</p>
+              </div>
+            ) : wishlistItems.length === 0 ? (
+              <div className="empty-wishlist">
+                <div className="empty-wishlist-icon">
+                  <img src="/images/icons/wishlist-empty.svg" alt="Danh sách trống" />
                 </div>
-              )) : (
-                <div className="error-state">
-                  <p>Lỗi hiển thị danh sách yêu thích</p>
-                </div>
-              )}
-            </div>
-          )}
+                <p>Danh sách yêu thích của bạn đang trống</p>
+                <a href="/san-pham" className="btn-browse">Khám phá sản phẩm</a>
+              </div>
+            ) : (
+              <div className="wishlist-items">
+                {Array.isArray(wishlistItems) ? wishlistItems.map((item) => (
+                  <div className="wishlist-item" key={item.wishlist_id}>
+                    <div className="wishlist-item-image">
+                      <Link to={`/san-pham/${item.product_id}`}>
+                        <img src={getFirstImageUrl(item.image)} alt="Product" />
+                      </Link>
+                    </div>
+                    <div className="wishlist-item-info">
+                      <Link to={`/san-pham/${item.product_id}`} className="wishlist-item-name">
+                        {item.product_name || productNames[item.product_id] || `Sản phẩm #${item.product_id}`}
+                      </Link>
+                      <div className="wishlist-item-price">
+                        {item.price_sale ? (
+                          <>
+                            <span className="sale-price">{formatPrice(item.price_sale)}</span>
+                            <span className="original-price">{formatPrice(item.price)}</span>
+                          </>
+                        ) : (
+                          <span className="regular-price">{formatPrice(item.price)}</span>
+                        )}
+                      </div>
+                      <div className="wishlist-item-actions">
+                        <button
+                          className="remove-button"
+                          onClick={() => handleRemoveFromWishlist(item.wishlist_id)}
+                        >
+                          <img src="/images/icons/trash-2.svg" alt="Xóa" />
+                        </button>
+                        <button
+                          className="add-to-cart-button"
+                          onClick={() => handleAddToCart(item.variant_id)}
+                        >
+                          <img src="/images/icons/shopping-basket.svg" alt="Thêm vào giỏ hàng" />
+                        </button>
+
+                      </div>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="error-state">
+                    <p>Lỗi hiển thị danh sách yêu thích</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <ToastContainer position="top-right"
+        autoClose={3000}
+        style={{ marginTop: "100px" }} />
+    </>
+
   );
 };
 
