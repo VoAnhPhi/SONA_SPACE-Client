@@ -41,6 +41,30 @@ export const getAllNews = async (tryFallback = false): Promise<NewsArticle[]> =>
     throw error;
   }
 };
+export const getAllNewsSimple = async (tryFallback = false): Promise<NewsArticle[]> => {
+  try {
+    console.log(`Calling API: GET ${API_URL}/news/simple`);
+    const response = await axios.get(`${API_URL}/news/simple`);
+    console.log('API response received:', response.status);
+    
+    if (!response.data) {
+      return [];
+    }
+    if (!Array.isArray(response.data)) {
+      // Xử lý dữ liệu không đúng định dạng
+      const data = response.data.data || response.data.news || response.data.items || [];
+      return data;
+    }
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404 && !tryFallback) {
+      // Chỉ gọi lại API fallback một lần
+      return await getAllNews(true); // gọi lại với tryFallback=true
+    }
+    throw error;
+  }
+};
+
 export const getAllNewsByView = async (tryFallback = false): Promise<NewsArticle[]> => {
   try {
     const response = await axios.get(`${API_URL}/news/views`);

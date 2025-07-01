@@ -195,6 +195,7 @@ export interface Room {
 export interface NewsArticle {
   news_id: number;
   news_name: string;
+  news_title: string;
   news_slug: string;
   news_image: string;
   news_summary: string;

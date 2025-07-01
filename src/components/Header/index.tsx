@@ -12,7 +12,7 @@ export interface MiniCartHandle {
   closeMiniCart: () => void;
   isVisible: boolean;
   refreshCart: () => void;
-  notifyCartChanged: () => void; 
+  notifyCartChanged: () => void;
 }
 
 const Header = () => {
@@ -30,9 +30,15 @@ const Header = () => {
   const [isMiniCartOpen, setIsMiniCartOpen] = useState<boolean>(false);
 
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
-const miniCartRef = useRef<MiniCartHandle>(null);
+  const miniCartRef = useRef<MiniCartHandle>(null);
+  miniCartRef.current?.refreshCart();
 
-  miniCartRef.current?.notifyCartChanged();
+  useEffect(() => {
+    if (miniCartRef.current) {
+      miniCartRef.current.notifyCartChanged();
+    }
+  }, []);
+
 
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -157,6 +163,8 @@ const miniCartRef = useRef<MiniCartHandle>(null);
       ) {
         miniCartRef.current.toggleMiniCart();
       }
+
+
     }
   };
 
@@ -566,7 +574,21 @@ const miniCartRef = useRef<MiniCartHandle>(null);
                     </div>
                   </div>
                 </button>
-                <div className="cart-container">
+                <div
+                  className="cart-container"
+                  onMouseEnter={() => {
+                    if (window.innerWidth >= 768 && miniCartRef.current) {
+                      miniCartRef.current.refreshCart();
+                      miniCartRef.current.toggleMiniCart(); // mở
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (window.innerWidth >= 768 && miniCartRef.current) {
+                      miniCartRef.current.closeMiniCart(); // đóng
+                    }
+                  }}
+                >
+
                   <button
                     className="btn-icon cart-btn"
                     onClick={handleMiniCartClick}

@@ -94,7 +94,7 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
         <div className="container">
           <div className="news-detail-wrapper">
             <div className="news-main-content">
-              <h1 className="news-title">{newsDetailItem.news_name}</h1>
+              <h1 className="news-title">{newsDetailItem.news_title}</h1>
               <div className="news-meta">
                 <span className="date">
                   {formatDate(

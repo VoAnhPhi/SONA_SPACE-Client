@@ -44,18 +44,26 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
 
   // Ngăn chặn scroll khi sidebar hiển thị
   useEffect(() => {
+    const handleWishlistChanged = () => {
+      if (isOpen) {
+        fetchWishlistItems();
+      }
+    };
+
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       fetchWishlistItems();
+      window.addEventListener("wishlist-changed", handleWishlistChanged);
     } else {
       document.body.style.overflow = '';
     }
 
-    // Cleanup khi component unmount
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener("wishlist-changed", handleWishlistChanged);
     };
   }, [isOpen]);
+
 
   // Lấy tên sản phẩm từ API
   const fetchProductNames = async (productIds: number[]) => {
@@ -175,30 +183,42 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
 
 
   // Xử lý xóa sản phẩm khỏi wishlist
-  const handleRemoveFromWishlist = async (wishlistId: number) => {
-    try {
-      // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem('authToken');
-      if (!token) {
-        setError('Phiên đăng nhập đã hết hạn');
-        return;
-      }
-
-      // Gọi API để xóa sản phẩm khỏi wishlist
-      await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      // Cập nhật lại danh sách wishlist
-      setWishlistItems(wishlistItems.filter(item => item.wishlist_id !== wishlistId));
-    } catch (err) {
-      console.error('Lỗi khi xóa sản phẩm khỏi danh sách yêu thích:', err);
-      setError('Không thể xóa sản phẩm. Vui lòng thử lại sau.');
+const handleRemoveFromWishlist = async (wishlistId: number) => {
+  try {
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      setError('Phiên đăng nhập đã hết hạn');
+      return;
     }
-  };
+
+    // Tìm item bị xóa để lấy variant_id
+    const removedItem = wishlistItems.find(item => item.wishlist_id === wishlistId);
+
+    // Gọi API xóa
+    await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Cập nhật lại danh sách wishlist
+    setWishlistItems(wishlistItems.filter(item => item.wishlist_id !== wishlistId));
+
+    // Dispatch event nếu có removedItem
+    if (removedItem) {
+      const event = new CustomEvent("wishlist-changed", {
+        detail: { variantId: removedItem.variant_id },
+      });
+      window.dispatchEvent(event);
+    }
+
+  } catch (err) {
+    console.error('Lỗi khi xóa sản phẩm khỏi danh sách yêu thích:', err);
+    setError('Không thể xóa sản phẩm. Vui lòng thử lại sau.');
+  }
+};
+
 
   // Lấy URL hình ảnh đầu tiên từ chuỗi URL
   const getFirstImageUrl = (imageUrls: string): string => {
