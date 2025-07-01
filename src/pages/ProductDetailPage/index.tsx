@@ -2,7 +2,8 @@
 // Import necessary libraries
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
-
+import MiniCart from "../../components/MiniCart";
+import type { MiniCartHandle } from "../../components/MiniCart";
 // import components
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -23,7 +24,7 @@ import { saveToOrCart } from "../../services/cartService";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
-  const miniCartRef = useRef<any>(null);
+  const miniCartRef = useRef<MiniCartHandle>(null);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -219,7 +220,7 @@ const ProductDetailPage: React.FC = () => {
       });
       if (miniCartRef.current) {
         miniCartRef.current.notifyCartChanged(); // Cập nhật cart
-         miniCartRef.current?.toggleMiniCart();
+        miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
         toast.success("Đã thêm vào giỏ hàng!", {
@@ -501,11 +502,14 @@ const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>  
+
       <Footer />
+
       <ToastContainer position="top-right"
         autoClose={3000}
         style={{ marginTop: "100px" }} />
+      <MiniCart ref={miniCartRef} />
     </>
   );
 };

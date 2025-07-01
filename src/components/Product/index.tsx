@@ -16,6 +16,47 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   useEffect(() => {
     setWishlist(product.isWishlist || false);
   }, [product.isWishlist]);
+useEffect(() => {
+
+
+const handleWishlistChange = (e: Event) => {
+  const customEvent = e as CustomEvent;
+  const removedVariantId = customEvent.detail?.variantId;
+
+  if (removedVariantId !== undefined && removedVariantId === product.variant_id) {
+    setWishlist(false);
+    return;
+  }
+
+  // fallback nếu không có detail, gọi lại API như cũ
+  const token = sessionStorage.getItem("authToken");
+  if (!token) return;
+
+  fetch(`http://localhost:3501/api/wishlists?status=1`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const isWishlisted = data.some(
+        (item: any) => item.variant_id === product.variant_id
+      );
+      setWishlist(isWishlisted);
+    })
+    .catch((err) => {
+      console.error("Lỗi khi kiểm tra wishlist:", err);
+    });
+};
+
+
+  window.addEventListener("wishlist-changed", handleWishlistChange);
+
+  // Cleanup
+  return () => {
+    window.removeEventListener("wishlist-changed", handleWishlistChange);
+  };
+}, [product.variant_id]);
 
 const addItemToWishlist = async () => {
   const token = sessionStorage.getItem("authToken");
@@ -44,6 +85,7 @@ const addItemToWishlist = async () => {
         position: "top-right",
         autoClose: 2000,
       });
+        window.dispatchEvent(new Event("wishlist-changed"));
     } else {
       toast.error("Thêm vào wishlist thất bại: " + response.message);
     }
@@ -67,6 +109,7 @@ const addItemToWishlist = async () => {
         position: "top-right",
         autoClose: 2000,
       });
+        window.dispatchEvent(new Event("wishlist-changed"));
       console.log("Đã xoá khỏi wishlist!");
     } catch (error) {
       console.error("Lỗi khi xoá khỏi wishlist:", error);

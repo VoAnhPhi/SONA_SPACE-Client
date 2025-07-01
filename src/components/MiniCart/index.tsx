@@ -18,23 +18,23 @@ export interface MiniCartHandle {
   closeMiniCart: () => void;
   isVisible: boolean;
   refreshCart: () => void;
+  notifyCartChanged: () => void;
 }
 
 const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartChanged, setCartChanged] = useState(false);
-  // expose methods to parent
-useImperativeHandle(ref, () => ({
-  toggleMiniCart: () => {
-    setIsVisible(prev => !prev);
-    refreshCart();
-  },
-  closeMiniCart: () => setIsVisible(false),
-  isVisible,
-  refreshCart,
-  notifyCartChanged: () => setCartChanged(prev => !prev), // ✅ dòng này đúng
-}));
+
+  // load cart items when component mounts or cartChanged changes
+
+const toggleMiniCart = () => { /* logic to toggle mini cart */ };
+const closeMiniCart = () => { /* logic to close mini cart */ };
+// const isVisible = false; // or useState, depending on your logic
+
+// Then use them in your returned object
+
+
 
 
 
@@ -44,6 +44,7 @@ useImperativeHandle(ref, () => ({
       refreshCart();
     }
   }, [cartChanged]);
+
   useEffect(() => {
     if (isVisible) {
       const token = sessionStorage.getItem("authToken");
@@ -54,27 +55,34 @@ useImperativeHandle(ref, () => ({
       }
     }
   }, [isVisible]);
-  const refreshCart = async () => {
-    try {
-      const { success, wishlistItems } = await loadCartService();
-      if (success && wishlistItems) {
-        wishlistItems.forEach((item: any) => {
-          console.log("Item status:", item.status);
-        });
-        const formatted = wishlistItems.map((item: any, index: number) => ({
-          id: item.wishlist_id || index,
-          name: item.product_name,
-          price: item.price,
-          quantity: item.quantity,
-          color: item.color_hex || '',
-          image: item.image?.split(',')[0] || '/images/default.jpg',
-        }));
-        setCartItems(formatted);
-      }
-    } catch (error) {
-      console.error("Lỗi khi tải MiniCart:", error);
+
+
+const refreshCart = async () => {
+  try {
+    const { success, wishlistItems } = await loadCartService();
+    if (success && wishlistItems) {
+      const formatted = wishlistItems.map((item: any, index: number) => ({
+        id: item.wishlist_id || index,
+        name: item.product_name,
+        price: item.price,
+        quantity: item.quantity,
+        color: item.color_hex || '',
+        image: item.image?.split(',')[0] || '/images/default.jpg',
+      }));
+      setCartItems(formatted);
     }
-  };
+  } catch (error) {
+    console.error("Lỗi khi tải MiniCart:", error);
+  }
+};
+  useImperativeHandle(ref, () => ({
+    toggleMiniCart: () => setIsVisible(!isVisible),
+    closeMiniCart: () => setIsVisible(false),
+    isVisible,
+    refreshCart,
+    notifyCartChanged: () => setCartChanged(!cartChanged),
+  }));
+
   const removeItem = async (id: number) => {
     try {
       await removeFromCartService(id);

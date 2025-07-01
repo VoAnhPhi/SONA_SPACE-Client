@@ -7,7 +7,7 @@ import RecentPosts from "../../components/RecentPosts";
 import React, { useState, useEffect } from "react";
 import PolicyProduct from "../../components/Policy";
 import type { NewsArticle, NewsCategory } from "../../types";
-import { getAllNews } from "../../api/new"; // Import hàm API
+import { getAllNews, getAllNewsSimple } from "../../api/new"; // Import hàm API
 
 
 
@@ -37,7 +37,8 @@ const News: React.FC<NewsProps> = ({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getAllNews();
+        const data = await getAllNewsSimple();
+        console.log("Fetched news data:", data);
         setNews(data.slice(0, limit));
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         // Apply limit if provided
@@ -89,17 +90,9 @@ const News: React.FC<NewsProps> = ({
                 {news.map((news: NewsArticle) => (
                   <div className="news-item" key={news.news_id}>
                     <Link to={`/tin-tuc/${news.news_slug}`}>
-                      {(() => {
-                        try {
-                          const imagesArray = JSON.parse(news.news_image);
-                          const firstImage = imagesArray[0];
-                          return <img src={firstImage} alt={news.news_name} />;
-                        } catch (error) {
-                          return <img src="/fallback-image.jpg" alt={news.news_name} />;
-                        }
-                      })()}
-                      <h3>{news.news_name}</h3>
-                      {/* <p>{item.category}</p> */}
+                      <img src={news.news_image || "/fallback-image.jpg"} alt={news.news_title} />
+                      <h3>{news.news_title}</h3>
+                      {/* <p>{news.category_name}</p> */}
                     </Link>
                   </div>
                 ))}
