@@ -96,7 +96,7 @@ const RoomDetail: React.FC = () => {
         </div>
 
         {/* Product Section */}
-        <section className="product-section">
+        <section className="product-section mt-94">
           <Filter onFilterChange={handleFilterChange} />
           <div className="boxProducts">
             <div className="container">
@@ -120,7 +120,7 @@ const RoomDetail: React.FC = () => {
         </section>
 
         {/* Inspiration Section */}
-        <section className="inspiration-section">
+        <section className="inspiration-section mt-94">
           <div className="container">
             <div className="inspiration-content">
               <div className="inspiration-text">
@@ -165,7 +165,7 @@ const RoomDetail: React.FC = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="categories-section">
+        <section className="categories-section mt-94">
           <div className="container">
             <h2 className="section-title">Khám phá thêm các căn phòng</h2>
             <RoomSlider />

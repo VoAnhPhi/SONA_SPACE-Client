@@ -129,10 +129,6 @@ const recalculateSummary = (items: CartItemProps[]) => {
     }
   };
 
-
-
-
-
   return (
     <>
       <Header />
@@ -161,7 +157,7 @@ const recalculateSummary = (items: CartItemProps[]) => {
         </div>
 
         {/* Cart Content */}
-        <section className="cart-content">
+        <section className="cart-content mt-94">
           <div className="container">
             <div className="page-title">
               <h1>Giỏ hàng</h1>
@@ -292,10 +288,14 @@ const recalculateSummary = (items: CartItemProps[]) => {
         </section>
 
         {/* Policy Product */}
-        <PolicyProduct />
+        <section className="policy-product mt-94">
+          <PolicyProduct />
+        </section>
 
         {/* FAQ Section */}
-        <GetInTouch />
+        <section className="get-in-touch mt-94">
+          <GetInTouch />
+        </section>
       </div>
       <Footer />
     </>

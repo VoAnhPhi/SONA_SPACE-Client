@@ -147,7 +147,9 @@ const News: React.FC<NewsProps> = ({
           </div>
         </div>
         {/* Policy Section */}
-        <PolicyProduct />
+        <section className="policy-product mt-94">
+          <PolicyProduct />
+        </section>
 
         {/* Footer */}
         <Footer />

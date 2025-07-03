@@ -24,17 +24,17 @@ const HomePage = () => {
         setLoading(true);
         const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
         console.log("Fetched newest products:", products);
-        
+
         // Format sản phẩm để phù hợp với component Product
         const formattedProducts = products.map((product, index) => {
           return formatProductForDisplay(product);
         });
-        
+
         // Đảm bảo các id là duy nhất
-        const uniqueProducts = formattedProducts.filter((product, index, self) => 
+        const uniqueProducts = formattedProducts.filter((product, index, self) =>
           index === self.findIndex(p => p.id === product.id)
         );
-        
+
         console.log("Formatted products:", uniqueProducts);
         setNewestProducts(uniqueProducts);
         setError(null);
@@ -52,12 +52,12 @@ const HomePage = () => {
   // Sản phẩm hot - chọn ngẫu nhiên 4 sản phẩm từ danh sách sản phẩm mới
   const getRandomProducts = (count: number) => {
     if (newestProducts.length <= count) return newestProducts;
-    
+
     // Tạo một mảng các index ngẫu nhiên từ mảng newestProducts
     const shuffledIndices = [...Array(newestProducts.length).keys()]
       .sort(() => 0.5 - Math.random())
       .slice(0, count);
-    
+
     // Lấy các sản phẩm theo index đã chọn
     return shuffledIndices.map(index => newestProducts[index]);
   };
@@ -78,7 +78,7 @@ const HomePage = () => {
         </section>
 
         {/* Product Recommendations */}
-        <section className="product-recommendations">
+        <section className="product-recommendations mt-94">
           <div className="container">
             <h2 className="section-title">Sản Phẩm Được Đề Xuất Cho Bạn</h2>
             <p className="section-description">
@@ -174,15 +174,15 @@ const HomePage = () => {
         </section>
 
         {/* All Categories - Hiển thị tất cả danh mục */}
-        <section className="all-categories-section">
+        <section className="all-categories-section mt-94">
           <div className="container">
             <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
-            <CategorySlider/>
+            <CategorySlider />
           </div>
         </section>
 
         {/* Featured Products */}
-        <section className="featured-products">
+        <section className="featured-products mt-94">
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
@@ -190,8 +190,8 @@ const HomePage = () => {
               {error && <div className="error-message">{error}</div>}
               <div className="box-products-container">
                 {newestProducts.map((product) => (
-                  <ProductComponent 
-                    key={`new-${product.id}`} 
+                  <ProductComponent
+                    key={`new-${product.id}`}
                     product={product}
                     slug={product.slug}
                   />
@@ -202,16 +202,16 @@ const HomePage = () => {
         </section>
 
         {/* Hot Products */}
-        <section className="hot-products">
+        <section className="hot-products mt-94">
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Hot</h5>
               <div className="box-products-container">
                 {hotProducts.map((product, index) => (
-                  <ProductComponent 
+                  <ProductComponent
                     key={`hot-${product.id}-${index}`}
                     product={product}
-                      slug={product.slug}
+                    slug={product.slug}
                   />
                 ))}
               </div>
@@ -220,10 +220,14 @@ const HomePage = () => {
         </section>
 
         {/* Interior Design */}
-        <InteriorDesign />
+        <section className="interior-design mt-94">
+          <InteriorDesign />
+        </section>
 
         {/* Contact Section */}
-        <GetInTouch />
+        <section className="contact-section mt-94">
+          <GetInTouch />
+        </section>
       </div>
       <Footer />
     </>

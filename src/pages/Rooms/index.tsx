@@ -70,7 +70,7 @@ const Rooms: React.FC = () => {
         </div>
 
         {/* Room Categories */}
-        <section className="room-categories">
+        <section className="room-categories mt-94">
           <div className="container">
             <h1 className="section-title">Khám phá thêm các căn phòng</h1>
             <CategorySlider />
@@ -78,7 +78,7 @@ const Rooms: React.FC = () => {
         </section>
 
         {/* Featured Products */}
-        <section className="featured-products">
+        <section className="featured-products mt-94">
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
@@ -112,9 +112,6 @@ const Rooms: React.FC = () => {
 
         {/* Interior Design */}
         <InteriorDesign />
-
-        {/* Popular Category */}
-        <PopularCategory />
 
       </div>
       <Footer />

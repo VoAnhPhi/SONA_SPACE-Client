@@ -95,7 +95,7 @@ const ContactFormDesign: React.FC = () => {
         </div>
 
         {/* Services Section */}
-        <section className="services-section">
+        <section className="services-section mt-94">
           <div className="container">
             <h2 className="section-title">Dịch vụ của chúng tôi</h2>
 
@@ -134,7 +134,7 @@ const ContactFormDesign: React.FC = () => {
         </section>
 
         {/* How We Work Section */}
-        <section className="how-we-work">
+        <section className="how-we-work mt-94">
           <div className="container">
             <h2 className="section-title">Cách Sona Space Hoạt Động</h2>
 
@@ -182,7 +182,7 @@ const ContactFormDesign: React.FC = () => {
         </section>
 
         {/* Contact Form Section */}
-        <section className="contact-form-section">
+        <section className="contact-form-section mt-94">
           <div className="container">
             <div className="form-intro-container">
               <h2 className="section-title">Bắt đầu hành trình thiết kế của bạn</h2>
@@ -334,7 +334,7 @@ const ContactFormDesign: React.FC = () => {
             </form>
           </div>
         </section>
-
+        
       </div>
       <Footer />
     </>

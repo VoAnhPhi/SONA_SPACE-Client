@@ -143,8 +143,12 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <PopularCategory />
-      <section className="product-section">
+
+      <section className="product-section mt-94">
+        <PopularCategory />
+      </section>
+
+      <section className="product-section mt-94">
         <Filter onFilterChange={handleFilterChange} />
         <div className="boxProducts">
           <div className="container">
@@ -172,8 +176,12 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
       </section>
-      <PolicyProduct />
-      <GetInTouch />
+      <section className="policy-product mt-94">
+        <PolicyProduct />
+      </section>
+      <section className="get-in-touch mt-94">
+        <GetInTouch />
+      </section>
       <Footer />
             <ToastContainer position="top-right"
         autoClose={3000}

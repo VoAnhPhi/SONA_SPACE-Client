@@ -41,7 +41,7 @@ const InteriorDesign = () => {
                                     <div className="design-content">
                                           <h3>Tư Vấn Không Gian Sống</h3>
                                           <p>
-                                                Không chỉ đẹp mà còn thông minh – thiết kế của chúng tôi chú trọng vào sự tiện nghi và bố trí hợp lý. Dù là căn hộ nhỏ hay biệt thự rộng rãi, mọi thứ sẽ được sắp xếp tinh tế và tối ưu nhất.
+                                                Không chỉ trông đẹp mắt mà còn thông minh – thiết kế nội thất của chúng tôi chú trọng vào sự tiện nghi và bố trí hợp lý. Dù là căn hộ nhỏ hay biệt thự rộng rãi, mọi thứ sẽ được sắp xếp tinh tế và tối ưu nhất.
                                           </p>
                                           <Link to="/dich-vu-thiet-ke" className="btn btn-primary">
                                                 Xem thêm

@@ -138,11 +138,14 @@ article {
     }
 }
 
-//Section GAP
-section {
-    &:nth-child(n+1) {
-        margin-top: 94px;
-    }
+// //Section GAP
+// section {
+//     &:nth-child(n+1) {
+//         margin-top: 94px;
+//     }
+// }
+.mt-94 {
+    margin-top: 94px;
 }
 
 //Custome Component [Title & Description]
