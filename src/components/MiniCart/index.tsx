@@ -12,38 +12,27 @@ interface CartItem {
 }
 interface MiniCartProps {
   userId?: number;
+  onCartUpdated?: (count: number) => void;
 }
+
 export interface MiniCartHandle {
   toggleMiniCart: () => void;
   closeMiniCart: () => void;
   isVisible: boolean;
   refreshCart: () => void;
-  notifyCartChanged: () => void;
+  notifyCartChanged: (newItem?: CartItem) => void;
+  getCartCount: () => number;
 }
 
-const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId }, ref) => {
+const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpdated }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartChanged, setCartChanged] = useState(false);
 
-  // load cart items when component mounts or cartChanged changes
-
-const toggleMiniCart = () => { /* logic to toggle mini cart */ };
-const closeMiniCart = () => { /* logic to close mini cart */ };
-// const isVisible = false; // or useState, depending on your logic
-
-// Then use them in your returned object
-
-
-
-
-
   useEffect(() => {
-    const token = sessionStorage.getItem("authToken");
-    if (token) {
-      refreshCart();
-    }
+    refreshCart();
   }, [cartChanged]);
+
 
   useEffect(() => {
     if (isVisible) {
@@ -70,24 +59,38 @@ const refreshCart = async () => {
         image: item.image?.split(',')[0] || '/images/default.jpg',
       }));
       setCartItems(formatted);
+
+      const count = formatted.reduce((total: number, item: CartItem) => total + item.quantity, 0);
+      onCartUpdated?.(count);
+
+      return count;
     }
   } catch (error) {
     console.error("Lỗi khi tải MiniCart:", error);
   }
 };
+
+
   useImperativeHandle(ref, () => ({
-    toggleMiniCart: () => setIsVisible(!isVisible),
+    toggleMiniCart: () => setIsVisible((prev) => !prev),
     closeMiniCart: () => setIsVisible(false),
     isVisible,
     refreshCart,
-    notifyCartChanged: () => setCartChanged(!cartChanged),
+    notifyCartChanged: async () => {
+      await refreshCart();
+    },
+    getCartCount: () =>
+      cartItems.reduce((total, item) => total + item.quantity, 0),
   }));
+
 
   const removeItem = async (id: number) => {
     try {
       await removeFromCartService(id);
+      await refreshCart();
       const updatedItems = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedItems);
+
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm:", error);
     }

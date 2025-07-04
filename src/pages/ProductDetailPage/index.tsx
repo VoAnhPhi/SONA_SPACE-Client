@@ -21,6 +21,7 @@ import { getProductComments } from "../../api/comment";
 import type { CommentResponse } from "../../types";
 import { toast, ToastContainer } from "react-toastify";
 import { saveToOrCart } from "../../services/cartService";
+import ProductComponent from "../../components/Product";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -218,16 +219,15 @@ const ProductDetailPage: React.FC = () => {
           },
         ],
       });
-      if (miniCartRef.current) {
-        miniCartRef.current.notifyCartChanged(); // Cập nhật cart
-        miniCartRef.current?.toggleMiniCart();
-      }
+
       if (response.success) {
         toast.success("Đã thêm vào giỏ hàng!", {
           position: "top-right",
-          autoClose: 2000,
+          autoClose: 1000,
         });
-
+        if (miniCartRef.current) {
+          miniCartRef.current.notifyCartChanged();
+        }
       } else {
         toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
       }
@@ -502,12 +502,12 @@ const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>  
+      </div>
 
       <Footer />
 
       <ToastContainer position="top-right"
-        autoClose={3000}
+        autoClose={2000}
         style={{ marginTop: "100px" }} />
       <MiniCart ref={miniCartRef} />
     </>
