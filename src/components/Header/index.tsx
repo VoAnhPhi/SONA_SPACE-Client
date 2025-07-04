@@ -28,6 +28,12 @@ const Header = () => {
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   // State để quản lý hiển thị mini cart trên mobile
   const [isMiniCartOpen, setIsMiniCartOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestedKeywords, setSuggestedKeywords] = useState<string[]>([]);
+  const [latestProducts, setLatestProducts] = useState<any[]>([]);
 
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
   const miniCartRef = useRef<MiniCartHandle>(null);
@@ -39,6 +45,40 @@ const Header = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      // Lấy gợi ý từ tên sản phẩm (tối đa 5)
+      fetch(`http://localhost:3501/api/products/search?q=${encodeURIComponent(searchTerm)}`)
+        .then(res => res.json())
+        .then(data => {
+          const keywords = (data.results || []).map((item: any) => item.name).slice(0, 5);
+          if (keywords.length > 0) {
+            setSuggestedKeywords(keywords);
+          } else {
+            // Nếu không có kết quả, lấy sản phẩm mới nhất
+            fetch('http://localhost:3501/api/products/newest?limit=5')
+              .then(res => res.json())
+              .then(newest => {
+                const newNames = (Array.isArray(newest) ? newest : []).map((item: any) => item.name).slice(0, 5);
+                setSuggestedKeywords(newNames);
+              });
+          }
+        });
+    } else {
+      setSuggestedKeywords([]);
+    }
+  }, [searchTerm]);
+
+  // Lấy sản phẩm mới nhất khi searchTerm rỗng
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      fetch("http://localhost:3501/api/products/newest?limit=6")
+        .then(res => res.json())
+        .then(data => {
+          setLatestProducts(Array.isArray(data) ? data : []);
+        });
+    }
+  }, [searchTerm]);
 
   // Lấy tên cuối của người dùng
   const getLastName = (fullName: string | undefined) => {
@@ -168,8 +208,61 @@ const Header = () => {
     }
   };
 
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value.trim().length === 0) {
+      setSearchResults([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    setShowSuggestions(true);
+    try {
+      const res = await fetch(`http://localhost:3501/api/products/search?q=${encodeURIComponent(value)}`);
+      const data = await res.json();
+      setSearchResults(data.results || []);
+    } catch (err) {
+      setSearchResults([]);
+    }
+    setSearchLoading(false);
+  };
+
   const categoryRows = getCategoryRows();
   const roomRows = getRoomRows();
+
+  const renderKeywords = () => {
+    if (searchTerm.trim() === "") {
+      return (
+        <>
+          {latestProducts.map((item, idx) => (
+            <div className="search-link-item" key={item.id || idx}>
+              <a href={`/search?q=${encodeURIComponent(item.name)}`}>
+                <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
+                <span>{item.name}</span>
+              </a>
+            </div>
+          ))}
+        </>
+      );
+    }
+    return suggestedKeywords.map((kw, idx) => (
+      <div className="search-link-item" key={idx}>
+        <a
+          href={`/search?q=${encodeURIComponent(kw)}`}
+          onClick={e => {
+            e.preventDefault();
+            setSearchTerm(kw);
+          }}
+        >
+          <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
+          <span>{kw}</span>
+        </a>
+      </div>
+    ));
+  };
 
   return (
     <>
@@ -413,7 +506,14 @@ const Header = () => {
                   <div className="sub-search">
                     <div className="search-container container">
                       <div className="search-input-wrapper">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm" />
+                        <input
+                          type="text"
+                          placeholder="Tìm kiếm sản phẩm"
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                          onFocus={() => searchTerm && setShowSuggestions(true)}
+                          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                        />
                         <button type="submit">
                           <img
                             src="../public/images/icons/magnifier-gray.svg"
@@ -422,154 +522,123 @@ const Header = () => {
                         </button>
                       </div>
                       <div className="search-content d-flex">
-                        <div className="search-content-aside col-md-3">
-                          <h3>Tìm kiếm nhiều</h3>
-                          <div className="search-links">
-                            <div className="search-link-item">
-                              <a href="/search?q=sofa+phòng+khách">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>sofa phòng khách</span>
-                              </a>
-                            </div>
-                            <div className="search-link-item">
-                              <a href="/search?q=giường+ngủ+gỗ+tự+nhiên">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>giường ngủ gỗ tự nhiên</span>
-                              </a>
-                            </div>
-                            <div className="search-link-item">
-                              <a href="/search?q=bàn+ăn+4+ghế">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>bàn ăn 4 ghế</span>
-                              </a>
-                            </div>
-                            <div className="search-link-item">
-                              <a href="/search?q=bàn+làm+việc+tại+nhà">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>bàn làm việc tại nhà</span>
-                              </a>
-                            </div>
-                            <div className="search-link-item">
-                              <a href="/search?q=kệ+tivi+treo+tường">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>kệ tivi treo tường</span>
-                              </a>
-                            </div>
-                            <div className="search-link-item">
-                              <a href="/search?q=thảm+trải+sàn+phòng+khách">
-                                <img
-                                  src="../public/images/icons/magnifier-gray.svg"
-                                  alt="search"
-                                />
-                                <span>thảm trải sàn phòng khách</span>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="popular-products col-md-9">
-                          {/* Hàng đầu tiên hiển thị categories */}
-                          <h3>Danh mục sản phẩm</h3>
-                          {loadingCategories ? (
-                            <div className="loading-categories">
-                              Đang tải danh mục...
-                            </div>
-                          ) : (
-                            categoryRows.slice(0, 1).map((row, rowIndex) => (
-                              <div
-                                className="product-row"
-                                key={`search-cat-row-${rowIndex}`}
-                              >
-                                {row.map((category) => (
-                                  <div
-                                    className="product-item"
-                                    key={`search-cat-${category.category_id}`}
-                                  >
-                                    <a
-                                      href={`/san-pham/${category.slug}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleNavClick(
-                                          `/san-pham/${category.slug}`
-                                        );
-                                      }}
-                                    >
-                                      <div
-                                        className="product-image"
-                                        style={{
-                                          backgroundImage: `url(${category.category_image})`,
-                                          backgroundSize: "cover",
-                                          backgroundPosition: "center",
-                                        }}
-                                      ></div>
-                                      <div className="product-title">
-                                        {category.category_name}
-                                      </div>
-                                    </a>
-                                  </div>
-                                ))}
+                        {searchTerm.trim() !== "" ? (
+                          <>
+                            <div className="search-content-aside col-md-3">
+                              <h3>Tìm kiếm nhiều</h3>
+                              <div className="search-links">
+                                {renderKeywords()}
                               </div>
-                            ))
-                          )}
-
-                          {/* Hàng thứ hai hiển thị rooms */}
-                          <h3 className="mt-4">Không gian</h3>
-                          {loadingRooms ? (
-                            <div className="loading-categories">
-                              Đang tải không gian...
                             </div>
-                          ) : (
-                            roomRows.slice(0, 1).map((row, rowIndex) => (
-                              <div
-                                className="product-row"
-                                key={`search-room-row-${rowIndex}`}
-                              >
-                                {row.map((room) => (
-                                  <div
-                                    className="product-item"
-                                    key={`search-room-${room.room_id}`}
-                                  >
-                                    <a
-                                      href={`/khong-gian/${room.slug}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleNavClick(
-                                          `/khong-gian/${room.slug}`
-                                        );
-                                      }}
-                                    >
-                                      <div
-                                        className="product-image"
-                                        style={{
-                                          backgroundImage: `url(${room.room_image})`,
-                                          backgroundSize: "cover",
-                                          backgroundPosition: "center",
-                                        }}
-                                      ></div>
-                                      <div className="product-title">
-                                        {room.room_name}
+                            <div className="popular-products col-md-9">
+                              <h3>Kết quả tìm kiếm</h3>
+                              {searchLoading ? (
+                                <div className="loading-categories">Đang tìm kiếm...</div>
+                              ) : searchResults.length > 0 ? (
+                                searchResults.reduce((rows: any[][], item, idx) => {
+                                  if (idx % 5 === 0) rows.push([]);
+                                  rows[rows.length - 1].push(item);
+                                  return rows;
+                                }, []).map((row, rowIndex) => (
+                                  <div className="product-row" key={`search-result-row-${rowIndex}`}> 
+                                    {row.map((item) => (
+                                      <div className="product-item" key={item.id}>
+                                        <a href={`/san-pham/${item.slug}`} className="product-link">
+                                          <div
+                                            className="product-image"
+                                            style={{ backgroundImage: `url(${item.image})` }}
+                                          ></div>
+                                          <div className="product-title">{item.name}</div>
+                                          <div className="product-price">
+                                            {item.price ? Number(item.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''}
+                                          </div>
+                                        </a>
                                       </div>
-                                    </a>
+                                    ))}
                                   </div>
-                                ))}
+                                ))
+                              ) : (
+                                <div className="loading-categories">Không tìm thấy sản phẩm phù hợp.</div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          // Nếu không tìm kiếm, hiển thị lại box danh mục và không gian như cũ
+                          <>
+                            <div className="search-content-aside col-md-3">
+                              <h3>Tìm kiếm nhiều</h3>
+                              <div className="search-links">
+                                {renderKeywords()}
                               </div>
-                            ))
-                          )}
-                        </div>
+                            </div>
+                            <div className="popular-products col-md-9">
+                              {/* Hàng đầu tiên hiển thị categories */}
+                              <h3>Danh mục sản phẩm</h3>
+                              {loadingCategories ? (
+                                <div className="loading-categories">
+                                  Đang tải danh mục...
+                                </div>
+                              ) : (
+                                categoryRows.slice(0, 1).map((row, rowIndex) => (
+                                  <div className="product-row" key={`search-cat-row-${rowIndex}`}>
+                                    {row.map((category) => (
+                                      <div className="product-item" key={`search-cat-${category.category_id}`}>
+                                        <a
+                                          href={`/san-pham/${category.slug}`}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleNavClick(`/san-pham/${category.slug}`);
+                                          }}
+                                        >
+                                          <div
+                                            className="product-image"
+                                            style={{
+                                              backgroundImage: `url(${category.category_image})`,
+                                              backgroundSize: "cover",
+                                              backgroundPosition: "center",
+                                            }}
+                                          ></div>
+                                          <div className="product-title">{category.category_name}</div>
+                                        </a>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ))
+                              )}
+                              {/* Hàng thứ hai hiển thị rooms */}
+                              <h3 className="mt-4">Không gian</h3>
+                              {loadingRooms ? (
+                                <div className="loading-categories">Đang tải không gian...</div>
+                              ) : (
+                                roomRows.slice(0, 1).map((row, rowIndex) => (
+                                  <div className="product-row" key={`search-room-row-${rowIndex}`}>
+                                    {row.map((room) => (
+                                      <div className="product-item" key={`search-room-${room.room_id}`}>
+                                        <a
+                                          href={`/khong-gian/${room.slug}`}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleNavClick(`/khong-gian/${room.slug}`);
+                                          }}
+                                        >
+                                          <div
+                                            className="product-image"
+                                            style={{
+                                              backgroundImage: `url(${room.room_image})`,
+                                              backgroundSize: "cover",
+                                              backgroundPosition: "center",
+                                            }}
+                                          ></div>
+                                          <div className="product-title">{room.room_name}</div>
+                                        </a>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
