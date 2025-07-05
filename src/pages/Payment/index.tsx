@@ -123,9 +123,11 @@ const Payment: React.FC = () => {
         payload.order_name_new = formData.fullName.trim();
       }
 
+
       if (formData.email.trim() !== prevEmail.trim()) {
-        payload.order_gmail_new = formData.email.trim();
+        payload.order_email_new = formData.email.trim();
       }
+
 
 
       const res = await createOrderService(payload);

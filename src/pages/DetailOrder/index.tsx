@@ -40,11 +40,14 @@ const DetailOrder: React.FC = () => {
         const res = await axios.get(`http://localhost:3501/api/orders/hash/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            
           },
+          
         });
         if (res.data.success) {
           setOrder(res.data.order);
         }
+        console.log("detail-order", res);
       } catch (err) {
         console.error("Lỗi khi tải đơn hàng:", err);
       }
@@ -80,7 +83,7 @@ const DetailOrder: React.FC = () => {
           <div className="order-overview">
             <div className="order-header">
               <div className="order-id">
-                <h2>Đơn hàng: {order.id}</h2>
+                <h2>Đơn hàng: {order.order_hash}</h2>
                 <p className="order-date">Ngày đặt: {formatDate(order.date)}</p>
               </div>
               <div className="order-actions">

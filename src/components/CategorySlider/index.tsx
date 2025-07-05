@@ -51,7 +51,7 @@ export default function CategorySlider() {
                 ))}
                 <DebugInfo />
             </div>
-        );cls
+        );
     }
     if (error) {
         return (
