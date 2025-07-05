@@ -31,44 +31,41 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
 
   useEffect(() => {
     refreshCart();
-  }, [cartChanged]);
+  }, []);
+
+
 
 
   useEffect(() => {
     if (isVisible) {
-      const token = sessionStorage.getItem("authToken");
-      if (token) {
-        refreshCart();
-      } else {
-        console.warn("Token chưa tồn tại. Không thể load cart.");
-      }
+      refreshCart();
     }
   }, [isVisible]);
+  useEffect(() => {
+    const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+    onCartUpdated?.(count);
+  }, [cartItems]);
 
 
-const refreshCart = async () => {
-  try {
-    const { success, wishlistItems } = await loadCartService();
-    if (success && wishlistItems) {
-      const formatted = wishlistItems.map((item: any, index: number) => ({
-        id: item.wishlist_id || index,
-        name: item.product_name,
-        price: item.price,
-        quantity: item.quantity,
-        color: item.color_hex || '',
-        image: item.image?.split(',')[0] || '/images/default.jpg',
-      }));
-      setCartItems(formatted);
 
-      const count = formatted.reduce((total: number, item: CartItem) => total + item.quantity, 0);
-      onCartUpdated?.(count);
-
-      return count;
+  const refreshCart = async () => {
+    try {
+      const { success, wishlistItems } = await loadCartService();
+      if (success && wishlistItems) {
+        const formatted = wishlistItems.map((item: any, index: number) => ({
+          id: item.wishlist_id || index,
+          name: item.product_name,
+          price: item.price,
+          quantity: item.quantity,
+          color: item.color_hex || '',
+          image: item.image?.split(',')[0] || '/images/default.jpg',
+        }));
+        setCartItems(formatted);
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải MiniCart:", error);
     }
-  } catch (error) {
-    console.error("Lỗi khi tải MiniCart:", error);
-  }
-};
+  };
 
 
   useImperativeHandle(ref, () => ({
@@ -77,7 +74,9 @@ const refreshCart = async () => {
     isVisible,
     refreshCart,
     notifyCartChanged: async () => {
-      await refreshCart();
+        console.log("📥 notifyCartChanged được gọi");
+      await refreshCart(); 
+      // setIsVisible(true);
     },
     getCartCount: () =>
       cartItems.reduce((total, item) => total + item.quantity, 0),
@@ -87,7 +86,7 @@ const refreshCart = async () => {
   const removeItem = async (id: number) => {
     try {
       await removeFromCartService(id);
-      await refreshCart();
+      // await refreshCart();
       const updatedItems = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedItems);
 

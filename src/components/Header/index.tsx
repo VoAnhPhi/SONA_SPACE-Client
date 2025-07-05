@@ -6,14 +6,9 @@ import type { Category, Room } from "../../types";
 import { Link } from "react-router-dom";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
 import MiniCart from "../../components/MiniCart";
-export interface MiniCartHandle {
-  toggleMiniCart: () => void;
-  closeMiniCart: () => void;
-  isVisible: boolean;
-  refreshCart: () => void;
-  notifyCartChanged: () => void;
-  getCartCount: () => number;
-}
+import type { MiniCartHandle } from "../../components/MiniCart";
+import { Outlet } from "react-router-dom";
+
 
 const Header = () => {
   // State để lưu trạng thái active của nav item
@@ -39,36 +34,7 @@ const Header = () => {
   const [cartCount, setCartCount] = useState<number>(0);
   const miniCartRef = useRef<MiniCartHandle>(null);
 
-const loadCartCountFromDB = async () => {
-  if (miniCartRef.current) {
-    const count = miniCartRef.current.getCartCount();
-    setCartCount(count);
-  } else {
-    console.warn("miniCartRef chưa sẵn sàng để gọi getCartCount()");
-  }
-};
 
-
-useEffect(() => {
-  loadCartCountFromDB();
-}, []);
-
-
-const handleCartChanged = async () => {
-  if (miniCartRef.current) {
-    await miniCartRef.current.refreshCart(); 
-    const count = miniCartRef.current.getCartCount(); 
-    setCartCount(count);
-  }
-};
-
-
-useEffect(() => {
-   loadCartCountFromDB();
-  // if (miniCartRef.current) {
-  //   miniCartRef.current.notifyCartChanged = handleCartChanged;
-  // }
-}, []);
 
   useEffect(() => {
     if (searchTerm.trim()) {
@@ -565,7 +531,7 @@ useEffect(() => {
                                   rows[rows.length - 1].push(item);
                                   return rows;
                                 }, []).map((row, rowIndex) => (
-                                  <div className="product-row" key={`search-result-row-${rowIndex}`}> 
+                                  <div className="product-row" key={`search-result-row-${rowIndex}`}>
                                     {row.map((item) => (
                                       <div className="product-item" key={item.id}>
                                         <a href={`/san-pham/${item.slug}`} className="product-link">
@@ -683,7 +649,7 @@ useEffect(() => {
                   }}
                 >
 
-                  <button
+                  <button 
                     className="btn-icon cart-btn"
                     onClick={handleMiniCartClick}
                   >
@@ -694,33 +660,33 @@ useEffect(() => {
                       }
                     >
                       <img src="/images/icons/cart.svg" alt="cart" />
-                      <span
-                        className="cart-badge"
-                        style={{
-                          position: 'absolute',
-                          top: '20px',
-                          right: '-2px',
-                          backgroundColor: '#F0A00A',
-                          color: 'white',
-                          fontFamily: 'Be-R',
-                          fontSize: '12px',
-                          fontWeight: 'bold',
-                          padding: '2px 2px',
-                          borderRadius: '50%',
-                          minWidth: '18px',
-                          textAlign: 'center',
-                          // lineHeight: '1.2',
-                          zIndex: 10,
-                          boxShadow: '0 0 0 2px white',
-                        }}
-                      >
-                         {cartCount}
-                      </span>
+                      {/* {cartCount > 0 && (
+                        <span
+                          className="cart-badge"
+                          style={{
+                            position: 'absolute',
+                            top: '20px',
+                            right: '-2px',
+                            backgroundColor: '#F0A00A',
+                            color: 'white',
+                            fontFamily: 'Be-R',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            padding: '2px 2px',
+                            borderRadius: '50%',
+                            minWidth: '18px',
+                            textAlign: 'center',
+                            zIndex: 10,
+                            boxShadow: '0 0 0 2px white',
+                          }}
+                        >
+                          {cartCount}
+                        </span>
+                      )} */}
 
                     </Link>
                   </button>
                   <MiniCart ref={miniCartRef} onCartUpdated={(count) => setCartCount(count)} />
-
                 </div>
                 <button
                   className="btn-icon wishlist-btn"
