@@ -100,7 +100,6 @@ const ProductDetailPage: React.FC = () => {
         setProduct(formattedProduct);
         setRelatedProducts(res.related_products || []);
 
-        // Lấy từ URL nếu có ?color, nếu không thì dùng màu mặc định
         const colorIdFromUrl = searchParams.get("color");
         const defaultColor = formattedProduct.variants?.[0];
 
@@ -112,15 +111,15 @@ const ProductDetailPage: React.FC = () => {
           (v) => v.color_id === selectedColorId
         )?.color_hex;
 
-        // Set search param nếu chưa có
-        if (!colorIdFromUrl && selectedColorId) {
+        // Set mặc định selectedColor nếu chưa có
+        if (!colorIdFromUrl && selectedColorId && selectedColorHex) {
+          setSelectedColor(selectedColorHex);
           setSearchParams((prev) => {
             prev.set("color", selectedColorId.toString());
             return prev;
           });
         }
 
-        // Gọi handle để set Variant chính xác
         if (selectedColorHex && selectedColorId) {
           await handleColorSelect(selectedColorHex, selectedColorId);
         }
@@ -219,7 +218,7 @@ const ProductDetailPage: React.FC = () => {
         ],
       });
       if (miniCartRef.current) {
-        miniCartRef.current.notifyCartChanged(); // Cập nhật cart
+        miniCartRef.current.notifyCartChanged();
         miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
@@ -317,16 +316,21 @@ const ProductDetailPage: React.FC = () => {
                   </span>
                 </div>
                 <div className="content-price">
-                  <span className="price">
-                    {formatPrice(selectedVariant?.variant_price || product.price)}{" "}
-                    đ
-                  </span>
-                  {(selectedVariant?.variant_price_sale || product.priceSale) && (
-                    <span className="price-old">
-                      {formatPrice(
-                        selectedVariant?.variant_price_sale || product.priceSale
-                      )}{" "}
-                      đ
+                  {selectedVariant?.variant_price_sale > 0 || product.priceSale > 0 ? (
+                    <>
+                      <span className="price">
+                        {formatPrice(
+                          selectedVariant?.variant_price_sale || product.priceSale
+                        )}{" "}
+                        đ
+                      </span>
+                      <span className="price-old" style={{ textDecoration: "line-through" }}>
+                        {formatPrice(selectedVariant?.variant_price || product.price)} đ
+                      </span>
+                    </>
+                  ) : (
+                    <span className="price">
+                      {formatPrice(selectedVariant?.variant_price || product.price)} đ
                     </span>
                   )}
                 </div>
@@ -364,9 +368,13 @@ const ProductDetailPage: React.FC = () => {
                       <div
                         key={v.color_id}
                         style={{ backgroundColor: v.color_hex }}
-                        className={`color-option ${selectedColor === v.color_hex ? "active" : ""
-                          }`}
-                        onClick={() => handleColorSelect(v.color_hex, v.color_id)}
+                        className={`color-option${selectedColor?.toLowerCase() === v.color_hex?.toLowerCase() ? " active" : ""}`}
+
+                        onClick={() => {
+                          setSelectedColor(v.color_hex); // Đảm bảo cập nhật selectedColor khi click
+                          handleColorSelect(v.color_hex, v.color_id);
+                        }}
+                        title={v.color_name}
                       ></div>
                     ))}
                   </div>
@@ -437,32 +445,32 @@ const ProductDetailPage: React.FC = () => {
               {activeTab === "description" && (
                 <div className="description-avalute-content">
                   <div className="description-avalute-content-text">
-                    <p>{product.description}</p>
+                    <p>{product.description || "Đang cập nhật..."}</p>
                   </div>
                   <div className="description-avalute-content-size">
                     <button className="color-info">
                       <span className="info-ww">Chất liệu </span>
-                      <span>{product.material} </span>
+                      <span>{product.material || "Đang cập nhật"}</span>
                     </button>
                     <button className="color-info">
                       <span className="info-ww">Chiều cao </span>
-                      <span>{product.height} cm</span>
+                      <span>{product.height ? `${product.height} cm` : "Đang cập nhật"}</span>
                     </button>
                     <button className="color-info">
                       <span className="info-ww">Chiều rộng </span>
-                      <span>{product.width} cm</span>
+                      <span>{product.width ? `${product.width} cm` : "Đang cập nhật"}</span>
                     </button>
                     <button className="color-info">
                       <span className="info-ww">Chiều sâu </span>
-                      <span>{product.depth} cm</span>
+                      <span>{product.depth ? `${product.depth} cm` : "Đang cập nhật"}</span>
                     </button>
                     <button className="color-info">
                       <span className="info-ww">Chiều cao chỗ ngồi</span>
-                      <span>{product.seating_height} cm</span>
+                      <span>{product.seating_height ? `${product.seating_height} cm` : "Đang cập nhật"}</span>
                     </button>
                     <button className="color-info">
                       <span className="info-ww">Tải trọng tối đa </span>
-                      <span>{product.maxium_weight} kg</span>
+                      <span>{product.maxium_weight ? `${product.maxium_weight} kg` : "Đang cập nhật"}</span>
                     </button>
                   </div>
                 </div>
@@ -502,7 +510,7 @@ const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>  
+      </div>
 
       <Footer />
 
