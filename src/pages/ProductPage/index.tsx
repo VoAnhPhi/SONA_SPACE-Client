@@ -5,12 +5,12 @@ import { Link, useSearchParams } from "react-router-dom";
 // Component
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
 import PopularCategory from "../../components/PopularCategory";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/seemore";
 import { toast, ToastContainer } from "react-toastify";
 
 // Type

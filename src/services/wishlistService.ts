@@ -20,7 +20,7 @@ export const addToWishlist = async (variant_id: number,quantity: number) => {
         );
         return response.data;
     } catch (error: any) {
-        console.error("❌ Lỗi khi gọi addToWishlist:", error?.response?.data || error.message || error);
+        console.error(" Lỗi khi gọi addToWishlist:", error?.response?.data || error.message || error);
         throw error;
     }
 };

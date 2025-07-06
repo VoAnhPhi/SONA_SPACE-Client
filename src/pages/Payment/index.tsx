@@ -148,7 +148,7 @@ const Payment: React.FC = () => {
         }, 2000);
       }
     } catch (error) {
-      toast.error("❌ Có lỗi xảy ra khi xử lý đơn hàng.");
+      toast.error(" Có lỗi xảy ra khi xử lý đơn hàng.");
     }
   };
 
@@ -196,7 +196,7 @@ const Payment: React.FC = () => {
           setCartItems(formatted);
 
           const subtotal = formatted.reduce(
-            (total, item) => total + item.price * item.quantity,
+            (total:number, item:CartItemProps) => total + item.price * item.quantity,
             0
           );
 
