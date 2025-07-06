@@ -17,6 +17,7 @@ interface WishlistItem {
   image: string;
   product_name: string;
   category: string;
+   product_slug: string;
   color_name?: string;
   color_hex?: string;
 }
@@ -280,7 +281,7 @@ const handleRemoveFromWishlist = async (wishlistId: number) => {
                 {Array.isArray(wishlistItems) ? wishlistItems.map((item) => (
                   <div className="wishlist-item" key={item.wishlist_id}>
                     <div className="wishlist-item-image">
-                      <Link to={`/san-pham/${item.product_id}`}>
+                      <Link to={`/san-pham/${item.product_slug}`}>
                         <img src={getFirstImageUrl(item.image)} alt="Product" />
                       </Link>
                     </div>

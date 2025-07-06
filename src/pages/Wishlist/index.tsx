@@ -1,126 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ListProduct from "../../components/Product";
-import Seemore from "../../components/SeeMore";
-
-interface WishlistProductProps {
-  id: number;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  image: string;
-  colors: string[];
-  category: string;
-  isNew?: boolean;
-  priceSale: number;
-  isSale?: boolean;
-  slug: string;
-  isWhishlist?: boolean;
-}
+import ProductComponent from "../../components/Product";
+import { loadWishlistService } from "../../services/wishlistService";
+import { fetchWishlistFromDatabase } from "../../services/wishlistService";
+import type { Product } from "../../types";
+import PolicyProduct from "../../components/Policy";
 
 const Wishlist: React.FC = () => {
-  // Mock wishlist products data
-  const [wishlistProducts, setWishlistProducts] = useState<
-    WishlistProductProps[]
-  >([
-    {
-      id: 1,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 14000000,
-      image: "/images/products/product(1).png",
-      colors: ["#D8C1A9", "#333333", "#777777"],
-      category: "Sofa",
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 2,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(2).png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      category: "Sofa",
-      isSale: true,
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 3,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(3).png",
-      colors: ["#D8C1A9", "#333333", "#555555"],
-      category: "Sofa",
-      isNew: true,
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 4,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(4).png",
-      colors: ["#D8C1A9", "#333333", "#777777"],
-      category: "Ghế",
-      isSale: true,
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 5,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(5).png",
-      colors: ["#4A2932", "#E5E5E5", "#555555"],
-      category: "Ghế",
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 6,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(6).png",
-      colors: ["#333333", "#555555", "#777777"],
-      category: "Bàn",
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 7,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(7).png",
-      colors: ["#D8C1A9", "#E5E5E5", "#555555"],
-      category: "Gạch",
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-    {
-      id: 8,
-      name: "Sofa Modena 2.5 seater ofa odena sema seater",
-      price: 15190000,
-      priceSale: 20000000,
-      image: "/images/products/product(8).png",
-      colors: ["#D8C1A9", "#333333", "#777777"],
-      category: "Thảm",
-      isNew: true,
-      slug: "Sofa-Modular-2.5-seater-với-nhièu-varian-option",
-    },
-  ]);
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [wishlistVariantIds, setWishlistVariantIds] = useState<number[]>([]);
 
-  // Format price with commas
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  useEffect(() => {
+    const loadWishlist = async () => {
+      try {
+        const data = await fetchWishlistFromDatabase();
+        const ids = data.map((item: any) => item.variant_id); // đảm bảo item có `variant_id`
+        setWishlistVariantIds(ids);
+      } catch (err) {
+        console.warn("Không thể load wishlist:", err);
+      }
+    };
+
+    loadWishlist();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      const res = await loadWishlistService();
+      console.log("Wishlist data:", res);
+      if (res.success) {
+        setWishlistProducts(res.wishlistItems);
+      } else {
+        console.error("Lỗi khi tải wishlist:", res.message);
+      }
+      setLoading(false);
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const removeFromWishlist = (productId: number) => {
+    setWishlistProducts((prev) => prev.filter((product) => product.id !== productId));
   };
 
-  // Remove product from wishlist
-  const removeFromWishlist = (productId: number) => {
-    setWishlistProducts(
-      wishlistProducts.filter((product) => product.id !== productId)
-    );
+  const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
   return (
@@ -128,37 +57,41 @@ const Wishlist: React.FC = () => {
       <Header />
       <div className="wishlist-pages">
         {/* Breadcrumb */}
-        <section className="detail-page-link">
+        <div className="breadcrumb-container">
           <div className="container">
-            <div className="detail-link">
-              <span className="link1">Sản phẩm | </span>
-              <span className="link2">Sản phẩm yêu thích</span>
+            <div className="breadcrumb">
+              <Link to="/san-pham">Sản phẩm</Link>
+              <span>/</span>
+              <span className="active">Yêu thích</span>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Wishlist Content */}
+        <div className="wishlist-title">
+          <h4>Sản Phẩm Yêu Thích - Lưu giữ những món đồ bạn ấn tượng</h4>
+          <p>
+            Lưu lại những sản phẩm bạn yêu thích để dễ dàng tìm lại và mua sắm
+            khi bạn sẵn sàng,
+            <br />
+            giúp việc mua sắm trở nên tiện lợi và nhanh chóng hơn bao giờ hết.
+          </p>
+        </div>
         <section className="wishlist-content">
-          <div className="wishlist-title">
-            <h4>Sản Phẩm Yêu Thích - Lưu giữ những món đồ bạn ấn tượng</h4>
-            <p>
-              Lưu lại những sản phẩm bạn yêu thích để dễ dàng tìm lại và mua sắm
-              khi bạn sẵn sàng,
-              <br />
-              giúp việc mua sắm trở nên tiện lợi và nhanh chóng hơn bao giờ hết.
-            </p>
-          </div>
 
-          {wishlistProducts.length > 0 ? (
+
+          {loading ? (
+            <p>Đang tải danh sách yêu thích...</p>
+          ) : wishlistProducts.length > 0 ? (
             <>
               <section className="boxProducts">
                 <div className="container">
                   <section className="section-box-products">
                     <div className="box-products-container">
                       {wishlistProducts.map((product) => (
-                        <ListProduct
+                        <ProductComponent
                           key={product.id}
-                          product={{ ...product, isWishlist: true }}
+                          product={product}
                           slug={product.slug}
                         />
                       ))}
@@ -166,7 +99,6 @@ const Wishlist: React.FC = () => {
                   </section>
                 </div>
               </section>
-              <Seemore />
             </>
           ) : (
             <div className="empty-wishlist">
@@ -184,6 +116,9 @@ const Wishlist: React.FC = () => {
           )}
         </section>
       </div>
+      <section className="policy-product mt-94">
+        <PolicyProduct />
+      </section>
       <Footer />
     </>
   );

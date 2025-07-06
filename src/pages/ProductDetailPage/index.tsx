@@ -230,7 +230,7 @@ const ProductDetailPage: React.FC = () => {
           autoClose: 500,
         });
         // if (miniCartRef.current) {
-        //   console.log("✅ Gọi notifyCartChanged");
+        //   console.log(" Gọi notifyCartChanged");
         //   miniCartRef.current.notifyCartChanged();
         // }
       } else {
