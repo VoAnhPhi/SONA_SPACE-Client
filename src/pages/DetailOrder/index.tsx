@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
+import axios from "axios";
 interface OrderProduct {
   id: string;
   name: string;
@@ -30,65 +30,45 @@ interface OrderDetails {
 }
 
 const DetailOrder: React.FC = () => {
-  // Mock data for order details
-  // const [order] = useState<OrderDetails>({
-  //   id: "12123212",
-  //   date: "23/5/2023",
-  //   status: "Đang giao hàng",
-  //   statusStep: 2,
-  //   recipientName: "Nguyễn Minh Duy",
-  //   recipientPhone: "0866453032",
-  //   address: "123/5 Lê Thương Kiệt / đầu đường 123/14/102 đường 3, quận Tân Bình, Phường 7, Quận Tân Bình, TP. Hồ Chí Minh",
-  //   subtotal: 15190000,
-  //   shippingFee: 0,
-  //   discount: 0,
-  //   total: 15190000,
-  //   products: [
-  //     {
-  //       id: "1",
-  //       name: "Sofa Moderno 2.5 seater Sofa",
-  //       image: "/images/products/sofa-1.jpg",
-  //       price: 15190000,
-  //       color: "Màu nâu",
-  //       size: "Số lượng: 1",
-  //       quantity: 1
-  //     },
-  //     {
-  //       id: "2",
-  //       name: "Sofa Moderno 2.5 seater Bàn",
-  //       image: "/images/products/table-1.jpg",
-  //       price: 15190000,
-  //       color: "Màu nâu",
-  //       size: "Số lượng: 1",
-  //       quantity: 1
-  //     },
-  //     {
-  //       id: "3",
-  //       name: "Sofa Moderno 2.5 seater Tủ",
-  //       image: "/images/products/cabinet-1.jpg",
-  //       price: 15190000,
-  //       color: "Màu nâu",
-  //       size: "Số lượng: 1",
-  //       quantity: 1
-  //     }
-  //   ]
-  // });
-
   const [order, setOrder] = useState<any>(null);
   const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
-    const storedOrder = localStorage.getItem("lastOrder");
-    if (storedOrder) {
+    const fetchOrder = async () => {
       try {
-        const parsedOrder = JSON.parse(storedOrder);
-        if (parsedOrder.orderId === id) {
-          setOrder(parsedOrder);
+        const token = sessionStorage.getItem("authToken");
+        const res = await axios.get(`http://localhost:3501/api/orders/hash/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            
+          },
+          
+        });
+        if (res.data.success) {
+          setOrder(res.data.order);
         }
-      } catch (error) {
-        console.error("Lỗi khi đọc dữ liệu đơn hàng:", error);
+        console.log("detail-order", res);
+      } catch (err) {
+        console.error("Lỗi khi tải đơn hàng:", err);
       }
-    }
+    };
+
+    fetchOrder();
   }, [id]);
+
+  const formatDate = (dateString: string): string | undefined => {
+    const date = new Date(dateString);
+    // Lấy các phần
+    const DD = ('0' + date.getDate()).slice(-2);
+    const MM = ('0' + (date.getMonth() + 1)).slice(-2);
+    const YYYY = date.getFullYear();
+    const HH = ('0' + date.getHours()).slice(-2);
+    const mm = ('0' + date.getMinutes()).slice(-2);
+    const ss = ('0' + date.getSeconds()).slice(-2);
+
+    return `${DD}/${MM}/${YYYY} ${HH}:${mm}:${ss}`;
+  };
+
   // Format price with commas
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
@@ -97,14 +77,14 @@ const DetailOrder: React.FC = () => {
   return (
     <>
       <Header />
-      
+
       <section className="detail-order-page">
         <div className="container">
           <div className="order-overview">
             <div className="order-header">
               <div className="order-id">
-                <h2>Đơn hàng: {order.orderId}</h2>
-                <p className="order-date">Ngày đặt: {order.orderDate}</p>
+                <h2>Đơn hàng: {order.order_hash}</h2>
+                <p className="order-date">Ngày đặt: {formatDate(order.date)}</p>
               </div>
               <div className="order-actions">
                 <div className="order-status"><span className="status">Chờ xác nhận</span></div>
@@ -192,7 +172,7 @@ const DetailOrder: React.FC = () => {
                   <div className="product-detailss">
                     <h4>{product.name}</h4>
                     <div className="product-meta">
-                      <span className="product-color"  style={{ backgroundColor: product.color }}></span>
+                      <span className="product-color" style={{ backgroundColor: product.color.hex }}></span>
                       <span className="product-size">{product.size}</span>
                     </div>
                   </div>
@@ -200,7 +180,10 @@ const DetailOrder: React.FC = () => {
                     <p>Thành tiền: <span>{formatPrice(product.price)}</span></p>
                   </div>
                   <div className="product-actions">
-                    <button className="btn-product-action">Xem chi tiết</button>
+                    <Link to={`/san-pham/${product.slug}`}>
+                      <button className="btn-product-action">Xem chi tiết</button>
+                    </Link>
+
                   </div>
                 </div>
               ))}
@@ -215,7 +198,7 @@ const DetailOrder: React.FC = () => {
             </div>
             <div className="summary-row">
               <span className="row1">Phí vận chuyển:</span>
-              <span className="row2">{order.shippingFee === 0 ? "Miễn phí" : formatPrice(order.shippingFee)}</span>
+              <span className="row2">30.000 đ</span>
             </div>
             {order.discount > 0 && (
               <div className="summary-row discount">

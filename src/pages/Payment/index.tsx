@@ -5,9 +5,9 @@ import Footer from "../../components/Footer";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loadCartService } from "../../services/cartService";
+import { loadCartService, clearCartService } from "../../services/cartService";
 import { createOrderService } from "../../services/ordersService";
-import axios from "axios";
+
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -35,6 +35,9 @@ const Payment: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState("transfer");
   const [prevAddress, setPrevAddress] = useState("");
   const [prevPhone, setPrevPhone] = useState("");
+  const [prevName, setPrevName] = useState("");
+  const [prevEmail, setPrevEmail] = useState("");
+
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
@@ -67,85 +70,111 @@ const Payment: React.FC = () => {
     setPaymentMethod(method);
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!agreeToTerms) {
-    alert("Vui lòng đồng ý với điều khoản và điều kiện trước khi thanh toán.");
-    return;
-  }
-
-  const orderId = "SN" + Math.floor(10000000 + Math.random() * 90000000);
-
-  const method =
-    paymentMethod === "card"
-      ? "MOMO"
-      : paymentMethod === "VNpay"
-        ? "VNPAY"
-        : "COD";
-
-  try {
-    const payload: any = {
-      order_id: orderId,
-      user_id: user?.id,
-      order_name: formData.fullName,
-      order_total: orderSummary.total,
-      order_status: "Đang xử lý",
-      method,
-      amount: orderSummary.total,
-      order_address_old: prevAddress,
-      order_number1: prevPhone,
-    };
-    console.log("Submitting order with payload:", payload);
-    // chỉ gửi địa chỉ mới nếu người dùng sửa
-    if (formData.address.trim() !== prevAddress.trim()) {
-      payload.order_address_new = formData.address.trim();
-    }
-
-    // chỉ cập nhật số mới nếu khác số cũ
-    if (formData.phone.trim() !== prevPhone.trim()) {
-      payload.order_number2 = formData.phone.trim(); // override số cũ
-    }
-
-    const res = await createOrderService(payload);
-
-    if (!res?.order_id) {
-      toast.error("Không thể tạo đơn hàng");
+    // 1. Kiểm tra rỗng
+    if (
+      !formData.fullName.trim() ||
+      !formData.phone.trim() ||
+      !formData.email.trim() ||
+      !formData.address.trim()
+    ) {
+      toast.error("Vui lòng điền đầy đủ thông tin giao hàng.");
       return;
     }
 
-    if (res.payUrl) {
-      window.location.href = res.payUrl;
-    } else {
-      toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", {
-        autoClose: 2000,
-      });
-      setTimeout(() => {
-        navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
-      }, 2000);
+    // 2. Kiểm tra giỏ hàng
+    if (cartItems.length === 0) {
+      toast.error("Giỏ hàng đang trống. Không thể thanh toán.");
+      return;
     }
-  } catch (error) {
-    toast.error("❌ Có lỗi xảy ra khi xử lý đơn hàng.");
-  }
-};
+
+    // 3. Kiểm tra đồng ý điều khoản
+    if (!agreeToTerms) {
+      toast.error("Vui lòng đồng ý với điều khoản và điều kiện.");
+      return;
+    }
+
+    const orderId = "SN" + Math.floor(10000000 + Math.random() * 90000000);
+    const method =
+      paymentMethod === "card" ? "MOMO" :
+        paymentMethod === "VNpay" ? "VNPAY" : "COD";
+
+    try {
+      const payload: any = {
+        order_id: orderId,
+        order_total: orderSummary.total,
+        order_status: "PENDING",
+        method,
+        amount: orderSummary.total,
+        cart_items: cartItems,
+      };
+
+      if (formData.address.trim() !== prevAddress.trim()) {
+        payload.order_address_new = formData.address.trim();
+      }
+
+      if (formData.phone.trim() !== prevPhone.trim()) {
+        payload.order_number2 = formData.phone.trim();
+      }
+
+      if (formData.fullName.trim() !== prevName.trim()) {
+        payload.order_name_new = formData.fullName.trim();
+      }
+
+
+      if (formData.email.trim() !== prevEmail.trim()) {
+        payload.order_email_new = formData.email.trim();
+      }
+
+
+
+      const res = await createOrderService(payload);
+
+      if (!res?.order_id) {
+        toast.error("Không thể tạo đơn hàng");
+        return;
+      }
+
+      await clearCartService();
+
+      if (res.payUrl) {
+        window.location.href = res.payUrl;
+      } else {
+        toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", { autoClose: 2000 });
+        setTimeout(() => {
+          navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
+        }, 2000);
+      }
+    } catch (error) {
+      toast.error("❌ Có lỗi xảy ra khi xử lý đơn hàng.");
+    }
+  };
+
 
   useEffect(() => {
     if (user && isAuthenticated) {
       const defaultAddress = user.address || "";
       const defaultPhone = user.phone || "";
+      const defaultName = user.full_name || "";
+      const defaultEmail = user.email || "";
 
       setFormData((prev) => ({
         ...prev,
-        fullName: user.full_name || "",
-        email: user.email || "",
+        fullName: defaultName,
+        email: defaultEmail,
         phone: defaultPhone,
         address: defaultAddress,
       }));
 
       setPrevAddress(defaultAddress);
       setPrevPhone(defaultPhone);
+      setPrevName(defaultName);
+      setPrevEmail(defaultEmail);
     }
   }, [user, isAuthenticated]);
+
 
   useEffect(() => {
     const loadCartFromDatabase = async () => {

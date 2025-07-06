@@ -2,11 +2,11 @@
 // Import necessary libraries
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
-import MiniCart from "../../components/MiniCart";
 import type { MiniCartHandle } from "../../components/MiniCart";
 // import components
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import MiniCart from "../../components/MiniCart";
 import PolicyProduct from "../../components/Policy";
 
 // import API
@@ -21,6 +21,7 @@ import { getProductComments } from "../../api/comment";
 import type { CommentResponse } from "../../types";
 import { toast, ToastContainer } from "react-toastify";
 import { saveToOrCart } from "../../services/cartService";
+import ProductComponent from "../../components/Product";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -34,6 +35,7 @@ const ProductDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("description");
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [cartCount, setCartCount] = useState<number>(0);
   const handleColorSelect = async (colorHex: string, colorId: number) => {
     try {
       setSelectedColor(colorHex);
@@ -41,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
         prev.set("color", colorId.toString());
         return prev;
       });
-      console.log("aaaaa", selectedVariant);
+      console.log("selectedVariant", selectedVariant);
       if (slug) {
         const variant = await fetchVariantBySlugAndColor(slug, colorId);
 
@@ -218,15 +220,18 @@ const ProductDetailPage: React.FC = () => {
         ],
       });
       if (miniCartRef.current) {
-        miniCartRef.current.notifyCartChanged();
+        miniCartRef.current.notifyCartChanged(); // Cập nhật cart
         miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
         toast.success("Đã thêm vào giỏ hàng!", {
           position: "top-right",
-          autoClose: 2000,
+          autoClose: 500,
         });
-
+        // if (miniCartRef.current) {
+        //   console.log("✅ Gọi notifyCartChanged");
+        //   miniCartRef.current.notifyCartChanged();
+        // }
       } else {
         toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
       }
@@ -515,9 +520,8 @@ const ProductDetailPage: React.FC = () => {
       <Footer />
 
       <ToastContainer position="top-right"
-        autoClose={3000}
+        autoClose={1000}
         style={{ marginTop: "100px" }} />
-      <MiniCart ref={miniCartRef} />
     </>
   );
 };
