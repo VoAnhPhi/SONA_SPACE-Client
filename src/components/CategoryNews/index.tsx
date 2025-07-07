@@ -55,12 +55,12 @@ const NewsCategories: React.FC<NewsProps> = ({
       <ul>
         {news.map((category) => (
           <li key={category.news_category_id}>
-            <Link to={`/tin-tuc/${category.news_category_slug}`} className="category-item">
+            <div className="category-item">
               <span className="category-name">{category.name}</span>
               <span className="post-count">
                 {category.news_count}
               </span>
-            </Link>
+            </div>
           </li>
         ))}
       </ul>

@@ -37,7 +37,7 @@ const Payment: React.FC = () => {
   const [prevPhone, setPrevPhone] = useState("");
   const [prevName, setPrevName] = useState("");
   const [prevEmail, setPrevEmail] = useState("");
-
+  const [promoCodeInput, setPromoCodeInput] = useState("");
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
@@ -73,7 +73,6 @@ const Payment: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1. Kiểm tra rỗng
     if (
       !formData.fullName.trim() ||
       !formData.phone.trim() ||
@@ -83,14 +82,10 @@ const Payment: React.FC = () => {
       toast.error("Vui lòng điền đầy đủ thông tin giao hàng.");
       return;
     }
-
-    // 2. Kiểm tra giỏ hàng
     if (cartItems.length === 0) {
       toast.error("Giỏ hàng đang trống. Không thể thanh toán.");
       return;
     }
-
-    // 3. Kiểm tra đồng ý điều khoản
     if (!agreeToTerms) {
       toast.error("Vui lòng đồng ý với điều khoản và điều kiện.");
       return;
@@ -100,16 +95,18 @@ const Payment: React.FC = () => {
     const method =
       paymentMethod === "card" ? "MOMO" :
         paymentMethod === "VNpay" ? "VNPAY" : "COD";
-
+    const appliedCode = JSON.parse(localStorage.getItem("applycode") || "{}");
     try {
       const payload: any = {
         order_id: orderId,
         order_total: orderSummary.total,
         order_status: "PENDING",
         method,
+        couponcode_id: appliedCode?.couponcode_id || null,
         amount: orderSummary.total,
         cart_items: cartItems,
       };
+      console.log("🔎 Coupon gửi đi:", appliedCode);
 
       if (formData.address.trim() !== prevAddress.trim()) {
         payload.order_address_new = formData.address.trim();
@@ -131,7 +128,7 @@ const Payment: React.FC = () => {
 
 
       const res = await createOrderService(payload);
-
+      localStorage.removeItem("applycode");
       if (!res?.order_id) {
         toast.error("Không thể tạo đơn hàng");
         return;
@@ -196,14 +193,23 @@ const Payment: React.FC = () => {
           setCartItems(formatted);
 
           const subtotal = formatted.reduce(
-            (total:number, item:CartItemProps) => total + item.price * item.quantity,
+            (total: number, item: CartItemProps) => total + item.price * item.quantity,
             0
           );
 
           const shipping = 30000;
-          const discount = 0;
-          const total = subtotal + shipping - discount;
+          const stored = localStorage.getItem("applycode");
+          let discount = 0;
+          let code = "";
 
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            discount = parsed.discount || 0;
+            code = parsed.code || "";
+          }
+
+          setPromoCodeInput(code);
+          const total = subtotal + shipping - discount;
           setOrderSummary({ subtotal, shipping, discount, total });
         }
       } catch (error) {
@@ -213,6 +219,7 @@ const Payment: React.FC = () => {
 
     loadCartFromDatabase();
   }, []);
+
 
 
   return (
@@ -352,13 +359,20 @@ const Payment: React.FC = () => {
                     {formatPrice(orderSummary.shipping)} đ
                   </span>
                 </div>
+
                 <div className="summary-row promo-code">
                   <span className="label">Mã giảm giá:</span>
                   <div className="promo-input">
-                    <input type="text" placeholder="Nhập mã giảm giá" />
-                    <button className="apply-btn">Áp dụng</button>
+                    <input
+                      type="text"
+                      value={promoCodeInput}
+                      readOnly
+                      placeholder="Chưa áp dụng mã"
+                    />
+                    {/* <button className="apply-btn" >Áp dụng</button> */}
                   </div>
                 </div>
+
                 <div className="summary-total">
                   <span className="label">Tổng cộng</span>
                   <span className="value">

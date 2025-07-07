@@ -7,7 +7,7 @@ import PolicyProduct from "../../components/Policy";
 import { useAuth } from "../../contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import { loadCartService, updateCartQuantityService, removeFromCartService, clearCartService } from "../../services/cartService";
-
+import { validateCouponService } from "../../services/conpcodeService";
 interface CartItemProps {
   id: number;
   variant_id: string;
@@ -25,6 +25,9 @@ const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
+
   const [cartSummary, setCartSummary] = useState({
     subtotal: 0,
     shipping: 30000,
@@ -32,16 +35,18 @@ const CartPage: React.FC = () => {
     total: 0,
   });
 
-const recalculateSummary = (items: CartItemProps[]) => {
-  const subtotal = items.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-  const shipping = 30000;
-  const discount = 0;
-  const total = subtotal + shipping - discount;
-  setCartSummary({ subtotal, shipping, discount, total });
-};
+  const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) => {
+    const subtotal = items.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const shipping = 30000;
+    const discount = appliedDiscountAmount;
+    const total = subtotal + shipping - discount;
+
+    setCartSummary({ subtotal, shipping, discount, total });
+  };
+
 
   const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
@@ -67,7 +72,8 @@ const recalculateSummary = (items: CartItemProps[]) => {
         0
       );
 
-      recalculateSummary(formattedItems);
+      recalculateSummary(formattedItems, appliedDiscount);
+
 
     } else {
       console.error("Lỗi khi load wishlist:", message);
@@ -90,7 +96,7 @@ const recalculateSummary = (items: CartItemProps[]) => {
         const updatedItems = prev.map((item) =>
           item.id === id ? { ...item, quantity: newQuantity } : item
         );
-        recalculateSummary(updatedItems); // ← cập nhật lại tổng tiền
+        recalculateSummary(updatedItems, appliedDiscount);
         return updatedItems;
       });
     } catch (error) {
@@ -104,8 +110,9 @@ const recalculateSummary = (items: CartItemProps[]) => {
       await removeFromCartService(id);
       const updatedItems = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedItems);
-      recalculateSummary(updatedItems); 
-          toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
+      recalculateSummary(updatedItems, appliedDiscount);
+
+      toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm:", error);
     }
@@ -119,15 +126,56 @@ const recalculateSummary = (items: CartItemProps[]) => {
       const result = await clearCartService();
       if (result.success !== false) {
         await loadWishlist();
-         toast.success("Đã xóa toàn bộ giỏ hàng!");
+        toast.success("Đã xóa toàn bộ giỏ hàng!");
       } else {
         console.log(result.message);
-          toast.error(result.message || "Không thể xóa giỏ hàng.");
+        toast.error(result.message || "Không thể xóa giỏ hàng.");
       }
     } catch (error) {
       alert("Lỗi khi xóa giỏ hàng.");
     }
   };
+
+  const handleApplyPromoCode = async () => {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để sử dụng mã giảm giá.");
+      return;
+    }
+
+    const result = await validateCouponService(promoCodeInput, cartSummary.subtotal, token);
+
+    if (result.success) {
+      const { discount_type, value_price } = result.data.coupon;
+
+      let discount_amount = 0;
+      if (discount_type === 'percentage') {
+        discount_amount = Math.round((cartSummary.subtotal * value_price) / 100);
+      } else if (discount_type === 'fixed') {
+        discount_amount = Math.min(value_price, cartSummary.subtotal);
+      }
+
+      localStorage.setItem("applycode", JSON.stringify({
+        couponcode_id: result.data.coupon.couponcode_id,
+        code: promoCodeInput,
+        discount: discount_amount
+
+      }));
+      console.log(" Kết quả mã giảm giá:", result.data.coupon);
+      setAppliedDiscount(discount_amount);
+      setCartSummary((prev) => ({
+        ...prev,
+        discount: discount_amount,
+        total: prev.subtotal + prev.shipping - discount_amount,
+      }));
+      recalculateSummary(cartItems, discount_amount);
+      toast.success("Mã giảm giá đã được áp dụng!");
+    } else {
+      toast.error(result.error);
+    }
+  };
+
+
 
   return (
     <>
@@ -259,8 +307,13 @@ const recalculateSummary = (items: CartItemProps[]) => {
                   <div className="summary-row promo-code">
                     <span className="label">Mã giảm giá:</span>
                     <div className="promo-input">
-                      <input type="text" placeholder="Nhập mã giảm giá" />
-                      <button className="apply-btn">Áp dụng</button>
+                      <input
+                        type="text"
+                        value={promoCodeInput}
+                        onChange={(e) => setPromoCodeInput(e.target.value)}
+                        placeholder="Nhập mã giảm giá"
+                      />
+                      <button className="apply-btn" onClick={handleApplyPromoCode}>Áp dụng</button>
                     </div>
                   </div>
                   <div className="summary-total">
