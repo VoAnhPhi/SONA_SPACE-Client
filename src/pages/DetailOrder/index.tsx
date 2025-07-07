@@ -40,9 +40,9 @@ const DetailOrder: React.FC = () => {
         const res = await axios.get(`http://localhost:3501/api/orders/hash/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
-            
+
           },
-          
+
         });
         if (res.data.success) {
           setOrder(res.data.order);
@@ -70,9 +70,12 @@ const DetailOrder: React.FC = () => {
   };
 
   // Format price with commas
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
-  };
+const formatPrice = (price: number): string => {
+  const rounded = Math.round(price); // Đảm bảo là số nguyên
+  return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
+};
+
+
   if (!order) return <p>Đang tải đơn hàng...</p>;
   return (
     <>
@@ -120,6 +123,7 @@ const DetailOrder: React.FC = () => {
                   </div>
                   <div className="status-label">
                     <p>Đang giao hàng</p>
+                       <span>23/5/2023</span>
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -129,6 +133,7 @@ const DetailOrder: React.FC = () => {
                   </div>
                   <div className="status-label">
                     <p>Hoàn thành</p>
+                       <span>23/5/2023</span>
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -138,6 +143,7 @@ const DetailOrder: React.FC = () => {
                   </div>
                   <div className="status-label">
                     <p>Đánh giá</p>
+                       <span>23/5/2023</span> 
                   </div>
                 </div>
               </div>
@@ -148,12 +154,42 @@ const DetailOrder: React.FC = () => {
           <div className="delivery-info">
             <h3>Địa chỉ nhận hàng</h3>
             <div className="recipient-info">
-              <div className="recipient-name">
-                <p><strong>{order.recipientName}</strong></p>
-                <p>{order.recipientPhone}</p>
+              <div className="payment-summary">
+                <div className="summary-row">
+                  <span className="row1">Họ và tên:</span>
+                  <span className="row2">{order.recipientName}</span>
+                </div>
+                <div className="summary-row">
+                  <span className="row1">Số điện thoại:</span>
+                  <span className="row2">{order.recipientPhone}</span>
+                </div>
+                <div className="summary-row">
+                  <span className="row1">Địa chỉ:</span>
+                  <span className="row2">{order.address}</span>
+                </div>
+                <div className="summary-row">
+                  <span className="row1">Thanh toán khi nhận hàng</span>
+                  {/* <span className="row2">{order.address}</span> */}
+                </div>
               </div>
-              <div className="recipient-address">
-                <p>{order.address}</p>
+              <div className="payment-summary">
+                <div className="summary-row">
+                  <span className="row1">Tổng tiền hàng:</span>
+                  <span className="row2">{formatPrice(order.subtotal)}</span>
+                </div>
+                <div className="summary-row">
+                  <span className="row1">Phí vận chuyển:</span>
+                  <span className="row2">30.000 đ</span>
+                </div>
+                <div className="summary-row discount">
+                  <span className="row1">Mã giảm giá:</span>
+                  <span className="row2">-{formatPrice(order.couponValue)}</span>
+                  {/* <span className="row2">-{formatPrice(order.discount)}</span> */}
+                </div>
+                <div className="summary-row total">
+                  <span className="row1">Thành tiền:</span>
+                  <span className="row2">{formatPrice(order.total)}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -191,26 +227,6 @@ const DetailOrder: React.FC = () => {
           </div>
 
           {/* Payment Summary */}
-          <div className="payment-summary">
-            <div className="summary-row">
-              <span className="row1">Tổng tiền hàng:</span>
-              <span className="row2">{formatPrice(order.subtotal)}</span>
-            </div>
-            <div className="summary-row">
-              <span className="row1">Phí vận chuyển:</span>
-              <span className="row2">30.000 đ</span>
-            </div>
-            {order.discount > 0 && (
-              <div className="summary-row discount">
-                <span className="row1">Khuyến mãi:</span>
-                <span className="row2">-{formatPrice(order.discount)}</span>
-              </div>
-            )}
-            <div className="summary-row total">
-              <span className="row1">Thành tiền:</span>
-              <span className="row2">{formatPrice(order.total)}</span>
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="order-actions-bottom">

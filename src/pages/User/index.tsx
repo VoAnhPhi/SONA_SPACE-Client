@@ -4,13 +4,13 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import axios from "axios";
-import type { 
-  OrderItemAPI, 
-  OrderAPI, 
-  OrdersResponse, 
-  OrderItem, 
-  UserInfo, 
-  PromoCodeWithTimer as PromoCode 
+import type {
+  OrderItemAPI,
+  OrderAPI,
+  OrdersResponse,
+  OrderItem,
+  UserInfo, CouponCode,
+  PromoCodeWithTimer as PromoCode
 } from "../../types";
 // Thay thế toast bằng alert hoặc console.log
 // import { toast } from "react-hot-toast";
@@ -28,59 +28,59 @@ const CountdownTimer: React.FC<{
   seconds: initialSeconds,
   onComplete,
 }) => {
-  const [hours, setHours] = useState<number>(initialHours);
-  const [minutes, setMinutes] = useState<number>(initialMinutes);
-  const [seconds, setSeconds] = useState<number>(initialSeconds);
-  const [isLowTime, setIsLowTime] = useState<boolean>(false);
+    const [hours, setHours] = useState<number>(initialHours);
+    const [minutes, setMinutes] = useState<number>(initialMinutes);
+    const [seconds, setSeconds] = useState<number>(initialSeconds);
+    const [isLowTime, setIsLowTime] = useState<boolean>(false);
 
-  useEffect(() => {
-    // Check if time is running low (less than 10 minutes)
-    if (hours === 0 && minutes < 10) {
-      setIsLowTime(true);
-    } else {
-      setIsLowTime(false);
-    }
-
-    const interval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      } else if (minutes > 0) {
-        setMinutes(minutes - 1);
-        setSeconds(59);
-      } else if (hours > 0) {
-        setHours(hours - 1);
-        setMinutes(59);
-        setSeconds(59);
+    useEffect(() => {
+      // Check if time is running low (less than 10 minutes)
+      if (hours === 0 && minutes < 10) {
+        setIsLowTime(true);
       } else {
-        clearInterval(interval);
-        if (onComplete) {
-          onComplete();
-        }
+        setIsLowTime(false);
       }
-    }, 1000);
 
-    return () => clearInterval(interval);
-  }, [hours, minutes, seconds, onComplete]);
+      const interval = setInterval(() => {
+        if (seconds > 0) {
+          setSeconds(seconds - 1);
+        } else if (minutes > 0) {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        } else if (hours > 0) {
+          setHours(hours - 1);
+          setMinutes(59);
+          setSeconds(59);
+        } else {
+          clearInterval(interval);
+          if (onComplete) {
+            onComplete();
+          }
+        }
+      }, 1000);
 
-  // Format numbers to always have 2 digits
-  const formatNumber = (num: number): string => {
-    return num < 10 ? `0${num}` : `${num}`;
+      return () => clearInterval(interval);
+    }, [hours, minutes, seconds, onComplete]);
+
+    // Format numbers to always have 2 digits
+    const formatNumber = (num: number): string => {
+      return num < 10 ? `0${num}` : `${num}`;
+    };
+
+    return (
+      <div className={`flash-time ${isLowTime ? "low-time" : ""}`}>
+        <span className="time-value">{formatNumber(hours)}</span> h{" "}
+        <span className="time-value">{formatNumber(minutes)}</span> m{" "}
+        <span className="time-value">{formatNumber(seconds)}</span> s
+      </div>
+    );
   };
-
-  return (
-    <div className={`flash-time ${isLowTime ? "low-time" : ""}`}>
-      <span className="time-value">{formatNumber(hours)}</span> h{" "}
-      <span className="time-value">{formatNumber(minutes)}</span> m{" "}
-      <span className="time-value">{formatNumber(seconds)}</span> s
-    </div>
-  );
-};
 
 const User: React.FC = () => {
   // Use location to get current path
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // State for active tab
   const [activeTab, setActiveTab] = useState<string>("orders");
   // State for active order filter
@@ -210,7 +210,7 @@ const User: React.FC = () => {
 
   // State để theo dõi khi nào cần tải lại dữ liệu người dùng
   const [refreshUserData, setRefreshUserData] = useState<boolean>(false);
-  
+
   // State cho dữ liệu đơn hàng từ API
   const [apiOrders, setApiOrders] = useState<OrderAPI[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -232,7 +232,7 @@ const User: React.FC = () => {
           id: userData.id,
         });
         console.log("Đã tải thông tin người dùng từ sessionStorage:", userData);
-        
+
         // Gọi API để lấy dữ liệu đơn hàng
         fetchOrders(userData.id);
       } catch (error) {
@@ -245,14 +245,14 @@ const User: React.FC = () => {
       console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
     }
   }, [refreshUserData]);
-  
+
   // Hàm lấy dữ liệu đơn hàng từ API
   const fetchOrders = async (userId: number) => {
     if (!userId) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const token = sessionStorage.getItem('authToken');
       if (!token) {
@@ -260,7 +260,7 @@ const User: React.FC = () => {
         setIsLoading(false);
         return;
       }
-      
+
       const response = await axios.get<OrdersResponse>(
         `http://localhost:3501/api/orders-id/${userId}`,
         {
@@ -270,7 +270,7 @@ const User: React.FC = () => {
           }
         }
       );
-      
+
       setApiOrders(response.data.orders);
       console.log("Dữ liệu đơn hàng:", response.data);
     } catch (error) {
@@ -282,84 +282,148 @@ const User: React.FC = () => {
   };
 
   // Mock data for promo codes
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
-    {
-      code: "NEWCUSTOMER_1234",
-      discount: "Giảm 5%",
-      description: "CHO TOÀN BỘ ĐƠN HÀNG",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: false,
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-    {
-      code: "FLASH_5OFF",
-      discount: "Giảm 5%",
-      description: "FLASH SALE",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: true,
-      timeRemaining: { hours: 1, minutes: 8, seconds: 59 },
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-    {
-      code: "NEWCUSTOMER_1234",
-      discount: "Giảm 5%",
-      description: "CHO TOÀN BỘ ĐƠN HÀNG",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: false,
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-    {
-      code: "FLASH_10OFF",
-      discount: "Giảm 10%",
-      description: "FLASH SALE",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: true,
-      timeRemaining: { hours: 0, minutes: 45, seconds: 30 },
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-    {
-      code: "NEWCUSTOMER_1234",
-      discount: "Giảm 5%",
-      description: "CHO TOÀN BỘ ĐƠN HÀNG",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: false,
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-    {
-      code: "FLASH_15OFF",
-      discount: "Giảm 15%",
-      description: "FLASH SALE",
-      validUntil: "12:00 09/08/2021",
-      validFrom: "04:00 05/08/2021",
-      minOrder: "169.00",
-      used: false,
-      isFlashSale: true,
-      timeRemaining: { hours: 2, minutes: 15, seconds: 0 },
-      combinations:
-        "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-    },
-  ]);
+  // const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
+  //   {
+  //     code: "NEWCUSTOMER_1234",
+  //     discount: "Giảm 5%",
+  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: false,
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  //   {
+  //     code: "FLASH_5OFF",
+  //     discount: "Giảm 5%",
+  //     description: "FLASH SALE",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: true,
+  //     timeRemaining: { hours: 1, minutes: 8, seconds: 59 },
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  //   {
+  //     code: "NEWCUSTOMER_1234",
+  //     discount: "Giảm 5%",
+  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: false,
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  //   {
+  //     code: "FLASH_10OFF",
+  //     discount: "Giảm 10%",
+  //     description: "FLASH SALE",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: true,
+  //     timeRemaining: { hours: 0, minutes: 45, seconds: 30 },
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  //   {
+  //     code: "NEWCUSTOMER_1234",
+  //     discount: "Giảm 5%",
+  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: false,
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  //   {
+  //     code: "FLASH_15OFF",
+  //     discount: "Giảm 15%",
+  //     description: "FLASH SALE",
+  //     validUntil: "12:00 09/08/2021",
+  //     validFrom: "04:00 05/08/2021",
+  //     minOrder: "169.00",
+  //     used: false,
+  //     isFlashSale: true,
+  //     timeRemaining: { hours: 2, minutes: 15, seconds: 0 },
+  //     combinations:
+  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
+  //   },
+  // ]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
 
+  useEffect(() => {
+    fetchPromoCodes();
+  }, []);
+
+const fetchPromoCodes = async () => {
+  try {
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      console.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+      return;
+    }
+
+    const res = await axios.get("http://localhost:3501/api/couponcodes/codes", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const codes = res.data;
+    const now = new Date();
+
+    const updated = codes.map((promo: any) => {
+      const isFlashSale = Number(promo.isFlashSale) === 1;
+
+      if (isFlashSale) {
+        const end = new Date(promo.validUntil);
+        const diff = Math.max(0, end.getTime() - now.getTime());
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        return {
+          ...promo,
+          isFlashSale: true,
+          timeRemaining: { hours, minutes, seconds },
+        };
+      }
+      return {
+        ...promo,
+        isFlashSale: false,
+        timeRemaining: null,
+      };
+    });
+
+    setPromoCodes(updated);
+  } catch (error) {
+    console.error("Error fetching promo codes:", error);
+  }
+};
+
+  const formatDateTime = (dateStr: string | Date) => {
+    const date = new Date(dateStr);
+
+    return date.toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour12: false,
+    });
+  };
   // Format price with commas
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
@@ -368,27 +432,27 @@ const User: React.FC = () => {
   // Hàm lấy URL hình ảnh đầu tiên từ chuỗi URL
   const getFirstImageUrl = (imageUrls: string): string => {
     if (!imageUrls) return "";
-    
+
     // Nếu chuỗi chứa dấu phẩy, lấy URL đầu tiên
     if (imageUrls.includes(',')) {
       return imageUrls.split(',')[0];
     }
-    
+
     return imageUrls;
   };
-  
+
   // Hàm tính tổng giá trị đơn hàng
   const calculateOrderTotal = (order: OrderAPI): number => {
     return order.items.reduce((total, item) => {
       return total + (parseFloat(item.product_price) * item.quantity);
     }, 0);
   };
-  
+
   // Hàm tính tổng số lượng sản phẩm trong đơn hàng
   const calculateTotalQuantity = (order: OrderAPI): number => {
     return order.items.reduce((total, item) => total + item.quantity, 0);
   };
-  
+
   // Hàm chuyển đổi trạng thái đơn hàng thành class CSS
   const getStatusClass = (status: string): string => {
     switch (status) {
@@ -582,7 +646,7 @@ const User: React.FC = () => {
     if (apiOrders.length === 0) {
       return [];
     }
-    
+
     if (activeOrderFilter === "all") {
       return apiOrders;
     }
@@ -874,7 +938,7 @@ const User: React.FC = () => {
                     </div>
                   ) : apiOrders.length > 0 ? (
                     <div className="order-list-container">
-                      {getFilteredOrders().flatMap((order, orderIndex) => 
+                      {getFilteredOrders().flatMap((order, orderIndex) =>
                         order.items.map((item, itemIndex) => (
                           <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
                             <div className="order-header">
@@ -891,9 +955,9 @@ const User: React.FC = () => {
 
                             <div className="order-content">
                               <div className="product-image">
-                                <img 
-                                  src={getFirstImageUrl(item.product_image)} 
-                                  alt={item.product_name} 
+                                <img
+                                  src={getFirstImageUrl(item.product_image)}
+                                  alt={item.product_name}
                                 />
                               </div>
 
@@ -1054,8 +1118,8 @@ const User: React.FC = () => {
                             {typeof userInfo.address === "string"
                               ? userInfo.address
                               : userInfo.address && userInfo.address.length > 0
-                              ? userInfo.address[0]
-                              : "Chưa cập nhật địa chỉ"}
+                                ? userInfo.address[0]
+                                : "Chưa cập nhật địa chỉ"}
                           </div>
                         </div>
                       </div>
@@ -1242,8 +1306,8 @@ const User: React.FC = () => {
                                   ? userInfo.address
                                   : userInfo.address &&
                                     userInfo.address.length > 0
-                                  ? userInfo.address[0]
-                                  : ""
+                                    ? userInfo.address[0]
+                                    : ""
                               }
                               onChange={(e) =>
                                 setUserInfo({
@@ -1402,11 +1466,12 @@ const User: React.FC = () => {
                           </div>
                         )}
 
+
                         <div className="voucher-details">
                           <ul className="voucher-info-list">
                             <li>
                               <span>
-                                {promo.validFrom} - {promo.validUntil}
+                                {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
                               </span>
                             </li>
                             <li>
@@ -1509,7 +1574,7 @@ const User: React.FC = () => {
                     </div>
                   ) : getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
-                      {getFilteredOrders().flatMap((order, orderIndex) => 
+                      {getFilteredOrders().flatMap((order, orderIndex) =>
                         order.items.map((item, itemIndex) => (
                           <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
                             <div className="order-header">
@@ -1526,9 +1591,9 @@ const User: React.FC = () => {
 
                             <div className="order-content">
                               <div className="product-image">
-                                <img 
-                                  src={getFirstImageUrl(item.product_image)} 
-                                  alt={item.product_name} 
+                                <img
+                                  src={getFirstImageUrl(item.product_image)}
+                                  alt={item.product_name}
                                 />
                               </div>
 

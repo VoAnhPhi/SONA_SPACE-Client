@@ -199,8 +199,9 @@
     }
 
     .recipient-info {
-      display: grid;
-      grid-template-columns: 200px 1fr;
+      display: flex;
+
+      justify-content: space-between;
       gap: 20px;
 
       @media (max-width: 768px) {
@@ -354,12 +355,13 @@
   .payment-summary {
     background-color: #f8f8f8;
     border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
+    // padding: 20px;
+    // margin-bottom: 30px;
 
     .summary-row {
       display: flex;
       justify-content: space-between;
+      gap: 20px;
       margin-bottom: 15px;
       font-size: 14px;
       color: #666;
@@ -378,9 +380,9 @@
         margin-bottom: 0;
       }
 
-      &.discount {
-        color: #4CAF50;
-      }
+      // &.discount {
+      //   color: #4CAF50;
+      // }
 
       &.total {
         font-family: 'M-SB';

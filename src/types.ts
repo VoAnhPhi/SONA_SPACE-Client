@@ -239,7 +239,7 @@ export interface Variant {
   color_hex: string;
   color_priority: number;
   variant_id: number;
- variantId: number;
+  variantId: number;
   variant_slug: string;
   variant_price: number;
   variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)
@@ -352,4 +352,22 @@ export interface PromoCodeWithTimer extends PromoCode {
   isFlashSale: boolean;
   timeRemaining?: { hours: number; minutes: number; seconds: number };
   combinations: string;
+}
+
+
+export interface CouponCode {
+  code: string;
+  discount: string;
+  description: string;
+  validUntil: string;
+  validFrom: string;
+  minOrder: string;
+  used: boolean;
+  isFlashSale: boolean;
+  combinations: string;
+  timeRemaining?: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
 }
