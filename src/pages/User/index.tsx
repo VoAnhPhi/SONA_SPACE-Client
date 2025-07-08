@@ -1475,7 +1475,7 @@ const fetchPromoCodes = async () => {
                               </span>
                             </li>
                             <li>
-                              <span>Áp dụng cho tất cả sản phẩm.</span>
+                              <span>{promo.description}</span>
                             </li>
                             <li>
                               <span>Ưu đãi: {promo.combinations}</span>
