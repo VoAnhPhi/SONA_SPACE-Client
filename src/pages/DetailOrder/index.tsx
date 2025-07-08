@@ -47,7 +47,7 @@ const DetailOrder: React.FC = () => {
         if (res.data.success) {
           setOrder(res.data.order);
         }
-        console.log("detail-order", res);
+        console.log("detail-order", res.data);
       } catch (err) {
         console.error("Lỗi khi tải đơn hàng:", err);
       }
@@ -209,11 +209,12 @@ const formatPrice = (price: number): string => {
                     <h4>{product.name}</h4>
                     <div className="product-meta">
                       <span className="product-color" style={{ backgroundColor: product.color.hex }}></span>
-                      <span className="product-size">{product.size}</span>
+                      <span className="product-size">Số lượng: {product.quantity}</span>
                     </div>
+                    <span>Giá: {formatPrice(product.price)}</span>
                   </div>
                   <div className="product-price">
-                    <p>Thành tiền: <span>{formatPrice(product.price)}</span></p>
+                    <p>Thành tiền: <span>{formatPrice(product.price * product.quantity)}</span></p>
                   </div>
                   <div className="product-actions">
                     <Link to={`/san-pham/${product.slug}`}>

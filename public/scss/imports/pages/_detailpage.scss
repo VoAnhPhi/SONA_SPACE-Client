@@ -309,6 +309,13 @@
         cursor: pointer;
         border: 1px solid #ddd;
       }
+       .active {
+          border-color: #f0a00a;
+          border-width: 1px;
+          // box-shadow: 0 0 0 2px #fff, 0 0 0 4px #d0021b;
+          transform: scale(1.1);
+          z-index: 2;
+      }
     }
   }
 
