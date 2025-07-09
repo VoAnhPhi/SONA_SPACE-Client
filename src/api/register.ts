@@ -18,12 +18,15 @@ export const registerUser = async (userData: RegisterData): Promise<ApiResponse<
       message: 'Đăng ký thành công'
     };
   } catch (error: any) {
-    // Xử lý lỗi từ API
+    const apiErrors = error.response?.data?.errors || null;
     const errorMessage = error.response?.data?.message || 'Đã xảy ra lỗi khi đăng ký';
+
     return {
       success: false,
       error: errorMessage,
+      errors: apiErrors || {}, 
       message: errorMessage
     };
   }
 };
+
