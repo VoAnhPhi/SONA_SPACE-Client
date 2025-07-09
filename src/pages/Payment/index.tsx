@@ -38,6 +38,7 @@ const Payment: React.FC = () => {
   const [prevName, setPrevName] = useState("");
   const [prevEmail, setPrevEmail] = useState("");
   const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
@@ -90,6 +91,8 @@ const Payment: React.FC = () => {
       toast.error("Vui lòng đồng ý với điều khoản và điều kiện.");
       return;
     }
+
+    setIsLoading(true);
 
     const orderId = "SN" + Math.floor(10000000 + Math.random() * 90000000);
     const method =
@@ -146,6 +149,8 @@ const Payment: React.FC = () => {
       }
     } catch (error) {
       toast.error(" Có lỗi xảy ra khi xử lý đơn hàng.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -390,6 +395,11 @@ const Payment: React.FC = () => {
           </div>
         </div>
       </div>
+      {isLoading && (
+        <div className="fullscreen-loading">
+          <div className="spinner" />
+        </div>
+      )}
 
       <Footer />
       <ToastContainer position="top-right"

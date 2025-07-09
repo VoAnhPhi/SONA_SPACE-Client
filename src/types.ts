@@ -121,6 +121,7 @@ export interface PromoCode {
   validUntil: string;
   minOrder: string;
   used: boolean;
+
 }
 
 // Form related interfaces
@@ -353,6 +354,8 @@ export interface PromoCodeWithTimer extends PromoCode {
   isFlashSale: boolean;
   timeRemaining?: { hours: number; minutes: number; seconds: number };
   combinations: string;
+    status: number; 
+    userUsedStatus: number;
 }
 
 

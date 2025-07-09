@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import axios from "axios";
+
 import type {
   OrderItemAPI,
   OrderAPI,
@@ -281,84 +282,7 @@ const User: React.FC = () => {
     }
   };
 
-  // Mock data for promo codes
-  // const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
-  //   {
-  //     code: "NEWCUSTOMER_1234",
-  //     discount: "Giảm 5%",
-  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: false,
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  //   {
-  //     code: "FLASH_5OFF",
-  //     discount: "Giảm 5%",
-  //     description: "FLASH SALE",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: true,
-  //     timeRemaining: { hours: 1, minutes: 8, seconds: 59 },
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  //   {
-  //     code: "NEWCUSTOMER_1234",
-  //     discount: "Giảm 5%",
-  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: false,
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  //   {
-  //     code: "FLASH_10OFF",
-  //     discount: "Giảm 10%",
-  //     description: "FLASH SALE",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: true,
-  //     timeRemaining: { hours: 0, minutes: 45, seconds: 30 },
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  //   {
-  //     code: "NEWCUSTOMER_1234",
-  //     discount: "Giảm 5%",
-  //     description: "CHO TOÀN BỘ ĐƠN HÀNG",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: false,
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  //   {
-  //     code: "FLASH_15OFF",
-  //     discount: "Giảm 15%",
-  //     description: "FLASH SALE",
-  //     validUntil: "12:00 09/08/2021",
-  //     validFrom: "04:00 05/08/2021",
-  //     minOrder: "169.00",
-  //     used: false,
-  //     isFlashSale: true,
-  //     timeRemaining: { hours: 2, minutes: 15, seconds: 0 },
-  //     combinations:
-  //       "Giảm 20% khi bạn chi tiêu trên $169.00 hoặc giảm 15% khi bạn chi tiêu.",
-  //   },
-  // ]);
+
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
 
   useEffect(() => {
@@ -382,35 +306,66 @@ const fetchPromoCodes = async () => {
     const codes = res.data;
     const now = new Date();
 
-    const updated = codes.map((promo: any) => {
-      const isFlashSale = Number(promo.isFlashSale) === 1;
+    const updated = codes
+      .filter((promo: any) => promo.status !== 0)
+      .map((promo: any) => {
+        const isFlashSale = Number(promo.isFlashSale) === 1;
 
-      if (isFlashSale) {
-        const end = new Date(promo.validUntil);
-        const diff = Math.max(0, end.getTime() - now.getTime());
+        const userCoupon = userUsedCoupons.find((c) => c.code === promo.code);
+        const status = userCoupon ? userCoupon.status : promo.status; 
 
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        return {
+        const commonFields = {
           ...promo,
-          isFlashSale: true,
-          timeRemaining: { hours, minutes, seconds },
+          status,
+          isFlashSale,
+          timeRemaining: null,
         };
-      }
-      return {
-        ...promo,
-        isFlashSale: false,
-        timeRemaining: null,
-      };
-    });
+
+        if (isFlashSale) {
+          const end = new Date(promo.validUntil);
+          const diff = Math.max(0, end.getTime() - now.getTime());
+
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          return {
+            ...commonFields,
+            timeRemaining: { hours, minutes, seconds },
+          };
+        }
+
+        return commonFields;
+      });
 
     setPromoCodes(updated);
   } catch (error) {
     console.error("Error fetching promo codes:", error);
   }
 };
+
+
+  const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
+
+  const fetchUserVoucherStatuses = async () => {
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) return;
+
+      const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("User used coupons:", res.data);
+      setUserUsedCoupons(res.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy user_has_coupon:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPromoCodes();
+    fetchUserVoucherStatuses();
+  }, []);
 
   const formatDateTime = (dateStr: string | Date) => {
     const date = new Date(dateStr);
@@ -1438,68 +1393,72 @@ const fetchPromoCodes = async () => {
                   </div>
 
                   <div className="voucher-grid">
-                    {getFilteredPromoCodes().map((promo, index) => (
-                      <div className="voucher-card" key={index}>
-                        <div className="voucher-header">
-                          <div className="voucher-discount">
-                            {promo.discount}
+                    {getFilteredPromoCodes()
+                      .filter((promo) => promo)
+                      .map((promo, index) => (
+                        <div className="voucher-card" key={index}>
+                          <div className="voucher-header">
+                            <div className="voucher-discount">
+                              {promo.discount}
+                            </div>
+                            <div className="voucher-type">
+                              {promo.description}
+                            </div>
                           </div>
-                          <div className="voucher-type">
-                            {promo.description}
+
+                          <div className="voucher-code">
+                            <span>Code: {promo.code}</span>
+                          </div>
+
+                          {promo.isFlashSale && promo.timeRemaining && (
+                            <div className="flash-sale-banner">
+                              <div className="flash-icon">⚡</div>
+                              <div className="flash-text">Flash sale</div>
+                              <CountdownTimer
+                                hours={promo.timeRemaining.hours}
+                                minutes={promo.timeRemaining.minutes}
+                                seconds={promo.timeRemaining.seconds}
+                                onComplete={() => handleCountdownComplete(index)}
+                              />
+                            </div>
+                          )}
+
+
+                          <div className="voucher-details">
+                            <ul className="voucher-info-list">
+                              <li>
+                                <span>
+                                  {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
+                                </span>
+                              </li>
+                              <li>
+                                <span>{promo.description}</span>
+                              </li>
+                              <li>
+                                <span>Ưu đãi: Cho tất cả khách hàng </span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div className="voucher-actions">
+                            <button
+                              className="btn-copy"
+                              onClick={() => copyToClipboard(promo.code)}
+                            >
+                              <img src="/images/icons/content_copy.svg" alt="" />
+                              <span>Copy</span>
+                            </button>
+                            <button className="btn-apply">
+                              {Number(promo.userUsedStatus) === 0 ? (
+                                <span className="voucher-status not-used">Chưa sử dụng</span>
+                              ) : (
+                                <span className="voucher-status used">Đã sử dụng</span>
+                              )}
+                            </button>
+
                           </div>
                         </div>
-
-                        <div className="voucher-code">
-                          <span>Code: {promo.code}</span>
-                        </div>
-
-                        {promo.isFlashSale && promo.timeRemaining && (
-                          <div className="flash-sale-banner">
-                            <div className="flash-icon">⚡</div>
-                            <div className="flash-text">Flash sale</div>
-                            <CountdownTimer
-                              hours={promo.timeRemaining.hours}
-                              minutes={promo.timeRemaining.minutes}
-                              seconds={promo.timeRemaining.seconds}
-                              onComplete={() => handleCountdownComplete(index)}
-                            />
-                          </div>
-                        )}
-
-
-                        <div className="voucher-details">
-                          <ul className="voucher-info-list">
-                            <li>
-                              <span>
-                                {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
-                              </span>
-                            </li>
-                            <li>
-                              <span>{promo.description}</span>
-                            </li>
-                            <li>
-                              <span>Ưu đãi: {promo.combinations}</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="voucher-actions">
-                          <button
-                            className="btn-copy"
-                            onClick={() => copyToClipboard(promo.code)}
-                          >
-                            <img src="/images/icons/content_copy.svg" alt="" />
-                            <span>Copy</span>
-                          </button>
-                          <button
-                            className="btn-apply"
-                            onClick={() => applyPromoCode(promo.code)}
-                          >
-                            <span>Apply</span>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               )}
