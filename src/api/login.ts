@@ -21,7 +21,7 @@ export const loginUser = async (userData: LoginData): Promise<ApiResponse<LoginR
     };
   } catch (error: any) {
     // Xử lý lỗi từ API
-    const errorMessage = error.response?.data?.message || 'Đã xảy ra lỗi khi đăng nhập';
+    const errorMessage = error.response?.data?.message || 'Email hoặc mật khẩu không đúng. Vui lòng thử lại.';
     return {
       success: false,
       error: errorMessage,
