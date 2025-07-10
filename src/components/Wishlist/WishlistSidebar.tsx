@@ -20,6 +20,7 @@ interface WishlistItem {
    product_slug: string;
   color_name?: string;
   color_hex?: string;
+  slug: string;
 }
 
 
@@ -124,7 +125,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
           Authorization: `Bearer ${token}`,
         },
       });
-
+      console.log('wishlist item', response)
       const items: WishlistItem[] = Array.isArray(response.data) ? response.data : [];
 
       setWishlistItems(items);
@@ -163,12 +164,12 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
       if (response.data?.cartItem || response.data?.message) {
         toast.success("Đã thêm vào giỏ hàng!", {
           position: "top-right",
-          autoClose: 2000,
+          autoClose: 1000,
         });
       } else {
         toast.error("Không thể thêm vào giỏ hàng.", {
           position: "top-right",
-          autoClose: 2000,
+          autoClose: 1000,
         });
       }
     } catch (error: any) {
@@ -176,7 +177,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
       setError('Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.');
       toast.error("Lỗi khi thêm vào giỏ hàng.", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
       });
     }
   };
@@ -281,7 +282,7 @@ const handleRemoveFromWishlist = async (wishlistId: number) => {
                 {Array.isArray(wishlistItems) ? wishlistItems.map((item) => (
                   <div className="wishlist-item" key={item.wishlist_id}>
                     <div className="wishlist-item-image">
-                      <Link to={`/san-pham/${item.product_slug}`}>
+                      <Link to={`/san-pham/${item.slug}`}>
                         <img src={getFirstImageUrl(item.image)} alt="Product" />
                       </Link>
                     </div>

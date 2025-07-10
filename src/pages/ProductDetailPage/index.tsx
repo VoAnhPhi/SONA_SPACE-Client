@@ -6,12 +6,11 @@ import type { MiniCartHandle } from "../../components/MiniCart";
 // import components
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import MiniCart from "../../components/MiniCart";
 import PolicyProduct from "../../components/Policy";
 
-// import API
+// import API, 
 import { getProductBySlug } from "../../api/product";
-import { formatProductForDisplay } from "../../services/productService";
+import { formatProductForDisplay, getRelatedProductsByRoom } from "../../services/productService";
 import { fetchVariantBySlugAndColor } from "../../services/variantService";
 
 // import types
@@ -242,6 +241,24 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (!product?.id) return;
+
+    const fetchRelatedProducts = async () => {
+      try {
+        const related = await getRelatedProductsByRoom(product.id);
+        console.log("AAA", related)
+        setRelatedProducts(related);
+      } catch (error) {
+        console.error("Lỗi lấy sản phẩm liên quan:", error);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [product?.id]);
+
+
+
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
   return (
@@ -414,8 +431,8 @@ const ProductDetailPage: React.FC = () => {
                   <button className="button-add-cart" onClick={addToCart}>Thêm vào giỏ</button>
                   <div className="button-icon-i">
                     {/* <div className="icon-img">
-                    <img src="/images/detail/heart.svg" alt="" />
-                  </div> */}
+                      <img src="/images/detail/heart.svg" alt="" />
+                    </div> */}
                     <div className="icon-img">
                       <img src="/images/detail/share.svg" alt="" />
                     </div>
@@ -503,15 +520,18 @@ const ProductDetailPage: React.FC = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Các sản phẩm tương tự</h5>
-              {/* <div className="box-products-container">
-                {relatedProducts.map((product) => (
-                  <ListProduct
-                    key={product.id}
-                    product={product}
-                    slug={product.slug}
+              <div className="box-products-container">
+                {relatedProducts.map((relatedProduct) => (
+                  <ProductComponent
+                    key={relatedProduct.id}
+                    product={relatedProduct}
+                    slug={relatedProduct.slug}
                   />
                 ))}
-              </div> */}
+
+
+
+              </div>
             </div>
           </div>
         </div>

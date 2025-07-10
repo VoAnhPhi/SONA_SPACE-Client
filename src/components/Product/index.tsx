@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import type { Product, Variant } from "../../types";
 import { removeFromWishlistService } from "../../services/wishlistService";
 import { saveToOrCart } from "../../services/cartService";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
   const [hoveredColor, setHoveredColor] = useState<string | null>(null);
