@@ -34,6 +34,8 @@ export interface Product {
   isSale?: boolean;
   priceSale?: number;
   isWishlist?: boolean;
+  product_id: number;
+  product_slug: string;
   colors?: string[];
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];

@@ -248,3 +248,42 @@ export const fetchProductBySlug = async (
   }
 };
 
+
+export const getRelatedProductsByRoom = async (productId: number): Promise<Product[]> => {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    const res = await fetch(`http://localhost:3501/api/products/related/by-room/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!Array.isArray(data.related_products)) {
+      console.error("API không trả đúng định dạng: ", data);
+      return [];
+    }
+
+    const formatted = data.related_products.map((item: any) =>
+      formatProductForDisplay({
+        ...item,
+        price: parseFloat(item.price),
+        price_sale: parseFloat(item.price_sale),
+        images: item.images || [],
+        variant_id: item.variant_id || 0,
+        variants: item.variants || [],
+        stock: item.stock || item.quantity || 0,
+        sold: item.sold || 0,
+        view: item.view || 0,
+        description: item.description || "",
+        isWishlist: item.isWishlist === true || item.isWishlist === 1,
+      })
+    );
+
+    return formatted;
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm liên quan:", error);
+    return [];
+  }
+};
