@@ -894,7 +894,7 @@ const fetchPromoCodes = async () => {
                   ) : apiOrders.length > 0 ? (
                     <div className="order-list-container">
                       {getFilteredOrders().flatMap((order, orderIndex) =>
-                        order.items.map((item, itemIndex) => (
+                        order && order.items ? order.items.map((item, itemIndex) => (
                           <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
                             <div className="order-header">
                               <div className="order-number">
@@ -1021,6 +1021,7 @@ const fetchPromoCodes = async () => {
                             </div>
                           </div>
                         ))
+                        : []
                       )}
                     </div>
                   ) : (
@@ -1534,7 +1535,7 @@ const fetchPromoCodes = async () => {
                   ) : getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
                       {getFilteredOrders().flatMap((order, orderIndex) =>
-                        order.items.map((item, itemIndex) => (
+                        order && order.items ? order.items.map((item, itemIndex) => (
                           <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
                             <div className="order-header">
                               <div className="order-number">
@@ -1661,6 +1662,7 @@ const fetchPromoCodes = async () => {
                             </div>
                           </div>
                         ))
+                        : []
                       )}
                     </div>
                   ) : (
