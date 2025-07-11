@@ -277,7 +277,6 @@ const Header = () => {
                     Trang Chủ
                   </a>
                 </li>
-
                 <li>
                   <a
                     href="/san-pham"
@@ -342,11 +341,11 @@ const Header = () => {
                                       key={`cat-${category.category_id}`}
                                     >
                                       <a
-                                        href={`/san-pham/${category.slug}`}
+                                        href={`/danh-muc/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleNavClick(
-                                            `/san-pham/${category.slug}`
+                                            `/danh-muc/${category.slug}`
                                           );
                                         }}
                                       >
@@ -459,12 +458,6 @@ const Header = () => {
                     </div>
                   </a>
                 </li>
-                {/* <li>
-                  <a href="/dich-vu-thiet-ke" className={isActive("/dich-vu-thiet-ke") ? "active" : ""} onClick={() => handleNavClick("/dich-vu-thiet-ke")}>Thiết Kế Nội Thất</a>
-                </li>
-                <li>
-                  <a href="/ho-so-kien-truc" className={isActive("/ho-so-kien-truc") ? "active" : ""} onClick={() => handleNavClick("/ho-so-kien-truc")}>Hồ Sơ Kiến Trúc</a>
-                </li> */}
                 <li>
                   <a
                     href="/tin-tuc"
@@ -483,9 +476,6 @@ const Header = () => {
                     Về Chúng Tôi
                   </a>
                 </li>
-                {/* <li>
-                  <a href="/lien-he" className={isActive("/lien-he") ? "active" : ""} onClick={() => handleNavClick("/lien-he")}>Liên Hệ</a>
-                </li> */}
               </ul>
             </nav>
             <div className="header-actions">
@@ -649,7 +639,7 @@ const Header = () => {
                   }}
                 >
 
-                  <button 
+                  <button
                     className="btn-icon cart-btn"
                     onClick={handleMiniCartClick}
                   >
