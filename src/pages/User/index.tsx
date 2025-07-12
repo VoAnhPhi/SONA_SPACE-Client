@@ -302,7 +302,7 @@ const fetchPromoCodes = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-
+    console.log("Fetched promo codes:", res.data);
     const codes = res.data;
     const now = new Date();
 
@@ -1436,7 +1436,7 @@ const fetchPromoCodes = async () => {
                                 <span>{promo.description}</span>
                               </li>
                               <li>
-                                <span>Ưu đãi: Cho tất cả khách hàng </span>
+                                <span>Ưu đãi: Cho khách hàng </span>
                               </li>
                             </ul>
                           </div>
