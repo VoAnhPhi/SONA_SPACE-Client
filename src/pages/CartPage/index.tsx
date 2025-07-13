@@ -298,12 +298,11 @@ const CartPage: React.FC = () => {
                       {formatPrice(cartSummary.shipping)} đ
                     </span>
                   </div>
-                  {/* <div className="summary-row discount">
-                    <span className="label">Thành viên giảm giá:</span>
-                    <span className="value">
-                      -{cartSummary.discountPercent}%
-                    </span>
-                  </div> */}
+                  <div className="summary-row discount">
+                    <span className="label">Giảm giá:</span>
+                    <span className="value">-{formatPrice(cartSummary.discount)} đ</span>
+                  </div>
+
                   <div className="summary-row promo-code">
                     <span className="label">Mã giảm giá:</span>
                     <div className="promo-input">

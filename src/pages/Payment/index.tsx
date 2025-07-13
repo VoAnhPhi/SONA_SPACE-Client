@@ -137,11 +137,12 @@ const Payment: React.FC = () => {
         return;
       }
 
-      await clearCartService();
+
 
       if (res.payUrl) {
         window.location.href = res.payUrl;
       } else {
+        await clearCartService();
         toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", { autoClose: 2000 });
         setTimeout(() => {
           navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
