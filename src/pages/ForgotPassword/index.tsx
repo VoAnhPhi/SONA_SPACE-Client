@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
 
+
+// Định nghĩa các bước phục hồi mật khẩu
 enum RecoveryStep {
   EMAIL_INPUT = 1,
   OTP_VERIFICATION = 2,
   NEW_PASSWORD = 3
 }
 
+// Định nghĩa kiểu dữ liệu cho form
 interface FormData {
   email: string;
   otp: string[];
@@ -17,6 +21,7 @@ interface FormData {
 }
 
 const ForgotPassword: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<RecoveryStep>(RecoveryStep.EMAIL_INPUT);
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -25,6 +30,46 @@ const ForgotPassword: React.FC = () => {
     confirmPassword: ""
   });
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [resetToken, setResetToken] = useState<string | null>(null);
+
+  // Hàm chung để gọi API, trả về kết quả thành công/thất bại và dữ liệu/lỗi
+  // Hàm này KHÔNG TỰ HIỂN THỊ TOAST nữa
+  const callApi = async (url: string, method: string, body?: any) => {
+    setLoading(true);
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+
+      const responseText = await response.text();
+      let data;
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (jsonError) {
+        console.error("Phản hồi không phải JSON:", responseText);
+        // Ném lỗi để được bắt ở khối catch bên ngoài
+        throw new Error(`Máy chủ trả về dữ liệu không hợp lệ. Vui lòng thử lại. (${responseText.substring(0, 50)}...)`);
+      }
+
+      if (!response.ok) {
+        // Ném lỗi từ server để được bắt ở khối catch bên ngoài
+        throw new Error(data?.error || "Có lỗi xảy ra từ server.");
+      }
+
+      // Trả về dữ liệu thành công
+      return { success: true, data: data };
+    } catch (err: any) {
+      // Trả về đối tượng lỗi để hàm gọi xử lý hiển thị toast
+      return { success: false, error: err.message || "Lỗi không xác định." };
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle email input change
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,15 +82,13 @@ const ForgotPassword: React.FC = () => {
   // Handle OTP input change
   const handleOtpChange = (index: number, value: string) => {
     const newOtp = [...formData.otp];
-    // Only allow one digit
     newOtp[index] = value.replace(/[^0-9]/g, "").slice(0, 1);
-    
+
     setFormData({
       ...formData,
       otp: newOtp
     });
 
-    // Auto focus to next input field if current field is filled
     if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       if (nextInput) {
@@ -56,7 +99,6 @@ const ForgotPassword: React.FC = () => {
 
   // Handle OTP input keydown for backspace
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    // If backspace is pressed and current field is empty, focus previous field
     if (e.key === "Backspace" && !formData.otp[index] && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
       if (prevInput) {
@@ -73,7 +115,6 @@ const ForgotPassword: React.FC = () => {
       [name]: value
     });
 
-    // Check if passwords match when either password field changes
     if (name === "newPassword") {
       setPasswordsMatch(value === formData.confirmPassword || formData.confirmPassword === "");
     } else if (name === "confirmPassword") {
@@ -81,45 +122,100 @@ const ForgotPassword: React.FC = () => {
     }
   };
 
-  // Handle email submission
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  // Handle email submission (Step 1)
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the email to your backend
-    // and request an OTP to be sent to the user's email
-    console.log("Email submitted:", formData.email);
-    setCurrentStep(RecoveryStep.OTP_VERIFICATION);
+    toast.dismiss(); // Đóng tất cả các toast đang hiển thị
+
+    if (!formData.email) {
+      toast.error("Vui lòng nhập địa chỉ email."); // Toast cho lỗi client-side
+      return;
+    }
+
+    const result = await callApi("http://localhost:3501/api/auth/send-otp", "POST", { email: formData.email });
+    if (result?.success) {
+      toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
+      setCurrentStep(RecoveryStep.OTP_VERIFICATION);
+    } else {
+      toast.error(result?.error || "Lỗi khi gửi yêu cầu OTP."); // Chỉ hiển thị toast lỗi TẠI ĐÂY
+    }
   };
 
-  // Handle OTP verification
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  // Handle OTP verification (Step 2)
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically verify the OTP with your backend
-    console.log("OTP submitted:", formData.otp.join(""));
-    setCurrentStep(RecoveryStep.NEW_PASSWORD);
+    toast.dismiss(); // Đóng tất cả các toast đang hiển thị
+
+    const enteredOtp = formData.otp.join("");
+    if (enteredOtp.length !== 6) {
+      toast.error("Vui lòng nhập đủ 6 chữ số OTP."); // Toast cho lỗi client-side
+      return;
+    }
+
+    const result = await callApi("http://localhost:3501/api/auth/verify-otp", "POST", {
+      email: formData.email,
+      otp: enteredOtp,
+    });
+
+    if (result?.success && result.data.resetToken) {
+      toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
+      setResetToken(result.data.resetToken);
+      setCurrentStep(RecoveryStep.NEW_PASSWORD);
+    } else {
+      toast.error(result?.error || "Lỗi khi xác thực OTP."); // Chỉ hiển thị toast lỗi TẠI ĐÂY
+    }
   };
 
   // Handle resend OTP
-  const handleResendOtp = () => {
-    // Here you would typically resend the OTP to the user's email
-    console.log("Resending OTP to:", formData.email);
-    alert("Mã OTP đã được gửi lại đến email của bạn.");
-  };
+  const handleResendOtp = async () => {
+    toast.dismiss(); // Đóng tất cả các toast đang hiển thị
 
-  // Handle new password submission
-  const handleNewPasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate passwords match
-    if (formData.newPassword !== formData.confirmPassword) {
-      setPasswordsMatch(false);
+    if (!formData.email) {
+      toast.error("Không có email để gửi lại OTP."); // Toast cho lỗi client-side
       return;
     }
-    
-    // Here you would typically send the new password to your backend
-    console.log("New password submitted");
-    alert("Mật khẩu đã được đặt lại thành công. Vui lòng đăng nhập với mật khẩu mới.");
-    // Redirect to login page after successful password reset
-    window.location.href = "/dang-nhap";
+    const result = await callApi("http://localhost:3501/api/auth/send-otp", "POST", { email: formData.email });
+    if (result?.success) {
+      toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
+    } else {
+      toast.error(result?.error || "Lỗi khi gửi lại OTP."); // Chỉ hiển thị toast lỗi TẠI ĐÂY
+    }
+  };
+
+  // Handle new password submission (Step 3)
+  const handleNewPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.dismiss(); // Đóng tất cả các toast đang hiển thị
+
+    if (formData.newPassword.length < 6) {
+      toast.error("Mật khẩu mới phải có ít nhất 6 ký tự."); // Toast cho lỗi client-side
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setPasswordsMatch(false);
+      toast.error("Mật khẩu mới và xác nhận mật khẩu không khớp."); // Toast cho lỗi client-side
+      return;
+    }
+
+    if (!resetToken) {
+      toast.error("Không tìm thấy token đặt lại mật khẩu. Vui lòng bắt đầu lại quá trình."); // Toast cho lỗi client-side
+      return;
+    }
+
+    const result = await callApi("http://localhost:3501/api/auth/reset-password", "POST", {
+      newPassword: formData.newPassword,
+      token: resetToken,
+    });
+
+    if (result?.success) {
+      toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
+      setTimeout(() => {
+        navigate("/dang-nhap");
+      }, 2000);
+    } else {
+      toast.error(result?.error || "Lỗi khi đặt lại mật khẩu."); // Chỉ hiển thị toast lỗi TẠI ĐÂY
+    }
   };
 
   return (
@@ -128,6 +224,9 @@ const ForgotPassword: React.FC = () => {
       <div className="forgot-password-page">
         <div className="container">
           <div className="forgot-password-content">
+            {/* Đã loại bỏ các thẻ p hiển thị lỗi/thông báo cũ */}
+            {/* {loading && <p style={{ textAlign: 'center', color: '#007bff' }}>Đang tải...</p>} */}
+
             {/* Step 1: Email Input */}
             {currentStep === RecoveryStep.EMAIL_INPUT && (
               <div className="step-content">
@@ -135,25 +234,28 @@ const ForgotPassword: React.FC = () => {
                 <p className="description">
                   Nếu bạn quên mật khẩu, hãy nhập địa chỉ email để đăng ký để nhận hướng dẫn đặt lại mật khẩu.
                 </p>
-                
+
                 <form className="email-form" onSubmit={handleEmailSubmit}>
                   <div className="form-group">
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
                       placeholder="Email"
-                      value={formData.email} 
-                      onChange={handleEmailChange} 
-                      required 
+                      value={formData.email}
+                      onChange={handleEmailChange}
+                      required
+                      disabled={loading}
                     />
                   </div>
-                  
-                  <button type="submit" className="submit-btn">Xác nhận</button>
+
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? "Đang gửi..." : "Xác nhận"}
+                  </button>
                 </form>
               </div>
             )}
-            
+
             {/* Step 2: OTP Verification */}
             {currentStep === RecoveryStep.OTP_VERIFICATION && (
               <div className="step-content">
@@ -161,32 +263,37 @@ const ForgotPassword: React.FC = () => {
                 <p className="description">
                   Bạn hãy kiểm tra email, chúng tôi đã gửi cho bạn mã OTP để thực hiện đặt lại mật khẩu.
                 </p>
-                
+
                 <form className="otp-form" onSubmit={handleOtpSubmit}>
                   <div className="otp-inputs">
                     {formData.otp.map((digit, index) => (
-                      <input 
+                      <input
                         key={index}
                         id={`otp-${index}`}
-                        type="text" 
+                        type="text"
                         maxLength={1}
                         value={digit}
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(index, e)}
                         required
+                        disabled={loading}
                       />
                     ))}
                   </div>
-                  
+
                   <div className="resend-otp">
-                    <button type="button" onClick={handleResendOtp}>Gửi lại mã</button>
+                    <button type="button" onClick={handleResendOtp} disabled={loading}>
+                      {loading ? "Đang gửi lại..." : "Gửi lại mã"}
+                    </button>
                   </div>
-                  
-                  <button type="submit" className="submit-btn">Xác nhận</button>
+
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? "Đang xác nhận..." : "Xác nhận"}
+                  </button>
                 </form>
               </div>
             )}
-            
+
             {/* Step 3: New Password */}
             {currentStep === RecoveryStep.NEW_PASSWORD && (
               <div className="step-content">
@@ -194,65 +301,57 @@ const ForgotPassword: React.FC = () => {
                 <p className="description">
                   Hãy đặt lại mật khẩu mới cho lần đăng nhập tiếp theo.
                 </p>
-                
+
                 <form className="new-password-form" onSubmit={handleNewPasswordSubmit}>
                   <div className="form-group">
-                    <input 
-                      type="password" 
-                      id="newPassword" 
-                      name="newPassword" 
+                    <input
+                      type="password"
+                      id="newPassword"
+                      name="newPassword"
                       placeholder="Mật Khẩu mới"
-                      value={formData.newPassword} 
-                      onChange={handlePasswordChange} 
+                      value={formData.newPassword}
+                      onChange={handlePasswordChange}
                       required
+                      disabled={loading}
                     />
                   </div>
-                  
+
                   <div className="form-group">
-                    <input 
-                      type="password" 
-                      id="confirmPassword" 
-                      name="confirmPassword" 
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
                       placeholder="Nhập lại mật khẩu"
-                      value={formData.confirmPassword} 
-                      onChange={handlePasswordChange} 
+                      value={formData.confirmPassword}
+                      onChange={handlePasswordChange}
                       required
                       className={!passwordsMatch ? "error" : ""}
+                      disabled={loading}
                     />
-                    {!passwordsMatch && <p className="error-message">Mật khẩu không khớp</p>}
+                    {!passwordsMatch && <p className="error-message" style={{ color: 'red' }}>Mật khẩu không khớp</p>}
                   </div>
-                  
-                  <button type="submit" className="submit-btn">Xác nhận</button>
+
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? "Đang đặt lại..." : "Xác nhận"}
+                  </button>
                 </form>
               </div>
             )}
           </div>
         </div>
-        
-        {/* Design Services Showcase
-        <div className="design-services">
-          <div className="container">
-            <div className="services-grid">
-              <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
       <Footer />
+      <ToastContainer position="top-right"
+        autoClose={1000}
+        style={{ marginTop: "100px" }}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        limit={1} />
     </>
   );
 };

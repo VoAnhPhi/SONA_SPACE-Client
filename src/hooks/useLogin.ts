@@ -1,8 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { validateLoginForm, submitLoginForm, saveAuthData } from '../services/loginService';
-import type { LoginFormData, ValidationErrors } from '../services/loginService';
-import { useAuth } from '../contexts/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  validateLoginForm,
+  submitLoginForm,
+  saveAuthData,
+} from "../services/loginService";
+import type { LoginFormData, ValidationErrors } from "../services/loginService";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -11,37 +16,42 @@ export const useLogin = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [success, setSuccess] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  
+  const [unverifiedError, setUnverifiedError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
 
   // Xử lý thay đổi input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-    
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
     // Xóa lỗi khi người dùng bắt đầu sửa
     if (errors[name as keyof ValidationErrors]) {
-      setErrors({
-        ...errors,
-        [name]: undefined
-      });
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
     }
+
+    // Xoá lỗi khi người dùng sửa lại
+    setApiError(null);
+    setUnverifiedError(null);
   };
 
   // Xử lý thay đổi checkbox
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: checked
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
   };
 
   // Xử lý validate form
@@ -55,35 +65,38 @@ export const useLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError(null);
-    
-    // Validate form trước khi submit
+
     const isValid = validateForm();
-    
+
     if (isValid) {
       setLoading(true);
       try {
         const response = await submitLoginForm(formData);
-        
+
         if (response.success && response.data) {
           const { token, user } = response.data;
-          
-          // Lưu thông tin đăng nhập
+
           saveAuthData(token, user, formData.rememberMe);
-          
-          // Cập nhật context
           auth.login(token, user);
-          
           setSuccess(true);
-          
-          // Chuyển hướng đến trang chủ sau 1 giây
+
           setTimeout(() => {
-            navigate('/');
+            navigate("/");
           }, 1000);
         } else {
-          setApiError(response.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+          if (response.status === 403) {
+            setUnverifiedError(
+              response.message || "Tài khoản chưa được xác thực."
+            );
+          } else {
+            setApiError(
+              response.message ||
+                "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
+            );
+          }
         }
       } catch (error) {
-        setApiError('Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.');
+        setApiError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
       }
@@ -100,6 +113,7 @@ export const useLogin = () => {
     handleChange,
     handleCheckboxChange,
     handleSubmit,
-    validateForm
+    validateForm,
+    unverifiedError,
   };
 };
