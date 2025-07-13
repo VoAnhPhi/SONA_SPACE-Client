@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useLogin } from "../../hooks/useLogin";
 import "./styles.css";
+import { ToastContainer } from "react-toastify";
 
 const SignIn: React.FC = () => {
   const {
@@ -15,7 +16,9 @@ const SignIn: React.FC = () => {
     apiError,
     handleChange,
     handleCheckboxChange,
-    handleSubmit
+    handleSubmit,
+    unverifiedError,
+
   } = useLogin();
 
   return (
@@ -27,54 +30,59 @@ const SignIn: React.FC = () => {
           <div className="signin-content">
             <h1>Đăng Nhập</h1>
             <p className="signin-description">Chào mừng bạn trở lại!</p>
-            
+
             {success && (
               <div className="success-message">
                 Đăng nhập thành công! Đang chuyển hướng đến trang chủ...
               </div>
             )}
-            
+            {unverifiedError && (
+              <div className="error-message email-unverified-message">
+                {unverifiedError}
+              </div>
+            )}
+
             {apiError && (
               <div className="error-message api-error">
                 {apiError}
               </div>
             )}
-            
+
             <form className="signin-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
                   placeholder="Email"
-                  value={formData.email} 
-                  onChange={handleChange} 
+                  value={formData.email}
+                  onChange={handleChange}
                   className={errors.email ? "error" : ""}
                 />
                 {errors.email && <p className="error-message">{errors.email}</p>}
               </div>
-              
+
               <div className="form-group">
-                <input 
-                  type="password" 
-                  id="password" 
-                  name="password" 
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
                   placeholder="Mật Khẩu"
-                  value={formData.password} 
-                  onChange={handleChange} 
+                  value={formData.password}
+                  onChange={handleChange}
                   className={errors.password ? "error" : ""}
                 />
                 {errors.password && <p className="error-message">{errors.password}</p>}
               </div>
-              
+
               <div className="form-options">
                 <div className="remember-me">
-                  <input 
-                    type="checkbox" 
-                    id="rememberMe" 
-                    name="rememberMe" 
-                    checked={formData.rememberMe} 
-                    onChange={handleCheckboxChange} 
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleCheckboxChange}
                   />
                   <label htmlFor="rememberMe">Ghi nhớ tài khoản</label>
                 </div>
@@ -82,27 +90,27 @@ const SignIn: React.FC = () => {
                   <Link to="/quen-mat-khau">Quên mật khẩu?</Link>
                 </div>
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 className="signin-btn"
                 disabled={loading || success}
               >
                 {loading ? "Đang xử lý..." : "Đăng Nhập"}
               </button>
             </form>
-            
+
             <div className="social-signin">
               <div className="divider">
                 <span>Đăng nhập với Google</span>
               </div>
-              
+
               <button className="google-signin-btn" disabled={loading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button>
-            </div>  
-            
+            </div>
+
             <div className="signup-link">
               <p>Bạn chưa có tài khoản? <Link to="/dang-ky">Đăng Ký ngay</Link></p>
             </div>
@@ -110,6 +118,18 @@ const SignIn: React.FC = () => {
         </div>
       </div>
       <Footer />
+      {/* <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      /> */}
     </>
   );
 };

@@ -40,7 +40,7 @@ export interface Product {
   specifications?: ProductSpecification[];
   relatedProducts?: Product[];
   variants?: Variant[];
-  variant_id: number
+  variant_id: number;
 }
 
 export interface ProductSpecification {
@@ -123,7 +123,6 @@ export interface PromoCode {
   validUntil: string;
   minOrder: string;
   used: boolean;
-
 }
 
 // Form related interfaces
@@ -224,6 +223,7 @@ export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
+  status?: number;
   errors?: Record<string, string>;
   message?: string;
 }
@@ -356,10 +356,9 @@ export interface PromoCodeWithTimer extends PromoCode {
   isFlashSale: boolean;
   timeRemaining?: { hours: number; minutes: number; seconds: number };
   combinations: string;
-    status: number; 
-    userUsedStatus: number;
+  status: number;
+  userUsedStatus: number;
 }
-
 
 export interface CouponCode {
   code: string;
