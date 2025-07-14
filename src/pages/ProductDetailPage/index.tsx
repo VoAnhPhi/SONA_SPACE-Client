@@ -35,6 +35,7 @@ const ProductDetailPage: React.FC = () => {
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [cartCount, setCartCount] = useState<number>(0);
+  
   const handleColorSelect = async (colorHex: string, colorId: number) => {
     try {
       setSelectedColor(colorHex);
@@ -223,10 +224,7 @@ const ProductDetailPage: React.FC = () => {
         miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
-        toast.success("Đã thêm vào giỏ hàng!", {
-          position: "top-right",
-          autoClose: 500,
-        });
+
         // if (miniCartRef.current) {
         //   console.log(" Gọi notifyCartChanged");
         //   miniCartRef.current.notifyCartChanged();

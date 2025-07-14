@@ -74,7 +74,6 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
     isVisible,
     refreshCart,
     notifyCartChanged: async () => {
-        console.log("📥 notifyCartChanged được gọi");
       await refreshCart(); 
       // setIsVisible(true);
     },

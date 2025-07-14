@@ -24,7 +24,7 @@ import Policy from './pages/Policy'
 import News from './pages/News'
 import NewsDetail from './pages/NewsDetail'
 import NotFoundPage from './pages/404'
-
+import PaymentResult from './pages/PaymentResult'
 import EmailVerified from './pages/EmailVerified'
 // import '../public/fonts/stylesheet.css'
 import TestPage from './pages/TestPage'
@@ -62,7 +62,7 @@ function App() {
           <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/xac-thuc-email" element={<EmailVerified />} />
-
+          <Route path="/thanh-toan-result" element={<PaymentResult />} />
           {/* Add other routes here as needed */}
           {/* Catch-all route for 404 errors */}
           <Route path="*" element={<NotFoundPage />} />

@@ -27,7 +27,8 @@ const CartPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
   const [promoCodeInput, setPromoCodeInput] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
-
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [cartSummary, setCartSummary] = useState({
     subtotal: 0,
     shipping: 30000,
@@ -36,16 +37,21 @@ const CartPage: React.FC = () => {
   });
 
   const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) => {
-    const subtotal = items.reduce(
+    const filteredItems = items.filter((item) => selectedItems.includes(item.id));
+    const subtotal = filteredItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
-    const shipping = 30000;
+    const shipping = filteredItems.length > 0 ? 30000 : 0;
     const discount = appliedDiscountAmount;
     const total = subtotal + shipping - discount;
 
     setCartSummary({ subtotal, shipping, discount, total });
   };
+
+  useEffect(() => {
+    recalculateSummary(cartItems, appliedDiscount);
+  }, [selectedItems, cartItems]);
 
 
   const loadWishlist = async () => {
@@ -54,7 +60,7 @@ const CartPage: React.FC = () => {
       console.log("Danh sách sản phẩm trong cart:", wishlistItems);
 
       const formattedItems = wishlistItems.map((item: any, index: number) => ({
-        id: item.wishlist_id || index,
+        id: item.wishlist_id ,
         variant_id: item.variant_id,
         name: item.product_name,
         price: item.price,
@@ -66,6 +72,7 @@ const CartPage: React.FC = () => {
       }));
 
       setCartItems(formattedItems);
+
 
       const subtotal = formattedItems.reduce(
         (total: number, item: any) => total + item.price * item.quantity,
@@ -175,7 +182,21 @@ const CartPage: React.FC = () => {
     }
   };
 
+  const handleSelectItem = (id: number, checked: boolean) => {
+    setSelectedItems((prevSelected) => {
+      if (checked) {
+        return [...prevSelected, id];
+      } else {
+        return prevSelected.filter((itemId) => itemId !== id);
+      }
+    });
+  };
 
+  useEffect(() => {
+    localStorage.removeItem("applycode");
+    setAppliedDiscount(0);
+    setPromoCodeInput("");
+  }, []);
 
   return (
     <>
@@ -211,13 +232,29 @@ const CartPage: React.FC = () => {
               <h1>Giỏ hàng</h1>
               <p className="items-count">{cartItems.length} sản phẩm</p>
             </div>
-
+                 {cartItems.length > 0 ? (            <div className="page-select">
+              <a className="selectt-1" onClick={() => setSelectedItems(cartItems.map(item => item.id))}>Chọn tất cả</a>
+              <a className="selectt-2" onClick={() => setSelectedItems([])}>Bỏ chọn</a>
+            </div>) : (
+              <div className="page-select" style={{ display: 'none' }}>
+                <a className="selectt-1 disabled">Chọn tất cả</a>
+                <a className="selectt-2 disabled">Bỏ chọn</a>
+              </div>
+            )}
             {cartItems.length > 0 ? (
               <div className="cart-grid">
                 {/* Cart Items */}
                 <div className="cart-items">
                   {cartItems.map((item) => (
                     <div key={item.id} className="cart-item">
+                      <div className="item-select">
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.includes(item.id)}
+                          onChange={(e) => handleSelectItem(item.id, e.target.checked)}
+                        />
+                      </div>
+
                       <div className="item-image">
                         <img src={item.image} alt={item.name} />
                       </div>
@@ -321,7 +358,27 @@ const CartPage: React.FC = () => {
                       {formatPrice(cartSummary.total)} đ
                     </span>
                   </div>
-                  <Link to="/thanh-toan" className="checkout-btn">Tiến hành thanh toán</Link>
+                  <a
+                    className="checkout-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isCheckingOut) return;
+
+                      if (selectedItems.length === 0) {
+                        setIsCheckingOut(true);
+                        toast.error("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+                        setTimeout(() => {
+                          setIsCheckingOut(false);
+                        }, 3000);
+                      } else {
+                        navigate("/thanh-toan", { state: { selectedItems } });
+                      }
+                    }}
+                  >
+                    Tiến hành thanh toán
+                  </a>
+
+
                 </div>
               </div>
             ) : (
