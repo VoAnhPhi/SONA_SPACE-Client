@@ -249,36 +249,89 @@ const User: React.FC = () => {
 
   // Hàm lấy dữ liệu đơn hàng từ API
   const fetchOrders = async (userId: number) => {
-    if (!userId) return;
+    if (!userId) {
+      console.log("fetchOrders: userId không hợp lệ");
+      return;
+    }
 
+    console.log("fetchOrders: Bắt đầu lấy dữ liệu đơn hàng cho userId:", userId);
     setIsLoading(true);
     setError(null);
 
     try {
-      const token = sessionStorage.getItem('authToken');
-      if (!token) {
-        setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await axios.get<OrdersResponse>(
-        `http://localhost:3501/api/orders-id/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+      // Sử dụng dữ liệu mẫu thay vì gọi API thật
+      console.log("fetchOrders: Sử dụng dữ liệu mẫu thay vì gọi API");
+      
+      // Chuyển đổi dữ liệu mẫu sang định dạng API
+      const mockApiOrders: OrderAPI[] = orders.map((order, index) => {
+        const orderId = order.orderNumber ? parseInt(order.orderNumber) : (index + 1000);
+        
+        // Xử lý date an toàn
+        let createdAt;
+        try {
+          // Kiểm tra xem order.date có phải là chuỗi ngày hợp lệ không
+          if (order.date && typeof order.date === 'string') {
+            // Chuyển đổi từ định dạng dd/mm/yyyy sang Date object
+            const [day, month, year] = order.date.split('/').map(Number);
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+              createdAt = new Date(year, month - 1, day).toISOString();
+            } else {
+              createdAt = new Date().toISOString(); // Fallback to current date
+            }
+          } else {
+            createdAt = new Date().toISOString(); // Fallback to current date
           }
+        } catch (error) {
+          console.log("Error parsing date:", error);
+          createdAt = new Date().toISOString(); // Fallback to current date
         }
-      );
+        
+        return {
+          order_id: orderId,
+          created_at: createdAt,
+          order_status_name: getStatusName(order.status || "pending"),
+          items: [
+            {
+              product_id: index + 1,
+              product_name: order.name || "Sản phẩm mẫu",
+              product_image: order.image || "",
+              product_price: order.price ? order.price.toString() : "0",
+              variant_id: 1,
+              quantity: order.quantity || 1
+            }
+          ]
+        };
+      });
 
-      setApiOrders(response.data.orders);
-      console.log("Dữ liệu đơn hàng:", response.data);
+      console.log("fetchOrders: Dữ liệu mẫu đã chuyển đổi:", mockApiOrders);
+      setApiOrders(mockApiOrders);
+      
     } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu đơn hàng:", error);
-      setError("Không thể lấy dữ liệu đơn hàng. Vui lòng thử lại sau.");
+      console.error("fetchOrders: Lỗi khi xử lý dữ liệu mẫu:", error);
+      setError("Không thể xử lý dữ liệu đơn hàng. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
+      console.log("fetchOrders: Kết thúc");
+    }
+  };
+  
+  // Hàm chuyển đổi status từ mock data sang tên hiển thị
+  const getStatusName = (status: string): string => {
+    switch (status) {
+      case "pending":
+        return "Chờ xác nhận";
+      case "confirmed":
+        return "Đã xác nhận";
+      case "shipping":
+        return "Đang giao hàng";
+      case "completed":
+        return "Hoàn thành";
+      case "cancelled":
+        return "Đã hủy";
+      case "returned":
+        return "Trả hàng";
+      default:
+        return status;
     }
   };
 
@@ -807,6 +860,11 @@ const fetchPromoCodes = async () => {
     }
   };
 
+  const handleRefreshOrders = () => {
+    setRefreshUserData((prev) => !prev);
+    alert("Đang tải lại dữ liệu đơn hàng...");
+  };
+
   return (
     <>
       <Header />
@@ -881,6 +939,9 @@ const fetchPromoCodes = async () => {
                     <div className="orders-header__email">
                       Email: {userInfo.email}
                     </div>
+                    <button className="btn-refresh" onClick={handleRefreshOrders}>
+                      Làm mới dữ liệu
+                    </button>
                   </div>
 
                   {isLoading ? (
@@ -893,135 +954,87 @@ const fetchPromoCodes = async () => {
                     </div>
                   ) : apiOrders.length > 0 ? (
                     <div className="order-list-container">
-                      {getFilteredOrders().flatMap((order, orderIndex) =>
-                        order && order.items ? order.items.map((item, itemIndex) => (
-                          <div className="order-item" key={`${orderIndex}-${itemIndex}`}>
-                            <div className="order-header">
-                              <div className="order-number">
-                                <span>Đơn hàng: {order.order_id}</span>
-                                <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
-                              </div>
-                              <div className="order-status">
-                                <span className={`status ${getStatusClass(order.order_status_name)}`}>
-                                  {order.order_status_name}
-                                </span>
-                              </div>
+                      <div className="order-summary-section">
+                        <h3>Tổng quan đơn hàng</h3>
+                        <div className="order-summary-stats">
+                          <div className="stat-item">
+                            <div className="stat-value">{apiOrders.length}</div>
+                            <div className="stat-label">Tổng số đơn hàng</div>
+                          </div>
+                          <div className="stat-item">
+                            <div className="stat-value">
+                              {apiOrders.filter(order => order.order_status_name === "Chờ xác nhận").length}
                             </div>
+                            <div className="stat-label">Chờ xác nhận</div>
+                          </div>
+                          <div className="stat-item">
+                            <div className="stat-value">
+                              {apiOrders.filter(order => order.order_status_name === "Đang giao hàng").length}
+                            </div>
+                            <div className="stat-label">Đang giao hàng</div>
+                          </div>
+                          <div className="stat-item">
+                            <div className="stat-value">
+                              {apiOrders.filter(order => order.order_status_name === "Hoàn thành").length}
+                            </div>
+                            <div className="stat-label">Hoàn thành</div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <h3>Đơn hàng gần đây</h3>
+                      {apiOrders.slice(0, 3).map((order, orderIndex) => (
+                        <div className="order-item" key={orderIndex}>
+                          <div className="order-header">
+                            <div className="order-number">
+                              <span>Đơn hàng: {order.order_id}</span>
+                              <span>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                            </div>
+                            <div className="order-status">
+                              <span className={`status ${getStatusClass(order.order_status_name)}`}>
+                                {order.order_status_name}
+                              </span>
+                            </div>
+                          </div>
 
-                            <div className="order-content">
-                              <div className="product-image">
-                                <img
-                                  src={getFirstImageUrl(item.product_image)}
-                                  alt={item.product_name}
-                                />
-                              </div>
-
-                              <div className="product-details">
-                                <h4>{item.product_name}</h4>
-                                <div className="product-price">
-                                  <span>
-                                    Thành tiền: {formatPrice(parseFloat(item.product_price) * item.quantity)}
-                                  </span>
-                                </div>
-                                <div className="product-meta">
-                                  <div className="meta-item">
-                                    <span>Số lượng: {item.quantity}</span>
-                                  </div>
-                                </div>
-                                <div className="product-link">
-                                  <Link to={`/san-pham/${item.product_id}`}>
-                                    Xem chi tiết
-                                  </Link>
-                                </div>
-                              </div>
-
-                              <div className="order-info">
-                                <h4>Thông tin:</h4>
+                          <div className="order-content">
+                            <div className="order-summary">
+                              <div className="summary-info">
+                                <h4>Thông tin đơn hàng:</h4>
                                 <div className="info-item">
                                   <span className="label">Mã đơn hàng:</span>
-                                  <span className="value">
-                                    #{order.order_id}
-                                  </span>
+                                  <span className="value">#{order.order_id}</span>
                                 </div>
                                 <div className="info-item">
                                   <span className="label">Ngày đặt:</span>
-                                  <span className="value">
-                                    {new Date(order.created_at).toLocaleDateString('vi-VN')}
-                                  </span>
+                                  <span className="value">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
                                 </div>
                                 <div className="info-item">
-                                  <span className="label">Trạng thái:</span>
-                                  <span className="value">
-                                    {order.order_status_name}
-                                  </span>
+                                  <span className="label">Số lượng sản phẩm:</span>
+                                  <span className="value">{calculateTotalQuantity(order)}</span>
                                 </div>
-
-                                <div className="order-actions">
-                                  {order.order_status_name === "Chờ xác nhận" && (
-                                    <>
-                                      <button className="btn-cancel-order">
-                                        Hủy đơn hàng
-                                      </button>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
-
-                                  {order.order_status_name === "Đã xác nhận" && (
-                                    <>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
-
-                                  {order.order_status_name === "Đang giao hàng" && (
-                                    <>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
-
-                                  {order.order_status_name === "Hoàn thành" && (
-                                    <>
-                                      <button className="btn-action-primary">
-                                        Mua lại
-                                      </button>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
-
-                                  {order.order_status_name === "Đã hủy" && (
-                                    <>
-                                      <button className="btn-action-primary">
-                                        Mua lại
-                                      </button>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
-
-                                  {order.order_status_name === "Trả hàng" && (
-                                    <>
-                                      <button className="btn-action-primary">
-                                        Mua lại
-                                      </button>
-                                      <button className="btn-view-details">
-                                        Xem chi tiết
-                                      </button>
-                                    </>
-                                  )}
+                                <div className="info-item">
+                                  <span className="label">Tổng tiền:</span>
+                                  <span className="value">{formatPrice(calculateOrderTotal(order))}</span>
                                 </div>
+                              </div>
+                              
+                              <div className="order-actions">
+                                <button className="btn-view-details" onClick={() => handleTabNavigation("wishlist")}>
+                                  Xem chi tiết
+                                </button>
                               </div>
                             </div>
                           </div>
-                        ))
-                        : []
+                        </div>
+                      ))}
+                      
+                      {apiOrders.length > 3 && (
+                        <div className="view-all-orders">
+                          <button className="btn-view-all" onClick={() => handleTabNavigation("wishlist")}>
+                            Xem tất cả đơn hàng
+                          </button>
+                        </div>
                       )}
                     </div>
                   ) : (
