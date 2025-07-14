@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loadCartService, clearCartService } from "../../services/cartService";
+import { loadCartService, clearCartServiceid } from "../../services/cartService";
 import { createOrderService } from "../../services/ordersService";
 
 interface OrderSummaryProps {
@@ -39,6 +40,9 @@ const Payment: React.FC = () => {
   const [prevEmail, setPrevEmail] = useState("");
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const selectedItems: number[] | undefined = location.state?.selectedItems;
+
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
@@ -109,7 +113,7 @@ const Payment: React.FC = () => {
         amount: orderSummary.total,
         cart_items: cartItems,
       };
-      console.log("🔎 Coupon gửi đi:", appliedCode);
+      console.log(" Coupon gửi đi:", appliedCode);
 
       if (formData.address.trim() !== prevAddress.trim()) {
         payload.order_address_new = formData.address.trim();
@@ -139,10 +143,8 @@ const Payment: React.FC = () => {
 
 
 
-      if (res.payUrl) {
-        window.location.href = res.payUrl;
-      } else {
-        await clearCartService();
+      if (!res.payUrl) {
+        await clearCartServiceid(cartItems.map(item => item.id)); // Xóa các sản phẩm đã chọn
         toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", { autoClose: 2000 });
         setTimeout(() => {
           navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
@@ -196,9 +198,13 @@ const Payment: React.FC = () => {
             category: item.category || "Chưa phân loại",
           }));
 
-          setCartItems(formatted);
+          //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
+          const filteredItems = formatted.filter((item) => selectedItems?.includes(item.id));
 
-          const subtotal = formatted.reduce(
+
+          setCartItems(filteredItems);
+
+          const subtotal = filteredItems.reduce(
             (total: number, item: CartItemProps) => total + item.price * item.quantity,
             0
           );
@@ -224,7 +230,8 @@ const Payment: React.FC = () => {
     };
 
     loadCartFromDatabase();
-  }, []);
+  }, [selectedItems]);
+
 
 
 
@@ -365,7 +372,10 @@ const Payment: React.FC = () => {
                     {formatPrice(orderSummary.shipping)} đ
                   </span>
                 </div>
-
+                <div className="summary-row discount">
+                  <span className="label">Giảm giá:</span>
+                  <span className="value">-{formatPrice(orderSummary.discount)} đ</span>
+                </div>
                 <div className="summary-row promo-code">
                   <span className="label">Mã giảm giá:</span>
                   <div className="promo-input">

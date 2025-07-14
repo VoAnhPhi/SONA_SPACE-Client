@@ -74,6 +74,24 @@ const formatPrice = (price: number): string => {
   const rounded = Math.round(price); // Đảm bảo là số nguyên
   return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 };
+const translateOrderStatus = (status: any) => {
+  switch (status) {
+    case 'PENDING':
+      return 'Chờ xác nhận';
+    case 'CONFIRMED':
+      return 'Đã xác nhận';
+    case 'SHIPPING':
+      return 'Đang giao hàng';
+    case 'SUCCESS':
+      return 'Giao hàng thành công';
+    case 'FAILED':
+      return 'Thất bại';
+    case 'CANCELLED':
+      return 'Đã hủy';
+    default:
+      return 'Không xác định';
+  }
+};
 
 
   if (!order) return <p>Đang tải đơn hàng...</p>;
@@ -90,7 +108,7 @@ const formatPrice = (price: number): string => {
                 <p className="order-date">Ngày đặt: {formatDate(order.date)}</p>
               </div>
               <div className="order-actions">
-                <div className="order-status"><span className="status">Chờ xác nhận</span></div>
+                <div className="order-status"><span className="status">{translateOrderStatus(order.status)}</span></div>
               </div>
             </div>
 
@@ -103,7 +121,7 @@ const formatPrice = (price: number): string => {
                   </div>
                   <div className="status-label">
                     <p>Chờ xác nhận</p>
-                    <span>23/5/2023</span>
+                    {/* <span>23/5/2023</span> */}
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -113,7 +131,7 @@ const formatPrice = (price: number): string => {
                   </div>
                   <div className="status-label">
                     <p>Xác nhận đơn</p>
-                    <span>23/5/2023</span>
+                    {/* <span>23/5/2023</span> */}
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -123,7 +141,7 @@ const formatPrice = (price: number): string => {
                   </div>
                   <div className="status-label">
                     <p>Đang giao hàng</p>
-                       <span>23/5/2023</span>
+                       {/* <span>23/5/2023</span> */}
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -133,7 +151,7 @@ const formatPrice = (price: number): string => {
                   </div>
                   <div className="status-label">
                     <p>Hoàn thành</p>
-                       <span>23/5/2023</span>
+                       {/* <span>23/5/2023</span> */}
                   </div>
                 </div>
                 <div className="status-line"></div>
@@ -143,7 +161,7 @@ const formatPrice = (price: number): string => {
                   </div>
                   <div className="status-label">
                     <p>Đánh giá</p>
-                       <span>23/5/2023</span> 
+                       {/* <span>23/5/2023</span>  */}
                   </div>
                 </div>
               </div>

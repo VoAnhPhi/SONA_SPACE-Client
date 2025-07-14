@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getOrderByHash } from "../../services/ordersCompleteService";
 import Footer from "../../components/Footer";
-
+import { clearCartService } from "../../services/cartService";
 interface OrderSummaryProps {
   orderId: string;
   orderDate: string;
@@ -33,6 +33,13 @@ useEffect(() => {
   fetchOrder();
 }, [orderHash]);
 
+useEffect(() => {
+  if (orderSummary) {
+    clearCartService()
+      .then(() => console.log("Đã xóa giỏ hàng sau khi thanh toán thành công"))
+      .catch((err) => console.error("Lỗi khi xóa giỏ hàng:", err));
+  }
+}, [orderSummary]);
 
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");

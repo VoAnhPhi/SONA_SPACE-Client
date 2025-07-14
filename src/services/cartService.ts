@@ -2,11 +2,16 @@
 import axios from "axios";
 import { saveToCart } from "../api/cart";
 import { fetchCartFromDatabase } from "../api/cart";
+const notifyCartUpdated = () => {
+  window.dispatchEvent(new CustomEvent("cart-updated"));
+};
+
 export const saveToOrCart = async (
   data: { status: number; cartItems: any[] }
 ): Promise<{ success: boolean; message: string }> => {
   try {
     const response = await saveToCart(data);
+    notifyCartUpdated();
     return {
       success: true,
       message: response.message || "Đã thêm thành công",
@@ -32,13 +37,13 @@ export const loadCartService = async () => {
     return {
       success: true,
       wishlistItems: data,
-      
+
     };
-    
+
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || "Lỗi không xác định khi load wishlist",
+      message: error.message || "Lỗi khi tải giỏ hàng",
     };
   }
 };
@@ -53,7 +58,7 @@ export const updateCartQuantityService = async (wishlistId: number, quantity: nu
       Authorization: `Bearer ${token}`,
     },
   });
-
+  notifyCartUpdated();
   return response.data;
 };
 
@@ -66,9 +71,10 @@ export const removeFromCartService = async (wishlistId: number) => {
       Authorization: `Bearer ${token}`,
     },
   });
-
+notifyCartUpdated();
   return response.data;
 };
+
 export const clearCartService = async () => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
@@ -79,10 +85,23 @@ export const clearCartService = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-
+    
+notifyCartUpdated();
     return response.data;
   } catch (error) {
     console.error("Lỗi khi gọi API xóa toàn bộ:", error);
     return { success: false, message: "Lỗi server" };
+  }
+};
+
+export const clearCartServiceid = async (selectedItemIds: number[]) => {
+  try {
+    const response = await axios.delete('http://localhost:3501/api/wishlist/clearid', {
+      data: { selectedItemIds }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Lỗi khi xóa sản phẩm đã thanh toán:', error);
+    return { success: false };
   }
 };

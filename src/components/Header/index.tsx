@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
 import MiniCart from "../../components/MiniCart";
 import type { MiniCartHandle } from "../../components/MiniCart";
-import { Outlet } from "react-router-dom";
+import { loadCartService } from "../../services/cartService";
 
 
 const Header = () => {
@@ -59,6 +59,23 @@ const Header = () => {
       setSuggestedKeywords([]);
     }
   }, [searchTerm]);
+  useEffect(() => {
+    const handleCartUpdate = async () => {
+      try {
+        const cartData = await loadCartService();
+        const totalCount = cartData.wishlistItems?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+        setCartCount(totalCount);
+      } catch (error) {
+        console.error("Lỗi khi cập nhật giỏ hàng:", error);
+      }
+    };
+
+    handleCartUpdate(); 
+
+    window.addEventListener("cart-updated", handleCartUpdate);
+    return () => window.removeEventListener("cart-updated", handleCartUpdate);
+  }, []);
+
 
   // Lấy sản phẩm mới nhất khi searchTerm rỗng
   useEffect(() => {
@@ -650,7 +667,7 @@ const Header = () => {
                       }
                     >
                       <img src="/images/icons/cart.svg" alt="cart" />
-                      {/* {cartCount > 0 && (
+                      {cartCount > 0 && (
                         <span
                           className="cart-badge"
                           style={{
@@ -672,7 +689,7 @@ const Header = () => {
                         >
                           {cartCount}
                         </span>
-                      )} */}
+                      )}
 
                     </Link>
                   </button>

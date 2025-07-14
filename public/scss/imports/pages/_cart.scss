@@ -40,7 +40,35 @@
       }
 
     }
+    .page-select {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
 
+      .selectt-1 {
+        // @include text(16px, "M-R");
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 16px;
+        font-family: "M-R";
+        line-height: normal;
+        color: #f0a00a;
+        margin: 0 12px;
+        width: fit-content;
+        text-decoration: none;
+      }
+      .selectt-2 {
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 16px;
+        font-family: "M-R";
+        line-height: normal;
+        color: #D83B01;
+        margin: 0 12px;
+        width: fit-content;
+        text-decoration: none;
+      }
+    }
     .delete-all {
       @include text(16px, "M-R", normal, $error-cl, null);
       margin: 0 12px;
@@ -59,6 +87,7 @@
         .cart-item {
           display: flex;
           padding: 38px 24px;
+          gap: 20px;
           align-items: center;
           border-radius: 16px;
           margin-bottom: 24px;
@@ -71,7 +100,13 @@
           &:last-child {
             margin-bottom: 0;
           }
-
+          .item-select{
+            input{
+              width: 15px;
+              height: 15px;
+              cursor: pointer;
+            }
+          }
           .item-image {
             width: 160px;
             height: 160px;
