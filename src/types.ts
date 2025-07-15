@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   slug: string;
   image: string;
+  attributes: Attribute[];
   category: {
     id: number;
     name: string;
@@ -41,6 +42,12 @@ export interface Product {
   relatedProducts?: Product[];
   variants?: Variant[];
   variant_id: number;
+}
+export interface Attribute {
+  name: string;
+  value: string | number | null;
+  unit?: string;
+  is_required: boolean | 0 | 1;
 }
 
 export interface ProductSpecification {
