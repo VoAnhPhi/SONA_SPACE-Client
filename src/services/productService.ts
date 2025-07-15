@@ -10,43 +10,53 @@ export const formatProductForDisplay = (product: any): Product => {
 
   let colorHexArray: string[] = [];
   let variant_id = product.variant_id || product.defaultVariantId;
-  if (!variant_id && Array.isArray(product.variants) && product.variants.length > 0) {
+  if (
+    !variant_id &&
+    Array.isArray(product.variants) &&
+    product.variants.length > 0
+  ) {
     variant_id = product.variants[0].variant_id;
   }
   // Trường hợp 1: Lấy màu từ variants nếu có
   if (Array.isArray(product.variants) && product.variants.length > 0) {
     // Lấy các màu không trùng lặp từ variants
-    const uniqueColors = new Map<number, {
-      color_hex: string;
-      color_name: string;
-      color_id: number;
-      color_priority: number;
-      variant_id: number;
-    }>();
-    product.variants.forEach((variant: {
-      variant_id?: number;
-      color_hex?: string;
-      color_id?: number;
-      color_name?: string;
-      color_priority?: number;
-    }) => {
-      if (variant.color_hex && variant.color_id && variant.variant_id) {
-        uniqueColors.set(variant.color_id, {
-          color_hex: variant.color_hex,
-          color_name: variant.color_name || "",
-          color_id: variant.color_id,
-          color_priority: variant.color_priority || 0,
-          variant_id: variant.variant_id,
-        });
+    const uniqueColors = new Map<
+      number,
+      {
+        color_hex: string;
+        color_name: string;
+        color_id: number;
+        color_priority: number;
+        variant_id: number;
       }
-    });
+    >();
+    product.variants.forEach(
+      (variant: {
+        variant_id?: number;
+        color_hex?: string;
+        color_id?: number;
+        color_name?: string;
+        color_priority?: number;
+      }) => {
+        if (variant.color_hex && variant.color_id && variant.variant_id) {
+          uniqueColors.set(variant.color_id, {
+            color_hex: variant.color_hex,
+            color_name: variant.color_name || "",
+            color_id: variant.color_id,
+            color_priority: variant.color_priority || 0,
+            variant_id: variant.variant_id,
+          });
+        }
+      }
+    );
 
     // Chuyển Map thành mảng và sắp xếp theo priority
-    const sortedColors = Array.from(uniqueColors.values())
-      .sort((a, b) => a.color_priority - b.color_priority);
+    const sortedColors = Array.from(uniqueColors.values()).sort(
+      (a, b) => a.color_priority - b.color_priority
+    );
 
     // Lấy ra mảng các mã màu
-    colorHexArray = sortedColors.map(color => color.color_hex);
+    colorHexArray = sortedColors.map((color) => color.color_hex);
   }
   // Trường hợp 2: product.color_hex là mảng
   else if (Array.isArray(product.color_hex)) {
@@ -65,7 +75,10 @@ export const formatProductForDisplay = (product: any): Product => {
   let price = 0;
   if (product.price !== undefined && product.price !== null) {
     price = Number(product.price);
-  } else if (product.variant_price !== undefined && product.variant_price !== null) {
+  } else if (
+    product.variant_price !== undefined &&
+    product.variant_price !== null
+  ) {
     price = Number(product.variant_price);
   }
 
@@ -78,12 +91,18 @@ export const formatProductForDisplay = (product: any): Product => {
   let priceSale: number | undefined = undefined;
   if (product.price_sale !== undefined && product.price_sale !== null) {
     priceSale = Number(product.price_sale);
-  } else if (product.variant_price_sale !== undefined && product.variant_price_sale !== null) {
+  } else if (
+    product.variant_price_sale !== undefined &&
+    product.variant_price_sale !== null
+  ) {
     priceSale = Number(product.variant_price_sale);
   }
 
   // Kiểm tra giá khuyến mãi hợp lệ
-  if (priceSale !== undefined && (isNaN(priceSale) || priceSale <= 0 || priceSale >= price)) {
+  if (
+    priceSale !== undefined &&
+    (isNaN(priceSale) || priceSale <= 0 || priceSale >= price)
+  ) {
     priceSale = undefined; // Không có khuyến mãi nếu giá không hợp lệ
   }
 
@@ -109,26 +128,26 @@ export const formatProductForDisplay = (product: any): Product => {
   let image = product.product_image || product.image || "";
 
   // Xử lý trường hợp URL ảnh có chứa dấu phẩy
-  if (image && image.includes(',')) {
-    const imageArray = image.split(',');
+  if (image && image.includes(",")) {
+    const imageArray = image.split(",");
     image = imageArray[0].trim();
   }
 
   // Xử lý trường hợp URL ảnh có chứa \n
-  if (image && image.includes('\\n')) {
-    const imageArray = image.split('\\n');
+  if (image && image.includes("\\n")) {
+    const imageArray = image.split("\\n");
     image = imageArray[0].trim();
   }
 
   // Xử lý trường hợp URL ảnh có chứa \r\n
-  if (image && image.includes('\\r\\n')) {
-    const imageArray = image.split('\\r\\n');
+  if (image && image.includes("\\r\\n")) {
+    const imageArray = image.split("\\r\\n");
     image = imageArray[0].trim();
   }
 
   // Xử lý trường hợp URL ảnh có chứa newline literal
-  if (image && image.includes('\n')) {
-    const imageArray = image.split('\n');
+  if (image && image.includes("\n")) {
+    const imageArray = image.split("\n");
     image = imageArray[0].trim();
   }
 
@@ -136,13 +155,6 @@ export const formatProductForDisplay = (product: any): Product => {
   if (!image) {
     image = "/images/placeholder.jpg";
   }
-
-  // Xử lý các thuộc tính vật lý
-  const height = product.variant_height ? Number(product.variant_height) : undefined;
-  const width = product.variant_width ? Number(product.variant_width) : undefined;
-  const depth = product.variant_depth ? Number(product.variant_depth) : undefined;
-  const seating_height = product.variant_seating_height ? Number(product.variant_seating_height) : undefined;
-  const maxium_weight = product.variant_maximum_weight_load ? Number(product.variant_maximum_weight_load) : undefined;
 
   return {
     id: product.product_id || product.id,
@@ -163,16 +175,11 @@ export const formatProductForDisplay = (product: any): Product => {
     description: product.product_description || product.description || "",
     sold: product.product_sold || product.sold || 0,
     view: product.product_view || product.view || 0,
-    material: product.variant_materials || product.material || "",
-    height,
-    width,
-    depth,
-    seating_height,
-    maxium_weight,
     stock: product.product_stock || product.stock || 0,
     images: product.images || [],
     variants: product.variants || [],
-    variant_id
+    variant_id: product.variant_id || 0,
+    attributes: product.attributes || [],
   };
 };
 
@@ -248,15 +255,19 @@ export const fetchProductBySlug = async (
   }
 };
 
-
-export const getRelatedProductsByRoom = async (productId: number): Promise<Product[]> => {
+export const getRelatedProductsByRoom = async (
+  productId: number
+): Promise<Product[]> => {
   try {
     const token = sessionStorage.getItem("authToken");
-    const res = await fetch(`http://localhost:3501/api/products/related/by-room/${productId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `http://localhost:3501/api/products/related/by-room/${productId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const data = await res.json();
 

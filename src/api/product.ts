@@ -92,7 +92,7 @@ export const getProductBySlug = async (
   related_products: any[];
 }> => {
   try {
-    const response = await axios.get(`${API_URL}/products/${slug}`);
+    const response = await axios.get(`${API_URL}/products/test/${slug}`);
     return handleApiResponse(response, "No data received from API");
   } catch (error) {
     // xử lý lỗi...
@@ -150,15 +150,15 @@ export const searchProducts = async (
  * @param {number} limit - Number of products to fetch
  * @returns {Promise<Product[]>} List of newest products
  */
-export const getNewestProducts = async (limit: number = 8): Promise<Product[]> => {
+export const getNewestProducts = async (
+  limit: number = 8
+): Promise<Product[]> => {
   try {
     const token = sessionStorage.getItem("authToken"); // hoặc localStorage.getItem()
 
     const response = await axios.get(`${API_URL}/products/newest`, {
       params: { limit },
-      headers: token
-        ? { Authorization: `Bearer ${token}` }
-        : undefined,
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
 
     const data = response.data;
@@ -167,7 +167,8 @@ export const getNewestProducts = async (limit: number = 8): Promise<Product[]> =
 
     if (Array.isArray(data)) return data;
     if (data.products && Array.isArray(data.products)) return data.products;
-    if (data.data && data.data.products && Array.isArray(data.data.products)) return data.data.products;
+    if (data.data && data.data.products && Array.isArray(data.data.products))
+      return data.data.products;
     if (data.data && Array.isArray(data.data)) return data.data;
     if (data.product_id || data.id) return [data];
 
