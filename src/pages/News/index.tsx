@@ -99,49 +99,7 @@ const News: React.FC<NewsProps> = ({
               </div>
             </div>
             <div className="content-left">
-              {/* <div className="news-categories">
-                <h2>Danh mục tin tức</h2>
-                <ul>
-                  {categories.map((category) => (
-                    <li key={category.id}>
-                      <Link
-                        to={`/news/${category.slug}`}
-                        className="category-item"
-                      >
-                        <span className="category-name">{category.name}</span>
-                        <span className="post-count">
-                          {getPostCountByCategory(category.name)}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul> */}
               <NewsCategories limit={5} />
-              {/* </div> */}
-              {/* Recent post */}
-              {/* <div className="recent-posts">
-                <h2>Bài viết nổi bật</h2>
-                <ul>
-                  {newsItems.slice(0, 5).map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        to={`/news/${item.slug}`}
-                        className="recent-post-item"
-                      >
-                        <img src={item.image} alt={item.title} />
-                        <div className="post-info">
-                          <span className="post-title">{item.title}</span>
-                          <span className="post-date">
-                            {item.date
-                              ? new Date(item.date).toLocaleDateString("vi-VN")
-                              : "-"}
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div> */}
               <RecentPosts newsItems={newsItems} />
             </div>
           </div>

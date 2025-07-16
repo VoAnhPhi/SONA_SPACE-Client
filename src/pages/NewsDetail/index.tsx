@@ -6,13 +6,10 @@ import Footer from "../../components/Footer";
 import NewsCategories from "../../components/CategoryNews";
 import RecentPosts from "../../components/RecentPosts";
 import type { NewsArticle } from "../../types";
-import { getAllNews } from "../../api/new";
+import { getAllNews, getNewsBySlugDetail } from "../../api/new";
 
-interface NewsProps {
-  limit?: number;
-}
 
-const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
+const NewsDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [newsDetailItem, setNewsDetail] = useState<NewsArticle | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,15 +20,8 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getAllNews();
-        const limitData = limit ? data.slice(0, limit) : data;
-        // Tìm bài theo slug
-        const foundNews = limitData.find(item => item.news_slug === slug);
-        if (foundNews) {
-          setNewsDetail(foundNews);
-        } else {
-          setNewsDetail(null);
-        }
+        const data = await getNewsBySlugDetail(slug || "");
+        setNewsDetail(data);
         setError(null);
       } catch (error) {
         console.error("Lỗi lấy dữ liệu:", error);
@@ -40,8 +30,9 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
         setIsLoading(false);
       }
     };
+    console.log("API /news/:slug called", new Date());
     fetchData();
-  }, [slug, limit]);
+  }, [slug]);
 
   const formatDate = (dateString: string): string | undefined => {
     const date = new Date(dateString);
@@ -54,10 +45,6 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
     const ss = ('0' + date.getSeconds()).slice(-2);
 
     return `${DD}/${MM}/${YYYY} ${HH}:${mm}:${ss}`;
-  };
-  const getFormattedDate = (dateString?: string | undefined) => {
-    if (!dateString) return 'Ngày không xác định';
-    return formatDate(dateString);
   };
   if (isLoading) {
     return (
@@ -101,7 +88,6 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
                     newsDetailItem.created_at ? newsDetailItem.created_at.toString() : ""
                   )}
                 </span>
-                {/* <span className="category">{newsDetailItem.news_category_id}</span> */}
                 <span className="views">
                   <img src="../images/news/eye.svg" alt="" />
                   {newsDetailItem.news_view} lượt xem
@@ -111,18 +97,10 @@ const NewsDetail: React.FC<NewsProps> = ({ limit }) => {
                 className="news-body"
                 dangerouslySetInnerHTML={{ __html: newsDetailItem.news_content }}
               />
-
-              {/* <div className="news-tags">
-                {newsDetailItem.map((newsDetail:  NewsArticle) => (
-                  <Link to={`/tin-tuc/tag/${NewsDetail}`} className="tag">
-                    {tag}
-                  </Link>
-                ))}
-              </div> */}
             </div>
             <div className="news-sidebar">
               <NewsCategories limit={5} />
-              <RecentPosts newsItems={[]} /> {/* Tùy ý truyền dữ liệu khác */}
+              <RecentPosts newsItems={[]} />
             </div>
           </div>
         </div>

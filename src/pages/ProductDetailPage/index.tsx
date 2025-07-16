@@ -351,12 +351,12 @@ const ProductDetailPage: React.FC = () => {
                 </div>
                 <div className="content-price">
                   {selectedVariant?.variant_price_sale > 0 ||
-                  product.priceSale > 0 ? (
+                    product.priceSale > 0 ? (
                     <>
                       <span className="price">
                         {formatPrice(
                           selectedVariant?.variant_price_sale ||
-                            product.priceSale
+                          product.priceSale
                         )}{" "}
                         đ
                       </span>
@@ -416,12 +416,11 @@ const ProductDetailPage: React.FC = () => {
                       <div
                         key={v.color_id}
                         style={{ backgroundColor: v.color_hex }}
-                        className={`color-option${
-                          selectedColor?.toLowerCase() ===
+                        className={`color-option${selectedColor?.toLowerCase() ===
                           v.color_hex?.toLowerCase()
-                            ? " active"
-                            : ""
-                        }`}
+                          ? " active"
+                          : ""
+                          }`}
                         onClick={() => {
                           setSelectedColor(v.color_hex); // Đảm bảo cập nhật selectedColor khi click
                           handleColorSelect(v.color_hex, v.color_id);
@@ -481,17 +480,15 @@ const ProductDetailPage: React.FC = () => {
               <div className="description-avalute-title">
                 <div className="tabs-header">
                   <button
-                    className={`tab-btn ${
-                      activeTab === "description" ? "active" : ""
-                    }`}
+                    className={`tab-btn ${activeTab === "description" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("description")}
                   >
                     Mô tả
                   </button>
                   <button
-                    className={`tab-btn ${
-                      activeTab === "review" ? "active" : ""
-                    }`}
+                    className={`tab-btn ${activeTab === "review" ? "active" : ""
+                      }`}
                     onClick={() => setActiveTab("review")}
                   >
                     Đánh giá
@@ -512,11 +509,10 @@ const ProductDetailPage: React.FC = () => {
                           <span>
                             {/* Hiển thị giá trị nếu có, nếu không thì "Đang cập nhật" */}
                             {attr.value !== null &&
-                            attr.value !== undefined &&
-                            attr.value !== ""
-                              ? `${attr.value}${
-                                  attr.unit ? ` ${attr.unit}` : ""
-                                }`
+                              attr.value !== undefined &&
+                              attr.value !== ""
+                              ? `${attr.value}${attr.unit ? ` ${attr.unit}` : ""
+                              }`
                               : "Đang cập nhật"}
                           </span>
                         </button>

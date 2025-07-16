@@ -15,7 +15,7 @@ interface NewsItem {
 
 interface RecentPostsProps {
   newsItems: NewsItem[];
-    limit?: number;
+  limit?: number;
 }
 
 const RecentPosts: React.FC<RecentPostsProps> = ({
@@ -34,7 +34,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
         const data = await getAllNewsByView();
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         setNewsByView(data);
-        setError(null); 
+        setError(null);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
@@ -48,21 +48,21 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
         {newsByView.slice(0, 4).map((item) => (
           <li key={item.news_id}>
             <Link to={`/tin-tuc/${item.news_slug}`} className="recent-post-item">
-               {(() => {
-                        try {
-                          const imagesArray = JSON.parse(item.news_image);
-                          const firstImage = imagesArray[0];
-                          return <img src={firstImage} alt={item.news_name} />;
-                        } catch (error) {
-                          return <img src="/fallback-image.jpg" alt={item.news_name} />;
-                        }
-                      })()}
+              {(() => {
+                try {
+                  const imagesArray = JSON.parse(item.news_image);
+                  const firstImage = imagesArray[0];
+                  return <img src={firstImage} alt={item.news_name} />;
+                } catch (error) {
+                  return <img src="/fallback-image.jpg" alt={item.news_name} />;
+                }
+              })()}
 
               <div className="post-info">
                 <span className="post-title">{item.news_name}</span>
                 <span className="post-date">
                   {item.news_view}
-                  
+
                 </span>
               </div>
             </Link>

@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import type { NewsArticle, NewsCategory } from "../../types";
-import {  getAllNewsCategories } from "../../api/new"; // Import hàm API
+import { getAllNewsCategories } from "../../api/new"; // Import hàm API
 
 interface Category {
   id: string;
@@ -42,7 +42,7 @@ const NewsCategories: React.FC<NewsProps> = ({
         // Apply limit if provided
         const limitedData = limit ? data.slice(0, limit) : data;
         setNews(limitedData);
-        setError(null); 
+        setError(null);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }

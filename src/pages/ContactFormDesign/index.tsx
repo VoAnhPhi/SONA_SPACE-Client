@@ -329,12 +329,12 @@ const ContactFormDesign: React.FC = () => {
                 </div>
               </div>
               <button disabled={isLoading} type="submit" className="submit-btn">
-                {isLoading ? "Đang gửi..." : "Gửi"} 
+                {isLoading ? "Đang gửi..." : "Gửi"}
               </button>
             </form>
           </div>
         </section>
-        
+
       </div>
       <Footer />
     </>
