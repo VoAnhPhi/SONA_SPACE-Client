@@ -68,59 +68,47 @@ const CountdownTimer: React.FC<{
   minutes: number;
   seconds: number;
   onComplete?: () => void;
-}> = ({
-  hours: initialHours,
-  minutes: initialMinutes,
-  seconds: initialSeconds,
-  onComplete,
-}) => {
-    const [hours, setHours] = useState<number>(initialHours);
-    const [minutes, setMinutes] = useState<number>(initialMinutes);
-    const [seconds, setSeconds] = useState<number>(initialSeconds);
-    const [isLowTime, setIsLowTime] = useState<boolean>(false);
+}> = ({ hours: initialHours, minutes: initialMinutes, seconds: initialSeconds, onComplete }) => {
+  const calcTotalSeconds = () =>
+    initialHours * 3600 + initialMinutes * 60 + initialSeconds;
 
-    useEffect(() => {
-      // Check if time is running low (less than 10 minutes)
-      if (hours === 0 && minutes < 10) {
-        setIsLowTime(true);
-      } else {
-        setIsLowTime(false);
-      }
+  const [totalSeconds, setTotalSeconds] = useState<number>(calcTotalSeconds());
 
-      const interval = setInterval(() => {
-        if (seconds > 0) {
-          setSeconds(seconds - 1);
-        } else if (minutes > 0) {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        } else if (hours > 0) {
-          setHours(hours - 1);
-          setMinutes(59);
-          setSeconds(59);
-        } else {
+  useEffect(() => {
+    setTotalSeconds(calcTotalSeconds()); // Reset when props change
+
+    const interval = setInterval(() => {
+      setTotalSeconds((prev) => {
+        if (prev <= 1) {
           clearInterval(interval);
-          if (onComplete) {
-            onComplete();
-          }
+          onComplete?.();
+          return 0;
         }
-      }, 1000);
+        return prev - 1;
+      });
+    }, 1000);
 
-      return () => clearInterval(interval);
-    }, [hours, minutes, seconds, onComplete]);
+    return () => clearInterval(interval);
+  }, [initialHours, initialMinutes, initialSeconds, onComplete]);
 
-    // Format numbers to always have 2 digits
-    const formatNumber = (num: number): string => {
-      return num < 10 ? `0${num}` : `${num}`;
-    };
+  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-    return (
-      <div className={`flash-time ${isLowTime ? "low-time" : ""}`}>
-        <span className="time-value">{formatNumber(hours)}</span> h{" "}
-        <span className="time-value">{formatNumber(minutes)}</span> m{" "}
-        <span className="time-value">{formatNumber(seconds)}</span> s
-      </div>
-    );
-  };
+  const format = (n: number) => (n < 10 ? `0${n}` : n.toString());
+
+  return (
+    <div className="flash-time">
+      {days > 0 && <span className="time-value">{days} ngày</span>}{" "}
+      {(days > 0 || hours > 0) && <span className="time-value">{format(hours)} giờ</span>}{" "}
+      {(days > 0 || minutes > 0) && <span className="time-value">{format(minutes)} phút</span>}{" "}
+      <span className="time-value">{format(seconds)} giây</span>
+    </div>
+  );
+};
+
+
 
 const User: React.FC = () => {
   // Use location to get current path
@@ -209,7 +197,7 @@ const User: React.FC = () => {
       });
 
       console.log("fetchOrders: Dữ liệu đơn hàng từ API:", response.data);
-      
+
       // Kiểm tra và cập nhật dữ liệu
       if (response.data && response.data.orders) {
         setOrdersResponse(response.data);
@@ -226,67 +214,67 @@ const User: React.FC = () => {
       console.log("fetchOrders: Kết thúc");
     }
   };
-  
+
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
 
   useEffect(() => {
     fetchPromoCodes();
   }, []);
 
-const fetchPromoCodes = async () => {
-  try {
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      console.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
-      return;
-    }
+  const fetchPromoCodes = async () => {
+    try {
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        console.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        return;
+      }
 
-    const res = await axios.get("http://localhost:3501/api/couponcodes/codes", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log("Fetched promo codes:", res.data);
-    const codes = res.data;
-    const now = new Date();
-
-    const updated = codes
-      .filter((promo: any) => promo.status !== 0)
-      .map((promo: any) => {
-        const isFlashSale = Number(promo.isFlashSale) === 1;
-
-        const userCoupon = userUsedCoupons.find((c) => c.code === promo.code);
-        const status = userCoupon ? userCoupon.status : promo.status; 
-
-        const commonFields = {
-          ...promo,
-          status,
-          isFlashSale,
-          timeRemaining: null,
-        };
-
-        if (isFlashSale) {
-          const end = new Date(promo.validUntil);
-          const diff = Math.max(0, end.getTime() - now.getTime());
-
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-          return {
-            ...commonFields,
-            timeRemaining: { hours, minutes, seconds },
-          };
-        }
-
-        return commonFields;
+      const res = await axios.get("http://localhost:3501/api/couponcodes/codes", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      console.log("Fetched promo codes:", res.data);
+      const codes = res.data;
+      const now = new Date();
 
-    setPromoCodes(updated);
-  } catch (error) {
-    console.error("Error fetching promo codes:", error);
-  }
-};
+      const updated = codes
+        .filter((promo: any) => promo.status !== 0)
+        .map((promo: any) => {
+          const isFlashSale = Number(promo.isFlashSale) === 1;
+
+          const userCoupon = userUsedCoupons.find((c) => c.code === promo.code);
+          const status = userCoupon ? userCoupon.status : promo.status;
+
+          const commonFields = {
+            ...promo,
+            status,
+            isFlashSale,
+            timeRemaining: null,
+          };
+
+          if (isFlashSale) {
+            const end = new Date(promo.validUntil);
+            const diff = Math.max(0, end.getTime() - now.getTime());
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            return {
+              ...commonFields,
+              timeRemaining: { hours, minutes, seconds },
+            };
+          }
+
+          return commonFields;
+        });
+
+      setPromoCodes(updated);
+    } catch (error) {
+      console.error("Error fetching promo codes:", error);
+    }
+  };
 
 
   const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
@@ -802,9 +790,9 @@ const fetchPromoCodes = async () => {
                             {order.products && order.products.length > 0 && (
                               <>
                                 <div className="product-image">
-                                  <img 
-                                    src={getFirstImageUrl(order.products[0].image)} 
-                                    alt={order.products[0].name} 
+                                  <img
+                                    src={getFirstImageUrl(order.products[0].image)}
+                                    alt={order.products[0].name}
                                   />
                                 </div>
 
@@ -1264,6 +1252,8 @@ const fetchPromoCodes = async () => {
                           )}
 
 
+
+
                           <div className="voucher-details">
                             <ul className="voucher-info-list">
                               <li>
@@ -1384,9 +1374,9 @@ const fetchPromoCodes = async () => {
                           {order.products && order.products.map((product, itemIndex) => (
                             <div className="order-content" key={`item-${itemIndex}`}>
                               <div className="product-image">
-                                <img 
-                                  src={getFirstImageUrl(product.image)} 
-                                  alt={product.name} 
+                                <img
+                                  src={getFirstImageUrl(product.image)}
+                                  alt={product.name}
                                 />
                               </div>
 

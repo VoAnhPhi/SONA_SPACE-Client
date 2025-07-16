@@ -74,7 +74,7 @@ const Payment: React.FC = () => {
   const handlePaymentMethodChange = (method: string) => {
     setPaymentMethod(method);
   };
-
+  console.log("Selected Items in Payment:", selectedItems);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -134,21 +134,34 @@ const Payment: React.FC = () => {
 
 
 
+
       const res = await createOrderService(payload);
       localStorage.removeItem("applycode");
-      if (!res?.order_id) {
+      if (paymentMethod === "transfer" && !res?.order_id) {
         toast.error("Không thể tạo đơn hàng");
+        return;
+      }
+      if (res?.payUrl) {
+        localStorage.setItem("pending_order_data", JSON.stringify({
+          ...payload,
+          selectedItemIds: selectedItems
+        }));
+        window.location.href = res.payUrl;
         return;
       }
 
 
+      console.log("Response from createOrderService:", res);
 
       if (!res.payUrl) {
-        await clearCartServiceid(cartItems.map(item => item.id)); // Xóa các sản phẩm đã chọn
+        await clearCartServiceid(selectedItems || []);
+
         toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", { autoClose: 2000 });
         setTimeout(() => {
           navigate(`/dat-hang-thanh-cong/${res.order_hash}`);
         }, 2000);
+      } else {
+        window.location.href = res.payUrl;
       }
     } catch (error) {
       toast.error(" Có lỗi xảy ra khi xử lý đơn hàng.");
@@ -187,7 +200,7 @@ const Payment: React.FC = () => {
         const { success, wishlistItems } = await loadCartService();
         if (success && wishlistItems) {
           const formatted = wishlistItems.map((item: any, index: number) => ({
-            id: item.wishlist_id || index,
+            id: item.wishlist_id,
             variant_id: item.variant_id,
             name: item.product_name,
             price: item.price,
@@ -197,9 +210,10 @@ const Payment: React.FC = () => {
             quantity: item.quantity,
             category: item.category || "Chưa phân loại",
           }));
+          console.log("🛒 Items để xóa:", cartItems.map(i => i.id));
 
           //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
-          const filteredItems = formatted.filter((item) => selectedItems?.includes(item.id));
+          const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
 
 
           setCartItems(filteredItems);

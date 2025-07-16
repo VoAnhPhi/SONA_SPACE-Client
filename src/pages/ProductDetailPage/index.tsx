@@ -239,10 +239,10 @@ const ProductDetailPage: React.FC = () => {
         miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
-        toast.success("Đã thêm vào giỏ hàng!", {
-          position: "top-right",
-          autoClose: 500,
-        });
+        // toast.success("Đã thêm vào giỏ hàng!", {
+        //   position: "top-right",
+        //   autoClose: 500,
+        // });
         // if (miniCartRef.current) {
         //   console.log(" Gọi notifyCartChanged");
         //   miniCartRef.current.notifyCartChanged();

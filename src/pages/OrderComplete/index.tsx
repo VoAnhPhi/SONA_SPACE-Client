@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getOrderByHash } from "../../services/ordersCompleteService";
 import Footer from "../../components/Footer";
-import { clearCartService } from "../../services/cartService";
+import { createOrderService } from "../../services/ordersService"; // ADD
+
+import { clearCartServiceid } from "../../services/cartService";
 interface OrderSummaryProps {
   orderId: string;
   orderDate: string;
@@ -13,6 +15,45 @@ interface OrderSummaryProps {
 const OrderComplete: React.FC = () => {
 const { orderHash } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
+
+  useEffect(() => {
+  const saveOrderIfNeeded = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const resultCode = params.get("resultCode");
+    const momoOrderId = params.get("orderId");
+    const momoOrderHash = params.get("requestId"); // chính là order_id trong payload
+
+    if (resultCode === "0" && momoOrderId && momoOrderHash) {
+      const data = JSON.parse(localStorage.getItem("pending_order_data") || "{}");
+
+      if (!data?.order_id || data.order_id !== momoOrderHash) return;
+
+      const res = await getOrderByHash(data.order_id);
+      if (res.success && res.order) {
+        console.log("Đơn đã tồn tại. Không cần tạo lại.");
+        return;
+      }
+
+      const payload = {
+        ...data,
+        momo_transaction_code: momoOrderId
+      };
+
+      try {
+        const result = await createOrderService(payload);
+        if (result?.success || result?.order_id) {
+          console.log("Đã tạo đơn hàng sau redirect MoMo");
+          localStorage.removeItem("pending_order_data");
+        }
+      } catch (err) {
+        console.error("Lỗi tạo đơn MoMo sau redirect:", err);
+      }
+    }
+  };
+
+  saveOrderIfNeeded();
+}, []);
+
 
 useEffect(() => {
   const fetchOrder = async () => {
@@ -33,13 +74,41 @@ useEffect(() => {
   fetchOrder();
 }, [orderHash]);
 
+// useEffect(() => {
+//   if (orderSummary) {
+//     clearCartService()
+//       .then(() => console.log("Đã xóa giỏ hàng sau khi thanh toán thành công"))
+//       .catch((err) => console.error("Lỗi khi xóa giỏ hàng:", err));
+//   }
+// }, [orderSummary]);
+
 useEffect(() => {
-  if (orderSummary) {
-    clearCartService()
-      .then(() => console.log("Đã xóa giỏ hàng sau khi thanh toán thành công"))
-      .catch((err) => console.error("Lỗi khi xóa giỏ hàng:", err));
-  }
+  const tryClearSelectedItems = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const resultCode = params.get("resultCode");
+
+    if (orderSummary && resultCode === "0") {
+      const data = JSON.parse(localStorage.getItem("pending_order_data") || "{}");
+      const selectedItemIds = data?.selectedItemIds || [];
+
+      if (Array.isArray(selectedItemIds) && selectedItemIds.length > 0) {
+        try {
+          await clearCartServiceid(selectedItemIds);
+          console.log("✅ Đã xóa các sản phẩm đã chọn khỏi giỏ hàng (sau thanh toán MoMo)");
+        } catch (err) {
+          console.error("❌ Lỗi khi xóa sản phẩm đã chọn:", err);
+        }
+      }
+
+      // Cleanup localStorage
+      localStorage.removeItem("pending_order_data");
+    }
+  };
+
+  tryClearSelectedItems();
 }, [orderSummary]);
+
+
 
   const formatPrice = (price: number): string => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");

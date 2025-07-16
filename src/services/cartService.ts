@@ -95,13 +95,11 @@ notifyCartUpdated();
 };
 
 export const clearCartServiceid = async (selectedItemIds: number[]) => {
-  try {
-    const response = await axios.delete('http://localhost:3501/api/wishlist/clearid', {
-      data: { selectedItemIds }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Lỗi khi xóa sản phẩm đã thanh toán:', error);
-    return { success: false };
-  }
+  const token = sessionStorage.getItem("authToken");
+  const res = await axios.delete('http://localhost:3501/api/wishlists/clearid', {
+    headers: { Authorization: `Bearer ${token}` },
+    data: { selectedItemIds }
+  });
+  return res.data;
 };
+

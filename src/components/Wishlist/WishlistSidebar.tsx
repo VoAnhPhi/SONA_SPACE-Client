@@ -115,7 +115,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
 
       const token = sessionStorage.getItem('authToken');
       if (!token) {
-        setError('Phiên đăng nhập đã hết hạn');
+        setError('Vui lòng đăng nhập để thêm được vào wishlist');
         setLoading(false);
         return;
       }
@@ -189,7 +189,7 @@ const handleRemoveFromWishlist = async (wishlistId: number) => {
   try {
     const token = sessionStorage.getItem('authToken');
     if (!token) {
-      setError('Phiên đăng nhập đã hết hạn');
+      setError('Xóa sản phẩm khỏi wishlist');
       return;
     }
 
