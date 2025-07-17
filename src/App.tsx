@@ -29,11 +29,13 @@ import EmailVerified from './pages/EmailVerified'
 // import '../public/fonts/stylesheet.css'
 import TestPage from './pages/TestPage'
 import { AuthProvider } from './contexts/AuthContext'
+import ScrollToTop from './components/ScrollTop/ScrollToTop'
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/san-pham" element={<ProductPage />} />

@@ -184,12 +184,6 @@ const SignUp: React.FC = () => {
       {showModal && (
         <div className="custom-modal-backdrop">
           <div className="custom-modal">
-            {/* <button
-              className="close-button"
-              onClick={() => setShowModal(false)}
-            >
-              ×
-            </button> */}
 
             <div className="modal-header">
               <div className="success-icon">

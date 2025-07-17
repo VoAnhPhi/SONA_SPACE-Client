@@ -1,7 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { validateRegisterForm, submitRegisterForm } from '../services/registerService';
-import type { RegisterFormData, ValidationErrors } from '../services/registerService';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  validateRegisterForm,
+  submitRegisterForm,
+} from "../services/registerService";
+import type {
+  RegisterFormData,
+  ValidationErrors,
+} from "../services/registerService";
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -9,30 +15,32 @@ export const useRegister = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [success, setSuccess] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState<RegisterFormData>({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    agreeToTerms: false
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    agreeToTerms: false,
   });
 
   // Xử lý thay đổi input
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    
+
     // Xóa lỗi khi người dùng bắt đầu sửa
     if (errors[name as keyof ValidationErrors]) {
       setErrors({
         ...errors,
-        [name]: undefined
+        [name]: undefined,
       });
     }
   };
@@ -42,14 +50,14 @@ export const useRegister = () => {
     const { name, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: checked
+      [name]: checked,
     });
-    
+
     // Xóa lỗi khi người dùng bắt đầu sửa
     if (errors[name as keyof ValidationErrors]) {
       setErrors({
         ...errors,
-        [name]: undefined
+        [name]: undefined,
       });
     }
   };
@@ -63,37 +71,35 @@ export const useRegister = () => {
 
   // Xử lý submit form
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setApiError(null);
+    e.preventDefault();
+    setApiError(null);
 
-  const isValid = validateForm();
-  if (!isValid) return;
+    const isValid = validateForm();
+    if (!isValid) return;
 
-  setLoading(true);
-  try {
-    const response = await submitRegisterForm(formData);
+    setLoading(true);
+    try {
+      const response = await submitRegisterForm(formData);
 
-    if (response.success) {
-      setSuccess(true);
-      setErrors({}); // Xoá lỗi cũ nếu có
-      setTimeout(() => {
-        navigate('/dang-nhap');
-      }, 2000);
-    } else {
-      // ✅ Xử lý lỗi cụ thể từ backend
-      if (response.errors) {
-        setErrors(prev => ({ ...prev, ...response.errors }));
+      if (response.success) {
+        setSuccess(true);
+        setErrors({});
+        setTimeout(() => {
+          navigate("/dang-nhap");
+        }, 10000);
       } else {
-        setApiError(response.message || 'Đã xảy ra lỗi khi đăng ký');
+        if (response.errors) {
+          setErrors((prev) => ({ ...prev, ...response.errors }));
+        } else {
+          setApiError(response.message || "Đã xảy ra lỗi khi đăng ký");
+        }
       }
+    } catch (error) {
+      setApiError("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setApiError('Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.');
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return {
     formData,
@@ -105,6 +111,6 @@ export const useRegister = () => {
     handleChange,
     handleCheckboxChange,
     handleSubmit,
-    validateForm
+    validateForm,
   };
 };

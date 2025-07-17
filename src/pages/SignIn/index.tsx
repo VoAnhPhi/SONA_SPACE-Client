@@ -5,7 +5,6 @@ import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useLogin } from "../../hooks/useLogin";
 import "./styles.css";
-import { ToastContainer } from "react-toastify";
 
 const SignIn: React.FC = () => {
   const {
@@ -118,18 +117,6 @@ const SignIn: React.FC = () => {
         </div>
       </div>
       <Footer />
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      /> */}
     </>
   );
 };

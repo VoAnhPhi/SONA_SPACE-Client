@@ -7,7 +7,6 @@ import {
 } from "../services/loginService";
 import type { LoginFormData, ValidationErrors } from "../services/loginService";
 import { useAuth } from "../contexts/AuthContext";
-import { toast } from "react-toastify";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -82,7 +81,7 @@ export const useLogin = () => {
 
           setTimeout(() => {
             navigate("/");
-          }, 1000);
+          }, 5000);
         } else {
           if (response.status === 403) {
             setUnverifiedError(
