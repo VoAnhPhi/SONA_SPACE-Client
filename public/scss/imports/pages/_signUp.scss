@@ -17,7 +17,7 @@
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 24px 16px 16px 16px;
+    padding: 40px;
 
     h1 {
       font-family: 'M-B', sans-serif;
@@ -366,10 +366,10 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  padding: 16px;
-  background: #f8fafc;
+  padding: 24px;
+  background: color-mix(in srgb, $yellow-cl 1%, transparent);
   border-radius: 12px;
-  border-left: 4px solid #10b981;
+  border-left: 4px solid $yellow-cl;
 }
 
 .step-item:last-child {

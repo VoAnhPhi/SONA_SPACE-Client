@@ -3,16 +3,6 @@ import type { Room, Product, PaginatedResponse } from "../types";
 
 // Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
 const API_URL = "http://localhost:3501/api";
-
-// Hàm helper để kiểm tra và xử lý response
-const handleApiResponse = (response: any, errorMessage: string) => {
-  if (!response || !response.data) {
-    console.error(errorMessage);
-    throw new Error(errorMessage);
-  }
-  return response.data;
-};
-
 /**
  * Get all rooms
  * @returns {Promise<Room[]>} List of rooms
@@ -22,28 +12,28 @@ export const getAllRooms = async (): Promise<Room[]> => {
     const response = await axios.get(`${API_URL}/rooms`);
 
     // Kiểm tra nếu response có dữ liệu
-    if (!response.data) {
-      console.error("API returned empty data for rooms");
-      // Trả về mảng rỗng thay vì ném lỗi để tránh crash UI
-      return [];
-    }
+    // if (!response.data) {
+    //   console.error("API returned empty data for rooms");
+    //   Trả về mảng rỗng thay vì ném lỗi để tránh crash UI
+    //   return [];
+    // }
 
     // Kiểm tra nếu dữ liệu trả về là mảng
     if (!Array.isArray(response.data)) {
-      console.warn(
-        "API did not return an array for rooms, attempting to extract data"
-      );
+      // console.warn(
+      //   "API did not return an array for rooms, attempting to extract data"
+      // );
 
       // Thử lấy dữ liệu từ các cấu trúc phổ biến
       const data =
         response.data.data || response.data.rooms || response.data.items || [];
-      console.log("Extracted data:", response.data);
+      // console.log("Extracted data:", response.data);
       return data;
     }
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching rooms:", error);
+    // console.error("Error fetching rooms:", error);
     throw error;
   }
 };

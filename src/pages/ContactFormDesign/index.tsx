@@ -1,49 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import type { ContactFormDesign } from "../../types";
+import type { ContactFormDesign, Room } from "../../types";
 import { sendContactFormDesignService } from "../../services/contactService";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { fetchRoomSimilar } from "../../services/roomService";
+import { validateFormContactDesign } from "../../services/contactService";
 
 const ContactFormDesign: React.FC = () => {
   const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
+  const [roomSimilar, setRoomSimilar] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<ContactFormDesign>({
     name: "",
     email: "",
     phone: "",
     room_name: "",
+    custom_room_name: "",
     design_description: "",
     require_design: "",
     style_design: "",
     budget: "",
     different_information: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  useEffect(() => {
+    const fetchRoomSimilarData = async () => {
+      const roomSimilarData = await fetchRoomSimilar();
+      setRoomSimilar(roomSimilarData);
+      console.log("roomSimilarData", roomSimilarData);
+    };
+    fetchRoomSimilarData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: checked
-    });
-    setAgreeToTerms(checked);
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    if (type === "checkbox") {
+      setAgreeToTerms(checked);
+    } else {
+      const newFormData = { ...formData, [name]: value };
+      setFormData(newFormData);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors = validateFormContactDesign({ ...formData, agreeToTerms });
+    if (!agreeToTerms) newErrors.agreeToTerms = "Bạn phải đồng ý với điều khoản và chính sách";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
     setIsLoading(true);
+
+    const payload = {
+      ...formData,
+      room_name: formData.room_name == "__custom" ? formData.custom_room_name || "" : formData.room_name,
+    }
+
+    delete payload.custom_room_name;
+
     try {
-      const response = await sendContactFormDesignService(formData);
+      const response = await sendContactFormDesignService(payload);
       if (response) {
         toast.success("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
         setFormData({
@@ -69,16 +88,13 @@ const ContactFormDesign: React.FC = () => {
 
   return (
     <>
-      {/* <ToastContainer position="top-right"
-        autoClose={5000}
-        style={{ marginTop: "100px" }} /> */}
       <Header />
       <div className="contact-form-page">
         {/* Banner Section */}
         <div className="banner-section">
           <div className="container-fluid">
             <div className="container">
-              <img src="/images/ContactFormDesign/banner.jpg" alt="Thiết kế nội thất" />
+              <img src="/images/ContactFormDesign/bannerdesign.jpg" alt="Thiết kế nội thất" />
             </div>
           </div>
         </div>
@@ -201,9 +217,9 @@ const ContactFormDesign: React.FC = () => {
                     placeholder=" "
                     value={formData.name}
                     onChange={handleChange}
-                    required
                   />
                   <label htmlFor="name">Họ và tên *</label>
+                  {errors.name && <p className="error-message">{errors.name}</p>}
                 </div>
 
                 <div className="form-group floating-label">
@@ -214,25 +230,43 @@ const ContactFormDesign: React.FC = () => {
                     placeholder=" "
                     value={formData.email}
                     onChange={handleChange}
-                    required
                   />
                   <label htmlFor="email">E-mail *</label>
+                  {errors.email && <p className="error-message">{errors.email}</p>}
                 </div>
               </div>
 
               <div className="form-row">
+
                 <div className="form-group floating-label">
-                  <input
-                    type="text"
+                  <select
                     id="room_name"
                     name="room_name"
-                    placeholder=" "
                     value={formData.room_name}
                     onChange={handleChange}
-                    required
-                  />
-                  <label htmlFor="room_name">Không gian</label>
+                  >
+                    <option value="" disabled hidden>Chọn không gian</option>
+                    {roomSimilar.map((room) => (
+                      <option key={room.room_name} value={room.room_name}>{room.room_name}</option>
+                    ))}
+                    <option value="__custom">Khác</option>
+                  </select>
+                  {/* Nếu chọn Khác thì hiện ô nhập tên không gian */}
+                  <label htmlFor="room_name">Không gian *</label>
+                  {errors.room_name && <p className="error-message">{errors.room_name}</p>}
+                  {formData.room_name == "__custom" && (
+                    <input
+                      type="text"
+                      name="custom_room_name"
+                      placeholder="Nhập không gian khác..."
+                      value={formData.custom_room_name || ""}
+                      onChange={handleChange}
+                      style={{ marginTop: "12px" }}
+                    />
+                  )}
+                  {errors.custom_room_name && <p className="error-message">{errors.custom_room_name}</p>}
                 </div>
+
                 <div className="form-group floating-label">
                   <input
                     type="tel"
@@ -241,9 +275,9 @@ const ContactFormDesign: React.FC = () => {
                     placeholder=" "
                     value={formData.phone}
                     onChange={handleChange}
-                    required
                   />
                   <label htmlFor="phone">Số điện thoại *</label>
+                  {errors.phone && <p className="error-message">{errors.phone}</p>}
                 </div>
               </div>
 
@@ -257,6 +291,7 @@ const ContactFormDesign: React.FC = () => {
                   onChange={handleChange}
                 ></textarea>
                 <label htmlFor="design_description">Mô tả sơ lược về yêu cầu thiết kế</label>
+                {errors.design_description && <p className="error-message">{errors.design_description}</p>}
               </div>
 
               <div className="form-group floating-label">
@@ -269,6 +304,7 @@ const ContactFormDesign: React.FC = () => {
                   onChange={handleChange}
                 />
                 <label htmlFor="style_design">Phong cách bạn muốn</label>
+                {errors.style_design && <p className="error-message">{errors.style_design}</p>}
               </div>
 
               <div className="form-group floating-label">
@@ -281,6 +317,7 @@ const ContactFormDesign: React.FC = () => {
                   onChange={handleChange}
                 />
                 <label htmlFor="require_design">Yêu cầu khác</label>
+                {errors.require_design && <p className="error-message">{errors.require_design}</p>}
               </div>
 
               <div className={`form-group floating-label ${formData.budget ? 'has-value' : ''}`}>
@@ -289,7 +326,6 @@ const ContactFormDesign: React.FC = () => {
                   name="budget"
                   value={formData.budget}
                   onChange={handleChange}
-                  required
                 >
                   <option value="" disabled hidden>Chọn ngân sách</option>
                   <option value="30000000">Dưới 30 triệu</option>
@@ -299,6 +335,7 @@ const ContactFormDesign: React.FC = () => {
                   <option value="300000000">Trên 200 triệu</option>
                 </select>
                 <label htmlFor="budget">Ngân sách</label>
+                {errors.budget && <p className="error-message">{errors.budget}</p>}
               </div>
 
 
@@ -319,14 +356,14 @@ const ContactFormDesign: React.FC = () => {
                   id="agreeToTerms"
                   name="agreeToTerms"
                   checked={agreeToTerms}
-                  onChange={handleCheckboxChange}
-                  required
+                  onChange={handleChange}
                 />
                 <div className="checkbox-text">
                   Tôi đồng ý với
                   <a href="/dieu-khoan" target="_blank" rel="noopener noreferrer">Điều khoản dịch vụ</a> &nbsp;và&nbsp;
                   <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
                 </div>
+                {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
               </div>
               <button disabled={isLoading} type="submit" className="submit-btn">
                 {isLoading ? "Đang gửi..." : "Gửi"}

@@ -153,11 +153,13 @@ export interface ContactFormDesign {
   email: string;
   phone: string;
   room_name: string;
+  custom_room_name?: string;
   design_description: string;
   require_design: string;
   style_design: string;
   budget: string;
   different_information: string;
+  agreeToTerms?: boolean;
 }
 
 export interface Experience {

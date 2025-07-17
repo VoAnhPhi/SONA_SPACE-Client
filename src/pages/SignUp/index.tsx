@@ -147,10 +147,10 @@ const SignUp: React.FC = () => {
                   <Link to="/dieu-khoan">Điều Khoản</Link> và{" "}
                   <Link to="/chinh-sach">Chính Sách Bảo Mật</Link>
                 </label>
-                {errors.agreeToTerms && (
-                  <p className="error-message">{errors.agreeToTerms}</p>
-                )}
               </div>
+              {errors.agreeToTerms && (
+                <p className="error-message">{errors.agreeToTerms}</p>
+              )}
 
               <button
                 type="submit"

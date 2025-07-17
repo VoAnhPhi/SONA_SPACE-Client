@@ -70,7 +70,7 @@ const Header = () => {
       }
     };
 
-    handleCartUpdate(); 
+    handleCartUpdate();
 
     window.addEventListener("cart-updated", handleCartUpdate);
     return () => window.removeEventListener("cart-updated", handleCartUpdate);
@@ -118,10 +118,8 @@ const Header = () => {
       try {
         setLoadingCategories(true);
         const data = await getAllCategories();
-        console.log("Fetched categories:", data);
         setCategories(data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
       } finally {
         setLoadingCategories(false);
       }
@@ -131,10 +129,8 @@ const Header = () => {
       try {
         setLoadingRooms(true);
         const data = await getAllRooms();
-        console.log("Fetched rooms:", data);
         setRooms(data);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
       } finally {
         setLoadingRooms(false);
       }
@@ -486,9 +482,9 @@ const Header = () => {
                 </li>
                 <li>
                   <a
-                    href="/ve-chung-toi"
-                    className={isActive("/ve-chung-toi") ? "active" : ""}
-                    onClick={() => handleNavClick("/ve-chung-toi")}
+                    href="/lien-he"
+                    className={isActive("/lien-he") ? "active" : ""}
+                    onClick={() => handleNavClick("/lien-he")}
                   >
                     Về Chúng Tôi
                   </a>

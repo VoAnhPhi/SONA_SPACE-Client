@@ -57,8 +57,8 @@ const ContactForm: React.FC = () => {
             <div className="store-info-section">
               <h1>Hãy liên hệ với chúng tôi</h1>
               <p className="intro-text">
-                Nâng tầm không gian của bạn với những thiết kế nội thất mang biệt phẩm ánh. 
-                Phong cách và trải nghiệm đẳng cấp của bạn, được chăm sóc và tinh 
+                Nâng tầm không gian của bạn với những thiết kế nội thất mang biệt phẩm ánh.
+                Phong cách và trải nghiệm đẳng cấp của bạn, được chăm sóc và tinh
                 xảo để mang đến trải nghiệm sống khó quên.
               </p>
 
@@ -99,8 +99,8 @@ const ContactForm: React.FC = () => {
               <div className="contact-message">
                 <h2>Chúng tôi rất mong nhận được phản hồi từ bạn</h2>
                 <p>
-                  Để biết thêm thông tin về sản phẩm và dịch vụ của chúng tôi. Vui lòng gửi 
-                  email cho chúng tôi. Đội ngũ nhân viên của chúng tôi luôn sẵn sàng trả lời 
+                  Để biết thêm thông tin về sản phẩm và dịch vụ của chúng tôi. Vui lòng gửi
+                  email cho chúng tôi. Đội ngũ nhân viên của chúng tôi luôn sẵn sàng trả lời
                   bạn. Đừng ngại ngùng!
                 </p>
                 <p className="email-contact">Hoặc liên hệ trực tiếp với chúng tôi qua <strong>sonaspce.@gmail.com</strong></p>
@@ -111,91 +111,68 @@ const ContactForm: React.FC = () => {
             <div className="contact-form-container">
               <form className="design-contact-form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <input 
-                    type="text" 
-                    id="fullName" 
-                    name="fullName" 
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
                     placeholder="Nhập họ và tên"
-                    value={formData.fullName} 
-                    onChange={handleChange} 
-                    required 
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
-                
+
                 <div className="form-group">
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
                     placeholder="Email"
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
-                
+
                 <div className="form-group">
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
                     placeholder="Số Điện Thoại"
-                    value={formData.phone} 
-                    onChange={handleChange} 
+                    value={formData.phone}
+                    onChange={handleChange}
                   />
                 </div>
-                
+
                 <div className="form-group">
-                  <textarea 
-                    id="message" 
-                    name="message" 
-                    rows={5} 
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={5}
                     placeholder="Tin nhắn"
-                    value={formData.message} 
+                    value={formData.message}
                     onChange={handleChange}
                     required
                   ></textarea>
                 </div>
-                
+
                 <div className="form-group checkbox-group">
-                  <input 
-                    type="checkbox" 
-                    id="agreeToTerms" 
-                    name="agreeToTerms" 
-                    checked={formData.agreeToTerms} 
-                    onChange={handleCheckboxChange} 
-                    required 
+                  <input
+                    type="checkbox"
+                    id="agreeToTerms"
+                    name="agreeToTerms"
+                    checked={formData.agreeToTerms}
+                    onChange={handleCheckboxChange}
+                    required
                   />
                   <label htmlFor="agreeToTerms">
                     I agree to the terms and privacy policy
                   </label>
                 </div>
-                
+
                 <button type="submit" className="submit-btn">Gửi</button>
               </form>
-            </div>
-          </div>
-        </div>
-
-        {/* Design Services Showcase */}
-        <div className="design-services">
-          <div className="container">
-            <div className="services-grid">
-              <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần tư vấn thiết kế?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
             </div>
           </div>
         </div>

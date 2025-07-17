@@ -1,5 +1,4 @@
 .contact-form-page {
-
   // Banner Section
   .banner-section {
     height: 700px;
@@ -28,14 +27,14 @@
     text-align: center;
 
     .page-title {
-      font-family: 'M-SB';
+      font-family: "M-SB";
       font-size: 42px;
       color: #333;
       margin-bottom: 20px;
     }
 
     .intro-text {
-      font-family: 'M-R';
+      font-family: "M-R";
       font-size: 16px;
       line-height: 1.6;
       color: #666;
@@ -51,14 +50,14 @@
 
       .stat-item {
         h2 {
-          font-family: 'M-SB';
+          font-family: "M-SB";
           font-size: 42px;
           color: #333;
           margin-bottom: 5px;
         }
 
         p {
-          font-family: 'M-R';
+          font-family: "M-R";
           font-size: 16px;
           color: #666;
         }
@@ -68,8 +67,6 @@
 
   // Services Section
   .services-section {
-    padding: 40px 0;
-    border-bottom: 1px solid #eee;
 
     .section-title {
       @include text(28px, M-SB, normal, $text-cl, null);
@@ -79,7 +76,7 @@
       position: relative;
 
       &::before {
-        content: '';
+        content: "";
         width: 60px;
         height: 2px;
         background-color: #333;
@@ -130,10 +127,9 @@
 
   // How We Work Section
   .how-we-work {
-    padding: 60px 0;
 
     .section-title {
-      font-family: 'M-SB';
+      font-family: "M-SB";
       font-size: 24px;
       color: #333;
       margin-bottom: 40px;
@@ -146,7 +142,10 @@
         grid-template-columns: 80px 1fr 1fr;
         gap: 30px;
         margin-bottom: 60px;
+        padding: 24px;
         align-items: start;
+        border-left: 4px solid $yellow-cl;
+        background: color-mix(in srgb, $yellow-cl 1%, transparent);
 
         &:last-child {
           margin-bottom: 0;
@@ -189,8 +188,7 @@
 
   // Contact Form Section
   .contact-form-section {
-    padding: 60px 0;
-
+    margin-bottom: 44px;
     .form-intro-container {
       display: flex;
       flex-direction: column;
@@ -211,7 +209,6 @@
         text-align: center;
       }
     }
-
 
     .design-contact-form {
       max-width: 1200px;
@@ -244,7 +241,7 @@
           padding: 15px 15px 15px;
           border: 1px solid #ddd;
           border-radius: 4px;
-          font-family: 'M-R';
+          font-family: "M-R";
           font-size: 14px;
           color: #333;
           background-color: #fff;
@@ -255,8 +252,8 @@
             border-color: #999;
           }
 
-          &:focus+label,
-          &:not(:placeholder-shown)+label {
+          &:focus + label,
+          &:not(:placeholder-shown) + label {
             top: -10px;
             left: 12px;
             font-size: 12px;
@@ -289,7 +286,7 @@
           padding-right: 30px;
         }
 
-        &.has-value select+label {
+        &.has-value select + label {
           top: -10px;
           left: 12px;
           font-size: 12px;
@@ -317,12 +314,12 @@
             gap: 3px;
 
             a {
-              color: #F5A623;
+              color: #f5a623;
               text-decoration: underline;
               transition: color 0.3s ease;
 
               &:hover {
-                color: darken(#F5A623, 10%);
+                color: darken(#f5a623, 10%);
               }
             }
           }
@@ -333,18 +330,18 @@
         display: block;
         width: 100%;
         padding: 14px;
-        background-color: #F5A623;
+        background-color: #f5a623;
         color: #fff;
         border: none;
         border-radius: 4px;
-        font-family: 'M-SB';
+        font-family: "M-SB";
         font-size: 16px;
         cursor: pointer;
         transition: background-color 0.3s ease;
         margin-top: 30px;
 
         &:hover {
-          background-color: darken(#F5A623, 10%);
+          background-color: darken(#f5a623, 10%);
         }
       }
     }
@@ -371,14 +368,14 @@
         }
 
         h3 {
-          font-family: 'M-SB';
+          font-family: "M-SB";
           font-size: 18px;
           color: #333;
           margin-bottom: 5px;
         }
 
         p {
-          font-family: 'M-R';
+          font-family: "M-R";
           font-size: 14px;
           color: #666;
         }
