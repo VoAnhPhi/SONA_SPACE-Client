@@ -110,9 +110,12 @@ const Payment: React.FC = () => {
         order_status: "PENDING",
         method,
         couponcode_id: appliedCode?.couponcode_id || null,
+        order_discount: orderSummary.discount || 0,
+        shipping_fee: orderSummary.shipping || 0,
         amount: orderSummary.total,
         cart_items: cartItems,
       };
+
       console.log(" Coupon gửi đi:", appliedCode);
 
       if (formData.address.trim() !== prevAddress.trim()) {
@@ -210,7 +213,7 @@ const Payment: React.FC = () => {
             quantity: item.quantity,
             category: item.category || "Chưa phân loại",
           }));
-          console.log("🛒 Items để xóa:", cartItems.map(i => i.id));
+          console.log(" Items để xóa:", cartItems.map(i => i.id));
 
           //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
           const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
