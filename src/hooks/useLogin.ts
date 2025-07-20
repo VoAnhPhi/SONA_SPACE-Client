@@ -4,9 +4,11 @@ import {
   validateLoginForm,
   submitLoginForm,
   saveAuthData,
+  submitGoogleLoginForm,
 } from "../services/loginService";
 import type { LoginFormData, ValidationErrors } from "../services/loginService";
 import { useAuth } from "../contexts/AuthContext";
+import type { CredentialResponse } from "@react-oauth/google";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -81,7 +83,7 @@ export const useLogin = () => {
 
           setTimeout(() => {
             navigate("/");
-          }, 5000);
+          }, 1000);
         } else {
           if (response.status === 403) {
             setUnverifiedError(
@@ -102,6 +104,36 @@ export const useLogin = () => {
     }
   };
 
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    try {
+      // gửi token đến backend
+      const response = await submitGoogleLoginForm(
+        credentialResponse.credential || ""
+      );
+      if (response.success && response.data) {
+        const { token, user } = response.data;
+        saveAuthData(token, user, false);
+        auth.login(token, user);
+        setSuccess(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        setApiError(
+          response.message ||
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
+        );
+      }
+    } catch (error) {
+      setApiError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
+    }
+  };
+
+  const handleGoogleError = (error: any) => {
+    console.log(error);
+    setApiError(error.error || "Đăng nhập thất bại. Vui lòng thử lại sau.");
+  };
+
   return {
     formData,
     setFormData,
@@ -114,5 +146,7 @@ export const useLogin = () => {
     handleSubmit,
     validateForm,
     unverifiedError,
+    handleGoogleLogin,
+    handleGoogleError,
   };
 };
