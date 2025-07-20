@@ -65,7 +65,7 @@ export default function CategorySlider() {
     if (categories.length === 0) {
         return (
             <div className="category-list-empty">
-                <p>Không tìm thấy không gian nào</p>
+                <p>Không tìm thấy tin tức nào</p>
                 <DebugInfo />
             </div>
         );
