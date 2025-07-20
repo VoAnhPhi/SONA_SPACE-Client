@@ -50,16 +50,14 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
             <Link to={`/tin-tuc/${item.news_slug}`} className="recent-post-item">
               {(() => {
                 try {
-                  const imagesArray = JSON.parse(item.news_image);
-                  const firstImage = imagesArray[0];
-                  return <img src={firstImage} alt={item.news_name} />;
+                  return <img src={item.news_image} alt={item.news_title} />;
                 } catch (error) {
-                  return <img src="/fallback-image.jpg" alt={item.news_name} />;
+                  return <img src="/fallback-image.jpg" alt={item.news_title} />;
                 }
               })()}
 
               <div className="post-info">
-                <span className="post-title">{item.news_name}</span>
+                <span className="post-title">{item.news_title}</span>
                 <span className="post-date">
                   {item.news_view}
 
