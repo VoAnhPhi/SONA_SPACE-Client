@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useRegister } from "../../hooks/useRegister";
+import { useLogin } from "../../hooks/useLogin";
 
 const SignUp: React.FC = () => {
   const {
@@ -14,8 +16,9 @@ const SignUp: React.FC = () => {
     apiError,
     handleChange,
     handleCheckboxChange,
-    handleSubmit
+    handleSubmit,
   } = useRegister();
+  const { handleGoogleLogin, handleGoogleError } = useLogin();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -24,9 +27,7 @@ const SignUp: React.FC = () => {
       setShowModal(true);
     }
   }, [success]);
-  // useEffect(() => {
-  //   setShowModal(true); 
-  // }, []);
+
   return (
     <>
       <Header />
@@ -166,10 +167,18 @@ const SignUp: React.FC = () => {
                 <span>Đăng ký với Google</span>
               </div>
 
-              <button className="google-signup-btn" disabled={loading || success}>
+              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                <GoogleLogin
+                  onSuccess={handleGoogleLogin}
+                  onError={() => {
+                    console.log("Login error");
+                  }}
+                />
+              </GoogleOAuthProvider>
+              {/* <button className="google-signin-btn" disabled={loading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
-              </button>
+              </button> */}
             </div>
 
             <div className="login-link">

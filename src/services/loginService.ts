@@ -1,5 +1,6 @@
-import { loginUser } from '../api/login';
-import type { ApiResponse } from '../types';
+import { googleLogin, loginUser } from "../api/login";
+import type { ApiResponse } from "../types";
+import axios from "axios";
 
 export interface LoginFormData {
   email: string;
@@ -17,24 +18,26 @@ export const validateLoginForm = (data: LoginFormData): ValidationErrors => {
 
   // Validate email
   if (!data.email.trim()) {
-    errors.email = 'Email không được để trống';
+    errors.email = "Email không được để trống";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    errors.email = 'Email không hợp lệ';
+    errors.email = "Email không hợp lệ";
   }
 
   // Validate password
   if (!data.password) {
-    errors.password = 'Mật khẩu không được để trống';
+    errors.password = "Mật khẩu không được để trống";
   }
 
   return errors;
 };
 
-export const submitLoginForm = async (data: LoginFormData): Promise<ApiResponse<any>> => {
+export const submitLoginForm = async (
+  data: LoginFormData
+): Promise<ApiResponse<any>> => {
   // Chuyển đổi dữ liệu form sang định dạng API yêu cầu
   const apiData = {
     email: data.email,
-    password: data.password
+    password: data.password,
   };
 
   // Gọi API đăng nhập
@@ -44,30 +47,40 @@ export const submitLoginForm = async (data: LoginFormData): Promise<ApiResponse<
 // Lưu thông tin đăng nhập vào localStorage hoặc sessionStorage
 export const saveAuthData = (token: string, user: any, rememberMe: boolean) => {
   const storage = rememberMe ? localStorage : sessionStorage;
-  storage.setItem('authToken', token);
-  storage.setItem('user', JSON.stringify(user));
+  storage.setItem("authToken", token);
+  storage.setItem("user", JSON.stringify(user));
 };
 
 // Kiểm tra người dùng đã đăng nhập hay chưa
 export const isAuthenticated = (): boolean => {
-  return !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+  return !!(
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
+  );
 };
 
 // Lấy token xác thực
 export const getAuthToken = (): string | null => {
-  return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  return (
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
+  );
 };
 
 // Lấy thông tin người dùng đã đăng nhập
 export const getAuthUser = (): any => {
-  const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+  const userStr =
+    localStorage.getItem("user") || sessionStorage.getItem("user");
   return userStr ? JSON.parse(userStr) : null;
+};
+
+// đăng nhập với google
+export const submitGoogleLoginForm = async (accessToken: string) => {
+  return await googleLogin({ accessToken });
 };
 
 // Đăng xuất
 export const logout = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('user');
-  sessionStorage.removeItem('authToken');
-  sessionStorage.removeItem('user');
-}; 
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("user");
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("user");
+};

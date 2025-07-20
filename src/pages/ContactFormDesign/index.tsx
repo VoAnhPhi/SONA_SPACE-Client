@@ -363,8 +363,8 @@ const ContactFormDesign: React.FC = () => {
                   <a href="/dieu-khoan" target="_blank" rel="noopener noreferrer">Điều khoản dịch vụ</a> &nbsp;và&nbsp;
                   <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
                 </div>
-                {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
               </div>
+                {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
               <button disabled={isLoading} type="submit" className="submit-btn">
                 {isLoading ? "Đang gửi..." : "Gửi"}
               </button>

@@ -68,22 +68,21 @@ const Wishlist: React.FC = () => {
         </div>
 
         {/* Wishlist Content */}
-        <div className="wishlist-title">
-          <h4>Sản Phẩm Yêu Thích - Lưu giữ những món đồ bạn ấn tượng</h4>
-          <p>
-            Lưu lại những sản phẩm bạn yêu thích để dễ dàng tìm lại và mua sắm
-            khi bạn sẵn sàng,
-            <br />
-            giúp việc mua sắm trở nên tiện lợi và nhanh chóng hơn bao giờ hết.
-          </p>
-        </div>
         <section className="wishlist-content">
-
-
           {loading ? (
             <p>Đang tải danh sách yêu thích...</p>
           ) : wishlistProducts.length > 0 ? (
             <>
+              <div className="wishlist-title">
+                <h4>Sản Phẩm Yêu Thích - Lưu giữ những món đồ bạn ấn tượng</h4>
+                <p>
+                  Lưu lại những sản phẩm bạn yêu thích để dễ dàng tìm lại và mua sắm
+                  khi bạn sẵn sàng,
+                  <br />
+                  giúp việc mua sắm trở nên tiện lợi và nhanh chóng hơn bao giờ hết.
+                </p>
+              </div>
+
               <section className="boxProducts">
                 <div className="container">
                   <section className="section-box-products">
