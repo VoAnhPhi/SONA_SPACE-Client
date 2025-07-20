@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá sản phẩm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styling cho nút mở popup */
+        .review-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .review-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling cho Popup Overlay */
+        .popup-overlay {
+            display: none;
+            /* Mặc định ẩn */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            /* Nền mờ */
+            display: flex;
+            /* Dùng flexbox để căn giữa */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* Đảm bảo popup nằm trên cùng */
+            opacity: 0;
+            /* Bắt đầu với opacity 0 để tạo hiệu ứng fade */
+            visibility: hidden;
+            /* Ẩn hoàn toàn khỏi DOM flow */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Styling cho Popup Content */
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: translateY(-20px);
+            /* Bắt đầu dịch chuyển để tạo hiệu ứng */
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: translateY(0);
+            /* Trở về vị trí ban đầu khi active */
+        }
+
+        .popup-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-button:hover {
+            color: #666;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: calc(100% - 20px);
+            /* Trừ padding */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            /* Bao gồm padding và border vào width */
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            /* Cho phép thay đổi kích thước theo chiều dọc */
+        }
+
+        /* Star Rating Styling */
+        .star-rating {
+            font-size: 28px;
+            color: #ccc;
+            /* Màu sao chưa được chọn */
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .star-rating .fas {
+            color: #ffc107;
+            /* Màu sao đã được chọn (vàng) */
+        }
+
+        .star-rating .far:hover,
+        .star-rating .star-rating .far:hover~.far {
+            /* Hiệu ứng hover cho sao */
+            color: #ffc107;
+        }
+
+        .submit-review-button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-review-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="product-info" style="padding: 20px;">
+        <h2>Tên sản phẩm ví dụ</h2>
+        <p>Mô tả ngắn về sản phẩm này.</p>
+        <button id="openReviewPopup" class="review-button" data-product-id="123" data-order-item-id="456"
+            data-product-name="Ghế Gaming XYZ">Đánh giá sản phẩm</button>
+    </div>
+
+    <div id="reviewPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-button">&times;</span>
+            <h2>Đánh giá sản phẩm: <span id="productNameInPopup"></span></h2>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label>Chất lượng sản phẩm:</label>
+                    <div class="star-rating" data-rating="0">
+                        <i class="far fa-star" data-value="1"></i>
+                        <i class="far fa-star" data-value="2"></i>
+                        <i class="far fa-star" data-value="3"></i>
+                        <i class="far fa-star" data-value="4"></i>
+                        <i class="far fa-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="reviewRating" name="comment_rating" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="reviewTitle">Tiêu đề đánh giá:</label>
+                    <input type="text" id="reviewTitle" name="comment_title" placeholder="Ví dụ: Sản phẩm tuyệt vời!"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reviewDescription">Mô tả chi tiết:</label>
+                    <textarea id="reviewDescription" name="comment_description" rows="5"
+                        placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm..." required></textarea>
+                </div>
+
+                <input type="hidden" id="orderItemId" name="order_item_id" value="">
+                <input type="hidden" id="productId" name="product_id" value="">
+
+
+                <button type="submit" class="submit-review-button">Gửi đánh giá</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các phần tử DOM
+        const openReviewPopupBtn = document.getElementById('openReviewPopup');
+        const reviewPopup = document.getElementById('reviewPopup');
+        const closeButton = document.querySelector('.close-button');
+        const starRatingContainer = document.querySelector('.star-rating');
+        const reviewRatingInput = document.getElementById('reviewRating');
+        const reviewForm = document.getElementById('reviewForm');
+        const productNameInPopup = document.getElementById('productNameInPopup');
+        const orderItemIdInput = document.getElementById('orderItemId');
+        const productIdInput = document.getElementById('productId');
+
+        let currentRating = 0; // Biến để lưu số sao hiện tại
+
+        // Hàm để hiển thị popup
+        function showPopup(productId, orderItemId, productName) {
+            productNameInPopup.textContent = productName;
+            orderItemIdInput.value = orderItemId;
+            productIdInput.value = productId;
+            reviewPopup.style.display = 'flex'; // Hiển thị overlay
+            setTimeout(() => {
+                reviewPopup.classList.add('active'); // Kích hoạt hiệu ứng fade-in và slide-up
+            }, 10); // Một khoảng trễ nhỏ để đảm bảo display:flex được áp dụng trước transition
+        }
+
+        // Hàm để ẩn popup
+        function hidePopup() {
+            reviewPopup.classList.remove('active'); // Tắt hiệu ứng
+            // Sau khi transition kết thúc, ẩn hoàn toàn overlay để không cản trở tương tác
+            reviewPopup.addEventListener('transitionend', function handler() {
+                if (!reviewPopup.classList.contains('active')) { // Chỉ ẩn display khi không còn active
+                    reviewPopup.style.display = 'none';
+                    // Reset form và rating khi đóng popup
+                    reviewForm.reset();
+                    setStars(0);
+                }
+                reviewPopup.removeEventListener('transitionend', handler);
+            });
+        }
+
+        // Xử lý click nút mở popup
+        openReviewPopupBtn.addEventListener('click', () => {
+            // Lấy dữ liệu từ data-attributes của nút
+            const productId = openReviewPopupBtn.dataset.productId;
+            const orderItemId = openReviewPopupBtn.dataset.orderItemId;
+            const productName = openReviewPopupBtn.dataset.productName;
+            showPopup(productId, orderItemId, productName);
+        });
+
+        // Xử lý click nút đóng popup
+        closeButton.addEventListener('click', hidePopup);
+
+        // Xử lý click ngoài popup để đóng
+        reviewPopup.addEventListener('click', (e) => {
+            if (e.target === reviewPopup) { // Nếu click trực tiếp vào overlay
+                hidePopup();
+            }
+        });
+
+        // Hàm cập nhật trạng thái ngôi sao
+        function setStars(rating) {
+            const stars = starRatingContainer.querySelectorAll('.fa-star');
+            stars.forEach(star => {
+                if (parseInt(star.dataset.value) <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+            currentRating = rating;
+            reviewRatingInput.value = rating; // Cập nhật giá trị vào input hidden
+        }
+
+        // Xử lý click vào ngôi sao
+        starRatingContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fa-star')) {
+                const rating = parseInt(e.target.dataset.value);
+                setStars(rating);
+            }
+        });
+
+        // Xử lý hover ngôi sao (tùy chọn)
+        starRatingContainer.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains('fa-star')) {
+                const hoverRating = parseInt(e.target.dataset.value);
+                const stars = starRatingContainer.querySelectorAll('.fa-star');
+                stars.forEach(star => {
+                    if (parseInt(star.dataset.value) <= hoverRating) {
+                        star.classList.remove('far');
+                        star.classList.add('fas');
+                    } else {
+                        star.classList.remove('fas');
+                        star.classList.add('far');
+                    }
+                });
+            }
+        });
+
+        starRatingContainer.addEventListener('mouseout', () => {
+            setStars(currentRating); // Trả về trạng thái đã chọn khi rời chuột
+        });
+
+
+        // Xử lý submit form
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Ngăn chặn form submit mặc định
+
+            const formData = new FormData(reviewForm);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Kiểm tra rating
+            if (data.comment_rating === '0') {
+                alert('Vui lòng chọn số sao đánh giá!');
+                return;
+            }
+
+            console.log('Dữ liệu đánh giá sẽ gửi đi:', data);
+
+            // --- TÍCH HỢP VỚI API BACKEND CỦA BẠN TẠI ĐÂY ---
+            // Ví dụ:
+            /*
+            try {
+                const response = await fetch('/api/comments', { // Thay thế bằng endpoint API của bạn
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${YOUR_AUTH_TOKEN}` // Thêm token nếu API yêu cầu
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Đánh giá của bạn đã được gửi thành công!');
+                    console.log('Kết quả từ API:', result);
+                    hidePopup(); // Đóng popup sau khi gửi thành công
+                    // Có thể reload trang hoặc cập nhật UI
+                } else {
+                    const errorData = await response.json();
+                    alert('Có lỗi khi gửi đánh giá: ' + (errorData.error || 'Vui lòng thử lại.'));
+                    console.error('Lỗi API:', errorData);
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                alert('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng.');
+            }
+            */
+
+            // Tạm thời, đóng popup sau khi log data để test
+            alert('Đánh giá đã được gửi (kiểm tra console để xem dữ liệu)');
+            hidePopup();
+        });
+    </script>
+</body>
+
+</html>
