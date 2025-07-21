@@ -74,6 +74,49 @@ const Payment: React.FC = () => {
   const handlePaymentMethodChange = (method: string) => {
     setPaymentMethod(method);
   };
+
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const resultCode = params.get("resultCode");
+  const orderId = params.get("orderId");
+
+  if (resultCode === "0" && orderId) {
+    const pending = localStorage.getItem("pending_order_data");
+    if (!pending) {
+      toast.error("Không tìm thấy đơn hàng chờ.");
+      return;
+    }
+
+    const parsed = JSON.parse(pending);
+
+    const confirmOrder = async () => {
+      try {
+        const response = await createOrderService({
+          ...parsed,
+          order_status: "PAID",
+          order_id: orderId,
+        });
+
+        await clearCartServiceid(parsed.selectedItemIds || []);
+        localStorage.removeItem("pending_order_data");
+
+        toast.success("🎉 Thanh toán thành công!");
+        navigate(`/dat-hang-thanh-cong/${response.order_hash}`, { replace: true });
+      } catch (error) {
+        toast.error("Xác nhận đơn hàng thất bại.");
+      }
+    };
+
+    confirmOrder();
+  }
+
+  if (resultCode && resultCode !== "0") {
+    toast.error("Giao dịch thất bại hoặc bị huỷ!");
+    navigate("/thanh-toan", { replace: true });
+  }
+}, []);
+
+
   console.log("Selected Items in Payment:", selectedItems);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
