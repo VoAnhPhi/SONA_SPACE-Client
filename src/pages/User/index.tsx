@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import axios from "axios";
+import { cancelOrder } from "../../services/userServices";
 
 import type {
   OrderItemAPI,
@@ -579,6 +580,44 @@ const User: React.FC = () => {
     return apiOrders.filter(
       (order) => order.status.toUpperCase() === statusMap[activeOrderFilter]
     );
+  };
+
+  // Xử lý hủy đơn hàng
+  const handleCancelOrder = async (orderId: number) => {
+    if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+      return;
+    }
+
+    // Hỏi lý do hủy đơn hàng
+    const reason = prompt("Vui lòng nhập lý do hủy đơn hàng (không bắt buộc):");
+
+    try {
+      setIsLoading(true);
+      const result = await cancelOrder(orderId, reason || undefined);
+      console.log("Hủy đơn hàng thành công:", result);
+      
+      // Cập nhật lại danh sách đơn hàng
+      const userDataStr = sessionStorage.getItem("user");
+      if (userDataStr) {
+        const userData = JSON.parse(userDataStr);
+        if (userData.id) {
+          await fetchOrders(userData.id);
+        }
+      }
+      
+      alert("Đơn hàng đã được hủy thành công!");
+    } catch (error: any) {
+      console.error("Lỗi khi hủy đơn hàng:", error);
+      
+      // Hiển thị thông báo lỗi cụ thể từ API nếu có
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Lỗi: ${error.response.data.message}`);
+      } else {
+        alert("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle when a flash sale countdown completes
@@ -1428,8 +1467,12 @@ const User: React.FC = () => {
                                 <div className="order-actions">
                                   {order.status === "PENDING" && (
                                     <>
-                                      <button className="btn-cancel-order">
-                                        Hủy đơn hàng
+                                      <button 
+                                        className="btn-cancel-order"
+                                        onClick={() => handleCancelOrder(order.id)}
+                                        disabled={isLoading}
+                                      >
+                                        {isLoading ? "Đang xử lý..." : "Hủy đơn hàng"}
                                       </button>
                                       <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
                                         Xem chi tiết
