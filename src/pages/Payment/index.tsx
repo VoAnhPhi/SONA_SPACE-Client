@@ -76,45 +76,45 @@ const Payment: React.FC = () => {
   };
 
   useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const resultCode = params.get("resultCode");
-  const orderId = params.get("orderId");
+    const params = new URLSearchParams(window.location.search);
+    const resultCode = params.get("resultCode");
+    const orderId = params.get("orderId");
 
-  if (resultCode === "0" && orderId) {
-    const pending = localStorage.getItem("pending_order_data");
-    if (!pending) {
-      toast.error("Không tìm thấy đơn hàng chờ.");
-      return;
+    if (resultCode === "0" && orderId) {
+      const pending = localStorage.getItem("pending_order_data");
+      if (!pending) {
+        toast.error("Không tìm thấy đơn hàng chờ.");
+        return;
+      }
+
+      const parsed = JSON.parse(pending);
+console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
+      const confirmOrder = async () => {
+        try {
+          const response = await createOrderService({
+            ...parsed,
+            order_status: "PAID",
+            order_id: orderId,
+          });
+
+          await clearCartServiceid(parsed.selectedItemIds || []);
+          localStorage.removeItem("pending_order_data");
+
+          toast.success("🎉 Thanh toán thành công!");
+          navigate(`/dat-hang-thanh-cong/${response.order_hash}`, { replace: true });
+        } catch (error) {
+          toast.error("Xác nhận đơn hàng thất bại.");
+        }
+      };
+
+      confirmOrder();
     }
 
-    const parsed = JSON.parse(pending);
-
-    const confirmOrder = async () => {
-      try {
-        const response = await createOrderService({
-          ...parsed,
-          order_status: "PAID",
-          order_id: orderId,
-        });
-
-        await clearCartServiceid(parsed.selectedItemIds || []);
-        localStorage.removeItem("pending_order_data");
-
-        toast.success("🎉 Thanh toán thành công!");
-        navigate(`/dat-hang-thanh-cong/${response.order_hash}`, { replace: true });
-      } catch (error) {
-        toast.error("Xác nhận đơn hàng thất bại.");
-      }
-    };
-
-    confirmOrder();
-  }
-
-  if (resultCode && resultCode !== "0") {
-    toast.error("Giao dịch thất bại hoặc bị huỷ!");
-    navigate("/thanh-toan", { replace: true });
-  }
-}, []);
+    if (resultCode && resultCode !== "0") {
+      toast.error("Giao dịch thất bại hoặc bị huỷ!");
+      navigate("/thanh-toan", { replace: true });
+    }
+  }, []);
 
 
   console.log("Selected Items in Payment:", selectedItems);
@@ -157,7 +157,9 @@ const Payment: React.FC = () => {
         shipping_fee: orderSummary.shipping || 0,
         amount: orderSummary.total,
         cart_items: cartItems,
+        fromRedirect: true
       };
+      console.log("Payload gửi lên:", payload);
 
       console.log(" Coupon gửi đi:", appliedCode);
 
@@ -190,8 +192,11 @@ const Payment: React.FC = () => {
       if (res?.payUrl) {
         localStorage.setItem("pending_order_data", JSON.stringify({
           ...payload,
-          selectedItemIds: selectedItems
+          selectedItemIds: selectedItems && selectedItems.length > 0
+            ? selectedItems
+            : (await loadCartService()).wishlistItems.map((item: any) => item.wishlist_id),
         }));
+
         window.location.href = res.payUrl;
         return;
       }

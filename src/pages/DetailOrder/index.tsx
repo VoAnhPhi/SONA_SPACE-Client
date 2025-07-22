@@ -68,7 +68,7 @@ const DetailOrder: React.FC = () => {
             product_id: p.id,
             name: p.product_name,
             image: p.image || p.product_image || "/images/default.jpg",
-            price: p.price_sale || p.price,
+            price: p.price_sale ?? p.price,
             quantity: p.quantity,
             slug: p.product_slug,
             color: {
@@ -231,7 +231,20 @@ const DetailOrder: React.FC = () => {
       setIsSubmittingReview(false);
     }
   };
+const formatPrice1 = (value: number | string): string => {
+  if (!value) return "0";
 
+  // Chuyển thành chuỗi và xóa mọi ký tự không phải số (loại bỏ "đ", dấu .,...)
+  const cleaned = String(value).replace(/[^\d]/g, "");
+
+  // Chia cho 100
+  const result = Math.floor(Number(cleaned) / 100);
+
+  // Định dạng lại số có dấu chấm ngăn cách hàng nghìn
+  return result.toLocaleString("vi-VN");
+};
+
+  
   if (!order) return <p>Đang tải đơn hàng...</p>;
 
   return (
@@ -373,13 +386,13 @@ const DetailOrder: React.FC = () => {
                       {product.size && <span>Size: {product.size}</span>}{" "}
                       <span>Số lượng: {product.quantity}</span>
                     </div>
-                    <span>Giá: {formatPrice(product.price)}</span>
+                    <span>Giá: {formatPrice1(product.price)}đ</span>
                   </div>
                   <div className="product-price">
                     <p>
                       Thành tiền:{" "}
                       <span>
-                        {formatPrice(product.price * product.quantity)}
+                        {formatPrice1(product.price * product.quantity)}đ
                       </span>
                     </p>
                   </div>
