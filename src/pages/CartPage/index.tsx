@@ -36,20 +36,20 @@ const CartPage: React.FC = () => {
     total: 0,
   });
 
-const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) => {
-  const filteredItems = items.filter((item) => selectedItems.includes(item.id));
+  const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) => {
+    const filteredItems = items.filter((item) => selectedItems.includes(item.id));
 
-  const subtotal = filteredItems.reduce((total, item) => {
-    const effectivePrice = item.oldPrice && item.oldPrice > 0 ? item.oldPrice : item.price;
-    return total + effectivePrice * item.quantity;
-  }, 0);
+    const subtotal = filteredItems.reduce((total, item) => {
+      const effectivePrice = item.oldPrice && item.oldPrice > 0 ? item.oldPrice : item.price;
+      return total + effectivePrice * item.quantity;
+    }, 0);
 
-  const shipping = filteredItems.length > 0 ? 30000 : 0;
-  const discount = appliedDiscountAmount;
-  const total = subtotal + shipping - discount;
+    const shipping = filteredItems.length > 0 ? 30000 : 0;
+    const discount = appliedDiscountAmount;
+    const total = subtotal + shipping - discount;
 
-  setCartSummary({ subtotal, shipping, discount, total });
-};
+    setCartSummary({ subtotal, shipping, discount, total });
+  };
 
 
   useEffect(() => {
@@ -202,7 +202,15 @@ const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) =
     setAppliedDiscount(0);
     setPromoCodeInput("");
   }, []);
+const formatPrice1 = (value: number | string): string => {
+  if (!value) return "0";
 
+  const cleaned = String(value).replace(/[^\d]/g, "");
+
+  const result = Math.floor(Number(cleaned) / 100);
+
+  return result.toLocaleString("vi-VN");
+};
   return (
     <>
       <Header />
@@ -276,22 +284,22 @@ const recalculateSummary = (items: CartItemProps[], appliedDiscountAmount = 0) =
                             ></span>
                           </div>
                         </div>
-<div className="item-price">
-  {item.oldPrice && item.oldPrice < item.price && item.oldPrice > 0 ? (
-    <>
-      <div className="current-price">
-        {formatPrice(item.oldPrice)} đ
-      </div>
-      <div className="old-price">
-        {formatPrice(item.price)} đ
-      </div>
-    </>
-  ) : (
-    <div className="current-price">
-      {formatPrice(item.price)} đ
-    </div>
-  )}
-</div>
+                        <div className="item-price">
+                          {item.oldPrice && item.oldPrice < item.price && item.oldPrice > 0 ? (
+                            <>
+                              <div className="current-price">
+                                {formatPrice1(item.oldPrice)} đ
+                              </div>
+                              <div className="old-price">
+                                {formatPrice1(item.price)} đ
+                              </div>
+                            </>
+                          ) : (
+                            <div className="current-price">
+                              {formatPrice1(item.price)} đ
+                            </div>
+                          )}
+                        </div>
 
 
 

@@ -222,60 +222,49 @@ const User: React.FC = () => {
     fetchPromoCodes();
   }, []);
 
-  const fetchPromoCodes = async () => {
-    try {
-      const token = sessionStorage.getItem('authToken');
-      if (!token) {
-        console.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
-        return;
+const fetchPromoCodes = async () => {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return;
+
+    const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const codes = res.data;
+    const now = new Date();
+
+    const updated = codes.map((promo: any) => {
+      const isFlashSale = Number(promo.isFlashSale) === 1;
+      const commonFields = {
+        ...promo,
+        isFlashSale,
+        timeRemaining: null,
+      };
+
+      if (isFlashSale) {
+        const end = new Date(promo.validUntil);
+        const diff = Math.max(0, end.getTime() - now.getTime());
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        return {
+          ...commonFields,
+          timeRemaining: { hours, minutes, seconds },
+        };
       }
 
-      const res = await axios.get("http://localhost:3501/api/couponcodes/codes", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("Fetched promo codes:", res.data);
-      const codes = res.data;
-      const now = new Date();
+      return commonFields;
+    });
 
-      const updated = codes
-        .filter((promo: any) => promo.status !== 0)
-        .map((promo: any) => {
-          const isFlashSale = Number(promo.isFlashSale) === 1;
+    setPromoCodes(updated);
+  } catch (error) {
+    console.error("Lỗi khi lấy mã giảm giá:", error);
+  }
+};
 
-          const userCoupon = userUsedCoupons.find((c) => c.code === promo.code);
-          const status = userCoupon ? userCoupon.status : promo.status;
-
-          const commonFields = {
-            ...promo,
-            status,
-            isFlashSale,
-            timeRemaining: null,
-          };
-
-          if (isFlashSale) {
-            const end = new Date(promo.validUntil);
-            const diff = Math.max(0, end.getTime() - now.getTime());
-
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            return {
-              ...commonFields,
-              timeRemaining: { hours, minutes, seconds },
-            };
-          }
-
-          return commonFields;
-        });
-
-      setPromoCodes(updated);
-    } catch (error) {
-      console.error("Error fetching promo codes:", error);
-    }
-  };
 
 
   const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
@@ -1261,7 +1250,7 @@ const User: React.FC = () => {
 
                   <div className="voucher-grid">
                     {getFilteredPromoCodes()
-                      .filter((promo) => promo)
+
                       .map((promo, index) => (
                         <div className="voucher-card" key={index}>
                           <div className="voucher-header">
@@ -1290,9 +1279,6 @@ const User: React.FC = () => {
                             </div>
                           )}
 
-
-
-
                           <div className="voucher-details">
                             <ul className="voucher-info-list">
                               <li>
@@ -1317,13 +1303,13 @@ const User: React.FC = () => {
                               <img src="/images/icons/content_copy.svg" alt="" />
                               <span>Copy</span>
                             </button>
-                            <button className="btn-apply">
+                            {/* <button className="btn-apply">
                               {Number(promo.userUsedStatus) === 0 ? (
                                 <span className="voucher-status not-used">Chưa sử dụng</span>
                               ) : (
                                 <span className="voucher-status used">Đã sử dụng</span>
                               )}
-                            </button>
+                            </button> */}
 
                           </div>
                         </div>
