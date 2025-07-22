@@ -88,7 +88,7 @@ const Payment: React.FC = () => {
       }
 
       const parsed = JSON.parse(pending);
-console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
+      console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
       const confirmOrder = async () => {
         try {
           const response = await createOrderService({
@@ -156,7 +156,11 @@ console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
         order_discount: orderSummary.discount || 0,
         shipping_fee: orderSummary.shipping || 0,
         amount: orderSummary.total,
-        cart_items: cartItems,
+        cart_items: cartItems.map(item => ({
+          ...item,
+          price: item.oldPrice || item.price
+        })),
+
         fromRedirect: true
       };
       console.log("Payload gửi lên:", payload);
@@ -270,9 +274,13 @@ console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
           setCartItems(filteredItems);
 
           const subtotal = filteredItems.reduce(
-            (total: number, item: CartItemProps) => total + item.price * item.quantity,
+            (total: number, item: CartItemProps) => {
+              const unitPrice = item.oldPrice || item.price;
+              return total + unitPrice * item.quantity;
+            },
             0
           );
+
 
           const shipping = 30000;
           const stored = localStorage.getItem("applycode");

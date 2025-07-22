@@ -287,13 +287,10 @@ const DetailOrder: React.FC = () => {
 const formatPrice1 = (value: number | string): string => {
   if (!value) return "0";
 
-  // Chuyển thành chuỗi và xóa mọi ký tự không phải số (loại bỏ "đ", dấu .,...)
   const cleaned = String(value).replace(/[^\d]/g, "");
 
-  // Chia cho 100
   const result = Math.floor(Number(cleaned) / 100);
 
-  // Định dạng lại số có dấu chấm ngăn cách hàng nghìn
   return result.toLocaleString("vi-VN");
 };
 
