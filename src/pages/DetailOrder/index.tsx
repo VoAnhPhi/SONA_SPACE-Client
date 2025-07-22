@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import axios from "axios";
+import { returnOrder } from "../../services/ordersService";
 
 interface OrderProduct {
   order_item_id: string;
@@ -49,6 +50,7 @@ const DetailOrder: React.FC = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
   const [allProductsReviewed, setAllProductsReviewed] = useState(false);
+  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
 
   const fetchOrder = async () => {
     try {
@@ -141,6 +143,28 @@ const DetailOrder: React.FC = () => {
     }
   };
 
+  // Kiểm tra xem đơn hàng có thể trả hay không (đã hoàn thành và trong vòng 30 ngày)
+  const canReturnOrder = (orderDate: string, status: string): { canReturn: boolean; daysLeft: number | null } => {
+    // Chỉ cho phép trả hàng khi đơn hàng đã hoàn thành
+    if (status !== "SUCCESS" && status !== "COMPLETED") {
+      return { canReturn: false, daysLeft: null };
+    }
+    
+    const orderDateTime = new Date(orderDate);
+    const currentDateTime = new Date();
+    
+    // Tính số ngày giữa ngày đặt hàng và hiện tại
+    const timeDiff = currentDateTime.getTime() - orderDateTime.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    
+    // Kiểm tra xem có trong vòng 30 ngày không
+    if (daysDiff <= 30) {
+      return { canReturn: true, daysLeft: 30 - daysDiff };
+    } else {
+      return { canReturn: false, daysLeft: null };
+    }
+  };
+
   const openReviewForm = (product: OrderProduct) => {
     setCurrentReviewProduct(product);
     setShowReviewForm(true);
@@ -229,6 +253,34 @@ const DetailOrder: React.FC = () => {
       }
     } finally {
       setIsSubmittingReview(false);
+    }
+  };
+
+  // Xử lý khi người dùng nhấn nút trả hàng
+  const handleReturnOrder = async () => {
+    if (!order || !order.order_hash) return;
+    
+    // Hỏi lý do trả hàng
+    const reason = prompt("Vui lòng nhập lý do trả hàng:");
+    if (!reason) return; // Người dùng đã hủy hoặc không nhập lý do
+    
+    try {
+      setIsProcessingReturn(true);
+      const result = await returnOrder(order.order_hash, reason);
+      alert("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
+      // Tải lại thông tin đơn hàng
+      fetchOrder();
+    } catch (error: any) {
+      console.error("Lỗi khi gửi yêu cầu trả hàng:", error);
+      
+      // Hiển thị thông báo lỗi cụ thể từ API nếu có
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Lỗi: ${error.response.data.message}`);
+      } else {
+        alert("Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.");
+      }
+    } finally {
+      setIsProcessingReturn(false);
     }
   };
 
@@ -531,6 +583,29 @@ const DetailOrder: React.FC = () => {
           <div className="order-actions-bottom">
             {order.status === "PENDING" && (
               <button className="btn-primary">Hủy đơn hàng</button>
+            )}
+            {(order.status === "SUCCESS" || order.status === "COMPLETED") && (
+              <>
+                {canReturnOrder(order.date, order.status).canReturn ? (
+                  <button 
+                    className="btn-primary btn-return"
+                    onClick={handleReturnOrder}
+                    disabled={isProcessingReturn}
+                  >
+                    {isProcessingReturn ? (
+                      <>
+                        <span className="spinner"></span> Đang xử lý...
+                      </>
+                    ) : (
+                      <>Trả hàng (còn {canReturnOrder(order.date, order.status).daysLeft} ngày)</>
+                    )}
+                  </button>
+                ) : (
+                  <button className="btn-primary btn-return disabled" disabled title="Đã quá thời hạn trả hàng 30 ngày">
+                    Quá hạn trả hàng
+                  </button>
+                )}
+              </>
             )}
             <button className="btn-outline">Liên hệ với SONA</button>
           </div>
