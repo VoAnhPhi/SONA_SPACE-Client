@@ -6,10 +6,11 @@ import type { Category, Room } from "../../types";
 import { Link } from "react-router-dom";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
 import MiniCart from "../../components/MiniCart";
+
 import type { MiniCartHandle } from "../../components/MiniCart";
 import { loadCartService } from "../../services/cartService";
-
-
+import MiniNotification from "../../components/MiniNotify";
+import type { MiniNotificationHandle } from "../../components/MiniNotify";
 const Header = () => {
   // State để lưu trạng thái active của nav item
   const [activeNavItem, setActiveNavItem] = useState<string>("/");
@@ -34,7 +35,14 @@ const Header = () => {
   const [cartCount, setCartCount] = useState<number>(0);
   const miniCartRef = useRef<MiniCartHandle>(null);
 
-
+  const miniNotificationRef = useRef<MiniNotificationHandle>(null);
+  const [notificationCount, setNotificationCount] = useState(0);
+  console.log('notificationCount', notificationCount);
+  useEffect(() => {
+    if (miniNotificationRef.current) {
+      setNotificationCount(miniNotificationRef.current.getNotificationCount());
+    }
+  }, []);
 
   useEffect(() => {
     if (searchTerm.trim()) {
@@ -267,6 +275,7 @@ const Header = () => {
       </div>
     ));
   };
+
 
   return (
     <>
@@ -637,6 +646,61 @@ const Header = () => {
                     </div>
                   </div>
                 </button>
+
+                <div
+                  className="notifycation-container"
+                  onMouseEnter={() => {
+                    if (window.innerWidth >= 768 && miniNotificationRef.current) {
+                      miniNotificationRef.current.toggleMiniNotification();
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (window.innerWidth >= 768 && miniNotificationRef.current) {
+                      miniNotificationRef.current.closeMiniNotification();
+                    }
+                  }}
+                >
+                  <button className="btn-icon notification-btn">
+                    <img src="/images/icons/heart.svg" alt="notification" />
+                    {notificationCount > 0 && (
+                      <span
+                        className="notification-badge"
+                        style={{
+                          position: 'absolute',
+                          width: '20px',
+                          height: '18px',
+                          top: '20px',
+                          right: '9px',
+                          backgroundColor: '#F0A00A',
+                          color: 'white',
+                          fontFamily: 'Be-R',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          padding: '5px',
+                          borderRadius: '50%',
+                          minWidth: '18px',
+                          textAlign: 'center',
+                          zIndex: 10,
+                          boxShadow: '0 0 0 2px white',
+                          display: 'flex',
+                          alignContent: 'center',
+                          justifyContent: 'center',
+                          alignSelf: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        {notificationCount}
+                      </span>
+                    )}
+
+                  </button>
+                  <MiniNotification
+                    ref={miniNotificationRef}
+                    onNotificationCountChange={(count) => setNotificationCount(count)}
+                  />
+
+                </div>
+
                 <div
                   className="cart-container"
                   onMouseEnter={() => {

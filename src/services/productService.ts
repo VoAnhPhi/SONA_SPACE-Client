@@ -289,7 +289,7 @@ export const getRelatedProductsByRoom = async (
         view: item.view || 0,
         description: item.description || "",
         isWishlist: item.isWishlist === true || item.isWishlist === 1,
-      })
+      })  
     );
 
     return formatted;
