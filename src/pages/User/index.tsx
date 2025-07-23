@@ -28,6 +28,7 @@ interface ProductRating {
 
 interface ProductItem {
   id: number;
+  slug: string;
   name: string;
   image: string;
   price: string;
@@ -334,25 +335,39 @@ const fetchPromoCodes = async () => {
   // Hàm chuyển đổi trạng thái đơn hàng thành class CSS
   const getStatusClass = (status: string): string => {
     const statusLower = status.toLowerCase();
+    console.log(`getStatusClass - original: "${status}", lowercase: "${statusLower}"`);
+    
+    let result = "";
     switch (statusLower) {
       case "pending":
-        return "pending";
+        result = "pending";
+        break;
       case "confirmed":
       case "processing":
-        return "confirmed";
+        result = "confirmed";
+        break;
       case "shipping":
       case "shipped":
-        return "shipping";
+        result = "shipping";
+        break;
       case "completed":
       case "delivered":
-        return "completed";
+      case "success":  // Thêm trạng thái SUCCESS
+        result = "completed";
+        break;
       case "cancelled":
-        return "cancelled";
+        result = "cancelled";
+        break;
       case "returned":
-        return "returned";
+        result = "returned";
+        break;
       default:
-        return "";
+        result = "";
+        break;
     }
+    
+    console.log(`getStatusClass result: "${result}" for status: "${status}"`);
+    return result;
   };
 
   // Hàm chuyển đổi trạng thái từ API sang tên hiển thị
@@ -369,6 +384,7 @@ const fetchPromoCodes = async () => {
         return "Đang giao hàng";
       case "completed":
       case "delivered":
+      case "success":  // Thêm trạng thái SUCCESS
         return "Hoàn thành";
       case "cancelled":
         return "Đã hủy";
@@ -839,8 +855,8 @@ const fetchPromoCodes = async () => {
                                     </div>
                                   </div>
                                   <div className="product-link">
-                                    <Link to={`/chi-tiet-don-hang/${order.id}`}>
-                                      Xem chi tiết
+                                    <Link to={`/san-pham/${order.products[0].slug}`}>
+                                      Xem sản phẩm
                                     </Link>
                                   </div>
                                 </div>
@@ -1428,7 +1444,7 @@ const fetchPromoCodes = async () => {
                                   </div>
                                 </div>
                                 <div className="product-link">
-                                  <Link to={`/san-pham/${product.id}`}>Xem sản phẩm</Link>
+                                  <Link to={`/san-pham/${product.slug}`}>Xem sản phẩm</Link>
                                 </div>
                               </div>
 
@@ -1460,7 +1476,7 @@ const fetchPromoCodes = async () => {
                                       >
                                         {isLoading ? "Đang xử lý..." : "Hủy đơn hàng"}
                                       </button>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
@@ -1468,7 +1484,7 @@ const fetchPromoCodes = async () => {
 
                                   {order.status === "CONFIRMED" && (
                                     <>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
@@ -1476,18 +1492,18 @@ const fetchPromoCodes = async () => {
 
                                   {order.status === "SHIPPING" && (
                                     <>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
                                   )}
 
-                                  {order.status === "COMPLETED" && (
+                                  {order.status === "SUCCESS" && (
                                     <>
                                       <button className="btn-action-primary">
                                         Mua lại
                                       </button>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
@@ -1498,7 +1514,7 @@ const fetchPromoCodes = async () => {
                                       <button className="btn-action-primary">
                                         Mua lại
                                       </button>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
@@ -1509,7 +1525,7 @@ const fetchPromoCodes = async () => {
                                       <button className="btn-action-primary">
                                         Mua lại
                                       </button>
-                                      <Link to={`/chi-tiet-don-hang/${order.id}`} className="btn-view-details">
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
                                     </>
