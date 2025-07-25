@@ -215,8 +215,12 @@ const addItemToWishlist = async () => {
             Màu {hoveredColor && <span style={{ fontSize: '14px', color: '#666', fontStyle: 'italic', marginLeft: '4px' }}>: {hoveredColor}</span>}
           </div>
           <div className="color-section">
-            {product.colors?.map((color, index) => {
-              const colorName = findColorName(color);
+            {(product.color_hex ? [product.color_hex] : product.colors)?.map((color, index) => {
+              const colorName =
+                product.color_hex === color && product.color_name
+                  ? product.color_name
+                  : findColorName(color);
+
               return (
                 <span
                   key={index}
@@ -225,14 +229,20 @@ const addItemToWishlist = async () => {
                     backgroundColor: color,
                     cursor: 'pointer',
                     position: 'relative',
-                    border: '1px solid #ccc'
+                    border: '1px solid #ccc',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    display: 'inline-block',
+                    marginRight: '4px',
                   }}
-                  onMouseEnter={() => setHoveredColor(colorName)}
-                  onMouseLeave={() => setHoveredColor(null)}
+                  // onMouseEnter={() => setHoveredColor(colorName)}
+                  // onMouseLeave={() => setHoveredColor(null)}
                   title={colorName}
                 ></span>
               );
             })}
+
           </div>
         </div>
         <div className="products-frame-cart">

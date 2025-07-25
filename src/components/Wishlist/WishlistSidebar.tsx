@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { toast, ToastContainer } from "react-toastify";
-// Loại bỏ import CSS, sử dụng SCSS chung của dự án
-// Các styles sẽ được lấy từ file public/scss/imports/components/_wishListSideBar.scss
+import { saveToOrCart } from "../../services/cartService";
+import { toast } from "react-toastify";
+import type { MiniCartHandle } from "../../components/MiniCart";
 
 // Định nghĩa kiểu dữ liệu cho wishlist item
 interface WishlistItem {
@@ -17,21 +17,12 @@ interface WishlistItem {
   image: string;
   product_name: string;
   category: string;
-   product_slug: string;
+  product_slug: string;
   color_name?: string;
   color_hex?: string;
   slug: string;
 }
 
-
-// Định nghĩa kiểu dữ liệu cho product
-interface Product {
-  product_id: number;
-  product_name: string;
-  product_description: string;
-  product_price: string;
-  product_image: string;
-}
 
 interface WishlistSidebarProps {
   isOpen: boolean;
@@ -43,7 +34,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [productNames, setProductNames] = useState<Record<number, string>>({});
-
+  const miniCartRef = useRef<MiniCartHandle>(null);
   // Ngăn chặn scroll khi sidebar hiển thị
   useEffect(() => {
     const handleWishlistChanged = () => {
@@ -138,88 +129,91 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
     }
   };
 
-  const handleAddToCart = async (variantId: number) => {
-    try {
-      const token = sessionStorage.getItem('authToken');
-      if (!token) {
-        setError('Vui lòng đăng nhập để thêm vào giỏ hàng.');
-        return;
-      }
+const handleAddToCart = async (variantId: number) => {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng.", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
 
-      const response = await axios.post(
-        'http://localhost:3501/api/wishlists',
+    const response = await saveToOrCart({
+      status: 0,
+      cartItems: [
         {
-          status: 0, // 0 = cart
-          variant_id: variantId,
-          quantity: 1, // số lượng mặc định
+          variant_id: Number(variantId),
+          quantity: 1,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      ],
+    });
 
-      if (response.data?.cartItem || response.data?.message) {
-        toast.success("Đã thêm vào giỏ hàng!", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-      } else {
-        toast.error("Không thể thêm vào giỏ hàng.", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-      }
-    } catch (error: any) {
-      console.error('Lỗi khi thêm vào giỏ hàng:', error);
-      setError('Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.');
-      toast.error("Lỗi khi thêm vào giỏ hàng.", {
+    if (response.success) {
+      toast.success("Đã thêm vào giỏ hàng!", {
         position: "top-right",
         autoClose: 1000,
       });
+
+      if (miniCartRef.current) {
+        miniCartRef.current.notifyCartChanged();
+        miniCartRef.current.toggleMiniCart();
+      }
+    } else {
+      toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message, {
+        position: "top-right",
+        autoClose: 1500,
+      });
     }
-  };
+  } catch (error) {
+    console.error("Lỗi khi thêm vào giỏ hàng:", error);
+    toast.error("Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.", {
+      position: "top-right",
+      autoClose: 1500,
+    });
+  }
+};
+
 
 
 
   // Xử lý xóa sản phẩm khỏi wishlist
-const handleRemoveFromWishlist = async (wishlistId: number) => {
-  try {
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      setError('Xóa sản phẩm khỏi wishlist');
-      return;
-    }
-
-    // Tìm item bị xóa để lấy variant_id
-    const removedItem = wishlistItems.find(item => item.wishlist_id === wishlistId);
-
-    // Gọi API xóa
-    await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+  const handleRemoveFromWishlist = async (wishlistId: number) => {
+    try {
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        setError('Xóa sản phẩm khỏi wishlist');
+        return;
       }
-    });
 
-    // Cập nhật lại danh sách wishlist
-    setWishlistItems(wishlistItems.filter(item => item.wishlist_id !== wishlistId));
+      // Tìm item bị xóa để lấy variant_id
+      const removedItem = wishlistItems.find(item => item.wishlist_id === wishlistId);
 
-    // Dispatch event nếu có removedItem
-    if (removedItem) {
-      const event = new CustomEvent("wishlist-changed", {
-        detail: { variantId: removedItem.variant_id },
+      // Gọi API xóa
+      await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      window.dispatchEvent(event);
-    }
 
-  } catch (err) {
-    console.error('Lỗi khi xóa sản phẩm khỏi danh sách yêu thích:', err);
-    setError('Không thể xóa sản phẩm. Vui lòng thử lại sau.');
-  }
-};
+      // Cập nhật lại danh sách wishlist
+      setWishlistItems(wishlistItems.filter(item => item.wishlist_id !== wishlistId));
+
+      // Dispatch event nếu có removedItem
+      if (removedItem) {
+        const event = new CustomEvent("wishlist-changed", {
+          detail: { variantId: removedItem.variant_id },
+        });
+        window.dispatchEvent(event);
+      }
+
+    } catch (err) {
+      console.error('Lỗi khi xóa sản phẩm khỏi danh sách yêu thích:', err);
+      setError('Không thể xóa sản phẩm. Vui lòng thử lại sau.');
+    }
+  };
 
 
   // Lấy URL hình ảnh đầu tiên từ chuỗi URL
@@ -287,7 +281,7 @@ const handleRemoveFromWishlist = async (wishlistId: number) => {
                       </Link>
                     </div>
                     <div className="wishlist-item-info">
-                      <Link to={`/san-pham/${item.product_id}`} className="wishlist-item-name">
+                      <Link to={`/san-pham/${item.slug}`} className="wishlist-item-name">
                         {item.product_name || productNames[item.product_id] || `Sản phẩm #${item.product_id}`}
                       </Link>
                       <div className="wishlist-item-price">
@@ -327,9 +321,6 @@ const handleRemoveFromWishlist = async (wishlistId: number) => {
           </div>
         </div>
       </div>
-      <ToastContainer position="top-right"
-        autoClose={3000}
-        style={{ marginTop: "100px" }} />
     </>
 
   );
