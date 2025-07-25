@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
+import { cancelOrder } from "../../services/userServices";
 
 interface OrderProduct {
   order_item_id: string;
@@ -21,6 +22,7 @@ interface OrderProduct {
 }
 
 interface OrderDetails {
+  id?: number;
   order_hash: string;
   date: string;
   status: string;
@@ -51,6 +53,7 @@ const DetailOrder: React.FC = () => {
   const [reviewMessage, setReviewMessage] = useState("");
   const [allProductsReviewed, setAllProductsReviewed] = useState(false);
   const [isProcessingReturn, setIsProcessingReturn] = useState(false);
+  const [isProcessingCancel, setIsProcessingCancel] = useState(false);
 
   const fetchOrder = async () => {
     try {
@@ -266,7 +269,7 @@ const DetailOrder: React.FC = () => {
     
     try {
       setIsProcessingReturn(true);
-      const result = await returnOrder(order.order_hash, reason);
+      await returnOrder(order.order_hash, reason);
       alert("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
       // Tải lại thông tin đơn hàng
       fetchOrder();
@@ -281,6 +284,56 @@ const DetailOrder: React.FC = () => {
       }
     } finally {
       setIsProcessingReturn(false);
+    }
+  };
+
+  // Xử lý khi người dùng nhấn nút hủy đơn hàng
+  const handleCancelOrder = async () => {
+    if (!order) return;
+    
+    // Xác nhận hủy đơn hàng
+    if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+      return;
+    }
+
+    // Hỏi lý do hủy đơn hàng
+    const reason = prompt("Vui lòng nhập lý do hủy đơn hàng (không bắt buộc):");
+
+    try {
+      setIsProcessingCancel(true);
+      
+      // Sử dụng order ID từ API response hoặc trích xuất từ order_hash
+      let orderId: number;
+      
+      if (order.id) {
+        orderId = order.id;
+      } else {
+        // Trích xuất số từ order_hash nếu không có ID trực tiếp
+        const hashNumbers = order.order_hash.match(/\d+/g);
+        if (hashNumbers && hashNumbers.length > 0) {
+          orderId = parseInt(hashNumbers[hashNumbers.length - 1]);
+        } else {
+          throw new Error("Không thể xác định ID đơn hàng");
+        }
+      }
+      
+      await cancelOrder(orderId, reason || undefined);
+      
+      alert("Đơn hàng đã được hủy thành công!");
+      
+      // Tải lại thông tin đơn hàng để cập nhật trạng thái
+      fetchOrder();
+    } catch (error: any) {
+      console.error("Lỗi khi hủy đơn hàng:", error);
+      
+      // Hiển thị thông báo lỗi cụ thể từ API nếu có
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Lỗi: ${error.response.data.message}`);
+      } else {
+        alert("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+      }
+    } finally {
+      setIsProcessingCancel(false);
     }
   };
 
@@ -593,7 +646,19 @@ const formatPrice1 = (value: number | string): string => {
 
           <div className="order-actions-bottom">
             {order.status === "PENDING" && (
-              <button className="btn-primary">Hủy đơn hàng</button>
+              <button 
+                className="btn-primary"
+                onClick={handleCancelOrder}
+                disabled={isProcessingCancel}
+              >
+                {isProcessingCancel ? (
+                  <>
+                    <span className="spinner"></span> Đang xử lý...
+                  </>
+                ) : (
+                  "Hủy đơn hàng"
+                )}
+              </button>
             )}
             {(order.status === "SUCCESS" || order.status === "COMPLETED") && (
               <>
