@@ -1714,6 +1714,25 @@
               margin-top: 20px;
               justify-content: right;
 
+              a.btn-action-primary {
+                padding: 8px 15px;
+                border-radius: 4px;
+                font-size: 14px;
+                font-family: Be-M;
+                line-height: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+                width: 50%;
+                background-color: #F0A00A;
+                color: #fff;
+                border: none;
+
+                &:hover {
+                  background-color: darken($yellow-cl, 5%);
+                }
+              }
+
               button {
                 padding: 8px 15px;
                 border-radius: 4px;

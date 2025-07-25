@@ -880,9 +880,9 @@ const fetchPromoCodes = async () => {
                                 </span>
                               </div>
                               <div className="order-actions">
-                                <button className="btn-outline">
+                                {/* <button className="btn-outline">
                                   {order.status === "PENDING" ? "Chờ" : "Xem"}
-                                </button>
+                                </button> */}
                                 <Link
                                   to={`/chi-tiet-don-hang/${order.order_hash}`}
                                   className="btn-primary"
@@ -1500,9 +1500,9 @@ const fetchPromoCodes = async () => {
 
                                   {order.status === "SUCCESS" && (
                                     <>
-                                      <button className="btn-action-primary">
+                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
                                         Mua lại
-                                      </button>
+                                      </Link>
                                       <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
@@ -1511,9 +1511,9 @@ const fetchPromoCodes = async () => {
 
                                   {order.status === "CANCELLED" && (
                                     <>
-                                      <button className="btn-action-primary">
+                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
                                         Mua lại
-                                      </button>
+                                      </Link>
                                       <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
@@ -1522,9 +1522,9 @@ const fetchPromoCodes = async () => {
 
                                   {order.status === "RETURNED" && (
                                     <>
-                                      <button className="btn-action-primary">
+                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
                                         Mua lại
-                                      </button>
+                                      </Link>
                                       <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>

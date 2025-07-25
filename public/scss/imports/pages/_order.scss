@@ -1,4 +1,5 @@
-.order-list{
+//Defindidng style for Order List General
+.order-list {
     .order-item {
         .order-content {
             .product-details {
@@ -25,9 +26,12 @@
     }
 }
 
-.order-list-container{
+//Definding style for Order List Tabs
+.order-list-container {
     .order-item {
         .order-content {
+            display: none;
+
             .product-details {
                 justify-content: space-between;
                 display: flex;
@@ -48,6 +52,7 @@
 
                 .order-actions {
                     padding-top: 12px;
+
                 }
             }
         }
