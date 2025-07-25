@@ -884,7 +884,7 @@ const fetchPromoCodes = async () => {
                                   {order.status === "PENDING" ? "Chờ" : "Xem"}
                                 </button>
                                 <Link
-                                  to={`/chi-tiet-don-hang/${order.id}`}
+                                  to={`/chi-tiet-don-hang/${order.order_hash}`}
                                   className="btn-primary"
                                 >
                                   Xem chi tiết
