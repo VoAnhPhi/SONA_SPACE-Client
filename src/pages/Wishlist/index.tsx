@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ProductComponent from "../../components/Product";
-import { loadWishlistService } from "../../services/wishlistService";
-import { fetchWishlistFromDatabase } from "../../services/wishlistService";
+import { loadWishlistService1 } from "../../services/wishlistService";
+import { fetchWishlistFromDatabase1 } from "../../services/wishlistService";
 import type { Product } from "../../types";
 import PolicyProduct from "../../components/Policy";
 
@@ -17,7 +17,7 @@ const Wishlist: React.FC = () => {
   useEffect(() => {
     const loadWishlist = async () => {
       try {
-        const data = await fetchWishlistFromDatabase();
+        const data = await fetchWishlistFromDatabase1();
         const ids = data.map((item: any) => item.variant_id); // đảm bảo item có `variant_id`
         setWishlistVariantIds(ids);
       } catch (err) {
@@ -31,7 +31,7 @@ const Wishlist: React.FC = () => {
 
   useEffect(() => {
     const fetchWishlist = async () => {
-      const res = await loadWishlistService();
+      const res = await loadWishlistService1();
       console.log("Wishlist data:", res);
       if (res.success) {
         setWishlistProducts(res.wishlistItems);

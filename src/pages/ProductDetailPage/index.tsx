@@ -27,7 +27,7 @@ import {
 } from "../../services/productService";
 import { fetchVariantBySlugAndColor } from "../../services/variantService";
 import { saveToOrCart } from "../../services/cartService";
-
+import { addToWishlist, removeFromWishlistService, checkVariantInWishlist, fetchWishlistFromDatabase } from "../../services/wishlistService";
 // import types
 import type { Product } from "../../types";
 import type { CommentResponse } from "../../types";
@@ -46,6 +46,8 @@ const ProductDetailPage: React.FC = () => {
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [cartCount, setCartCount] = useState<number>(0);
+  const [wishlist, setWishlist] = useState<boolean>(false);
+
   const handleColorSelect = async (colorHex: string, colorId: number) => {
     try {
       setSelectedColor(colorHex);
@@ -243,10 +245,6 @@ const ProductDetailPage: React.FC = () => {
         //   position: "top-right",
         //   autoClose: 500,
         // });
-        // if (miniCartRef.current) {
-        //   console.log(" Gọi notifyCartChanged");
-        //   miniCartRef.current.notifyCartChanged();
-        // }
       } else {
         toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
       }
@@ -271,6 +269,63 @@ const ProductDetailPage: React.FC = () => {
 
     fetchRelatedProducts();
   }, [product?.id]);
+
+  const toggleWishlist = async () => {
+    if (!selectedVariant?.variant_id) return;
+
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      toast.warning("Vui lòng đăng nhập để thêm vào yêu thích!", {
+        autoClose: 2000,
+      });
+      navigate("/dang-nhap");
+      return;
+    }
+
+    try {
+      if (wishlist) {
+        await removeFromWishlistService(selectedVariant.variant_id);
+        setWishlist(false);
+        toast.success("Đã xóa khỏi yêu thích", {
+          autoClose: 1000,
+        });
+      } else {
+        await addToWishlist(selectedVariant.variant_id, 1);
+        setWishlist(true);
+        toast.success("Đã thêm vào yêu thích", {
+          autoClose: 1000,
+        });
+      }
+    } catch (error) {
+      console.error("Wishlist error:", error);
+      toast.error("Lỗi xử lý yêu thích", {
+        autoClose: 1000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchWishlistStatus = async () => {
+      if (!selectedVariant?.variant_id) return;
+
+      try {
+        const token = sessionStorage.getItem("authToken");
+        if (!token) {
+          setWishlist(false);
+          return;
+        }
+
+        const exists = await checkVariantInWishlist(selectedVariant.variant_id);
+        setWishlist(exists);
+      } catch (error) {
+        console.error("Error checking wishlist:", error);
+        setWishlist(false);
+      }
+    };
+
+    fetchWishlistStatus();
+  }, [selectedVariant?.variant_id]);
+
 
   if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
   return (
@@ -461,12 +516,18 @@ const ProductDetailPage: React.FC = () => {
                     Thêm vào giỏ
                   </button>
                   <div className="button-icon-i">
-                    {/* <div className="icon-img">
-                      <img src="/images/detail/heart.svg" alt="" />
-                    </div> */}
                     <div className="icon-img">
-                      <img src="/images/detail/share.svg" alt="" />
+                      <img
+                        key={wishlist ? "heart-red" : "heart"}
+                        src={wishlist ? "/images/products/heart-red.svg" : "/images/products/heart.svg"}
+                        alt="wishlist"
+                        onClick={toggleWishlist}
+                      />
+
                     </div>
+                    {/* <div className="icon-img">
+                      <img src="/images/detail/share.svg" alt="" />
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -543,33 +604,32 @@ const ProductDetailPage: React.FC = () => {
         <PolicyProduct />
 
         {/* boxsanpham */}
-        <div className="boxProducts">
-          <div className="container">
-            <div className="section-box-products">
-              <h5>Các sản phẩm tương tự</h5>
-              <div className="box-products-container">
-                {relatedProducts.map((relatedProduct) => (
-                  <ProductComponent
-                    key={relatedProduct.id}
-                    product={relatedProduct}
-                    slug={relatedProduct.slug}
-                  />
-                ))}
+        {relatedProducts.length > 0 && (
+          <div className="boxProducts">
+            <div className="container">
+              <div className="section-box-products">
+                <h5>Các sản phẩm tương tự</h5>
+                <div className="box-products-container">
+                  {relatedProducts.map((relatedProduct) => (
+                    <ProductComponent
+                      key={relatedProduct.id}
+                      product={relatedProduct}
+                      slug={relatedProduct.slug}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
       </div>
 
       <Footer />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        style={{ marginTop: "100px" }}
-      />
+
     </>
   );
 };
 
-export default ProductDetailPage;
+export default ProductDetailPage;  

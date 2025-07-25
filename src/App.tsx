@@ -30,7 +30,8 @@ import EmailVerified from './pages/EmailVerified'
 import TestPage from './pages/TestPage'
 import { AuthProvider } from './contexts/AuthContext'
 import ScrollToTop from './components/ScrollTop/ScrollToTop'
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <AuthProvider>
@@ -69,6 +70,11 @@ function App() {
           {/* Catch-all route for 404 errors */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+             <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          style={{ marginTop: "100px" }}
+        />
       </BrowserRouter>
     </AuthProvider>
   )

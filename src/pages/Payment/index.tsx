@@ -259,7 +259,8 @@ const Payment: React.FC = () => {
             variant_id: item.variant_id,
             name: item.product_name,
             price: item.price,
-            oldPrice: item.price_sale || "",
+         oldPrice: item.price_sale && item.price_sale > 0 ? item.price_sale : null,
+
             image: item.image?.split(",")[0] || "/images/default.jpg",
             color: item.color_hex || "#ccc",
             quantity: item.quantity,
