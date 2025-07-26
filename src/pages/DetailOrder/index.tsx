@@ -33,6 +33,7 @@ interface OrderDetails {
   subtotal: number;
   shippingFee: number;
   couponValue: number;
+  discount: number;
   total: number;
   products: OrderProduct[];
 }
@@ -453,7 +454,7 @@ const formatPrice1 = (value: number | string): string => {
                 <div className="summary-row discount">
                   <span className="row1">Mã giảm giá:</span>
                   <span className="row2">
-                    -{formatPrice(order.couponValue)}
+                    -{formatPrice(order.discount)}
                   </span>
                 </div>
                 <div className="summary-row total">

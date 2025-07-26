@@ -140,7 +140,7 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
                         <span>SL: {item.quantity}</span>
                       </div>
                     </div>
-                    <div className="item-remove" onClick={() => removeItem(item.id)}>
+                    <div className="item-remove" onClick={() => removeItem(item.id)} title='Xóa sản phẩm'>
                       <img src="/images/icons/close.svg" alt="Xóa" />
                     </div>
                   </div>
