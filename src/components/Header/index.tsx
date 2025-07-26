@@ -661,7 +661,7 @@ const Header = () => {
                   }}
                 >
                   <button className="btn-icon notification-btn">
-                    <img src="/images/icons/heart.svg" alt="notification" />
+                    <img src="/images/icons/bell.svg" alt="notification" />
                     {notificationCount > 0 && (
                       <span
                         className="notification-badge"
@@ -670,7 +670,7 @@ const Header = () => {
                           width: '20px',
                           height: '18px',
                           top: '20px',
-                          right: '9px',
+                          right: '11px',
                           backgroundColor: '#F0A00A',
                           color: 'white',
                           fontFamily: 'Be-R',
