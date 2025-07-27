@@ -37,7 +37,7 @@ const Header = () => {
 
   const miniNotificationRef = useRef<MiniNotificationHandle>(null);
   const [notificationCount, setNotificationCount] = useState(0);
-  console.log('notificationCount', notificationCount);
+  // console.log('notificationCount', notificationCount);
   useEffect(() => {
     if (miniNotificationRef.current) {
       setNotificationCount(miniNotificationRef.current.getNotificationCount());
@@ -661,7 +661,7 @@ const Header = () => {
                   }}
                 >
                   <button className="btn-icon notification-btn">
-                    <img src="/images/icons/heart.svg" alt="notification" />
+                    <img src="/images/icons/bell.svg" alt="notification" />
                     {notificationCount > 0 && (
                       <span
                         className="notification-badge"
@@ -670,7 +670,7 @@ const Header = () => {
                           width: '20px',
                           height: '18px',
                           top: '20px',
-                          right: '9px',
+                          right: '11px',
                           backgroundColor: '#F0A00A',
                           color: 'white',
                           fontFamily: 'Be-R',
@@ -731,20 +731,27 @@ const Header = () => {
                         <span
                           className="cart-badge"
                           style={{
-                            position: 'absolute',
-                            top: '20px',
-                            right: '-2px',
-                            backgroundColor: '#F0A00A',
-                            color: 'white',
-                            fontFamily: 'Be-R',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            padding: '2px 2px',
-                            borderRadius: '50%',
-                            minWidth: '18px',
-                            textAlign: 'center',
-                            zIndex: 10,
-                            boxShadow: '0 0 0 2px white',
+                        position: 'absolute',
+                          width: '20px',
+                          height: '18px',
+                          top: '20px',
+                          right: '-6px',
+                          backgroundColor: '#F0A00A',
+                          color: 'white',
+                          fontFamily: 'Be-R',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          padding: '5px',
+                          borderRadius: '50%',
+                          minWidth: '18px',
+                          textAlign: 'center',
+                          zIndex: 10,
+                          boxShadow: '0 0 0 2px white',
+                          display: 'flex',
+                          alignContent: 'center',
+                          justifyContent: 'center',
+                          alignSelf: 'center',
+                          alignItems: 'center'
                           }}
                         >
                           {cartCount}

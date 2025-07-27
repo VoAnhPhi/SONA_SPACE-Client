@@ -461,6 +461,13 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+.text-error {
+  color: red;
+  font-size: 14px;
+  font-family: 'Be-R';
+  margin-top: 4px;
+  display: block;
+}
 
 @keyframes spin {
   to {

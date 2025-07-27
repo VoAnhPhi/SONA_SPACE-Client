@@ -42,6 +42,75 @@ const Payment: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const selectedItems: number[] | undefined = location.state?.selectedItems;
+  const [formErrors, setFormErrors] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    address: "",
+  });
+
+  const validateForm = () => {
+    const errors: any = {};
+
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Họ và tên không được để trống.";
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = "Số điện thoại không được để trống.";
+    } else if (!/^(0|\+84)[0-9]{9}$/.test(formData.phone.trim())) {
+      errors.phone = "Số điện thoại không hợp lệ.";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email không được để trống.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
+      errors.email = "Email không hợp lệ.";
+    }
+
+    if (!formData.address.trim()) {
+      errors.address = "Địa chỉ không được để trống.";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = "";
+
+    switch (name) {
+      case "fullName":
+        if (!value.trim()) {
+          error = "Họ và tên không được để trống.";
+        }
+        break;
+      case "phone":
+        if (!value.trim()) {
+          error = "Số điện thoại không được để trống.";
+        } else if (!/^(0|\+84)[0-9]{9}$/.test(value.trim())) {
+          error = "Số điện thoại không hợp lệ.";
+        }
+        break;
+      case "email":
+        if (!value.trim()) {
+          error = "Email không được để trống.";
+        } else if (!/\S+@\S+\.\S+/.test(value.trim())) {
+          error = "Email không hợp lệ.";
+        }
+        break;
+      case "address":
+        if (!value.trim()) {
+          error = "Địa chỉ không được để trống.";
+        }
+        break;
+    }
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
 
 
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
@@ -69,6 +138,7 @@ const Payment: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    validateField(name, value);
   };
 
   const handlePaymentMethodChange = (method: string) => {
@@ -121,23 +191,25 @@ const Payment: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.fullName.trim() ||
-      !formData.phone.trim() ||
-      !formData.email.trim() ||
-      !formData.address.trim()
-    ) {
-      toast.error("Vui lòng điền đầy đủ thông tin giao hàng.");
-      return;
-    }
+    if (!validateForm()) {
+      toast.error("Vui lòng kiểm tra lại thông tin giao hàng.", {
+        position: "top-right",
+        autoClose: 1000,
+      })
+    };
+
     if (cartItems.length === 0) {
-      toast.error("Giỏ hàng đang trống. Không thể thanh toán.");
-      return;
-    }
+      toast.error("Giỏ hàng đang trống. Không thể thanh toán.", {
+        position: "top-right",
+        autoClose: 1000,
+      })
+    };
     if (!agreeToTerms) {
-      toast.error("Vui lòng đồng ý với điều khoản và điều kiện.");
-      return;
-    }
+      toast.error("Vui lòng đồng ý với điều khoản và điều kiện.", {
+        position: "top-right",
+        autoClose: 1000,
+      })
+    };
 
     setIsLoading(true);
 
@@ -149,7 +221,8 @@ const Payment: React.FC = () => {
     try {
       const payload: any = {
         order_id: orderId,
-        order_total: orderSummary.total,
+        order_total: orderSummary.subtotal,
+        order_total_final: orderSummary.total,
         order_status: "PENDING",
         method,
         couponcode_id: appliedCode?.couponcode_id || null,
@@ -259,7 +332,8 @@ const Payment: React.FC = () => {
             variant_id: item.variant_id,
             name: item.product_name,
             price: item.price,
-            oldPrice: item.price_sale || "",
+            oldPrice: item.price_sale && item.price_sale > 0 ? item.price_sale : null,
+
             image: item.image?.split(",")[0] || "/images/default.jpg",
             color: item.color_hex || "#ccc",
             quantity: item.quantity,
@@ -346,7 +420,9 @@ const Payment: React.FC = () => {
                       placeholder="Nhập họ và tên"
                       value={formData.fullName}
                       onChange={handleInputChange}
+                      onBlur={(e) => validateField("fullName", e.target.value)}
                       required />
+                    {formErrors.fullName && <small className="text-error">{formErrors.fullName}  </small>}
                   </div>
                   <div className="form-info">
                     <label htmlFor="phone" >Số điện thoại</label><br />
@@ -356,7 +432,9 @@ const Payment: React.FC = () => {
                       placeholder="Nhập số điện thoại"
                       value={formData.phone}
                       onChange={handleInputChange}
+                      onBlur={(e) => validateField("phone", e.target.value)}
                       required />
+                    {formErrors.phone && <small className="text-error">{formErrors.phone}  </small>}
                   </div>
                   <div className="form-info">
                     <label htmlFor="email">Email</label><br />
@@ -366,7 +444,9 @@ const Payment: React.FC = () => {
                       placeholder="Nhập email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      onBlur={(e) => validateField("email", e.target.value)}
                       required />
+                    {formErrors.email && <small className="text-error">{formErrors.email}  </small>}
                   </div>
                   <div className="form-info">
                     <label htmlFor="address">Địa chỉ</label><br />
@@ -375,7 +455,9 @@ const Payment: React.FC = () => {
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
+                      onBlur={(e) => validateField("adress", e.target.value)}
                       required placeholder="Nhập địa chỉ" />
+                    {formErrors.address && <small className="text-error">{formErrors.address}  </small>}
                   </div>
                 </div>
 

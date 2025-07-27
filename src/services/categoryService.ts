@@ -24,6 +24,8 @@ export const fetchAllCategories = async (): Promise<Category[]> => {
   }
 };
 
+// getAllCategories
+
 /**
  * Fetch a category by slug
  * @param {string} slug - The category slug

@@ -1,25 +1,25 @@
 import React, {
-    useState,
-    useEffect,
-    forwardRef,
-    useImperativeHandle,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
 } from 'react';
-
+import { Link } from 'react-router-dom';
 export interface Notification {
-    notification_id: number;
-    title: string;
-    message: string;
-    created_at: string;
-    link: string;
+  notification_id: number;
+  title: string;
+  message: string;
+  created_at: string;
+  link: string;
 }
 
 
 export interface MiniNotificationHandle {
-    toggleMiniNotification: () => void;
-    closeMiniNotification: () => void;
-    isVisible: boolean;
-    refreshNotifications: () => void;
-    getNotificationCount: () => number;
+  toggleMiniNotification: () => void;
+  closeMiniNotification: () => void;
+  isVisible: boolean;
+  refreshNotifications: () => void;
+  getNotificationCount: () => number;
 }
 
 interface MiniNotificationProps {
@@ -85,7 +85,7 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
     //                 Authorization: `Bearer ${token}`,
     //             },
     //         });
-          
+
     //         if (!response.ok) {
     //             throw new Error("Failed to fetch notifications");
     //         }
@@ -97,42 +97,78 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
     //         console.error("Lỗi lấy thông báo:", error);
     //     }
     // };
+const handleDeleteNotification = async (id: number) => {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    const response = await fetch(`http://localhost:3501/api/couponcodes/notification/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Không thể xóa thông báo");
+
+    setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
+
+    if (onNotificationCountChange) {
+      onNotificationCountChange(notifications.length - 1);
+    }
+  } catch (error) {
+    console.error("Lỗi khi xoá thông báo:", error);
+  }
+};
 
     const formatDate = (iso: string) => {
-        const date = new Date(iso);
-        return date.toLocaleString('vi-VN');
+      const date = new Date(iso);
+      return date.toLocaleString('vi-VN');
     };
 
     return (
-        <div className={`mini-notification ${isVisible ? 'show' : ''}`}>
-            <div className="mini-notification-content">
-                <div className="mini-notification-header">
-                    <h3>Thông báo của bạn ({notifications.length})</h3>
-                    <button
-                        className="close-mini-notification"
-                        onClick={() => setIsVisible(false)}
-                    >
-                        <img src="/images/icons/close.svg" alt="Đóng" />
-                    </button>
-                </div>
-                {notifications.length > 0 ? (
-                    notifications.map((noti, index) => (
-                        <div key={index} className="mini-notification-item">
-                            <a href={noti.link || "/tai-khoan/ma-giam-gia"}>
-                                <h4 className='noti-title'>{noti.title}</h4>
-                                <div className="noti-message">{noti.message}</div>
-                            </a>
-                        </div>
-                    ))
-                ) : (
-                    <div className="empty-notification">
-                        <p style={{fontFamily: "M-R", fontSize: '14px'}}>Không có thông báo mới</p>
-                    </div>
-                )}
+      <div className={`mini-notification ${isVisible ? 'show' : ''}`}>
+        <div className="mini-notification-content">
+          <div className="mini-notification-header">
+            <h3>Thông báo của bạn ({notifications.length})</h3>
+            <button
+              className="close-mini-notification"
+              onClick={() => setIsVisible(false)}
+            >
+              <img src="/images/icons/close.svg" alt="Đóng" />
+            </button>
+          </div>
+                            <div className="mini-notification-items" >
+          {notifications.length > 0 ? (
+            notifications.map((noti, index) => (
 
+              <div key={index} className="mini-notification-item" >
+                <a className='noti-content' href={noti.link || "/tai-khoan/ma-giam-gia"} >
+                  <h4 className='noti-title'>{noti.title}</h4>
+                  <div className="noti-message">{noti.message}</div>
+                </a>
+                <a
+                  className="delete-noti"
+                  onClick={() => handleDeleteNotification(noti.notification_id)}
+                  title="Xoá thông báo"
+                >
+                  <img src="/images/icons/close.svg" alt="Xoá" />
+                </a>
+              </div>
+        
+            ))
+            
+          ) : (
+            <div className="empty-cart">
+              <div className="empty-cart-icon">
+                <img src="/images/icons/bell-ring.svg" alt="Giỏ hàng trống" />
+              </div>
+              <p>Thông báo của bạn đang trống</p>
+            
             </div>
+          )}
         </div>
+        </div>
+      </div>
     );
-});
+  });
 
 export default MiniNotification;
