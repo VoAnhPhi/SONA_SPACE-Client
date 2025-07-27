@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import { fetchAllRooms } from "../../services/roomService";
 import type { Room } from "../../types";
 import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Scrollbar } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/scrollbar";
 
 export default function RoomSlider() {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -65,10 +69,24 @@ export default function RoomSlider() {
     }
     return (
         <>
-            <div className="categories-flex">
+            <Swiper
+                className="categories-flex"
+                modules={[FreeMode, Scrollbar]}
+                spaceBetween={24}
+                slidesPerView="auto"
+                grabCursor={true}
+                style={{ paddingBottom: 48 }}
+                freeMode={true}
+                scrollbar={{
+                    draggable: true,
+                    hide: false,
+                    dragSize: 200,
+                }}
+            >
                 {rooms.map((room: Room) => (
-                    <div
+                    <SwiperSlide
                         key={room.room_id}
+                        style={{ width: 300 }}
                         className={`category-item`}
                     >
                         <Link to={`/khong-gian/${room.slug}`} className="category-link">
@@ -77,9 +95,9 @@ export default function RoomSlider() {
                             </div>
                             <h3 className="category-name">{room.room_name}</h3>
                         </Link>
-                    </div>
+                    </SwiperSlide>
                 ))}
-            </div>
+            </Swiper>
         </>
     )
 }

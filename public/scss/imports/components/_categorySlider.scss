@@ -1,59 +1,44 @@
 .categories-flex {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    padding-bottom: 48px;
-    gap: 24px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 48px;
 
-    .categories-flex::-webkit-scrollbar {
-        height: 8px;
+  /* Slide giữ đúng chiều rộng */
+  .swiper-slide {
+    width: 300px !important;
+    flex-shrink: 0;
+  }
+
+  .category-item {
+    width: 300px;
+    height: max-content;
+    flex: 0 0 auto;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
     }
 
-    .categories-flex::-webkit-scrollbar-track {
-        background: #f0f0f0;
-    }
+    .category-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 15px;
 
-    .categories-flex::-webkit-scrollbar-thumb {
-        background: #ccc;
-        border-radius: 4px;
-    }
-
-    .category-item {
-        width: 300px;
-        height: max-content;
-        flex: 0 0 auto;
-        text-align: center;
-        cursor: pointer;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         transition: transform 0.3s ease;
-
-        &:hover {
-            transform: translateY(-2px);
-        }
-
-        .category-image {
-            width: 100%;
-            height: 100%;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 15px;
-
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-        }
-
-        .category-name {
-            text-align: left;
-            @include text(20px, Be-B, auto, $text-cl, none);
-        }
+      }
     }
+
+    .category-name {
+      text-align: left;
+      @include text(20px, Be-B, auto, $text-cl, none);
+    }
+  }
 }

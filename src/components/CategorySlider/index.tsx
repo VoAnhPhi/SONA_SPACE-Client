@@ -3,6 +3,10 @@ import type { Category } from "../../types";
 import { Skeleton } from "antd";
 import { useEffect, useState } from "react";
 import { fetchAllCategories } from "../../services/categoryService";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Scrollbar } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/scrollbar";
 
 export default function CategorySlider() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -28,7 +32,7 @@ export default function CategorySlider() {
         loadCategories();
     }, []);
     const DebugInfo = () => {
-        const isDev = false;    
+        const isDev = false;
         return isDev && debugInfo ? (
             <div className="category-list-debug">
                 <details>
@@ -71,9 +75,24 @@ export default function CategorySlider() {
         );
     }
     return (
-        <>
-            <div className="categories-flex">
-                {categories.map((category: Category) => (
+        <Swiper
+            className="categories-flex"
+            modules={[FreeMode, Scrollbar]}
+            freeMode={true}
+            scrollbar={{
+                draggable: true,
+                hide: false,
+                dragSize: 200,
+            }}
+            spaceBetween={24}
+            slidesPerView="auto"
+            grabCursor={true}
+            style={{ paddingBottom: 48 }}
+        >
+            {categories.map((category: Category) => (
+                <SwiperSlide
+                    style={{ width: 300 }}
+                    key={category.category_id}>
                     <div
                         key={category.category_id}
                         className={`category-item`}
@@ -85,8 +104,9 @@ export default function CategorySlider() {
                             <h3 className="category-name">{category.category_name}</h3>
                         </Link>
                     </div>
-                ))}
-            </div>
-        </>
+                </SwiperSlide>
+            ))}
+
+        </Swiper>
     )
 }

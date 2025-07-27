@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 // Component
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/filter";
+import Filter from "../../components/Filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
 import GetInTouch from "../../components/GetInTouch";
