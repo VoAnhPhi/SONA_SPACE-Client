@@ -26,6 +26,10 @@ interface ProductRating {
   average: string;
 }
 
+interface Coupon {
+  couponStatus: number;
+}
+
 interface ProductItem {
   id: number;
   slug: string;
@@ -219,58 +223,8 @@ const User: React.FC = () => {
 
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
 
-  useEffect(() => {
-    fetchPromoCodes();
-  }, []);
 
-const fetchPromoCodes = async () => {
-  try {
-    const token = sessionStorage.getItem("authToken");
-    if (!token) return;
-
-    const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const codes = res.data;
-    const now = new Date();
-
-    const updated = codes.map((promo: any) => {
-      const isFlashSale = Number(promo.isFlashSale) === 1;
-      const commonFields = {
-        ...promo,
-        isFlashSale,
-        timeRemaining: null,
-      };
-
-      if (isFlashSale) {
-        const end = new Date(promo.validUntil);
-        const diff = Math.max(0, end.getTime() - now.getTime());
-
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        return {
-          ...commonFields,
-          timeRemaining: { hours, minutes, seconds },
-        };
-      }
-
-      return commonFields;
-    });
-
-    setPromoCodes(updated);
-  } catch (error) {
-    console.error("Lỗi khi lấy mã giảm giá:", error);
-  }
-};
-
-
-
-  const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
-
-  const fetchUserVoucherStatuses = async () => {
+  const fetchPromoCodes = async () => {
     try {
       const token = sessionStorage.getItem("authToken");
       if (!token) return;
@@ -278,17 +232,73 @@ const fetchPromoCodes = async () => {
       const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("User used coupons:", res.data);
-      setUserUsedCoupons(res.data);
+      console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
+      const now = new Date();
+
+      const updated = res.data
+        .filter((coupon: Coupon) => coupon.couponStatus !== 0) // Chỉ lấy coupon hợp lệ
+        .map((promo: any) => {
+          const isFlashSale = Number(promo.isFlashSale) === 1;
+          const commonFields = {
+            ...promo,
+            isFlashSale,
+            timeRemaining: null,
+          };
+
+          if (isFlashSale) {
+            const end = new Date(promo.validUntil);
+            const diff = Math.max(0, end.getTime() - now.getTime());
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            return {
+              ...commonFields,
+              timeRemaining: { hours, minutes, seconds },
+            };
+          }
+
+          return commonFields;
+        });
+
+      // ✅ Gọi 1 lần duy nhất
+      setPromoCodes(updated);
+
     } catch (error) {
-      console.error("Lỗi khi lấy user_has_coupon:", error);
+      console.error("Lỗi khi lấy mã giảm giá:", error);
     }
   };
 
   useEffect(() => {
     fetchPromoCodes();
-    fetchUserVoucherStatuses();
   }, []);
+
+  const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
+
+  // const fetchUserVoucherStatuses = async () => {
+  //   try {
+  //     const token = sessionStorage.getItem("authToken");
+  //     if (!token) return;
+
+  //     const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     const validCoupons = res.data.filter((coupon: Coupon) => coupon.couponStatus !== 0)
+
+  //     console.log("User used coupons:", validCoupons);
+  //     setUserUsedCoupons(validCoupons);
+  //     // console.log("User used coupons:", res.data);
+  //     // setUserUsedCoupons(res.data);
+  //   } catch (error) {
+  //     console.error("Lỗi khi lấy user_has_coupon:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUserVoucherStatuses();
+  // }, []);
 
   const formatDateTime = (dateStr: string | Date) => {
     const date = new Date(dateStr);
@@ -336,7 +346,7 @@ const fetchPromoCodes = async () => {
   const getStatusClass = (status: string): string => {
     const statusLower = status.toLowerCase();
     console.log(`getStatusClass - original: "${status}", lowercase: "${statusLower}"`);
-    
+
     let result = "";
     switch (statusLower) {
       case "pending":
@@ -365,7 +375,7 @@ const fetchPromoCodes = async () => {
         result = "";
         break;
     }
-    
+
     console.log(`getStatusClass result: "${result}" for status: "${status}"`);
     return result;
   };
@@ -600,7 +610,7 @@ const fetchPromoCodes = async () => {
       setIsLoading(true);
       const result = await cancelOrder(orderId, reason || undefined);
       console.log("Hủy đơn hàng thành công:", result);
-      
+
       // Cập nhật lại danh sách đơn hàng
       const userDataStr = sessionStorage.getItem("user");
       if (userDataStr) {
@@ -609,11 +619,11 @@ const fetchPromoCodes = async () => {
           await fetchOrders(userData.id);
         }
       }
-      
+
       alert("Đơn hàng đã được hủy thành công!");
     } catch (error: any) {
       console.error("Lỗi khi hủy đơn hàng:", error);
-      
+
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
         alert(`Lỗi: ${error.response.data.message}`);
@@ -1264,73 +1274,70 @@ const fetchPromoCodes = async () => {
                     </button>
                   </div>
 
-                  <div className="voucher-grid">
-                    {getFilteredPromoCodes()
+               <div className="voucher-grid">
+  {getFilteredPromoCodes().map((promo, index) => {
+    const isUsedUp = Number(promo.used) === 0;
 
-                      .map((promo, index) => (
-                        <div className="voucher-card" key={index}>
-                          <div className="voucher-header">
-                            <div className="voucher-discount">
-                              {promo.discount}
-                            </div>
-                            <div className="voucher-type">
-                              {promo.description}
-                            </div>
-                          </div>
+    return (
+      <div
+        className={`voucher-card ${isUsedUp ? "voucher-disabled" : ""}`}
+        key={index}
+      >
+        <div className="voucher-header">
+          <div className="voucher-discount">{promo.discount}</div>
+          <div className="voucher-type">{promo.description}</div>
+        </div>
 
-                          <div className="voucher-code">
-                            <span>Code: {promo.code}</span>
-                          </div>
+        <div className="voucher-code">
+          <span>Code: {promo.code}</span>
+        </div>
 
-                          {promo.isFlashSale && promo.timeRemaining && (
-                            <div className="flash-sale-banner">
-                              <div className="flash-icon">⚡</div>
-                              <div className="flash-text">Flash sale</div>
-                              <CountdownTimer
-                                hours={promo.timeRemaining.hours}
-                                minutes={promo.timeRemaining.minutes}
-                                seconds={promo.timeRemaining.seconds}
-                                onComplete={() => handleCountdownComplete(index)}
-                              />
-                            </div>
-                          )}
+        {promo.isFlashSale && promo.timeRemaining && (
+          <div className="flash-sale-banner">
+            <div className="flash-icon">⚡</div>
+            <div className="flash-text">Flash sale</div>
+            <CountdownTimer
+              hours={promo.timeRemaining.hours}
+              minutes={promo.timeRemaining.minutes}
+              seconds={promo.timeRemaining.seconds}
+              onComplete={() => handleCountdownComplete(index)}
+            />
+          </div>
+        )}
 
-                          <div className="voucher-details">
-                            <ul className="voucher-info-list">
-                              <li>
-                                <span>
-                                  {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
-                                </span>
-                              </li>
-                              <li>
-                                <span>{promo.description}</span>
-                              </li>
-                              <li>
-                                <span>Ưu đãi: Cho khách hàng </span>
-                              </li>
-                            </ul>
-                          </div>
+        <div className="voucher-details">
+          <ul className="voucher-info-list">
+            <li>
+              <span>
+                {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
+              </span>
+            </li>
+            <li>
+              <span>{promo.description}</span>
+            </li>
+            <li>
+              <span>Ưu đãi: Cho khách hàng</span>
+            </li>
+          </ul>
+        </div>
 
-                          <div className="voucher-actions">
-                            <button
-                              className="btn-copy"
-                              onClick={() => copyToClipboard(promo.code)}
-                            >
-                              <img src="/images/icons/content_copy.svg" alt="" />
-                              <span>Copy</span>
-                            </button>
-                            {/* <button className="btn-apply">
-                              {Number(promo.userUsedStatus) === 0 ? (
-                                <span className="voucher-status not-used">Chưa sử dụng</span>
-                              ) : (
-                                <span className="voucher-status used">Đã sử dụng</span>
-                              )}
-                            </button> */}
+        <div className="voucher-actions">
+          <button
+            className="btn-copy"
+            onClick={() => {
+              if (!isUsedUp) copyToClipboard(promo.code);
+            }}
+            disabled={isUsedUp}
+          >
+            <img src="/images/icons/content_copy.svg" alt="" />
+            <span>{isUsedUp ? "Hết lượt sử dụng" : "Copy"}</span>
+          </button>
+        </div>
+      </div>
+    );
+  })}
+</div>
 
-                          </div>
-                        </div>
-                      ))}
-                  </div>
                 </div>
               )}
 
@@ -1469,7 +1476,7 @@ const fetchPromoCodes = async () => {
                                 <div className="order-actions">
                                   {order.status === "PENDING" && (
                                     <>
-                                      <button 
+                                      <button
                                         className="btn-cancel-order"
                                         onClick={() => handleCancelOrder(order.id)}
                                         disabled={isLoading}
