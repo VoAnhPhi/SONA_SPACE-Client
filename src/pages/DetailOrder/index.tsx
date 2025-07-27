@@ -27,6 +27,7 @@ interface OrderDetails {
   date: string;
   status: string;
   statusStep: number;
+  processType?: string;
   recipientName: string;
   recipientPhone: string;
   address: string;
@@ -83,16 +84,25 @@ const DetailOrder: React.FC = () => {
             has_comment: p.has_comment,
           })
         );
-        setOrder({
+        
+        // Map order data and ensure processType and statusStep are properly set
+        const orderData = {
           ...res.data.order,
           products: mappedProducts,
-        });
+          processType: res.data.order.processType || undefined,
+          statusStep: res.data.order.statusStep || 1
+        };
+        
+        setOrder(orderData);
+        
         const allCommented = mappedProducts.every(
           (product) => product.has_comment
         );
         setAllProductsReviewed(allCommented);
+        
+        console.log("fetchOrder - Full API Response:", res.data);
+        console.log("fetchOrder - Mapped Order Data:", orderData);
       }
-      console.log("detail-order", res.data);
     } catch (err) {
       console.error("Lỗi khi tải đơn hàng:", err);
     }
@@ -141,9 +151,163 @@ const DetailOrder: React.FC = () => {
         return "Thất bại";
       case "CANCELLED":
         return "Đã hủy";
+      case "RETURN":
+        return "Đã trả hàng";
       default:
         return "Không xác định";
     }
+  };
+
+  // Xác định loại quy trình dựa trên trạng thái đơn hàng
+  const getProcessType = (status: string, processType?: string): 'normal' | 'cancellation' | 'failed' | 'return' => {
+    // Nếu có processType từ backend, ưu tiên sử dụng
+    if (processType) {
+      if (processType.toLowerCase() === 'return') return 'return';
+      if (processType.toLowerCase() === 'cancellation') return 'cancellation';
+      if (processType.toLowerCase() === 'failed') return 'failed';
+      if (processType.toLowerCase() === 'normal') return 'normal';
+    }
+    
+    const statusUpper = status.toUpperCase();
+    const statusLower = status.toLowerCase();
+    
+    // Kiểm tra các trạng thái return
+    if (statusUpper === 'RETURN' || statusLower.includes('trả') || statusLower.includes('return')) {
+      return 'return';
+    }
+    
+    // Kiểm tra các trạng thái hủy
+    if (statusUpper === 'CANCELLED' || statusLower.includes('hủy') || statusLower.includes('huy') || statusLower.includes('cancel')) {
+      return 'cancellation';
+    }
+    
+    // Kiểm tra trạng thái thất bại
+    if (statusUpper === 'FAILED' || statusLower.includes('thất bại') || statusLower.includes('failed')) {
+      return 'failed';
+    }
+    
+    // Mặc định là quy trình bình thường
+    return 'normal';
+  };
+
+  // Lấy các bước của quy trình dựa trên loại
+  const getProcessSteps = (processType: 'normal' | 'cancellation' | 'failed' | 'return') => {
+    switch (processType) {
+      case 'normal':
+        return [
+          { label: "Chờ xác nhận", icon: "fas fa-hourglass-start" },
+          { label: "Xác nhận đơn", icon: "fas fa-check" },
+          { label: "Đang giao hàng", icon: "fas fa-truck" },
+          { label: "Hoàn thành", icon: "fas fa-box" },
+          { label: "Đánh giá", icon: "fas fa-star" }
+        ];
+      case 'cancellation':
+        return [
+          { label: "Yêu cầu hủy", icon: "fas fa-times-circle" },
+          { label: "Chờ xử lý hủy", icon: "fas fa-hourglass-half" },
+          { label: "Xác nhận hủy", icon: "fas fa-check-circle" },
+          { label: "Đã hủy hoàn tất", icon: "fas fa-ban" }
+        ];
+      case 'return':
+        return [
+          { label: "Yêu cầu trả hàng", icon: "fas fa-undo" },
+          { label: "Chờ xử lý trả hàng", icon: "fas fa-hourglass-half" },
+          { label: "Xác nhận trả hàng", icon: "fas fa-check-circle" },
+          { label: "Đã trả hàng hoàn tất", icon: "fas fa-box-open" }
+        ];
+      case 'failed':
+        return [
+          { label: "Đơn hàng thất bại", icon: "fas fa-exclamation-triangle" }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  // Xác định bước hiện tại dựa trên trạng thái và loại quy trình
+  const getCurrentStep = (status: string, processType: 'normal' | 'cancellation' | 'failed' | 'return', defaultStep: number): number => {
+    const statusUpper = status.toUpperCase();
+    const statusLower = status.toLowerCase();
+    
+    switch (processType) {
+      case 'normal':
+        switch (statusUpper) {
+          case 'PENDING': return 1;
+          case 'CONFIRMED':
+          case 'APPROVED': return 2;
+          case 'SHIPPING': return 3;
+          case 'SUCCESS':
+          case 'COMPLETED': return 4;
+          default: 
+            // Kiểm tra trạng thái tiếng Việt
+            if (statusLower.includes('chờ')) return 1;
+            if (statusLower.includes('xác nhận') || statusLower.includes('confirm')) return 2;
+            if (statusLower.includes('giao') || statusLower.includes('ship')) return 3;
+            if (statusLower.includes('hoàn thành') || statusLower.includes('thành công') || statusLower.includes('complete')) return 4;
+            return defaultStep;
+        }
+      case 'cancellation':
+        switch (statusUpper) {
+          case 'CANCEL_REQUESTED': return 1;
+          case 'CANCEL_PENDING': return 2;
+          case 'CANCEL_CONFIRMED': return 3;
+          case 'CANCELLED': return 4;
+          default:
+            // Kiểm tra các trạng thái có chứa từ khóa hủy
+            if (statusLower.includes('yêu cầu hủy') || statusLower.includes('cancel_request')) return 1;
+            if (statusLower.includes('chờ xử lý hủy') || statusLower.includes('cancel_pending')) return 2;
+            if (statusLower.includes('xác nhận hủy') || statusLower.includes('cancel_confirm')) return 3;
+            if (statusLower.includes('hủy hoàn tất') || statusLower.includes('đã hủy') || statusLower.includes('hủy') || statusLower.includes('huy') || statusLower.includes('cancel')) {
+              return 4; // Đã hủy hoàn tất
+            }
+            return defaultStep;
+        }
+      case 'return':
+        // Ưu tiên sử dụng statusStep từ API nếu có và hợp lệ
+        if (defaultStep && defaultStep >= 1 && defaultStep <= 4) {
+          return defaultStep;
+        }
+        
+        // Backend sử dụng chung logic CANCEL cho trả hàng, fallback nếu không có statusStep
+        switch (statusUpper) {
+          case 'RETURN':
+          case 'RETURN_REQUESTED':
+          case 'CANCEL_REQUESTED': return 1; // Yêu cầu trả hàng
+          case 'RETURN_PENDING':
+          case 'CANCEL_PENDING': return 2;   // Chờ xử lý trả hàng
+          case 'RETURN_CONFIRMED':
+          case 'CANCEL_CONFIRMED': return 3; // Xác nhận trả hàng
+          case 'RETURNED':
+          case 'CANCELLED': return 4;        // Đã trả hàng hoàn tất
+          default:
+            // Kiểm tra các trạng thái có chứa từ khóa trả hàng
+            if (statusLower.includes('yêu cầu trả') || statusLower.includes('return_request') || statusLower.includes('return')) return 1;
+            if (statusLower.includes('chờ xử lý trả') || statusLower.includes('return_pending')) return 2;
+            if (statusLower.includes('xác nhận trả') || statusLower.includes('return_confirm')) return 3;
+            if (statusLower.includes('trả hoàn tất') || statusLower.includes('đã trả') || statusLower.includes('trả')) {
+              return 4; // Đã trả hàng hoàn tất
+            }
+            return 1; // Default to step 1 for return process
+        }
+      case 'failed':
+        return 1; // Chỉ có 1 bước cho failed
+      default:
+        return defaultStep;
+    }
+  };
+
+  // Kiểm tra xem đơn hàng có thể hủy được không
+  const canCancelOrder = (status: string, processType?: string): boolean => {
+    const currentProcessType = getProcessType(status, processType);
+    
+    // Không thể hủy nếu đang trong quy trình hủy, trả hàng hoặc thất bại
+    if (currentProcessType === 'cancellation' || currentProcessType === 'return' || currentProcessType === 'failed') {
+      return false;
+    }
+    
+    // Chỉ có thể hủy khi đơn hàng đang chờ xác nhận hoặc đã xác nhận (chưa vận chuyển)
+    const cancellableStatuses = ['PENDING', 'CONFIRMED', 'APPROVED'];
+    return cancellableStatuses.includes(status);
   };
 
   // Kiểm tra xem đơn hàng có thể trả hay không (đã hoàn thành và trong vòng 30 ngày)
@@ -271,8 +435,11 @@ const DetailOrder: React.FC = () => {
       setIsProcessingReturn(true);
       await returnOrder(order.order_hash, reason);
       alert("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
-      // Tải lại thông tin đơn hàng
-      fetchOrder();
+      
+      // Tải lại thông tin đơn hàng để cập nhật statusStep và processType mới
+      await fetchOrder();
+      
+      console.log("Đã reload thông tin đơn hàng sau khi gửi yêu cầu trả hàng");
     } catch (error: any) {
       console.error("Lỗi khi gửi yêu cầu trả hàng:", error);
       
@@ -373,47 +540,52 @@ const formatPrice1 = (value: number | string): string => {
 
             <div className="order-status-progress">
               <div className="status-timeline">
-                {[
-                  "Chờ xác nhận",
-                  "Xác nhận đơn",
-                  "Đang giao hàng",
-                  "Hoàn thành",
-                  "Đánh giá",
-                ].map((label, index) => (
-                  <React.Fragment key={index}>
-                    <div
-                      className={`status-step ${
-                        order.statusStep >= index + 1 ||
-                        (label === "Đánh giá" && allProductsReviewed)
-                          ? "active"
-                          : ""
-                      }`}
-                    >
-                      <div className="status-icon">
-                        {index === 0 && (
-                          <i className="fas fa-hourglass-start"></i>
-                        )}
-                        {index === 1 && <i className="fas fa-check"></i>}
-                        {index === 2 && <i className="fas fa-truck"></i>}
-                        {index === 3 && <i className="fas fa-box"></i>}
-                        {index === 4 && <i className="fas fa-star"></i>}
-                      </div>
-                      <div className="status-label">
-                        <p>{label}</p>
-                      </div>
-                    </div>
-                    {index < 4 && (
+                {(() => {
+                  // Xác định loại quy trình và các bước
+                  const processType = getProcessType(order.status, order.processType);
+                  const steps = getProcessSteps(processType);
+                  const currentStep = getCurrentStep(order.status, processType, order.statusStep || 1);
+                  
+                  console.log("Debug Info:", {
+                    status: order.status,
+                    processType: order.processType,
+                    statusStep: order.statusStep,
+                    calculatedProcessType: processType,
+                    steps: steps.map(s => s.label),
+                    currentStep,
+                    orderData: order
+                  });
+                  
+                  return steps.map((step, index) => (
+                    <React.Fragment key={index}>
                       <div
-                        className={`status-line ${
-                          order.statusStep > index + 1 ||
-                          (label === "Hoàn thành" && allProductsReviewed)
+                        className={`status-step ${
+                          currentStep >= index + 1 ||
+                          (processType === 'normal' && step.label === "Đánh giá" && allProductsReviewed)
                             ? "active"
                             : ""
-                        }`}
-                      ></div>
-                    )}
-                  </React.Fragment>
-                ))}
+                        } ${processType}`}
+                      >
+                        <div className="status-icon">
+                          <i className={step.icon}></i>
+                        </div>
+                        <div className="status-label">
+                          <p>{step.label}</p>
+                        </div>
+                      </div>
+                      {index < steps.length - 1 && (
+                        <div
+                          className={`status-line ${
+                            currentStep > index + 1 ||
+                            (processType === 'normal' && step.label === "Hoàn thành" && allProductsReviewed)
+                              ? "active"
+                              : ""
+                          }`}
+                        ></div>
+                      )}
+                    </React.Fragment>
+                  ));
+                })()}
               </div>
             </div>
           </div>
@@ -645,7 +817,7 @@ const formatPrice1 = (value: number | string): string => {
           </div>
 
           <div className="order-actions-bottom">
-            {order.status === "PENDING" && (
+            {canCancelOrder(order.status, order.processType) && (
               <button 
                 className="btn-primary"
                 onClick={handleCancelOrder}

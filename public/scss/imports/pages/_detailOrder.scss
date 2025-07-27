@@ -134,6 +134,52 @@
             }
           }
 
+          // Process type specific styling
+          &.cancellation {
+            &.active {
+              .status-icon {
+                background-color: #ff6b35;
+                border-color: #ff6b35;
+                color: #fff;
+              }
+
+              .status-label p {
+                color: #ff6b35;
+                font-family: 'M-SB';
+              }
+            }
+          }
+
+          &.return {
+            &.active {
+              .status-icon {
+                background-color: #6f42c1;
+                border-color: #6f42c1;
+                color: #fff;
+              }
+
+              .status-label p {
+                color: #6f42c1;
+                font-family: 'M-SB';
+              }
+            }
+          }
+
+          &.failed {
+            &.active {
+              .status-icon {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                color: #fff;
+              }
+
+              .status-label p {
+                color: #dc3545;
+                font-family: 'M-SB';
+              }
+            }
+          }
+
           .status-icon {
             width: 40px;
             height: 40px;

@@ -352,12 +352,13 @@ const fetchPromoCodes = async () => {
         break;
       case "completed":
       case "delivered":
-      case "success":  // Thêm trạng thái SUCCESS
+      case "success": 
         result = "completed";
         break;
       case "cancelled":
         result = "cancelled";
         break;
+      case "return":
       case "returned":
         result = "returned";
         break;
@@ -388,6 +389,7 @@ const fetchPromoCodes = async () => {
         return "Hoàn thành";
       case "cancelled":
         return "Đã hủy";
+      case "return":
       case "returned":
         return "Trả hàng";
       default:
@@ -583,7 +585,17 @@ const fetchPromoCodes = async () => {
     };
 
     return apiOrders.filter(
-      (order) => order.status.toUpperCase() === statusMap[activeOrderFilter]
+      (order) => {
+        const orderStatus = order.status.toUpperCase();
+        const targetStatus = statusMap[activeOrderFilter];
+        
+        // Đặc biệt xử lý cho returned - bao gồm cả RETURN và RETURNED
+        if (activeOrderFilter === "returned") {
+          return orderStatus === "RETURNED" || orderStatus === "RETURN";
+        }
+        
+        return orderStatus === targetStatus;
+      }
     );
   };
 
@@ -1520,7 +1532,7 @@ const fetchPromoCodes = async () => {
                                     </>
                                   )}
 
-                                  {order.status === "RETURNED" && (
+                                  {(order.status === "RETURNED" || order.status === "RETURN") && (
                                     <>
                                       <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
                                         Mua lại
