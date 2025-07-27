@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-
+import { Link } from 'react-router-dom';
 export interface Notification {
   notification_id: number;
   title: string;
@@ -157,8 +157,12 @@ const handleDeleteNotification = async (id: number) => {
             ))
             
           ) : (
-            <div className="empty-notification">
-              <p style={{ fontFamily: "M-R", fontSize: '14px', marginLeft: '15px' }}>Không có thông báo mới</p>
+            <div className="empty-cart">
+              <div className="empty-cart-icon">
+                <img src="/images/icons/bell-ring.svg" alt="Giỏ hàng trống" />
+              </div>
+              <p>Thông báo của bạn đang trống</p>
+            
             </div>
           )}
         </div>
