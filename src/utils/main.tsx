@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import PopupAd from "./components/PopupAd/index.tsx";
+import PopupAd from "./components/PopupAd";
+// import './index.css'
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
