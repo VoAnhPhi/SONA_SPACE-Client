@@ -96,7 +96,7 @@ const HomePage = () => {
                   <img src="/images/living-room.jpg" alt="Phòng Khách" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Khách</h3>
-                    <a href="/phong-khach" className="btn btn-outline">
+                    <a href="/khong-gian/phong-khach" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
@@ -122,7 +122,7 @@ const HomePage = () => {
                   <img src="/images/bedroom.jpg" alt="Phòng Ngủ" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ngủ</h3>
-                    <a href="/phong-ngu" className="btn btn-outline">
+                    <a href="/khong-gian/phong-ngu" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
@@ -148,7 +148,7 @@ const HomePage = () => {
                   <img src="/images/dining-room.jpg" alt="Phòng Ăn" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ăn</h3>
-                    <a href="/phong-an" className="btn btn-outline">
+                    <a href="/khong-gian/phong-an" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
