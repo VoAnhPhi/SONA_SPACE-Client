@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { Category, PaginatedResponse, Product } from "../types";
+import { redirect } from "react-router-dom";
 
 // Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
 const API_URL = "http://localhost:3501/api";
@@ -72,11 +73,12 @@ export const getCategoryBySlug = async (slug: string): Promise<Category> => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error(
-        `Error fetching category with slug ${slug}: ${error.message}`
-      );
-      console.error("Response data:", error.response?.data);
-      console.error("Response status:", error.response?.status);
+      redirect("/not-found");
+      // console.error(
+      //   `Error fetching category with slug ${slug}: ${error.message}`
+      // );
+      // console.error("Response data:", error.response?.data);
+      // console.error("Response status:", error.response?.status);
     } else {
       console.error(`Error fetching category with slug ${slug}:`, error);
     }
@@ -110,6 +112,7 @@ export const getProductsByCategory = async (
       totalPages: pagination.totalPages,
     };
   } catch (error) {
+    redirect("/not-found");
     console.error(
       `Error fetching products for category ${categorySlug}:`,
       error

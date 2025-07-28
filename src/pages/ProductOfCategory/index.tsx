@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, redirect, useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Filter from "../../components/Filter";
@@ -21,7 +21,8 @@ const ProductOfCategory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
+  
   const handleSeeMore = () => {
     const page = parseInt(searchParams.get("page") || "1", 10);
     setSearchParams({ page: (page + 1).toString() });
@@ -37,8 +38,7 @@ const ProductOfCategory = () => {
         const categoryData = await fetchCategoryBySlug(slug);
         setCategory(categoryData);
         if (!categoryData) {
-          setError("Không tìm thấy danh mục");
-          return;
+          navigate("/not-found");
         }
 
         // 2. Gọi API lấy sản phẩm theo slug
@@ -67,7 +67,7 @@ const ProductOfCategory = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    navigate("/not-found");
   }
 
   return (

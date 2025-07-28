@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllCategories, formatCategoryForDisplay } from '../../services/categoryService';
 import type { Category } from '../../types';
-import { Link } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 
 interface CategoryListProps {
   limit?: number;
   showProductCount?: boolean;
 }
 
-const CategoryList: React.FC<CategoryListProps> = ({ 
-  limit, 
-  showProductCount = true 
+const CategoryList: React.FC<CategoryListProps> = ({
+  limit,
+  showProductCount = true
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -23,7 +24,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
         setLoading(true);
         const data = await fetchAllCategories();
         setDebugInfo(prev => `${prev}\nReceived ${data.length} categories`);
-        
+
         // Apply limit if provided
         const limitedData = limit ? data.slice(0, limit) : data;
         setCategories(limitedData);
@@ -42,6 +43,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
 
   // Debug info component (only shown in development) | Just Opening when something went wrong and we need to debug.
   const DebugInfo = () => {
+    navigate("/not-found");
     const isDev = true; // Always show debug info for now
     return isDev && debugInfo ? (
       <div className="category-list-debug">
@@ -64,22 +66,24 @@ const CategoryList: React.FC<CategoryListProps> = ({
   }
 
   if (error) {
-    return (
-      <div className="category-list-error">
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()}>Thử lại</button>
-        <DebugInfo />
-      </div>
-    );
+    redirect("/not-found");
+    // return (
+    //   <div className="category-list-error">
+    //     <p>{error}</p>
+    //     <button onClick={() => window.location.reload()}>Thử lại</button>
+    //     <DebugInfo />
+    //   </div>
+    // );
   }
 
   if (categories.length === 0) {
-    return (
-      <div className="category-list-empty">
-        <p>Không tìm thấy danh mục sản phẩm nào</p>
-        <DebugInfo />
-      </div>
-    );
+    redirect("/not-found");
+    // return (
+    //   <div className="category-list-empty">
+    //     <p>Không tìm thấy danh mục sản phẩm nào</p>
+    //     <DebugInfo />
+    //   </div>
+    // );
   }
 
   return (
@@ -91,9 +95,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
           return (
             <Link to={`/danh-muc/${formattedCategory.slug}`} key={formattedCategory.id} className="category-item">
               <div className="category-image">
-                <img 
-                  src={formattedCategory.image} 
-                  alt={formattedCategory.name} 
+                <img
+                  src={formattedCategory.image}
+                  alt={formattedCategory.name}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;

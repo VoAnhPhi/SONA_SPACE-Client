@@ -330,11 +330,11 @@ const Header = () => {
                                       key={`product-sidebar-${category.category_id}`}
                                     >
                                       <a
-                                        href={`/san-pham/${category.slug}`}
+                                        href={`/danh-muc/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleNavClick(
-                                            `/san-pham/${category.slug}`
+                                            `/danh-muc/${category.slug}`
                                           );
                                         }}
                                       >

@@ -55,7 +55,7 @@ const ProductDetailPage: React.FC = () => {
         prev.set("color", colorId.toString());
         return prev;
       });
-      console.log("selectedVariant", selectedVariant);
+      // console.log("selectedVariant", selectedVariant);
       if (slug) {
         const variant = await fetchVariantBySlugAndColor(slug, colorId);
 
@@ -72,7 +72,7 @@ const ProductDetailPage: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error("Error selecting color:", error);
+      // console.error("Error selecting color:", error);
     }
   };
   const imageList = selectedVariant?.listImage
@@ -144,7 +144,8 @@ const ProductDetailPage: React.FC = () => {
           await handleColorSelect(selectedColorHex, selectedColorId);
         }
       } catch (err) {
-        console.error("Lỗi khi fetch product:", err);
+        navigate("/not-found");
+        // console.error("Lỗi khi fetch product:", err);
       }
     })();
   }, [slug]);
@@ -170,7 +171,7 @@ const ProductDetailPage: React.FC = () => {
         const data = await getProductComments(product.id);
         setCommentData(data);
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        // console.error("Error fetching comments:", error);
       }
     };
 
@@ -249,7 +250,7 @@ const ProductDetailPage: React.FC = () => {
         toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
       }
     } catch (error: any) {
-      console.error("Add to cart error:", error);
+      // console.error("Add to cart error:", error);
       toast.error("Lỗi khi thêm vào giỏ hàng.");
     }
   };
@@ -260,10 +261,10 @@ const ProductDetailPage: React.FC = () => {
     const fetchRelatedProducts = async () => {
       try {
         const related = await getRelatedProductsByRoom(product.id);
-        console.log("AAA", related);
+        // console.log("AAA", related);
         setRelatedProducts(related);
       } catch (error) {
-        console.error("Lỗi lấy sản phẩm liên quan:", error);
+        // console.error("Lỗi lấy sản phẩm liên quan:", error);
       }
     };
 
@@ -297,7 +298,7 @@ const ProductDetailPage: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Wishlist error:", error);
+      // console.error("Wishlist error:", error);
       toast.error("Lỗi xử lý yêu thích", {
         autoClose: 1000,
       });
@@ -318,7 +319,7 @@ const ProductDetailPage: React.FC = () => {
         const exists = await checkVariantInWishlist(selectedVariant.variant_id);
         setWishlist(exists);
       } catch (error) {
-        console.error("Error checking wishlist:", error);
+        //  console.error("Error checking wishlist:", error);
         setWishlist(false);
       }
     };
@@ -327,7 +328,9 @@ const ProductDetailPage: React.FC = () => {
   }, [selectedVariant?.variant_id]);
 
 
-  if (!product) return <p className="text-center">Đang tải sản phẩm...</p>;
+  if (!product) {
+    return <p className="text-center">Đang tải sản phẩm...</p>;
+  }
   return (
     <>
       <Header />
