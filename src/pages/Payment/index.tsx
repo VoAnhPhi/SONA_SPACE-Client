@@ -188,6 +188,90 @@ const Payment: React.FC = () => {
 
 
   console.log("Selected Items in Payment:", selectedItems);
+
+
+
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      const defaultAddress = user.address || "";
+      const defaultPhone = user.phone || "";
+      const defaultName = user.full_name || "";
+      const defaultEmail = user.email || "";
+
+      setFormData((prev) => ({
+        ...prev,
+        fullName: defaultName,
+        email: defaultEmail,
+        phone: defaultPhone,
+        address: defaultAddress,
+      }));
+
+      setPrevAddress(defaultAddress);
+      setPrevPhone(defaultPhone);
+      setPrevName(defaultName);
+      setPrevEmail(defaultEmail);
+    }
+  }, [user, isAuthenticated]);
+
+
+  useEffect(() => {
+    const loadCartFromDatabase = async () => {
+      try {
+        const { success, wishlistItems } = await loadCartService();
+        if (success && wishlistItems) {
+          const formatted = wishlistItems.map((item: any, index: number) => ({
+            id: item.wishlist_id,
+            variant_id: item.variant_id,
+            name: item.product_name,
+            price: item.price,
+            oldPrice: item.price_sale && item.price_sale > 0 ? item.price_sale : null,
+
+            image: item.image?.split(",")[0] || "/images/default.jpg",
+            color: item.color_hex || "#ccc",
+            quantity: item.quantity,
+            category: item.category || "Chưa phân loại",
+          }));
+          console.log(" Items để xóa:", cartItems.map(i => i.id));
+
+          //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
+          const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
+
+
+          setCartItems(filteredItems);
+
+          const subtotal = filteredItems.reduce(
+            (total: number, item: CartItemProps) => {
+              const unitPrice = item.oldPrice || item.price;
+              return total + unitPrice * item.quantity;
+            },
+            0
+          );
+
+
+          const shipping = 30000;
+          const stored = localStorage.getItem("applycode");
+          let discount = 0;
+          let code = "";
+
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            discount = parsed.discount || 0;
+            code = parsed.code || "";
+          }
+
+          setPromoCodeInput(code);
+          const total = subtotal + shipping - discount;
+          setOrderSummary({ subtotal, shipping, discount, total });
+        }
+      } catch (error) {
+        console.error("Lỗi khi load giỏ hàng:", error);
+      }
+    };
+
+    loadCartFromDatabase();
+  }, [selectedItems]);
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -196,6 +280,7 @@ const Payment: React.FC = () => {
         position: "top-right",
         autoClose: 1000,
       })
+        return;
     };
 
     if (cartItems.length === 0) {
@@ -203,12 +288,14 @@ const Payment: React.FC = () => {
         position: "top-right",
         autoClose: 1000,
       })
+        return;
     };
     if (!agreeToTerms) {
       toast.error("Vui lòng đồng ý với điều khoản và điều kiện.", {
         position: "top-right",
         autoClose: 1000,
       })
+        return;
     };
 
     setIsLoading(true);
@@ -297,90 +384,6 @@ const Payment: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-
-  useEffect(() => {
-    if (user && isAuthenticated) {
-      const defaultAddress = user.address || "";
-      const defaultPhone = user.phone || "";
-      const defaultName = user.full_name || "";
-      const defaultEmail = user.email || "";
-
-      setFormData((prev) => ({
-        ...prev,
-        fullName: defaultName,
-        email: defaultEmail,
-        phone: defaultPhone,
-        address: defaultAddress,
-      }));
-
-      setPrevAddress(defaultAddress);
-      setPrevPhone(defaultPhone);
-      setPrevName(defaultName);
-      setPrevEmail(defaultEmail);
-    }
-  }, [user, isAuthenticated]);
-
-
-  useEffect(() => {
-    const loadCartFromDatabase = async () => {
-      try {
-        const { success, wishlistItems } = await loadCartService();
-        if (success && wishlistItems) {
-          const formatted = wishlistItems.map((item: any, index: number) => ({
-            id: item.wishlist_id,
-            variant_id: item.variant_id,
-            name: item.product_name,
-            price: item.price,
-            oldPrice: item.price_sale && item.price_sale > 0 ? item.price_sale : null,
-
-            image: item.image?.split(",")[0] || "/images/default.jpg",
-            color: item.color_hex || "#ccc",
-            quantity: item.quantity,
-            category: item.category || "Chưa phân loại",
-          }));
-          console.log(" Items để xóa:", cartItems.map(i => i.id));
-
-          //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
-          const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
-
-
-          setCartItems(filteredItems);
-
-          const subtotal = filteredItems.reduce(
-            (total: number, item: CartItemProps) => {
-              const unitPrice = item.oldPrice || item.price;
-              return total + unitPrice * item.quantity;
-            },
-            0
-          );
-
-
-          const shipping = 30000;
-          const stored = localStorage.getItem("applycode");
-          let discount = 0;
-          let code = "";
-
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            discount = parsed.discount || 0;
-            code = parsed.code || "";
-          }
-
-          setPromoCodeInput(code);
-          const total = subtotal + shipping - discount;
-          setOrderSummary({ subtotal, shipping, discount, total });
-        }
-      } catch (error) {
-        console.error("Lỗi khi load giỏ hàng:", error);
-      }
-    };
-
-    loadCartFromDatabase();
-  }, [selectedItems]);
-
-
-
 
   return (
     <>

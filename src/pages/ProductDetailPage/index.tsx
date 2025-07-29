@@ -116,7 +116,7 @@ const ProductDetailPage: React.FC = () => {
 
           attributes: res.product.attributes || [],
         });
-
+        console.log("Formatted Product:", formattedProduct);
         setProduct(formattedProduct);
         setRelatedProducts(res.related_products || []);
 
@@ -212,6 +212,14 @@ const ProductDetailPage: React.FC = () => {
       toast.error("Không tìm thấy biến thể sản phẩm");
       return;
     }
+    const stock = selectedVariant.quantity ?? product.stock;
+    if (stock <= 0) {
+      toast.warning("Sản phẩm đã hết hàng, không thể thêm vào giỏ!", {
+        position: "top-right",
+        autoClose: 1500,
+      });
+      return;
+    }
 
     const token = sessionStorage.getItem("authToken");
     if (!token) {
@@ -242,10 +250,10 @@ const ProductDetailPage: React.FC = () => {
         miniCartRef.current?.toggleMiniCart();
       }
       if (response.success) {
-        // toast.success("Đã thêm vào giỏ hàng!", {
-        //   position: "top-right",
-        //   autoClose: 500,
-        // });
+        toast.success("Đã thêm vào giỏ hàng!", {
+          position: "top-right",
+          autoClose: 500,
+        });
       } else {
         toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message);
       }

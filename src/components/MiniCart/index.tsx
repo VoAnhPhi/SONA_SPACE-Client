@@ -171,7 +171,7 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
               <Link to="/gio-hang" className="view-cart-btn">
                 Xem giỏ hàng
               </Link>
-              <Link to="/thanh-toan" className="checkout-btn">
+              <Link to="/gio-hang" className="checkout-btn">
                 Thanh toán
               </Link>
             </div>

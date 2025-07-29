@@ -155,37 +155,49 @@ const CartPage: React.FC = () => {
       return;
     }
 
-    const result = await validateCouponService(promoCodeInput, cartSummary.subtotal, token);
 
-    if (result.success) {
-      const { discount_type, value_price } = result.data.coupon;
+    if (!promoCodeInput.trim()) {
+      toast.error("Vui lòng nhập mã giảm giá.");
+      return;
+    }
 
-      let discount_amount = 0;
-      if (discount_type === 'percentage') {
-        discount_amount = Math.round((cartSummary.subtotal * value_price) / 100);
-      } else if (discount_type === 'fixed') {
-        discount_amount = Math.min(value_price, cartSummary.subtotal);
+    try {
+      const result = await validateCouponService(promoCodeInput, cartSummary.subtotal, token);
+
+      if (result.success) {
+        const { discount_type, value_price } = result.data.coupon;
+
+        let discount_amount = 0;
+        if (discount_type === 'percentage') {
+          discount_amount = Math.round((cartSummary.subtotal * value_price) / 100);
+        } else if (discount_type === 'fixed') {
+          discount_amount = Math.min(value_price, cartSummary.subtotal);
+        }
+
+        localStorage.setItem("applycode", JSON.stringify({
+          couponcode_id: result.data.coupon.couponcode_id,
+          code: promoCodeInput,
+          discount: discount_amount
+        }));
+
+        console.log("Kết quả mã giảm giá:", result.data.coupon);
+        setAppliedDiscount(discount_amount);
+        setCartSummary((prev) => ({
+          ...prev,
+          discount: discount_amount,
+          total: prev.subtotal + prev.shipping - discount_amount,
+        }));
+        recalculateSummary(cartItems, discount_amount);
+        toast.success("Mã giảm giá đã được áp dụng!");
+      } else {
+        toast.error(result.error || "Mã giảm giá không hợp lệ.");
       }
-
-      localStorage.setItem("applycode", JSON.stringify({
-        couponcode_id: result.data.coupon.couponcode_id,
-        code: promoCodeInput,
-        discount: discount_amount
-
-      }));
-      console.log(" Kết quả mã giảm giá:", result.data.coupon);
-      setAppliedDiscount(discount_amount);
-      setCartSummary((prev) => ({
-        ...prev,
-        discount: discount_amount,
-        total: prev.subtotal + prev.shipping - discount_amount,
-      }));
-      recalculateSummary(cartItems, discount_amount);
-      toast.success("Mã giảm giá đã được áp dụng!");
-    } else {
-      toast.error(result.error);
+    } catch (error) {
+      console.error("Lỗi khi kiểm tra mã giảm giá:", error);
+      toast.error("Đã xảy ra lỗi khi áp dụng mã giảm giá.");
     }
   };
+
 
   const handleSelectItem = (id: number, checked: boolean) => {
     setSelectedItems((prevSelected) => {
@@ -202,15 +214,15 @@ const CartPage: React.FC = () => {
     setAppliedDiscount(0);
     setPromoCodeInput("");
   }, []);
-const formatPrice1 = (value: number | string): string => {
-  if (!value) return "0";
+  const formatPrice1 = (value: number | string): string => {
+    if (!value) return "0";
 
-  const cleaned = String(value).replace(/[^\d]/g, "");
+    const cleaned = String(value).replace(/[^\d]/g, "");
 
-  const result = Math.floor(Number(cleaned) / 100);
+    const result = Math.floor(Number(cleaned) / 100);
 
-  return result.toLocaleString("vi-VN");
-};
+    return result.toLocaleString("vi-VN");
+  };
   return (
     <>
       <Header />
