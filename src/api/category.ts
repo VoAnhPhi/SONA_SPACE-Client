@@ -1,18 +1,7 @@
 import axios from "axios";
 import type { Category, PaginatedResponse, Product } from "../types";
 import { redirect } from "react-router-dom";
-
-// Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
-const API_URL = "http://localhost:3501/api";
-
-// Hàm helper để kiểm tra và xử lý response
-const handleApiResponse = (response: any, errorMessage: string) => {
-  if (!response || !response.data) {
-    console.error(errorMessage);
-    throw new Error(errorMessage);
-  }
-  return response.data;
-};
+import { convertToAdminApiUrl } from "../utils/url";
 
 /**
  * Get all categories
@@ -20,7 +9,7 @@ const handleApiResponse = (response: any, errorMessage: string) => {
  */
 export const getAllCategories = async (): Promise<Category[]> => {
   try {
-    const response = await axios.get(`${API_URL}/categories`);
+    const response = await axios.get(convertToAdminApiUrl("/categories"));
     // Kiểm tra nếu response có dữ liệu
     if (!response.data) {
       // console.error("API returned empty data for categories");
@@ -45,9 +34,6 @@ export const getAllCategories = async (): Promise<Category[]> => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      // console.error(`Error fetching categories: ${error.message}`);
-      // console.error("Response data:", error.response?.data);
-      // console.error("Response status:", error.response?.status);
     } else {
       console.error("Error fetching categories:", error);
     }
@@ -62,7 +48,7 @@ export const getAllCategories = async (): Promise<Category[]> => {
  */
 export const getCategoryBySlug = async (slug: string): Promise<Category> => {
   try {
-    const response = await axios.get(`${API_URL}/categories/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/categories/${slug}`));
     // console.log("API response received:", response.status);
 
     if (!response.data) {
@@ -98,7 +84,7 @@ export const getProductsByCategory = async (
 ): Promise<PaginatedResponse<Product>> => {
   try {
     const response = await axios.get(
-      `${API_URL}/categories/${categorySlug}/products`,
+      convertToAdminApiUrl(`/categories/${categorySlug}/products`),
       {
         params,
       }

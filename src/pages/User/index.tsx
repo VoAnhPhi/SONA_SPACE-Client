@@ -14,6 +14,7 @@ import type {
   UserInfo, CouponCode,
   PromoCodeWithTimer as PromoCode
 } from "../../types";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 // Định nghĩa interface cho API mới
 interface ProductColor {
@@ -196,7 +197,7 @@ const User: React.FC = () => {
       }
 
       // Gọi API thực tế
-      const response = await axios.get<OrdersAPIResponse>(`http://localhost:3501/api/orders-id/${userId}`, {
+      const response = await axios.get<OrdersAPIResponse>(convertToAdminApiUrl(`/orders-id/${userId}`), {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -229,7 +230,7 @@ const User: React.FC = () => {
       const token = sessionStorage.getItem("authToken");
       if (!token) return;
 
-      const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
+      const res = await axios.get(convertToAdminApiUrl("/couponcodes/user-has-coupon"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
@@ -275,31 +276,6 @@ const User: React.FC = () => {
   }, []);
 
   const [userUsedCoupons, setUserUsedCoupons] = useState<{ code: string; status: number }[]>([]);
-
-  // const fetchUserVoucherStatuses = async () => {
-  //   try {
-  //     const token = sessionStorage.getItem("authToken");
-  //     if (!token) return;
-
-  //     const res = await axios.get("http://localhost:3501/api/couponcodes/user-has-coupon", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-
-  //     const validCoupons = res.data.filter((coupon: Coupon) => coupon.couponStatus !== 0)
-
-  //     console.log("User used coupons:", validCoupons);
-  //     setUserUsedCoupons(validCoupons);
-  //     // console.log("User used coupons:", res.data);
-  //     // setUserUsedCoupons(res.data);
-  //   } catch (error) {
-  //     console.error("Lỗi khi lấy user_has_coupon:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUserVoucherStatuses();
-  // }, []);
-
   const formatDateTime = (dateStr: string | Date) => {
     const date = new Date(dateStr);
 
@@ -444,7 +420,7 @@ const User: React.FC = () => {
 
       // Gọi API cập nhật thông tin người dùng
       const response = await axios.put(
-        `http://localhost:3501/api/users/${userId}`,
+        convertToAdminApiUrl(`/users/${userId}`),
         updatedUserInfo,
         {
           headers: {
@@ -530,7 +506,7 @@ const User: React.FC = () => {
 
       // Gọi API đổi mật khẩu
       const response = await axios.put(
-        `http://localhost:3501/api/users/${userId}`,
+        convertToAdminApiUrl(`/users/${userId}`),
         {
           password: passwordData.newPassword,
           // Giữ nguyên các thông tin khác

@@ -1,6 +1,7 @@
 import type { PaginatedResponse, Product, Variant } from "../types";
 import { getProductBySlug, getAllProducts } from "../api/product";
 import { getProductsByRoom } from "../api/room";
+import { convertToAdminApiUrl } from "../utils/url";
 
 /**
  * Format raw product from API to usable Product type
@@ -261,7 +262,7 @@ export const getRelatedProductsByRoom = async (
   try {
     const token = sessionStorage.getItem("authToken");
     const res = await fetch(
-      `http://localhost:3501/api/products/related/by-room/${productId}`,
+      convertToAdminApiUrl(`/products/related/by-room/${productId}`),
       {
         headers: {
           Authorization: `Bearer ${token}`,

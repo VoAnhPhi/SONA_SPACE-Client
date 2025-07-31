@@ -2,6 +2,7 @@
 import axios from "axios";
 import { saveToCart } from "../api/cart";
 import { fetchCartFromDatabase } from "../api/cart";
+import { convertToAdminApiUrl } from "../utils/url";
 const notifyCartUpdated = () => {
   window.dispatchEvent(new CustomEvent("cart-updated"));
 };
@@ -51,7 +52,7 @@ export const updateCartQuantityService = async (wishlistId: number, quantity: nu
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.put(`http://localhost:3501/api/wishlists/${wishlistId}`, {
+  const response = await axios.put(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
     quantity,
   }, {
     headers: {
@@ -66,7 +67,7 @@ export const removeFromCartService = async (wishlistId: number) => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
+  const response = await axios.delete(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -80,7 +81,7 @@ export const clearCartService = async () => {
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   try {
-    const response = await axios.delete("http://localhost:3501/api/wishlists/clear", {
+    const response = await axios.delete(convertToAdminApiUrl("/wishlists/clear"), {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -96,7 +97,7 @@ notifyCartUpdated();
 
 export const clearCartServiceid = async (selectedItemIds: number[]) => {
   const token = sessionStorage.getItem("authToken");
-  const res = await axios.delete('http://localhost:3501/api/wishlists/clearid', {
+  const res = await axios.delete(convertToAdminApiUrl("/wishlists/clearid"), {
     headers: { Authorization: `Bearer ${token}` },
     data: { selectedItemIds }
   });

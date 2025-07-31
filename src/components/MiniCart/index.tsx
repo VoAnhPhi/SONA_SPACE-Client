@@ -151,7 +151,7 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
           ) : (
             <div className="empty-cart">
               <div className="empty-cart-icon">
-                <img src="/images/icons/empty-cart.svg" alt="Giỏ hàng trống" />
+                <img src="/images/icons/handbag.svg" alt="Giỏ hàng trống" />
               </div>
               <p>Giỏ hàng của bạn đang trống</p>
               <Link to="/san-pham" className="btn-browse">

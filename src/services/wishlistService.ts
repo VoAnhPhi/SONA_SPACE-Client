@@ -1,11 +1,12 @@
 import axios from "axios";
+import { convertToAdminApiUrl } from "../utils/url";
 
 export const addToWishlist = async (variant_id: number, quantity: number) => {
   const token = sessionStorage.getItem("authToken");
 
   try {
     const response = await axios.post(
-      "http://localhost:3501/api/wishlists",
+      convertToAdminApiUrl("/wishlists"),
       {
         variant_id,
         quantity,
@@ -29,7 +30,7 @@ export const fetchWishlistFromDatabase = async () => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.get("http://localhost:3501/api/wishlists?status=1", {
+  const response = await axios.get(convertToAdminApiUrl("/wishlists?status=1"), {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -42,7 +43,7 @@ export const fetchWishlistFromDatabase1 = async () => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.get("http://localhost:3501/api/wishlists/wwww?status=1", {
+  const response = await axios.get(convertToAdminApiUrl("/wishlists/wwww?status=1"), {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -84,7 +85,7 @@ export const removeFromWishlistService = async (variantId: number) => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.delete(`http://localhost:3501/api/wishlists/variant/${variantId}`, {
+  const response = await axios.delete(convertToAdminApiUrl(`/wishlists/variant/${variantId}`), {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -99,7 +100,7 @@ export const checkVariantInWishlist = async (variantId: number): Promise<boolean
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   try {
-    const response = await axios.get(`http://localhost:3501/api/wishlists/variant/${variantId}`, {
+    const response = await axios.get(convertToAdminApiUrl(`/wishlists/variant/${variantId}`), {
       headers: {
         Authorization: `Bearer ${token}`,
       },

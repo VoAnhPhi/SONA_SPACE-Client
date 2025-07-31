@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 interface FilterProps {
   onFilterChange: (filters: {
@@ -121,13 +122,13 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
     const fetchFilters = async () => {
       try {
         const [catRes, roomRes, colorRes] = await Promise.all([
-          fetch("http://localhost:3501/api/categories/filter/").then((res) =>
+          fetch(convertToAdminApiUrl("/categories/filter/")).then((res) =>
             res.json()
           ),
-          fetch("http://localhost:3501/api/rooms/filter/").then((res) =>
+          fetch(convertToAdminApiUrl("/rooms/filter/")).then((res) =>
             res.json()
           ),
-          fetch("http://localhost:3501/api/color/filter/").then((res) =>
+          fetch(convertToAdminApiUrl("/color/filter/")).then((res) =>
             res.json()
           ),
         ]);

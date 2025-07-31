@@ -1,15 +1,14 @@
 import axios from "axios";
 import type { Room, Product, PaginatedResponse } from "../types";
+import { convertToAdminApiUrl } from "../utils/url";
 
-// Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
-const API_URL = "http://localhost:3501/api";
 /**
  * Get all rooms
  * @returns {Promise<Room[]>} List of rooms
  */
 export const getAllRooms = async (): Promise<Room[]> => {
   try {
-    const response = await axios.get(`${API_URL}/rooms`);
+    const response = await axios.get(convertToAdminApiUrl("/rooms"));
 
     // Kiểm tra nếu response có dữ liệu
     // if (!response.data) {
@@ -45,7 +44,7 @@ export const getAllRooms = async (): Promise<Room[]> => {
  */
 export const getRoomBySlug = async (slug: string): Promise<Room> => {
   try {
-    const response = await axios.get(`${API_URL}/rooms/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/rooms/${slug}`));
 
     if (!response.data) {
       console.error(`API returned empty data for category slug: ${slug}`);
@@ -70,7 +69,7 @@ export const getProductsByRoom = async (
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product>> => {
   try {
-    const response = await axios.get(`${API_URL}/rooms/${roomSlug}/products`, {
+    const response = await axios.get(convertToAdminApiUrl(`/rooms/${roomSlug}/products`), {
       params,
     });
 

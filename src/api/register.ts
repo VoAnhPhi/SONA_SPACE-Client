@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { ApiResponse } from '../types';
+import { convertToAdminApiUrl } from '../utils/url';  
 
 interface RegisterData {
   email: string;
@@ -11,7 +12,7 @@ interface RegisterData {
 
 export const registerUser = async (userData: RegisterData): Promise<ApiResponse<any>> => {
   try {
-    const response = await axios.post('http://localhost:3501/api/auth/register', userData);
+    const response = await axios.post(convertToAdminApiUrl("/auth/register"), userData);
     return {
       success: true,
       data: response.data,

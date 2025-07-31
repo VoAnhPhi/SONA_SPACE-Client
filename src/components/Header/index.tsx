@@ -11,6 +11,7 @@ import type { MiniCartHandle } from "../../components/MiniCart";
 import { loadCartService } from "../../services/cartService";
 import MiniNotification from "../../components/MiniNotify";
 import type { MiniNotificationHandle } from "../../components/MiniNotify";
+import { convertToAdminApiUrl } from "../../utils/url";
 const Header = () => {
   // State để lưu trạng thái active của nav item
   const [activeNavItem, setActiveNavItem] = useState<string>("/");
@@ -47,7 +48,7 @@ const Header = () => {
   useEffect(() => {
     if (searchTerm.trim()) {
       // Lấy gợi ý từ tên sản phẩm (tối đa 5)
-      fetch(`http://localhost:3501/api/products/search?q=${encodeURIComponent(searchTerm)}`)
+      fetch(convertToAdminApiUrl(`/products/search?q=${encodeURIComponent(searchTerm)}`))
         .then(res => res.json())
         .then(data => {
           const keywords = (data.results || []).map((item: any) => item.name).slice(0, 5);
@@ -55,7 +56,7 @@ const Header = () => {
             setSuggestedKeywords(keywords);
           } else {
             // Nếu không có kết quả, lấy sản phẩm mới nhất
-            fetch('http://localhost:3501/api/products/newest?limit=5')
+            fetch(convertToAdminApiUrl(`/products/newest?limit=5`))
               .then(res => res.json())
               .then(newest => {
                 const newNames = (Array.isArray(newest) ? newest : []).map((item: any) => item.name).slice(0, 5);
@@ -88,7 +89,7 @@ const Header = () => {
   // Lấy sản phẩm mới nhất khi searchTerm rỗng
   useEffect(() => {
     if (searchTerm.trim() === "") {
-      fetch("http://localhost:3501/api/products/newest?limit=6")
+      fetch(convertToAdminApiUrl(`/products/newest?limit=6`))
         .then(res => res.json())
         .then(data => {
           setLatestProducts(Array.isArray(data) ? data : []);
@@ -233,7 +234,7 @@ const Header = () => {
     setSearchLoading(true);
     setShowSuggestions(true);
     try {
-      const res = await fetch(`http://localhost:3501/api/products/search?q=${encodeURIComponent(value)}`);
+      const res = await fetch(convertToAdminApiUrl(`/products/search?q=${encodeURIComponent(value)}`));
       const data = await res.json();
       setSearchResults(data.results || []);
     } catch (err) {

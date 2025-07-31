@@ -1,5 +1,6 @@
 // api/cart.ts
 import axios from "axios";
+import { convertToAdminApiUrl } from "../utils/url";
 
 export const saveToCart = async (data: { status: number; cartItems: any[] }) => {
   const token = sessionStorage.getItem("authToken");
@@ -16,7 +17,7 @@ export const saveToCart = async (data: { status: number; cartItems: any[] }) => 
 const cartItem = data.cartItems[0]; // Lấy item đầu tiên từ mảng cartItems
 console.log('variant_id gửi lên:', cartItem.variant_id);
 const response = await axios.post(
-  "http://localhost:3501/api/wishlists",
+  convertToAdminApiUrl("/wishlists"),
   {
     variant_id: cartItem.variant_id,
     quantity: cartItem.quantity,
@@ -38,7 +39,7 @@ export const fetchCartFromDatabase = async () => {
   const token = sessionStorage.getItem("authToken");
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
-  const response = await axios.get("http://localhost:3501/api/wishlists?status=0", {
+  const response = await axios.get(convertToAdminApiUrl("/wishlists?status=0"), {
     headers: {
       Authorization: `Bearer ${token}`,
     },

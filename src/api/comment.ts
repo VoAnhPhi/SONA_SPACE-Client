@@ -1,12 +1,12 @@
 // src/api/comment.api.ts
 import axios from "axios";
+import { convertToAdminApiUrl } from "../utils/url";
 
-const API_URL = "http://localhost:3501/api";
 
 export const getProductComments = async (productId: number, page = 1) => {
   try {
     const response = await axios.get(
-      `${API_URL}/comments/product/${productId}`,
+      convertToAdminApiUrl(`/comments/product/${productId}`),
       {
         params: { page },
       }

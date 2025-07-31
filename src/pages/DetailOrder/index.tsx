@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
 import { cancelOrder } from "../../services/userServices";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 interface OrderProduct {
   order_item_id: string;
@@ -61,7 +62,7 @@ const DetailOrder: React.FC = () => {
     try {
       const token = sessionStorage.getItem("authToken");
       const res = await axios.get(
-        `http://localhost:3501/api/orders/hash/${id}`,
+          convertToAdminApiUrl(`/orders/hash/${id}`),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -376,7 +377,7 @@ const DetailOrder: React.FC = () => {
       };
       console.log("Sending payload:", payload);
       const res = await axios.post(
-        "http://localhost:3501/api/comments",
+        convertToAdminApiUrl("/comments"),
         payload,
         {
           headers: {

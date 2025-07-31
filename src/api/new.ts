@@ -1,8 +1,6 @@
 import axios from "axios";
 import type { NewsArticle, NewsCategory } from "../types";
-
-// Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
-const API_URL = "http://localhost:3501/api";
+import { convertToAdminApiUrl } from "../utils/url";  
 
 // Hàm helper để kiểm tra và xử lý response
 // const handleApiResponse = (response: any, errorMessage: string) => {
@@ -22,7 +20,7 @@ export const getAllNews = async (
   tryFallback = false
 ): Promise<NewsArticle[]> => {
   try {
-    const response = await axios.get(`${API_URL}/news`);
+    const response = await axios.get(convertToAdminApiUrl("/news"));
 
     if (!response.data) {
       return [];
@@ -49,7 +47,7 @@ export const getNewsBySlugDetail = async (
   slug: string
 ): Promise<NewsArticle> => {
   try {
-    const response = await axios.get(`${API_URL}/news/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/news/${slug}`));
     if (!response.data) {
       throw new Error("news not found");
     }
@@ -63,7 +61,7 @@ export const getAllNewsSimple = async (
   tryFallback = false
 ): Promise<NewsArticle[]> => {
   try {
-    const response = await axios.get(`${API_URL}/news/simple`);
+    const response = await axios.get(convertToAdminApiUrl("/news/simple"));
 
     if (!response.data) {
       return [];
@@ -92,7 +90,7 @@ export const getAllNewsByView = async (
   tryFallback = false
 ): Promise<NewsArticle[]> => {
   try {
-    const response = await axios.get(`${API_URL}/news/views`);
+    const response = await axios.get(convertToAdminApiUrl("/news/views"));
     if (!response.data) return [];
     if (!Array.isArray(response.data)) {
       const data =
@@ -114,7 +112,7 @@ export const getAllNewsByView = async (
 
 export const getAllNewsCategories = async (): Promise<NewsCategory[]> => {
   try {
-    const response = await axios.get(`${API_URL}/news-categories`);
+    const response = await axios.get(convertToAdminApiUrl("/news-categories"));
 
     // Kiểm tra nếu response có dữ liệu
     if (!response.data) {
@@ -140,7 +138,7 @@ export const getAllNewsCategories = async (): Promise<NewsCategory[]> => {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
         try {
-          const altResponse = await axios.get(`${API_URL}/news`);
+          const altResponse = await axios.get(convertToAdminApiUrl("/news"));
           return altResponse.data;
         } catch (altError) {}
       }
@@ -151,7 +149,7 @@ export const getAllNewsCategories = async (): Promise<NewsCategory[]> => {
 };
 export const getNewsBySlug = async (slug: string): Promise<NewsArticle> => {
   try {
-    const response = await axios.get(`${API_URL}/news/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/news/${slug}`));
 
     if (!response.data) {
       throw new Error("news not found");
@@ -162,7 +160,7 @@ export const getNewsBySlug = async (slug: string): Promise<NewsArticle> => {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
         try {
-          const altResponse = await axios.get(`${API_URL}/news/${slug}`);
+          const altResponse = await axios.get(convertToAdminApiUrl(`/news/${slug}`));
           return altResponse.data;
         } catch (altError) {}
       }
@@ -184,7 +182,7 @@ export const getNewsCategoryBynews = async (
 ): Promise<NewsCategory> => {
   try {
     const response = await axios.get(
-      `${API_URL}/news-categories/${newsId}/NewsCategory`,
+      convertToAdminApiUrl(`/news-categories/${newsId}/NewsCategory`),
       { params }
     );
 
@@ -194,7 +192,7 @@ export const getNewsCategoryBynews = async (
       if (error.response?.status === 404) {
         try {
           const altResponse = await axios.get(
-            `${API_URL}/news-categories/${newsId}/NewsCategory`,
+            convertToAdminApiUrl(`/news-categories/${newsId}/NewsCategory`),
             { params }
           );
           return altResponse.data;

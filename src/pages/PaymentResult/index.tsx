@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 const PaymentResult: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const PaymentResult: React.FC = () => {
 
       if (resultCode === "0" && orderHash) {
         try {
-          const res = await axios.get(`http://localhost:3501/api/orders/hash/${orderHash}`);
+          const res = await axios.get(convertToAdminApiUrl(`/orders/hash/${orderHash}`));
 
           if (res.data.success && res.data.order) {
             navigate(`/dat-hang-thanh-cong/${orderHash}`);

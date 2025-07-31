@@ -1,11 +1,10 @@
 import axios from "axios";
 import type { Attribute } from "../types";
-
-const API_URL = "http://localhost:3501/api";
+import { convertToAdminApiUrl } from "../utils/url";
 
 export const getAllMaterials = async (): Promise<Attribute[]> => {
   try {
-    const response = await axios.get(`${API_URL}/materials`);
+    const response = await axios.get(convertToAdminApiUrl("/materials"));
     if (!response.data) throw new Error("No data received for materials");
     return response.data;
   } catch (error) {
@@ -15,7 +14,7 @@ export const getAllMaterials = async (): Promise<Attribute[]> => {
 };
 export const getAllMaterialsSlugs = async (slug: string): Promise<string[]> => {
   try {
-    const response = await axios.get(`${API_URL}/materials/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/materials/${slug}`));
     if (!response.data) throw new Error("No data received for material slugs");
     return response.data;
   } catch (error) {

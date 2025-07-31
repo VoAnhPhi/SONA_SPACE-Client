@@ -6,6 +6,7 @@ import type { Product, Variant } from "../../types";
 import { removeFromWishlistService } from "../../services/wishlistService";
 import { saveToOrCart } from "../../services/cartService";
 import { toast } from "react-toastify";
+import { convertToAdminApiUrl } from "../../utils/url";
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
   const [hoveredColor, setHoveredColor] = useState<string | null>(null);
@@ -32,7 +33,7 @@ const handleWishlistChange = (e: Event) => {
   const token = sessionStorage.getItem("authToken");
   if (!token) return;
 
-  fetch(`http://localhost:3501/api/wishlists?status=1`, {
+  fetch(convertToAdminApiUrl(`/wishlists?status=1`), {
     headers: {
       Authorization: `Bearer ${token}`
     }

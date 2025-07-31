@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { saveToOrCart } from "../../services/cartService";
 import { toast } from "react-toastify";
 import type { MiniCartHandle } from "../../components/MiniCart";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 // Định nghĩa kiểu dữ liệu cho wishlist item
 interface WishlistItem {
@@ -73,7 +74,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
       // Lấy tên sản phẩm cho từng product_id
       await Promise.all(productIds.map(async (productId) => {
         try {
-          const response = await axios.get(`http://localhost:3501/api/wishlists?status=1`, {
+          const response = await axios.get(convertToAdminApiUrl(`/wishlists?status=1`), {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -111,7 +112,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
         return;
       }
 
-      const response = await axios.get(`http://localhost:3501/api/wishlists?status=1`, {
+      const response = await axios.get(convertToAdminApiUrl(`/wishlists?status=1`), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -191,7 +192,7 @@ const handleAddToCart = async (variantId: number) => {
       const removedItem = wishlistItems.find(item => item.wishlist_id === wishlistId);
 
       // Gọi API xóa
-      await axios.delete(`http://localhost:3501/api/wishlists/${wishlistId}`, {
+      await axios.delete(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

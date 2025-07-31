@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import { convertToAdminApiUrl } from "../../utils/url";
 
 export interface Event {
   id: number;
@@ -30,7 +31,7 @@ const PopupAd: React.FC = () => {
         currentTime - parseInt(lastShownTime, 10) > SESSION_TIMEOUT_MS);
 
     if (shouldShowPopup) {
-      fetch("http://localhost:3501/api/events/active")
+      fetch(convertToAdminApiUrl("/events/active"))
         .then((response) => {
           if (!response.ok) {
             if (response.status === 404) return null;

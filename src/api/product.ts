@@ -1,7 +1,6 @@
 import axios from "axios";
 import type { Product, PaginatedResponse, Variant } from "../types";
-
-const API_URL = "http://localhost:3501/api";
+import { convertToAdminApiUrl } from "../utils/url";
 
 const handleApiResponse = (response: any, errorMessage: string) => {
   if (!response || !response.data) {
@@ -39,12 +38,12 @@ export const getAllProducts = async (
     });
 
     console.log(
-      `Calling API: GET ${API_URL}/products?${queryParams.toString()}`
+      `Calling API: GET ${convertToAdminApiUrl("/products")}?${queryParams.toString()}`
     );
 
     const token = sessionStorage.getItem("authToken"); // hoặc localStorage nếu bạn dùng nó
 
-    const response = await axios.get(`${API_URL}/products`, {
+    const response = await axios.get(convertToAdminApiUrl("/products"), {
       params: queryParams,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -92,7 +91,7 @@ export const getProductBySlug = async (
   related_products: any[];
 }> => {
   try {
-    const response = await axios.get(`${API_URL}/products/test/${slug}`);
+    const response = await axios.get(convertToAdminApiUrl(`/products/test/${slug}`));
     return handleApiResponse(response, "No data received from API");
   } catch (error) {
     // xử lý lỗi...
@@ -112,10 +111,10 @@ export const searchProducts = async (
 ): Promise<PaginatedResponse<Product>> => {
   try {
     console.log(
-      `Calling API: GET ${API_URL}/products/search with keyword: ${keyword}`
+      `Calling API: GET ${convertToAdminApiUrl("/products/search")} with keyword: ${keyword}`
     );
 
-    const response = await axios.get(`${API_URL}/products/search`, {
+    const response = await axios.get(convertToAdminApiUrl("/products/search"), {
       params: { ...params, keyword },
     });
 
@@ -156,7 +155,7 @@ export const getNewestProducts = async (
   try {
     const token = sessionStorage.getItem("authToken"); // hoặc localStorage.getItem()
 
-    const response = await axios.get(`${API_URL}/products/newest`, {
+    const response = await axios.get(convertToAdminApiUrl("/products/newest"), {
       params: { limit },
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });

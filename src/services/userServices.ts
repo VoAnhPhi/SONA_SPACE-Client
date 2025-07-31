@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { convertToAdminApiUrl } from '../utils/url';
 
 /**
  * Hủy đơn hàng
@@ -14,7 +15,7 @@ export const cancelOrder = async (orderId: number, reason?: string): Promise<any
     }
 
     const response = await axios.put(
-      `http://localhost:3501/api/orders-id/cancel/${orderId}`,
+      convertToAdminApiUrl(`/orders-id/cancel/${orderId}`),
       { reason: reason || 'Hủy bởi khách hàng' },
       {
         headers: {

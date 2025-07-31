@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import './styles.css';
-
-const API_URL = 'http://localhost:3501/api';
+import { convertToAdminApiUrl } from '../../utils/url';
 
 const ApiTest: React.FC = () => {
   const [apiStatus, setApiStatus] = useState<'loading' | 'online' | 'offline'>('loading');
@@ -13,7 +11,7 @@ const ApiTest: React.FC = () => {
     const checkApiStatus = async () => {
       try {
         setApiStatus('loading');
-        const response = await axios.get(`${API_URL}/categories`);
+        const response = await axios.get(convertToAdminApiUrl("/categories"));
         setResponseData(response.data);
         setApiStatus('online');
         setError(null);
@@ -21,7 +19,7 @@ const ApiTest: React.FC = () => {
         setApiStatus('offline');
         if (axios.isAxiosError(err)) {
           if (err.code === 'ECONNREFUSED') {
-            setError(`API server is not running or not accessible at ${API_URL}`);
+            setError(`API server is not running or not accessible at ${convertToAdminApiUrl("/categories")}`);
           } else {
             setError(`Error: ${err.message}`);
           }
@@ -52,7 +50,7 @@ const ApiTest: React.FC = () => {
           <div className="troubleshooting">
             <h4>Troubleshooting Steps:</h4>
             <ol>
-              <li>Make sure your API server is running at <code>{API_URL}</code></li>
+              <li>Make sure your API server is running at <code>{convertToAdminApiUrl("/categories")}</code></li>
               <li>Check if CORS is properly configured on your server</li>
               <li>Verify network connectivity between client and server</li>
               <li>Check browser console for additional errors</li>

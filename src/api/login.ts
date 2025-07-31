@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { ApiResponse, User } from "../types";
+import { convertToAdminApiUrl } from "../utils/url";
 
 interface LoginData {
   email: string;
@@ -25,7 +26,7 @@ export const loginUser = async (
 ): Promise<ApiResponse<LoginResponse>> => {
   try {
     const response = await axios.post(
-      "http://localhost:3501/api/auth/login",
+      convertToAdminApiUrl("/auth/login"),
       userData
     );
     return {
@@ -54,7 +55,7 @@ export const googleLogin = async (
 ): Promise<ApiResponse<GoogleLoginResponse>> => {
   try {
     const response = await axios.post(
-      `http://localhost:3501/api/auth/google-login`,
+      convertToAdminApiUrl("/auth/google-login"),
       { token: data.accessToken }
     );
     return {

@@ -1,10 +1,11 @@
 // services/paymentService.ts
 import axios from "axios";
+import { convertToAdminApiUrl } from "../utils/url";
 
 export const createOrderService = async (orderData: any) => {
   const token = sessionStorage.getItem("authToken"); 
   try {
-    const res = await axios.post("http://localhost:3501/api/orders", orderData, {
+    const res = await axios.post(convertToAdminApiUrl("/orders"), orderData, {
       headers: {
         Authorization: `Bearer ${token}`, 
       },
@@ -30,7 +31,7 @@ export const returnOrder = async (orderId: number | string, reason: string): Pro
     }
 
     const response = await axios.post(
-      `http://localhost:3501/api/orders/return/${orderId}`,
+      convertToAdminApiUrl(`/orders/return/${orderId}`),
       { reason },
       {
         headers: {
