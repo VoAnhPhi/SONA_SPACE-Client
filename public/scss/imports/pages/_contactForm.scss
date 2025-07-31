@@ -1,5 +1,6 @@
 .contact-design-page {
   padding-bottom: 60px;
+  padding-top: 130px;
 
   .store-banner {
     width: 100%;
@@ -36,6 +37,7 @@
       font-size: 16px;
       line-height: 1.6;
       color: #666;
+      font-family: 'M-R';
       margin-bottom: 30px;
       max-width: 90%;
     }
@@ -71,6 +73,7 @@
           }
 
           p {
+            font-family: 'Be-SB ', sans-serif;
             font-size: 14px;
             line-height: 1.6;
             color: #666;
@@ -78,6 +81,16 @@
 
             &:last-child {
               margin-bottom: 0;
+            }
+
+            a {
+              color: #333;
+              text-decoration: none;
+              transition: color 0.3s ease;
+
+              &:hover {
+                color: darken(#f5a623, 10%);
+              }
             }
           }
         }
@@ -94,6 +107,7 @@
 
       p {
         font-size: 14px;
+        font-family: 'Be-SB ', sans-serif;
         line-height: 1.6;
         color: #666;
         margin-bottom: 15px;
@@ -101,6 +115,7 @@
 
       .email-contact {
         margin-top: 20px;
+        font-family: 'Be-SB ', sans-serif;
 
         strong {
           color: #333;
@@ -110,6 +125,7 @@
   }
 
   .contact-form-container {
+    height: fit-content;
     background-color: #f8f8f8;
     padding: 30px;
     border-radius: 8px;
@@ -153,6 +169,7 @@
 
           input[type="checkbox"] {
             margin-top: 3px;
+            width: auto;
           }
 
           label {
@@ -161,6 +178,29 @@
             color: #666;
           }
         }
+
+        .checkbox-text {
+          @include text(14px, M-R, normal, #888, null);
+          display: flex;
+          align-items: center;
+          gap: 3px;
+
+          a {
+            color: #f5a623;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+
+            &:hover {
+              color: darken(#f5a623, 10%);
+            }
+          }
+
+
+        }
+
+
+
+
       }
 
       .submit-btn {

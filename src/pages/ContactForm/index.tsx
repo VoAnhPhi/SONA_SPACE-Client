@@ -16,14 +16,16 @@ const ContactForm: React.FC = () => {
     email: "",
     phone: "",
     message: "",
-    agreeToTerms: false
+    agreeToTerms: false,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -31,7 +33,7 @@ const ContactForm: React.FC = () => {
     const { name, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: checked
+      [name]: checked,
     });
   };
 
@@ -39,7 +41,9 @@ const ContactForm: React.FC = () => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Here you would typically send the data to your backend
-    alert("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
+    alert(
+      "Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!"
+    );
   };
 
   return (
@@ -47,9 +51,9 @@ const ContactForm: React.FC = () => {
       <Header />
       <div className="contact-design-page">
         {/* Banner Section */}
-        <div className="store-banner">
+        {/* <div className="store-banner">
           <img src="/images/ContactForm/banner_contact.jpg" alt="SONA SPACE Store Front" />
-        </div>
+        </div> */}
 
         <div className="container">
           <div className="contact-design-wrapper">
@@ -57,9 +61,9 @@ const ContactForm: React.FC = () => {
             <div className="store-info-section">
               <h1>Hãy liên hệ với chúng tôi</h1>
               <p className="intro-text">
-                Nâng tầm không gian của bạn với những thiết kế nội thất mang biệt phẩm ánh.
-                Phong cách và trải nghiệm đẳng cấp của bạn, được chăm sóc và tinh
-                xảo để mang đến trải nghiệm sống khó quên.
+                Nâng tầm không gian của bạn với những thiết kế nội thất mang
+                biệt phản ánh phong cách và trải nghiệm đẳng cấp của bạn, được
+                chăm sóc và tinh xảo để mang đến trải nghiệm sống khó quên.
               </p>
 
               <div className="info-items">
@@ -69,7 +73,15 @@ const ContactForm: React.FC = () => {
                   </div>
                   <div className="content">
                     <h3>Địa chỉ</h3>
-                    <p>235 PNVB Avenue, New York, NY 10003, United States</p>
+                    <p>
+                      <a
+                        href="https://www.google.com/maps?q=235+PNVB+Avenue,+New+York,+NY+10003"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        235 PNVB Avenue, New York, NY 10003, United States
+                      </a>
+                    </p>
                   </div>
                 </div>
 
@@ -90,8 +102,12 @@ const ContactForm: React.FC = () => {
                   </div>
                   <div className="content">
                     <h3>Số điện thoại</h3>
-                    <p>Mobile: (+84) 546-6789</p>
-                    <p>Hotline: (+84) 546-6789</p>
+                    <p>
+                      Mobile: <a href="tel:+845466789">(+84) 546-6789</a>
+                    </p>
+                    <p>
+                      Hotline: <a href="tel:+845466789">(+84) 546-6789</a>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -99,11 +115,20 @@ const ContactForm: React.FC = () => {
               <div className="contact-message">
                 <h2>Chúng tôi rất mong nhận được phản hồi từ bạn</h2>
                 <p>
-                  Để biết thêm thông tin về sản phẩm và dịch vụ của chúng tôi. Vui lòng gửi
-                  email cho chúng tôi. Đội ngũ nhân viên của chúng tôi luôn sẵn sàng trả lời
-                  bạn. Đừng ngại ngùng!
+                  Để biết thêm thông tin về sản phẩm và dịch vụ của chúng tôi.
+                  Vui lòng gửi email cho chúng tôi. Đội ngũ nhân viên của chúng
+                  tôi luôn sẵn sàng trả lời bạn. Đừng ngại ngùng!
                 </p>
-                <p className="email-contact">Hoặc liên hệ trực tiếp với chúng tôi qua <strong>sonaspce.@gmail.com</strong></p>
+                <p className="email-contact">
+                  Hoặc liên hệ trực tiếp với chúng tôi qua{" "}
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=sonaspace.furniture@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <strong>sonaspce.furniture@gmail.com</strong>
+                  </a>
+                </p>
               </div>
             </div>
 
@@ -162,16 +187,19 @@ const ContactForm: React.FC = () => {
                     type="checkbox"
                     id="agreeToTerms"
                     name="agreeToTerms"
-                    checked={formData.agreeToTerms}
-                    onChange={handleCheckboxChange}
-                    required
+                    onChange={handleChange}
                   />
-                  <label htmlFor="agreeToTerms">
-                    I agree to the terms and privacy policy
-                  </label>
+                  <div className="checkbox-text">
+                    Tôi đồng ý với
+                    <a href="/dieu-khoan-su-dung">Điều khoản dịch vụ</a>{" "}
+                    &nbsp;và&nbsp;
+                    <a href="/chinh-sach-bao-mat">Chính sách bảo mật</a>
+                  </div>
                 </div>
 
-                <button type="submit" className="submit-btn">Gửi</button>
+                <button type="submit" className="submit-btn">
+                  Gửi
+                </button>
               </form>
             </div>
           </div>
@@ -183,4 +211,3 @@ const ContactForm: React.FC = () => {
 };
 
 export default ContactForm;
-

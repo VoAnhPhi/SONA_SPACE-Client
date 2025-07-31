@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
-import { convertToAdminApiUrl } from "../../utils/url";
 
 export interface Event {
   id: number;
@@ -31,7 +30,7 @@ const PopupAd: React.FC = () => {
         currentTime - parseInt(lastShownTime, 10) > SESSION_TIMEOUT_MS);
 
     if (shouldShowPopup) {
-      fetch(convertToAdminApiUrl("/events/active"))
+      fetch("http://localhost:3501/api/events/active")
         .then((response) => {
           if (!response.ok) {
             if (response.status === 404) return null;
@@ -75,9 +74,8 @@ const PopupAd: React.FC = () => {
               {event.image_url && event.link_url && (
                 <a
                   href={event.link_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="popup-image-link"
+                  // Khi nhấp vào liên kết ảnh, gọi hàm đóng popup
                   onClick={handleClosePopup}
                 >
                   <img
@@ -100,8 +98,8 @@ const PopupAd: React.FC = () => {
                   {event.link_url && (
                     <a
                       href={event.link_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      // Khi nhấp vào liên kết văn bản, gọi hàm đóng popup
+                      onClick={handleClosePopup}
                     >
                       View program details
                     </a>
