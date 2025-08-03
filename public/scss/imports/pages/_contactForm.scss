@@ -27,7 +27,7 @@
 
   .store-info-section {
     h1 {
-      font-family: 'M-SB', sans-serif;
+      font-family: "M-SB", sans-serif;
       font-size: 28px;
       color: #333;
       margin-bottom: 20px;
@@ -37,7 +37,7 @@
       font-size: 16px;
       line-height: 1.6;
       color: #666;
-      font-family: 'M-R';
+      font-family: "M-R";
       margin-bottom: 30px;
       max-width: 90%;
     }
@@ -66,14 +66,14 @@
 
         .content {
           h3 {
-            font-family: 'M-SB', sans-serif;
+            font-family: "M-SB", sans-serif;
             font-size: 18px;
             color: #333;
             margin-bottom: 5px;
           }
 
           p {
-            font-family: 'Be-SB ', sans-serif;
+            font-family: "M-SB";
             font-size: 14px;
             line-height: 1.6;
             color: #666;
@@ -85,6 +85,7 @@
 
             a {
               color: #333;
+              font-family: "M-R";
               text-decoration: none;
               transition: color 0.3s ease;
 
@@ -99,7 +100,7 @@
 
     .contact-message {
       h2 {
-        font-family: 'M-SB', sans-serif;
+        font-family: "M-SB", sans-serif;
         font-size: 22px;
         color: #333;
         margin-bottom: 15px;
@@ -107,7 +108,7 @@
 
       p {
         font-size: 14px;
-        font-family: 'Be-SB ', sans-serif;
+        font-family: "M-R";
         line-height: 1.6;
         color: #666;
         margin-bottom: 15px;
@@ -115,11 +116,16 @@
 
       .email-contact {
         margin-top: 20px;
-        font-family: 'Be-SB ', sans-serif;
 
-        strong {
+        font-family: "M-R " strong {
           color: #333;
+          font-family: "M-R";
         }
+      }
+
+      strong {
+        color: #333;
+        font-family: "M-R";
       }
     }
   }
@@ -142,7 +148,7 @@
           padding: 12px 15px;
           border: 1px solid #ddd;
           border-radius: 4px;
-          font-family: 'M-R', sans-serif;
+          font-family: "M-R", sans-serif;
           font-size: 14px;
           color: #333;
           transition: border-color 0.3s ease;
@@ -179,6 +185,11 @@
           }
         }
 
+        input[type="checkbox"] {
+          margin-top: 3px;
+          width: auto;
+        }
+
         .checkbox-text {
           @include text(14px, M-R, normal, #888, null);
           display: flex;
@@ -194,31 +205,25 @@
               color: darken(#f5a623, 10%);
             }
           }
-
-
         }
-
-
-
-
       }
 
       .submit-btn {
         display: inline-block;
         width: 100%;
         padding: 12px 24px;
-        background-color: #F5A623;
+        background-color: #f5a623;
         color: #fff;
         border: none;
         border-radius: 4px;
-        font-family: 'M-SB', sans-serif;
+        font-family: "M-SB", sans-serif;
         font-size: 16px;
         cursor: pointer;
         transition: background-color 0.3s ease;
         text-align: center;
 
         &:hover {
-          background-color: darken(#F5A623, 10%);
+          background-color: darken(#f5a623, 10%);
         }
       }
     }
@@ -252,7 +257,7 @@
         }
 
         h3 {
-          font-family: 'M-SB', sans-serif;
+          font-family: "M-SB", sans-serif;
           font-size: 18px;
           color: #333;
           margin-bottom: 8px;
