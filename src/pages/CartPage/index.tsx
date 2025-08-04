@@ -18,6 +18,7 @@ interface CartItemProps {
   color: string;
   quantity: number;
   category_name: string;
+  availableStock: number;
 }
 
 
@@ -72,6 +73,7 @@ const CartPage: React.FC = () => {
         color: item.color_hex || "#ccc",
         quantity: item.quantity,
         category_name: item.category_name || "Chưa phân loại",
+        availableStock: item.variant_product_quantity || 0,
       }));
 
       setCartItems(formattedItems);
@@ -401,18 +403,25 @@ const CartPage: React.FC = () => {
                       if (isCheckingOut) return;
 
                       if (selectedItems.length === 0) {
-                        setIsCheckingOut(true);
                         toast.error("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
-                        setTimeout(() => {
-                          setIsCheckingOut(false);
-                        }, 3000);
-                      } else {
-                        navigate("/thanh-toan", { state: { selectedItems } });
+                        return;
                       }
+
+                      const outOfStock = cartItems.filter(
+                        (item) =>
+                          selectedItems.includes(item.id) && item.quantity > item.availableStock
+                      );
+
+                      if (outOfStock.length > 0) {
+                        toast.error(`Sản phẩm đã hết hàng trong kho.`);
+                        return;
+                      }
+                      navigate("/thanh-toan", { state: { selectedItems } });
                     }}
                   >
                     Tiến hành thanh toán
                   </a>
+
 
 
                 </div>

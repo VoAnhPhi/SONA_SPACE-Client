@@ -46,6 +46,7 @@ const ProductDetailPage: React.FC = () => {
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [cartCount, setCartCount] = useState<number>(0);
+
   const [wishlist, setWishlist] = useState<boolean>(false);
 
   const handleColorSelect = async (colorHex: string, colorId: number) => {
@@ -508,11 +509,31 @@ const ProductDetailPage: React.FC = () => {
                       <img src="/images/detail/tru.svg" alt="" />
                     </button>
                     <input
-                      type="text"
+                      type="number"
                       value={quantity}
-                      readOnly
+                      max={selectedVariant?.quantity || product.stock}
+                      onChange={(e) => {
+                        const input = e.target.value;
+                        if (input === "") {
+                          setQuantity("");
+                          return;
+                        }
+                        const value = parseInt(input, 10);
+                        const max = selectedVariant?.quantity || product.stock;
+                        if (!isNaN(value)) {
+                          const safeValue = Math.max(1, Math.min(value, max));
+                          setQuantity(safeValue);
+                        }
+                      }}
+                      onBlur={() => {
+                        if (quantity === "") {
+                          setQuantity(1);
+                        }
+                      }}
                       className="quantity-inputt"
                     />
+
+
                     <button
                       className="quantity-btn increase"
                       onClick={() => handleQuantityChange(1)}
@@ -523,9 +544,14 @@ const ProductDetailPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="content-button">
-                  <button className="button-add-cart" onClick={addToCart}>
-                    Thêm vào giỏ
+                  <button
+                    className={`button-add-cart ${selectedVariant?.quantity === 0 ? "disabled" : ""}`}
+                    onClick={addToCart}
+                    disabled={selectedVariant?.quantity === 0}
+                  >
+                    {selectedVariant?.quantity === 0 ? "Hết hàng" : "Thêm vào giỏ"}
                   </button>
+
                   <div className="button-icon-i">
                     <div className="icon-img">
                       <img
