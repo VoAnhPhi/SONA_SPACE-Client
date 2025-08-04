@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import ReturnOrderModal from "../../components/ReturnOrderModal";
+import CancelOrderModal from "../../components/CancelOrderModal";
 import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
 import { cancelOrder } from "../../services/userServices";
 import { convertToAdminApiUrl } from "../../utils/url";
+import { message } from 'antd';
 
 interface OrderProduct {
   order_item_id: string;
@@ -57,6 +60,8 @@ const DetailOrder: React.FC = () => {
   const [allProductsReviewed, setAllProductsReviewed] = useState(false);
   const [isProcessingReturn, setIsProcessingReturn] = useState(false);
   const [isProcessingCancel, setIsProcessingCancel] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   const fetchOrder = async () => {
     try {
@@ -426,17 +431,22 @@ const DetailOrder: React.FC = () => {
   };
 
   // Xử lý khi người dùng nhấn nút trả hàng
-  const handleReturnOrder = async () => {
+  const handleReturnOrder = () => {
+    setShowReturnModal(true);
+  };
+
+  // Xử lý submit form trả hàng từ modal
+  const handleReturnOrderSubmit = async (reason: string, images: File[]) => {
     if (!order || !order.order_hash) return;
-    
-    // Hỏi lý do trả hàng
-    const reason = prompt("Vui lòng nhập lý do trả hàng:");
-    if (!reason) return; // Người dùng đã hủy hoặc không nhập lý do
     
     try {
       setIsProcessingReturn(true);
-      await returnOrder(order.order_hash, reason);
-      alert("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
+      await returnOrder(order.order_hash, reason, images);
+      
+      message.success("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
+      
+      // Đóng modal
+      setShowReturnModal(false);
       
       // Tải lại thông tin đơn hàng để cập nhật statusStep và processType mới
       await fetchOrder();
@@ -447,26 +457,28 @@ const DetailOrder: React.FC = () => {
       
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        alert(`Lỗi: ${error.response.data.message}`);
+        message.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        alert("Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.");
+        message.error("Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.");
       }
     } finally {
       setIsProcessingReturn(false);
     }
   };
 
-  // Xử lý khi người dùng nhấn nút hủy đơn hàng
-  const handleCancelOrder = async () => {
-    if (!order) return;
-    
-    // Xác nhận hủy đơn hàng
-    if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
-      return;
-    }
+  // Xử lý đóng modal trả hàng
+  const handleReturnModalCancel = () => {
+    setShowReturnModal(false);
+  };
 
-    // Hỏi lý do hủy đơn hàng
-    const reason = prompt("Vui lòng nhập lý do hủy đơn hàng (không bắt buộc):");
+  // Xử lý khi người dùng nhấn nút hủy đơn hàng - mở modal
+  const handleCancelOrder = () => {
+    setShowCancelModal(true);
+  };
+
+  // Xử lý submit form hủy đơn hàng từ modal
+  const handleCancelOrderSubmit = async (reason: string) => {
+    if (!order) return;
 
     try {
       setIsProcessingCancel(true);
@@ -486,24 +498,32 @@ const DetailOrder: React.FC = () => {
         }
       }
       
-      await cancelOrder(orderId, reason || undefined);
+      await cancelOrder(orderId, reason);
       
-      alert("Đơn hàng đã được hủy thành công!");
+      message.success("Đơn hàng đã được hủy thành công!");
+      
+      // Đóng modal
+      setShowCancelModal(false);
       
       // Tải lại thông tin đơn hàng để cập nhật trạng thái
-      fetchOrder();
+      await fetchOrder();
     } catch (error: any) {
       console.error("Lỗi khi hủy đơn hàng:", error);
       
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        alert(`Lỗi: ${error.response.data.message}`);
+        message.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        alert("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+        message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
       }
     } finally {
       setIsProcessingCancel(false);
     }
+  };
+
+  // Xử lý đóng modal hủy đơn hàng
+  const handleCancelModalClose = () => {
+    setShowCancelModal(false);
   };
 
 const formatPrice1 = (value: number | string): string => {
@@ -863,6 +883,23 @@ const formatPrice1 = (value: number | string): string => {
       </section>
 
       <Footer />
+
+      {/* Modal trả hàng */}
+      <ReturnOrderModal
+        visible={showReturnModal}
+        onCancel={handleReturnModalCancel}
+        onSubmit={handleReturnOrderSubmit}
+        loading={isProcessingReturn}
+      />
+
+      {/* Modal hủy đơn hàng */}
+      <CancelOrderModal
+        visible={showCancelModal}
+        onCancel={handleCancelModalClose}
+        onSubmit={handleCancelOrderSubmit}
+        loading={isProcessingCancel}
+        orderHash={order?.order_hash || ''}
+      />
     </>
   );
 };
