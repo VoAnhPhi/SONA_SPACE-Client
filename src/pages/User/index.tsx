@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, Links, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import CancelOrderModal from "../../components/CancelOrderModal";
 import { BannerSection } from "../../components/BannerSection";
 import axios from "axios";
 import { cancelOrder } from "../../services/userServices";
+import { message } from 'antd';
 
 import type {
   OrderItemAPI,
@@ -144,6 +146,12 @@ const User: React.FC = () => {
 
   // State để theo dõi khi nào cần tải lại dữ liệu người dùng
   const [refreshUserData, setRefreshUserData] = useState<boolean>(false);
+
+  // State cho modal hủy đơn hàng
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [selectedOrderHash, setSelectedOrderHash] = useState<string>('');
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // Lấy thông tin người dùng từ sessionStorage khi component mount
   useEffect(() => {
@@ -585,18 +593,20 @@ const User: React.FC = () => {
     );
   };
 
-  // Xử lý hủy đơn hàng
-  const handleCancelOrder = async (orderId: number) => {
-    if (!window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
-      return;
-    }
+  // Xử lý hủy đơn hàng - mở modal
+  const handleCancelOrderClick = (orderId: number, orderHash: string) => {
+    setSelectedOrderId(orderId);
+    setSelectedOrderHash(orderHash);
+    setShowCancelModal(true);
+  };
 
-    // Hỏi lý do hủy đơn hàng
-    const reason = prompt("Vui lòng nhập lý do hủy đơn hàng (không bắt buộc):");
+  // Xử lý submit form hủy đơn hàng từ modal
+  const handleCancelOrderSubmit = async (reason: string) => {
+    if (!selectedOrderId) return;
 
     try {
-      setIsLoading(true);
-      const result = await cancelOrder(orderId, reason || undefined);
+      setIsCancelling(true);
+      const result = await cancelOrder(selectedOrderId, reason);
       console.log("Hủy đơn hàng thành công:", result);
 
       // Cập nhật lại danh sách đơn hàng
@@ -608,19 +618,31 @@ const User: React.FC = () => {
         }
       }
 
-      alert("Đơn hàng đã được hủy thành công!");
+      message.success("Đơn hàng đã được hủy thành công!");
+      
+      // Đóng modal và reset state
+      setShowCancelModal(false);
+      setSelectedOrderId(null);
+      setSelectedOrderHash('');
     } catch (error: any) {
       console.error("Lỗi khi hủy đơn hàng:", error);
 
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        alert(`Lỗi: ${error.response.data.message}`);
+        message.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        alert("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+        message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
       }
     } finally {
-      setIsLoading(false);
+      setIsCancelling(false);
     }
+  };
+
+  // Xử lý đóng modal hủy đơn hàng
+  const handleCancelModalClose = () => {
+    setShowCancelModal(false);
+    setSelectedOrderId(null);
+    setSelectedOrderHash('');
   };
 
   // Handle when a flash sale countdown completes
@@ -1466,10 +1488,10 @@ const User: React.FC = () => {
                                     <>
                                       <button
                                         className="btn-cancel-order"
-                                        onClick={() => handleCancelOrder(order.id)}
-                                        disabled={isLoading}
+                                        onClick={() => handleCancelOrderClick(order.id, order.order_hash)}
+                                        disabled={isCancelling}
                                       >
-                                        {isLoading ? "Đang xử lý..." : "Hủy đơn hàng"}
+                                        {isCancelling ? "Đang xử lý..." : "Hủy đơn hàng"}
                                       </button>
                                       <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
@@ -1549,6 +1571,15 @@ const User: React.FC = () => {
         {/* Design Services Showcase */}
       </div>
       <Footer />
+
+      {/* Modal hủy đơn hàng */}
+      <CancelOrderModal
+        visible={showCancelModal}
+        onCancel={handleCancelModalClose}
+        onSubmit={handleCancelOrderSubmit}
+        loading={isCancelling}
+        orderHash={selectedOrderHash}
+      />
     </>
   );
 };

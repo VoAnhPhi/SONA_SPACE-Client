@@ -375,6 +375,22 @@
         outline: none;
         font-family: 'Be-R';
         background: none;
+        margin: 0 auto;
+        line-height: 40px;
+
+          &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+        &:-moz-appearance {
+          appearance: textfield;
+        }
+
+        &:focus {
+          outline: none;
+}
       }
 
       .quantity-inputt {
@@ -850,6 +866,22 @@
           .content-input-quantity {
             span {
               font-size: 16px;
+            }
+            .input-options{
+               input[type=number] {
+                          &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+                  &:-moz-appearance {
+          appearance: textfield;
+        }
+
+        &:focus {
+          outline: none;
+}
+              }
             }
           }
 

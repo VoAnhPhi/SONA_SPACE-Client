@@ -33,8 +33,15 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     const refreshNotifications = async () => {
+      const token = sessionStorage.getItem("authToken");
+
+      if (!token) {
+        setNotifications([]); 
+        if (onNotificationCountChange) onNotificationCountChange(0);
+        return;
+      }
+
       try {
-        const token = sessionStorage.getItem("authToken");
         const response = await fetch(convertToAdminApiUrl("/couponcodes/notification"), {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +53,6 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
         const data = await response.json();
         setNotifications(data);
 
-        // 👉 Gọi callback cập nhật số lượng
         if (onNotificationCountChange) {
           onNotificationCountChange(data.length);
         }
@@ -59,6 +65,7 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
       refreshNotifications();
     }, []);
 
+
     useImperativeHandle(ref, () => ({
       toggleMiniNotification: () => setIsVisible((prev) => !prev),
       closeMiniNotification: () => setIsVisible(false),
@@ -66,27 +73,27 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
       refreshNotifications,
       getNotificationCount: () => notifications.length,
     }));
-const handleDeleteNotification = async (id: number) => {
-  try {
-    const token = sessionStorage.getItem("authToken");
-    const response = await fetch(convertToAdminApiUrl(`/couponcodes/notification/${id}`), {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const handleDeleteNotification = async (id: number) => {
+      try {
+        const token = sessionStorage.getItem("authToken");
+        const response = await fetch(convertToAdminApiUrl(`/couponcodes/notification/${id}`), {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    if (!response.ok) throw new Error("Không thể xóa thông báo");
+        if (!response.ok) throw new Error("Không thể xóa thông báo");
 
-    setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
+        setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
 
-    if (onNotificationCountChange) {
-      onNotificationCountChange(notifications.length - 1);
-    }
-  } catch (error) {
-    console.error("Lỗi khi xoá thông báo:", error);
-  }
-};
+        if (onNotificationCountChange) {
+          onNotificationCountChange(notifications.length - 1);
+        }
+      } catch (error) {
+        console.error("Lỗi khi xoá thông báo:", error);
+      }
+    };
 
     const formatDate = (iso: string) => {
       const date = new Date(iso);
@@ -105,36 +112,36 @@ const handleDeleteNotification = async (id: number) => {
               <img src="/images/icons/close.svg" alt="Đóng" />
             </button>
           </div>
-                            <div className="mini-notification-items" >
-          {notifications.length > 0 ? (
-            notifications.map((noti, index) => (
+          <div className="mini-notification-items" >
+            {notifications.length > 0 ? (
+              notifications.map((noti, index) => (
 
-              <div key={index} className="mini-notification-item" >
-                <a className='noti-content' href={noti.link || "/tai-khoan/ma-giam-gia"} >
-                  <h4 className='noti-title'>{noti.title}</h4>
-                  <div className="noti-message">{noti.message}</div>
-                </a>
-                <a
-                  className="delete-noti"
-                  onClick={() => handleDeleteNotification(noti.notification_id)}
-                  title="Xoá thông báo"
-                >
-                  <img src="/images/icons/close.svg" alt="Xoá" />
-                </a>
+                <div key={index} className="mini-notification-item" >
+                  <a className='noti-content' href={noti.link || "/tai-khoan/ma-giam-gia"} >
+                    <h4 className='noti-title'>{noti.title}</h4>
+                    <div className="noti-message">{noti.message}</div>
+                  </a>
+                  <a
+                    className="delete-noti"
+                    onClick={() => handleDeleteNotification(noti.notification_id)}
+                    title="Xoá thông báo"
+                  >
+                    <img src="/images/icons/close.svg" alt="Xoá" />
+                  </a>
+                </div>
+
+              ))
+
+            ) : (
+              <div className="empty-cart">
+                <div className="empty-cart-icon">
+                  <img src="/images/icons/bell-ring.svg" alt="Giỏ hàng trống" />
+                </div>
+                <p>Thông báo của bạn đang trống</p>
+
               </div>
-        
-            ))
-            
-          ) : (
-            <div className="empty-cart">
-              <div className="empty-cart-icon">
-                <img src="/images/icons/bell-ring.svg" alt="Giỏ hàng trống" />
-              </div>
-              <p>Thông báo của bạn đang trống</p>
-            
-            </div>
-          )}
-        </div>
+            )}
+          </div>
         </div>
       </div>
     );
