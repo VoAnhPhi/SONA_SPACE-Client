@@ -8,7 +8,7 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 // import components
 import Header from "../../components/Header";
@@ -537,10 +537,11 @@ const ProductDetailPage: React.FC = () => {
                     <button
                       className="quantity-btn increase"
                       onClick={() => handleQuantityChange(1)}
+                      disabled={quantity >= (selectedVariant?.quantity || product.stock)}
                     >
-                      {" "}
                       <img src="/images/detail/cong.svg" alt="" />
                     </button>
+
                   </div>
                 </div>
                 <div className="content-button">
