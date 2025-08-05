@@ -338,12 +338,12 @@ const CartPage: React.FC = () => {
                             />
                             <button
                               className="quantity-btn increase"
-                              onClick={() =>
-                                updateQuantity(item.id, item.quantity + 1)
-                              }
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              disabled={item.quantity >= item.availableStock}
                             >
                               +
                             </button>
+
                           </div>
                           <button className="remove-btn" onClick={() => removeItem(item.id)} aria-label="Xóa sản phẩm khỏi giỏ hàng">
                             {/* <i className="icon-trash"></i> */}
@@ -386,9 +386,17 @@ const CartPage: React.FC = () => {
                         value={promoCodeInput}
                         onChange={(e) => setPromoCodeInput(e.target.value)}
                         placeholder="Nhập mã giảm giá"
+                        disabled={selectedItems.length === 0}
                       />
-                      <button className="apply-btn" onClick={handleApplyPromoCode}>Áp dụng</button>
+                      <button
+                        className="apply-btn"
+                        onClick={handleApplyPromoCode}
+                        disabled={selectedItems.length === 0}
+                      >
+                        Áp dụng
+                      </button>
                     </div>
+
                   </div>
                   <div className="summary-total">
                     <span className="label">Tổng cộng</span>
