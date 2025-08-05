@@ -9,8 +9,6 @@ import PolicyProduct from "../../components/Policy";
 import type { NewsArticle, NewsCategory } from "../../types";
 import { getAllNews, getAllNewsSimple } from "../../api/new"; // Import hàm API
 
-
-
 interface NewsItem {
   id: string;
   title: string;
@@ -38,7 +36,7 @@ const News: React.FC<NewsProps> = ({
       try {
         setLoading(true);
         const data = await getAllNewsSimple();
-        console.log("Fetched news data:", data);
+        // console.log("Fetched news data:", data);
         setNews(data.slice(0, limit));
         setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
         // Apply limit if provided
@@ -46,7 +44,7 @@ const News: React.FC<NewsProps> = ({
         setNews(limitedData);
         setError(null); // gọi API lấy danh sách news
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        //  console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
     fetchData();

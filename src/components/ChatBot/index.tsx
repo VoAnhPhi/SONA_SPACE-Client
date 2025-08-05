@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
-const botAvatar = 'https://cdn-icons-png.flaticon.com/512/4712/4712107.png';
+const botAvatar = 'https://res.cloudinary.com/dmgrdgvcf/image/upload/v1754375206/android-chrome-192x192_imxhjz.png';
 const userAvatar = 'https://randomuser.me/api/portraits/men/32.jpg';
 
 type Message = {
@@ -25,7 +25,7 @@ export default function ChatBot() {
                         const next = [...prev, { sender: 'bot', text: msg }];
                         return next;
                   });
-                  // setBotTyping(false);
+                  setBotTyping(false);
             });
             return () => {
                   socketRef.current?.disconnect();
@@ -62,7 +62,7 @@ export default function ChatBot() {
                   {open && (
                         <div className="chat-popup">
                               <div className="chat-header">
-                                    <span>Chatbot hỗ trợ</span>
+                                    <span>SonaSpace Bot</span>
                                     <button onClick={() => setOpen(false)}>×</button>
                               </div>
                               <div className="chat-body" ref={chatBodyRef}>

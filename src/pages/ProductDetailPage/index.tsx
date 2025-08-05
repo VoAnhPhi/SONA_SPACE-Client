@@ -117,7 +117,7 @@ const ProductDetailPage: React.FC = () => {
 
           attributes: res.product.attributes || [],
         });
-        console.log("Formatted Product:", formattedProduct);
+        // console.log("Formatted Product:", formattedProduct);
         setProduct(formattedProduct);
         setRelatedProducts(res.related_products || []);
 

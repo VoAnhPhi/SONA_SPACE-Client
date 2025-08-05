@@ -668,10 +668,11 @@ const Header = () => {
                         className="notification-badge"
                         style={{
                           position: 'absolute',
-                          width: '20px',
+                          width: '18px',
                           height: '18px',
                           top: '20px',
                           right: '11px',
+                          lineHeight: '1.3',
                           backgroundColor: '#F0A00A',
                           color: 'white',
                           fontFamily: 'Be-R',
@@ -679,7 +680,7 @@ const Header = () => {
                           fontWeight: 'bold',
                           padding: '5px',
                           borderRadius: '50%',
-                          minWidth: '18px',
+                          minWidth: '18px',  
                           textAlign: 'center',
                           zIndex: 10,
                           boxShadow: '0 0 0 2px white',

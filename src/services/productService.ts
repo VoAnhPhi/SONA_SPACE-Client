@@ -201,13 +201,13 @@ export const fetchAllProducts = async (
   try {
     const rawProducts = await getAllProducts(page, limit, filters);
     const formatted = rawProducts.items.map(formatProductForDisplay);
-    console.log("formatted", formatted);
+    // console.log("formatted", formatted);
     return {
       products: formatted,
       totalPages: rawProducts.totalPages,
     };
   } catch (error) {
-    console.error("Error in fetchAllProducts:", error);
+    // console.error("Error in fetchAllProducts:", error);
     return { products: [], totalPages: 1 };
   }
 };
@@ -247,7 +247,7 @@ export const fetchProductBySlug = async (
       relatedProducts: related_products,
     };
   } catch (error) {
-    console.error("Error in fetchProductBySlug:", error);
+    // console.error("Error in fetchProductBySlug:", error);
     return {
       product: null,
       colors: [],
@@ -273,7 +273,7 @@ export const getRelatedProductsByRoom = async (
     const data = await res.json();
 
     if (!Array.isArray(data.related_products)) {
-      console.error("API không trả đúng định dạng: ", data);
+      // console.error("API không trả đúng định dạng: ", data);
       return [];
     }
 
@@ -295,7 +295,7 @@ export const getRelatedProductsByRoom = async (
 
     return formatted;
   } catch (error) {
-    console.error("Lỗi khi lấy sản phẩm liên quan:", error);
+    // console.error("Lỗi khi lấy sản phẩm liên quan:", error);
     return [];
   }
 };

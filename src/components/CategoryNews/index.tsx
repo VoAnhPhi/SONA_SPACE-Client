@@ -53,8 +53,8 @@ const NewsCategories: React.FC<NewsProps> = ({
     <div className="news-categories">
       <h2>Danh mục tin tức</h2>
       <ul>
-        {news.map((category) => (
-          <li key={category.news_category_id}>
+        {news.map((category, idx) => (
+          <li key={category.news_category_id || idx}>
             <div className="category-item">
               <span className="category-name">{category.name}</span>
               <span className="post-count">

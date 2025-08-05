@@ -21,7 +21,7 @@ const Rooms: React.FC = () => {
       try {
         setLoading(true);
         const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
-        console.log("Fetched newest products:", products);
+        // console.log("Fetched newest products:", products);
 
         // Format sản phẩm để phù hợp với component Product
         const formattedProducts = products.map((product, index) => {
@@ -33,7 +33,7 @@ const Rooms: React.FC = () => {
           index === self.findIndex(p => p.id === product.id)
         );
 
-        console.log("Formatted products:", uniqueProducts);
+        // console.log("Formatted products:", uniqueProducts);
         setNewestProducts(uniqueProducts);
         setError(null);
       } catch (error) {

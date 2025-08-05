@@ -168,7 +168,6 @@ const User: React.FC = () => {
           full_name: userData.full_name,
           id: userData.id,
         });
-        console.log("Đã tải thông tin người dùng từ sessionStorage:", userData);
 
         // Gọi API để lấy dữ liệu đơn hàng
         fetchOrders(userData.id);
@@ -179,18 +178,18 @@ const User: React.FC = () => {
         );
       }
     } else {
-      console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
+      // console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
     }
   }, [refreshUserData]);
 
   // Hàm lấy dữ liệu đơn hàng từ API
   const fetchOrders = async (userId: number) => {
     if (!userId) {
-      console.log("fetchOrders: userId không hợp lệ");
+      // console.log("fetchOrders: userId không hợp lệ");
       return;
     }
 
-    console.log("fetchOrders: Bắt đầu lấy dữ liệu đơn hàng cho userId:", userId);
+    // console.log("fetchOrders: Bắt đầu lấy dữ liệu đơn hàng cho userId:", userId);
     setIsLoading(true);
     setError(null);
 
@@ -198,7 +197,7 @@ const User: React.FC = () => {
       // Lấy token từ sessionStorage
       const token = sessionStorage.getItem("authToken");
       if (!token) {
-        console.error("fetchOrders: Không tìm thấy token xác thực");
+        // console.error("fetchOrders: Không tìm thấy token xác thực");
         setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         setIsLoading(false);
         return;
@@ -211,22 +210,22 @@ const User: React.FC = () => {
         }
       });
 
-      console.log("fetchOrders: Dữ liệu đơn hàng từ API:", response.data);
+      // console.log("fetchOrders: Dữ liệu đơn hàng từ API:", response.data);
 
       // Kiểm tra và cập nhật dữ liệu
       if (response.data && response.data.orders) {
         setOrdersResponse(response.data);
         setApiOrders(response.data.orders);
       } else {
-        console.error("fetchOrders: Dữ liệu không đúng định dạng", response.data);
+        // console.error("fetchOrders: Dữ liệu không đúng định dạng", response.data);
         setError("Dữ liệu đơn hàng không đúng định dạng");
       }
     } catch (error) {
-      console.error("fetchOrders: Lỗi khi gọi API:", error);
+      // console.error("fetchOrders: Lỗi khi gọi API:", error);
       setError("Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
-      console.log("fetchOrders: Kết thúc");
+      // console.log("fetchOrders: Kết thúc");
     }
   };
 
@@ -240,8 +239,8 @@ const User: React.FC = () => {
 
       const res = await axios.get(convertToAdminApiUrl("/couponcodes/user-has-coupon"), {
         headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
+      });   
+      // console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
       const now = new Date();
 
       const updated = res.data

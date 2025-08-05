@@ -18,7 +18,7 @@ export const fetchAllCategories = async (): Promise<Category[]> => {
   } catch (error) {
     // console.error("Error in fetchAllCategories service:", error);
     if (axios.isAxiosError(error) && error.code === "ECONNREFUSED") {
-      console.error("API server is not running or not accessible");
+      // console.error("API server is not running or not accessible");
     }
     return [];
   }
@@ -39,15 +39,15 @@ export const fetchCategoryBySlug = async (
     const category = await getCategoryBySlug(slug);
     return category;
   } catch (error) {
-    console.error(
-      `Error in fetchCategoryBySlug service for slug ${slug}:`,
-      error
-    );
+    // console.error(
+    //   `Error in fetchCategoryBySlug service for slug ${slug}:`,
+    //   error
+    // );
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
-        console.error(`Category with slug ${slug} not found`);
+        // console.error(`Category with slug ${slug} not found`);
       } else if (error.code === "ECONNREFUSED") {
-        console.error("API server is not running or not accessible");
+        // console.error("API server is not running or not accessible");
       }
     }
     return null;
