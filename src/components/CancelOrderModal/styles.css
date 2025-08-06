@@ -1,0 +1,132 @@
+.cancel-order-modal .ant-modal-content {
+  border-radius: 8px;
+}
+.cancel-order-modal .ant-modal-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+.cancel-order-modal .ant-modal-header .ant-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.cancel-order-modal .ant-modal-body {
+  padding: 24px;
+}
+.cancel-order-modal .modal-content .order-info {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  border-left: 4px solid #ff4d4f;
+}
+.cancel-order-modal .modal-content .order-info p {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+.cancel-order-modal .modal-content .order-info p:last-child {
+  margin-bottom: 0;
+}
+.cancel-order-modal .modal-content .order-info p strong {
+  font-weight: 600;
+}
+.cancel-order-modal .modal-content .order-info .warning-text {
+  color: #ff4d4f;
+  font-weight: 500;
+  margin-top: 12px;
+}
+.cancel-order-modal .modal-content .help-text {
+  background-color: #f6f8fa;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1890ff;
+}
+.cancel-order-modal .modal-content .help-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+.cancel-order-modal .modal-content .help-text p strong {
+  color: #333;
+  font-weight: 600;
+}
+.cancel-order-modal .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+.cancel-order-modal .ant-input,
+.cancel-order-modal .ant-input:focus,
+.cancel-order-modal .ant-input-focused {
+  border-color: #d9d9d9;
+  box-shadow: none;
+}
+.cancel-order-modal .ant-input:hover,
+.cancel-order-modal .ant-input:focus:hover,
+.cancel-order-modal .ant-input-focused:hover {
+  border-color: #40a9ff;
+}
+.cancel-order-modal .ant-input:focus,
+.cancel-order-modal .ant-input:focus:focus,
+.cancel-order-modal .ant-input-focused:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+.cancel-order-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+.cancel-order-modal .modal-actions .ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 120px;
+}
+.cancel-order-modal .modal-actions .ant-btn.ant-btn-primary {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+.cancel-order-modal .modal-actions .ant-btn.ant-btn-primary:hover {
+  background-color: #ff7875;
+  border-color: #ff7875;
+}
+.cancel-order-modal .modal-actions .ant-btn.ant-btn-primary:focus {
+  background-color: #ff7875;
+  border-color: #ff7875;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+}
+.cancel-order-modal .modal-actions .ant-btn.ant-btn-default:hover {
+  color: #40a9ff;
+  border-color: #40a9ff;
+}
+.cancel-order-modal .ant-form-item-explain-error {
+  font-size: 12px;
+  color: #ff4d4f;
+}
+.cancel-order-modal .ant-input-data-count {
+  color: #999;
+  font-size: 12px;
+}
+.cancel-order-modal .ant-btn-loading {
+  cursor: not-allowed;
+}
+.cancel-order-modal .ant-btn-loading .ant-btn-loading-icon {
+  margin-right: 8px;
+}
+@media (max-width: 768px) {
+  .cancel-order-modal .ant-modal {
+    width: 95% !important;
+    margin: 10px auto;
+  }
+  .cancel-order-modal .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cancel-order-modal .modal-actions .ant-btn {
+    width: 100%;
+  }
+}/*# sourceMappingURL=styles.css.map */

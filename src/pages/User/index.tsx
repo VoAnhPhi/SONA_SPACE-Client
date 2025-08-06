@@ -348,6 +348,10 @@ const User: React.FC = () => {
       case "success": 
         result = "completed";
         break;
+      case "failed":
+        result = "failed";
+        break;
+      
       case "cancelled":
         result = "cancelled";
         break;
@@ -380,6 +384,8 @@ const User: React.FC = () => {
       case "delivered":
       case "success":  // Thêm trạng thái SUCCESS
         return "Hoàn thành";
+      case "failed":
+        return "Thất bại";
       case "cancelled":
         return "Đã hủy";
       case "return":
