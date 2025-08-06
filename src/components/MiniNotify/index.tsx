@@ -31,12 +31,12 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
   ({ onNotificationCountChange }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
-
+    const isExternalLink = (url: string) => /^https?:\/\//.test(url);
     const refreshNotifications = async () => {
       const token = sessionStorage.getItem("authToken");
 
       if (!token) {
-        setNotifications([]); 
+        setNotifications([]);
         if (onNotificationCountChange) onNotificationCountChange(0);
         return;
       }
@@ -94,11 +94,10 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
         console.error("Lỗi khi xoá thông báo:", error);
       }
     };
-
-    const formatDate = (iso: string) => {
-      const date = new Date(iso);
-      return date.toLocaleString('vi-VN');
-    };
+    // const formatDate = (iso: string) => {
+    //   const date = new Date(iso);
+    //   return date.toLocaleString('vi-VN');
+    // };
 
     return (
       <div className={`mini-notification ${isVisible ? 'show' : ''}`}>
@@ -117,10 +116,19 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
               notifications.map((noti, index) => (
 
                 <div key={index} className="mini-notification-item" >
-                  <a className='noti-content' href={noti.link || "/tai-khoan/ma-giam-gia"} >
-                    <h4 className='noti-title'>{noti.title}</h4>
-                    <div className="noti-message">{noti.message}</div>
-                  </a>
+
+                  {isExternalLink(noti.link) ? (
+                    <Link  className="noti-content" to={noti.link} target="_blank" rel="noopener noreferrer">
+                      <h4 className="noti-title">{noti.title}</h4>
+                      <div className="noti-message">{noti.message}</div>
+                    </Link>
+                  ) : (
+                    <a className="noti-content" href={noti.link || "/tai-khoan/ma-giam-gia"}>
+                      <h4 className="noti-title">{noti.title}</h4>
+                      <div className="noti-message">{noti.message}</div>
+                    </a>
+                  )}
+
                   <a
                     className="delete-noti"
                     onClick={() => handleDeleteNotification(noti.notification_id)}
