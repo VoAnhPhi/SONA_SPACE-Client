@@ -2,20 +2,6 @@ import axios from "axios";
 import type { NewsArticle, NewsCategory } from "../types";
 import { convertToAdminApiUrl } from "../utils/url";  
 
-// Hàm helper để kiểm tra và xử lý response
-// const handleApiResponse = (response: any, errorMessage: string) => {
-//   if (!response || !response.data) {
-//     console.error(errorMessage);
-//     throw new Error(errorMessage);
-//   }
-//   return response.data;
-// };
-
-/**
- * Get all news
- * @returns {Promise<NewsArticle[]>} List of news
- */
-
 export const getAllNews = async (
   tryFallback = false
 ): Promise<NewsArticle[]> => {
@@ -147,6 +133,7 @@ export const getAllNewsCategories = async (): Promise<NewsCategory[]> => {
     throw error;
   }
 };
+
 export const getNewsBySlug = async (slug: string): Promise<NewsArticle> => {
   try {
     const response = await axios.get(convertToAdminApiUrl(`/news/${slug}`));
@@ -170,12 +157,6 @@ export const getNewsBySlug = async (slug: string): Promise<NewsArticle> => {
   }
 };
 
-/**
- * Get NewsCategory by news
- * @param {number} newsId - The news ID
- * @param {Object} params - Query parameters (pagination, filters, etc.)
-
- */
 export const getNewsCategoryBynews = async (
   newsId: number,
   params: { [key: string]: any } = {}
@@ -200,6 +181,15 @@ export const getNewsCategoryBynews = async (
       }
     } else {
     }
+    throw error;
+  }
+};
+
+export const getNewsByCategory = async (categoryName: string): Promise<NewsArticle[]> => {
+  try {
+    const response = await axios.get(convertToAdminApiUrl(`/news-categories/news/${categoryName}`));
+    return response.data.news;
+  } catch (error) {
     throw error;
   }
 };

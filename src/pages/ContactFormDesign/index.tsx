@@ -7,6 +7,7 @@ import { sendContactFormDesignService } from "../../services/contactService";
 import { toast } from "react-toastify";
 import { fetchRoomSimilar } from "../../services/roomService";
 import { validateFormContactDesign } from "../../services/contactService";
+import Showcase from "../../components/ShowCase/ShowCase";
 
 const ContactFormDesign: React.FC = () => {
   const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
@@ -364,7 +365,7 @@ const ContactFormDesign: React.FC = () => {
                   <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
                 </div>
               </div>
-                {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
+              {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}
               <button disabled={isLoading} type="submit" className="submit-btn">
                 {isLoading ? "Đang gửi..." : "Gửi"}
               </button>
@@ -372,6 +373,12 @@ const ContactFormDesign: React.FC = () => {
           </div>
         </section>
 
+
+        <section className="showcase-section mt-94">
+          <div className="container">
+            <Showcase categoryName="tu-van-va-thiet-ke" />
+          </div>
+        </section>
       </div>
       <Footer />
     </>

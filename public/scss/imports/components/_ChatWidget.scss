@@ -39,7 +39,7 @@
     .chat-header {
       background: $yellow-cl;
       color: #fff;
-      padding: 16px;
+      padding: 8px 12px;
       @include text(16px, 'M-B', normal, $white-cl, none);
       font-weight: bold;
       display: flex;
