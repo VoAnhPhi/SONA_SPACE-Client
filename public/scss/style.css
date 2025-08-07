@@ -2879,7 +2879,7 @@ section p {
 }
 
 .footer {
-  background-color: #FAFAFA;
+  background-color: #FCFCFC;
   color: #fff;
   padding: 60px 0 30px;
 }
@@ -5398,6 +5398,14 @@ body {
   animation: spin 1s linear infinite;
 }
 
+.text-error {
+  color: red;
+  font-size: 14px;
+  font-family: "Be-R";
+  margin-top: 4px;
+  display: block;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -5735,6 +5743,7 @@ body {
 
 .contact-design-page {
   padding-bottom: 60px;
+  padding-top: 130px;
 }
 .contact-design-page .store-banner {
   width: 100%;
@@ -5768,6 +5777,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: #666;
+  font-family: "M-R";
   margin-bottom: 30px;
   max-width: 90%;
 }
@@ -5798,6 +5808,7 @@ body {
   margin-bottom: 5px;
 }
 .contact-design-page .store-info-section .info-items .info-item .content p {
+  font-family: "M-SB";
   font-size: 14px;
   line-height: 1.6;
   color: #666;
@@ -5805,6 +5816,15 @@ body {
 }
 .contact-design-page .store-info-section .info-items .info-item .content p:last-child {
   margin-bottom: 0;
+}
+.contact-design-page .store-info-section .info-items .info-item .content p a {
+  color: #333;
+  font-family: "M-R";
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.contact-design-page .store-info-section .info-items .info-item .content p a:hover {
+  color: rgb(219.0434782609, 140.3869565217, 9.9565217391);
 }
 .contact-design-page .store-info-section .contact-message h2 {
   font-family: "M-SB", sans-serif;
@@ -5814,17 +5834,24 @@ body {
 }
 .contact-design-page .store-info-section .contact-message p {
   font-size: 14px;
+  font-family: "M-R";
   line-height: 1.6;
   color: #666;
   margin-bottom: 15px;
 }
 .contact-design-page .store-info-section .contact-message .email-contact {
   margin-top: 20px;
+  font-family: "M-R " strong;
+  font-family-color: #333;
+  font-family-font-family: "M-R";
 }
-.contact-design-page .store-info-section .contact-message .email-contact strong {
+.contact-design-page .store-info-section .contact-message strong {
   color: #333;
+  font-family: "M-R";
 }
 .contact-design-page .contact-form-container {
+  height: -moz-fit-content;
+  height: fit-content;
   background-color: #f8f8f8;
   padding: 30px;
   border-radius: 8px;
@@ -5872,17 +5899,39 @@ body {
 }
 .contact-design-page .contact-form-container .design-contact-form .form-group.checkbox-group input[type=checkbox] {
   margin-top: 3px;
+  width: auto;
 }
 .contact-design-page .contact-form-container .design-contact-form .form-group.checkbox-group label {
   margin-bottom: 0;
   font-size: 13px;
   color: #666;
 }
+.contact-design-page .contact-form-container .design-contact-form .form-group input[type=checkbox] {
+  margin-top: 3px;
+  width: auto;
+}
+.contact-design-page .contact-form-container .design-contact-form .form-group .checkbox-text {
+  font-size: 14px;
+  font-family: M-R;
+  line-height: normal;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.contact-design-page .contact-form-container .design-contact-form .form-group .checkbox-text a {
+  color: #f5a623;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+.contact-design-page .contact-form-container .design-contact-form .form-group .checkbox-text a:hover {
+  color: rgb(219.0434782609, 140.3869565217, 9.9565217391);
+}
 .contact-design-page .contact-form-container .design-contact-form .submit-btn {
   display: inline-block;
   width: 100%;
   padding: 12px 24px;
-  background-color: #F5A623;
+  background-color: #f5a623;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -7692,7 +7741,7 @@ body {
   transform: translateY(-2px);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
-.user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.returned {
+.user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.failed, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.returned {
   padding-bottom: 10px;
   cursor: default;
 }
@@ -7712,12 +7761,20 @@ body {
   background-color: #50b83c;
   color: #fff;
 }
+.user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.failed {
+  background-color: #ff4625;
+  color: #fff;
+}
+.user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.confirmed {
+  background-color: #4a90e2;
+  color: #fff;
+}
 .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.cancelled {
   background-color: #de4437;
   color: #fff;
 }
 .user-account-page .account-content .orders-section .order-item .order-header .order-status span.status.returned {
-  background-color: #de4437;
+  background-color: #6f42c1;
   color: #fff;
 }
 .user-account-page .account-content .orders-section .order-item .order-content {
@@ -7950,7 +8007,7 @@ body {
   transform: translateY(-2px);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
-.user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.returned {
+.user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.failed, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.returned {
   padding-bottom: 10px;
   cursor: default;
 }
@@ -7970,12 +8027,20 @@ body {
   background-color: #50b83c;
   color: #fff;
 }
+.user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.failed {
+  background-color: #ff4625;
+  color: #fff;
+}
+.user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.confirmed {
+  background-color: #4a90e2;
+  color: #fff;
+}
 .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.cancelled {
   background-color: #de4437;
   color: #fff;
 }
 .user-account-page .account-content .orders-section .order-list .order-item .order-header .order-status span.status.returned {
-  background-color: #de4437;
+  background-color: #6f42c1;
   color: #fff;
 }
 .user-account-page .account-content .orders-section .order-list .order-item .order-content {
@@ -8812,6 +8877,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 5px;
 }
 .user-account-page .account-content .promo-section .voucher-card .voucher-actions button.btn-copy:hover {
   background-color: #f1f1f1;
@@ -9015,7 +9081,7 @@ body {
   transform: translateY(-2px);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
-.user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.returned {
+.user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.pending, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.confirmed, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.shipping, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.completed, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.failed, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.cancelled, .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.returned {
   padding-bottom: 10px;
   cursor: default;
 }
@@ -9035,12 +9101,16 @@ body {
   background-color: #50b83c;
   color: #fff;
 }
+.user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.failed {
+  background-color: #ff4625;
+  color: #fff;
+}
 .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.cancelled {
   background-color: #de4437;
   color: #fff;
 }
 .user-account-page .account-content .orders-management-section .order-item .order-header .order-status span.status.returned {
-  background-color: #de4437;
+  background-color: #6f42c1;
   color: #fff;
 }
 .user-account-page .account-content .orders-management-section .order-item .order-content {
@@ -9174,6 +9244,23 @@ body {
   margin-top: 20px;
   justify-content: right;
 }
+.user-account-page .account-content .orders-management-section .order-item .order-content .order-info .order-actions a.btn-action-primary {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Be-M;
+  line-height: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 50%;
+  background-color: #F0A00A;
+  color: #fff;
+  border: none;
+}
+.user-account-page .account-content .orders-management-section .order-item .order-content .order-info .order-actions a.btn-action-primary:hover {
+  background-color: rgb(215.52, 143.68, 8.98);
+}
 .user-account-page .account-content .orders-management-section .order-item .order-content .order-info .order-actions button {
   padding: 8px 15px;
   border-radius: 4px;
@@ -9268,6 +9355,21 @@ body {
 .user-account-page .design-services .services-grid .service-item p {
   font-size: 14px;
   color: #666;
+}
+
+.voucher-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  filter: grayscale(0.3);
+  position: relative;
+}
+
+.voucher-disabled .voucher-actions button {
+  cursor: not-allowed;
+}
+
+.voucher-disabled .btn-copy span {
+  color: #F0A00A; /* tuỳ chọn: để nổi bật dòng "Hết lượt sử dụng" */
 }
 
 .detail-order-page {
@@ -9387,6 +9489,33 @@ body {
   font-size: 12px;
   color: #999;
   font-family: "Be-R";
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.cancellation.active .status-icon {
+  background-color: #ff6b35;
+  border-color: #ff6b35;
+  color: #fff;
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.cancellation.active .status-label p {
+  color: #ff6b35;
+  font-family: "M-SB";
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.return.active .status-icon {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+  color: #fff;
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.return.active .status-label p {
+  color: #6f42c1;
+  font-family: "M-SB";
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.failed.active .status-icon {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.detail-order-page .order-overview .order-status-progress .status-timeline .status-step.failed.active .status-label p {
+  color: #dc3545;
+  font-family: "M-SB";
 }
 .detail-order-page .order-overview .order-status-progress .status-timeline .status-step .status-icon {
   width: 40px;
@@ -10386,7 +10515,6 @@ body {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid #eee;
-  margin-bottom: 30px;
   padding: 0 20px;
 }
 .news-page .news-banner .banner-image {
@@ -11295,6 +11423,19 @@ body {
   outline: none;
   font-family: "Be-R";
   background: none;
+  margin: 0 auto;
+  line-height: 40px;
+}
+.detail-content .content-input-quantity .input-options input::-webkit-outer-spin-button, .detail-content .content-input-quantity .input-options input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.detail-content .content-input-quantity .input-options input:-moz-appearance {
+  -moz-appearance: textfield;
+       appearance: textfield;
+}
+.detail-content .content-input-quantity .input-options input:focus {
+  outline: none;
 }
 .detail-content .content-input-quantity .input-options .quantity-inputt {
   font-weight: 800;
@@ -11333,8 +11474,6 @@ body {
 .detail-content .content-button .button-icon-i .icon-img img {
   color: #000000;
   padding: 3px;
-  width: 30px;
-  height: 30px;
 }
 
 .detail-decriptionn {
@@ -11600,6 +11739,17 @@ body {
   .product-details .details-infomation .detail-products .detail-content .content-input-quantity span {
     font-size: 16px;
   }
+  .product-details .details-infomation .detail-products .detail-content .content-input-quantity .input-options input[type=number]::-webkit-outer-spin-button, .product-details .details-infomation .detail-products .detail-content .content-input-quantity .input-options input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .product-details .details-infomation .detail-products .detail-content .content-input-quantity .input-options input[type=number]:-moz-appearance {
+    -moz-appearance: textfield;
+         appearance: textfield;
+  }
+  .product-details .details-infomation .detail-products .detail-content .content-input-quantity .input-options input[type=number]:focus {
+    outline: none;
+  }
   .product-details .details-infomation .detail-products .detail-content .content-button .button-icon-i .icon-img {
     border: none;
   }
@@ -11652,6 +11802,44 @@ body {
   font-family: "Be-R";
   font-size: 20px;
   text-align: center;
+}
+
+.order-list .order-item .order-content .product-details {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.order-list .order-item .order-content .product-details h4 {
+  height: 40px;
+}
+.order-list .order-item .order-content .order-pricing {
+  padding: 15px;
+}
+.order-list .order-item .order-content .order-pricing .order-actions {
+  padding-top: 12px;
+}
+
+.order-list-container .order-item .order-content {
+  display: none;
+}
+.order-list-container .order-item .order-content .product-details {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.order-list-container .order-item .order-content .product-details h4 {
+  height: 40px;
+}
+.order-list-container .order-item .order-content .product-details .product-link {
+  margin-top: 0px !important;
+}
+.order-list-container .order-item .order-content .order-pricing {
+  padding: 15px;
+}
+.order-list-container .order-item .order-content .order-pricing .order-actions {
+  padding-top: 12px;
 }
 
 /* Components */
@@ -12403,10 +12591,12 @@ section p {
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #d9d9d9;
   background-color: #fff;
-  font-size: 12px;
+  font-size: 16px;
   font-family: "Be-M";
+  line-height: normal;
+  color: #1d1d1d;
+  text-transform: none;
 }
 .section-box-products .box-products-container .box-products-frame .products-frame-cart .cart-button button:hover {
   background-color: #F0A00A;
@@ -12871,26 +13061,13 @@ section p {
 
 .categories-flex {
   width: 100%;
-  height: 100%;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
   padding-bottom: 48px;
-  gap: 24px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
+  /* Slide giữ đúng chiều rộng */
 }
-.categories-flex .categories-flex::-webkit-scrollbar {
-  height: 8px;
-}
-.categories-flex .categories-flex::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-.categories-flex .categories-flex::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+.categories-flex .swiper-slide {
+  width: 300px !important;
+  flex-shrink: 0;
 }
 .categories-flex .category-item {
   width: 300px;
@@ -13194,7 +13371,6 @@ section p {
   justify-content: start;
   padding-bottom: 48px;
   gap: 24px;
-  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
 }
@@ -14138,11 +14314,25 @@ section p {
   color: #7D7D7D;
   text-transform: none;
 }
+.mini-cart-item .item-info .item-details .item-remove {
+  display: flex;
+  align-self: center;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
 .mini-cart-item .item-info .item-details .item-remove img {
   width: 15px;
   height: 15px;
   opacity: 0.8;
   transition: opacity 0.2s ease;
+}
+.mini-cart-item .item-info .item-details .item-remove:hover {
+  background-color: rgb(241, 242, 242);
+  border-radius: 24px;
+  cursor: pointer;
 }
 .mini-cart-item .item-info .item-details .item-color {
   width: 16px;
@@ -14362,7 +14552,7 @@ section p {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 360px;
+  width: 410px;
   background-color: #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
@@ -14413,7 +14603,7 @@ section p {
 }
 .mini-notification-items {
   overflow-y: auto;
-  max-height: 280px;
+  max-height: 500px;
   padding: 0;
 }
 .mini-notification-item {
@@ -14421,17 +14611,38 @@ section p {
   padding: 15px;
   border-bottom: 1px solid #f0f0f0;
   position: relative;
-  flex-direction: column;
+  gap: 10px;
 }
 .mini-notification-item a {
   text-decoration: none;
 }
-.mini-notification-item a .noti-title {
+.mini-notification-item .noti-content {
+  width: 100%;
+}
+.mini-notification-item .noti-content .noti-title {
   font-size: 16px;
   font-family: "M-SB";
   color: #f0a00a;
 }
-.mini-notification-item a .noti-message {
+.mini-notification-item .delete-noti {
+  display: flex;
+  align-self: center;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+.mini-notification-item .delete-noti img {
+  width: 16px;
+  height: 16px;
+}
+.mini-notification-item .delete-noti:hover {
+  background-color: rgb(241, 242, 242);
+  border-radius: 24px;
+  cursor: pointer;
+}
+.mini-notification-item .noti-message {
   font-size: 14px;
   color: #333;
   font-family: "M-R";
@@ -14493,6 +14704,192 @@ section p {
 }
 .notifycation-container .cart-btn {
   position: relative;
+}
+
+.chat-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+.chat-widget .chat-bubble {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #F0A00A;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.chat-widget .chat-bubble img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+.chat-widget .chat-bubble:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+.chat-widget .chat-popup {
+  width: 340px;
+  height: 440px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.chat-widget .chat-popup .chat-header {
+  background: #F0A00A;
+  color: #fff;
+  padding: 16px;
+  font-size: 16px;
+  font-family: "M-B";
+  line-height: normal;
+  color: #fff;
+  text-transform: none;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-widget .chat-popup .chat-header button {
+  background: none;
+  border: none;
+  font-size: 32px;
+  font-family: "M-R";
+  line-height: normal;
+  color: #fff;
+  text-transform: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+.chat-widget .chat-popup .chat-body {
+  flex: 1;
+  padding: 16px;
+  background: #f5f7fa;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-widget .chat-popup .chat-message {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 80%;
+}
+.chat-widget .chat-popup .chat-message img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #eee;
+}
+.chat-widget .chat-popup .chat-message span {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: "Be-R";
+  line-height: normal;
+  color: #1d1d1d;
+  text-transform: none;
+  background: #EEEEEE;
+}
+.chat-widget .chat-popup .chat-message.right {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  align-items: end;
+}
+.chat-widget .chat-popup .chat-message.right span {
+  background: #F0A00A;
+  color: #fff;
+  font-size: 12px;
+  font-family: "Be-R";
+  line-height: 1.5;
+  color: #fff;
+  text-transform: none;
+}
+.chat-widget .chat-popup .chat-message.left {
+  align-self: flex-start;
+}
+.chat-widget .chat-popup .chat-message.left span {
+  background: #e0e6ed;
+  color: #222;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator {
+  display: flex;
+  align-items: center;
+  min-width: 16px;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator span {
+  padding: 0;
+  margin: 0;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator .dot {
+  width: 7px;
+  height: 7px;
+  background: #bbb;
+  border-radius: 50%;
+  margin: 0 2px;
+  display: inline-block;
+  animation: bounce 0.8s infinite;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator .dot:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.chat-widget .chat-popup .chat-message.left .typing-indicator .dot:nth-child(3) {
+  animation-delay: 0.2s;
+}
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+.chat-widget .chat-popup .chat-input {
+  display: flex;
+  border-top: 1px solid #eee;
+  padding: 10px;
+  background: #fff;
+}
+.chat-widget .chat-popup .chat-input input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+}
+.chat-widget .chat-popup .chat-input button {
+  margin-left: 8px;
+  padding: 0 18px;
+  background: #F0A00A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Be-SB";
+  line-height: normal;
+  color: #fff;
+  text-transform: none;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.chat-widget .chat-popup .chat-input button:hover {
+  background: #F0A00A;
 }
 
 .email-verified-page {
@@ -14591,4 +14988,156 @@ section p {
   .email-verified-page .email-verified-content {
     padding: 25px 15px;
   }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.popup-overlay .popup-container {
+  background-color: #fff;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  aspect-ratio: 2/1;
+  width: 90vw;
+  max-width: 1300px;
+  max-height: 90vh;
+  min-width: 300px;
+  position: relative;
+  text-align: center;
+  animation: fadeInScale 0.4s ease-out forwards;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.popup-overlay .popup-container .mySwiper {
+  width: 100%;
+  aspect-ratio: 2/1;
+  z-index: 1;
+  position: relative;
+}
+.popup-overlay .popup-container .popup-image-link {
+  display: block;
+  line-height: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.popup-overlay .popup-container .popup-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 0;
+}
+.popup-overlay .popup-container .popup-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: background-color 0.4s ease;
+}
+.popup-overlay .popup-container .popup-close-btn:hover {
+  background-color: #D83B01;
+}
+.popup-overlay .popup-container .no-image-placeholder {
+  padding: var(--gap);
+  color: #1d1d1d;
+  font-size: var(--body16-fs);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  aspect-ratio: 16/9;
+  width: 100%;
+  background-color: #f0f0f0;
+}
+.popup-overlay .popup-container .swiper-pagination {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+.popup-overlay .popup-container .swiper-pagination-bullet {
+  display: inline-block !important;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  opacity: 1;
+}
+.popup-overlay .popup-container .swiper-pagination-bullet-active {
+  background-color: #7D7D7D !important;
+  width: 12px;
+  height: 12px;
+}
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.popup-overlay .swiper-scrollbar {
+  background: rgba(0, 0, 0, 0.2) !important;
+  height: 8px !important;
+  position: absolute !important;
+  bottom: 10px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 90% !important;
+  border-radius: 4px !important;
+  z-index: 10;
+}
+.popup-overlay .swiper-scrollbar-drag {
+  background: #221D00 !important;
+  border-radius: 4px !important;
+}
+.popup-overlay .swiper-button-prev,
+.popup-overlay .swiper-button-next,
+.popup-overlay .swiper-pagination-bullet,
+.popup-overlay .swiper-pagination-bullet-active {
+  display: none !important;
+}
+.popup-overlay html,
+.popup-overlay body,
+.popup-overlay #root,
+.popup-overlay .App {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #f8f8f8;
 }/*# sourceMappingURL=style.css.map */

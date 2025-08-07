@@ -150,6 +150,7 @@
               &.confirmed,
               &.shipping,
               &.completed,
+              &.failed,
               &.cancelled,
               &.returned {
                 padding-bottom: 10px;
@@ -175,7 +176,14 @@
                 background-color: #50b83c;
                 color: #fff;
               }
-
+              &.failed {
+                background-color: #ff4625;
+                color: #fff;
+              }
+                &.confirmed {
+                  background-color: #4a90e2;
+                  color: #fff;
+                }
               &.cancelled {
                 background-color: #de4437;
                 color: #fff;
@@ -420,6 +428,7 @@
                 &.confirmed,
                 &.shipping,
                 &.completed,
+                &.failed,
                 &.cancelled,
                 &.returned {
                   padding-bottom: 10px;
@@ -445,7 +454,14 @@
                   background-color: #50b83c;
                   color: #fff;
                 }
-
+                &.failed {
+                  background-color: #ff4625;
+                  color: #fff;
+                }
+                &.confirmed {
+                  background-color: #4a90e2;
+                  color: #fff;
+                }
                 &.cancelled {
                   background-color: #de4437;
                   color: #fff;
@@ -1563,6 +1579,7 @@
               &.confirmed,
               &.shipping,
               &.completed,
+              &.failed,
               &.cancelled,
               &.returned {
                 padding-bottom: 10px;
@@ -1588,7 +1605,10 @@
                 background-color: #50b83c;
                 color: #fff;
               }
-
+              &.failed {
+                background-color: #ff4625;
+                color: #fff;
+              }
               &.cancelled {
                 background-color: #de4437;
                 color: #fff;
