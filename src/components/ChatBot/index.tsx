@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 const botAvatar = 'https://res.cloudinary.com/dmgrdgvcf/image/upload/v1754375206/android-chrome-192x192_imxhjz.png';
-const userAvatar = 'https://randomuser.me/api/portraits/men/32.jpg';
+const userAvatar = 'https://res.cloudinary.com/dmgrdgvcf/image/upload/v1754414426/ByeWind_zglo0c.svg';
 
 type Message = {
       sender: 'user' | 'bot';
