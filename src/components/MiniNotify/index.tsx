@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useEffect,
   forwardRef,
@@ -12,6 +12,7 @@ export interface Notification {
   message: string;
   created_at: string;
   link: string;
+  is_read: boolean;
 }
 
 
@@ -21,6 +22,7 @@ export interface MiniNotificationHandle {
   isVisible: boolean;
   refreshNotifications: () => void;
   getNotificationCount: () => number;
+    markAllAsRead?: () => Promise<number>; 
 }
 
 interface MiniNotificationProps {
@@ -66,6 +68,7 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
     }, []);
 
 
+
     useImperativeHandle(ref, () => ({
       toggleMiniNotification: () => setIsVisible((prev) => !prev),
       closeMiniNotification: () => setIsVisible(false),
@@ -94,10 +97,28 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
         console.error("Lỗi khi xoá thông báo:", error);
       }
     };
-    // const formatDate = (iso: string) => {
-    //   const date = new Date(iso);
-    //   return date.toLocaleString('vi-VN');
-    // };
+
+const handleMarkAsRead = async (id: number) => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const res = await fetch(convertToAdminApiUrl(`/couponcodes/notification/read/${id}`), {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to mark as read");
+
+    // Cập nhật trạng thái đã đọc trong danh sách hiện tại
+    setNotifications(prev =>
+      prev.map(n => n.notification_id === id ? { ...n, is_read: true } : n)
+    );
+  } catch (err) {
+    console.error("Lỗi đánh dấu đã đọc:", err);
+  }
+};
 
     return (
       <div className={`mini-notification ${isVisible ? 'show' : ''}`}>
@@ -115,15 +136,19 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
             {notifications.length > 0 ? (
               notifications.map((noti, index) => (
 
-                <div key={index} className="mini-notification-item" >
+                <div
+                  key={index}
+                  className={`mini-notification-item ${noti.is_read ? 'read' : 'unread'}`}
+                >
+
 
                   {isExternalLink(noti.link) ? (
-                    <Link  className="noti-content" to={noti.link} target="_blank" rel="noopener noreferrer">
+                    <Link className="noti-content" to={noti.link} target="_blank" rel="noopener noreferrer" onClick={() => handleMarkAsRead(noti.notification_id)}>
                       <h4 className="noti-title">{noti.title}</h4>
-                      <div className="noti-message">{noti.message}</div>
+                      <div className="noti-message">{noti.message}</div>  
                     </Link>
                   ) : (
-                    <a className="noti-content" href={noti.link || "/tai-khoan/ma-giam-gia"}>
+                    <a className="noti-content" href={noti.link || "/tai-khoan/ma-giam-gia"}   onClick={() => handleMarkAsRead(noti.notification_id)}>
                       <h4 className="noti-title">{noti.title}</h4>
                       <div className="noti-message">{noti.message}</div>
                     </a>
