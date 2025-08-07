@@ -369,3 +369,20 @@
     z-index: -1;
   }
 }
+
+.mini-notification-item.unread {
+  background-color: #fff; 
+}
+
+.mini-notification-item.read {
+  background-color: #f3f3f3e6;
+  opacity: 0.8;
+}
+.mini-notification-items {
+  overflow-y: auto;
+  max-height: 500px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}

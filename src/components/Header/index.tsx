@@ -221,6 +221,7 @@ const Header = () => {
     }
   };
 
+
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -680,7 +681,7 @@ const Header = () => {
                           fontWeight: 'bold',
                           padding: '5px',
                           borderRadius: '50%',
-                          minWidth: '18px',  
+                          minWidth: '18px',
                           textAlign: 'center',
                           zIndex: 10,
                           boxShadow: '0 0 0 2px white',
@@ -733,27 +734,27 @@ const Header = () => {
                         <span
                           className="cart-badge"
                           style={{
-                        position: 'absolute',
-                          width: '20px',
-                          height: '18px',
-                          top: '20px',
-                          right: '-6px',
-                          backgroundColor: '#F0A00A',
-                          color: 'white',
-                          fontFamily: 'Be-R',
-                          fontSize: '12px',
-                          fontWeight: 'bold',
-                          padding: '5px',
-                          borderRadius: '50%',
-                          minWidth: '18px',
-                          textAlign: 'center',
-                          zIndex: 10,
-                          boxShadow: '0 0 0 2px white',
-                          display: 'flex',
-                          alignContent: 'center',
-                          justifyContent: 'center',
-                          alignSelf: 'center',
-                          alignItems: 'center'
+                            position: 'absolute',
+                            width: '20px',
+                            height: '18px',
+                            top: '20px',
+                            right: '-6px',
+                            backgroundColor: '#F0A00A',
+                            color: 'white',
+                            fontFamily: 'Be-R',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            padding: '5px',
+                            borderRadius: '50%',
+                            minWidth: '18px',
+                            textAlign: 'center',
+                            zIndex: 10,
+                            boxShadow: '0 0 0 2px white',
+                            display: 'flex',
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            alignSelf: 'center',
+                            alignItems: 'center'
                           }}
                         >
                           {cartCount}
