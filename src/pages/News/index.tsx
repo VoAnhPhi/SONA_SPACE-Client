@@ -6,6 +6,7 @@ import NewsCategories from "../../components/CategoryNews";
 import RecentPosts from "../../components/RecentPosts";
 import React, { useState, useEffect } from "react";
 import PolicyProduct from "../../components/Policy";
+import BannerSlider from "../../components/BannerSlider";
 import type { NewsArticle, NewsCategory } from "../../types";
 import { getAllNews, getAllNewsSimple } from "../../api/new"; // Import hàm API
 
@@ -55,20 +56,7 @@ const News: React.FC<NewsProps> = ({
 
       <div className="news-page">
         {/* Banner Section */}
-        <div className="news-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img
-                src="/images/news/banner-news (2).jpg"
-                alt="Tin tức và sự kiện mới nhất"
-              />
-            </div>
-            <div className="banner-content">
-              <h1>Tin Tức & Sự Kiện</h1>
-              <p>Cập nhật những xu hướng mới nhất trong thiết kế nội thất</p>
-            </div>
-          </div>
-        </div>
+        <BannerSlider page="tin-tuc" />
 
         <div className="breadcrumb-container">
           <div className="container">

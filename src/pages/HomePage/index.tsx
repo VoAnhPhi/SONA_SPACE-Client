@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
 import GetInTouch from "../../components/GetInTouch";
 import CategorySlider from "../../components/CategorySlider";
+import BannerSlider from "../../components/BannerSlider";
 import type { Product as ProductType } from "../../types";
 import ProductComponent from "../../components/Product";
 import { getNewestProducts } from "../../api/product";
@@ -25,7 +26,7 @@ const HomePage = () => {
         const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
 
         // Format sản phẩm để phù hợp với component Product
-        const formattedProducts = products.map((product, index) => {
+        const formattedProducts = products.map((product) => {
           return formatProductForDisplay(product);
         });
 
@@ -67,14 +68,8 @@ const HomePage = () => {
     <>
       <Header />
       <div className="homepage">
-        {/* Hero Banner */}
-        <section className="hero-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img src="/images/hero-banner.png" alt="SONA Space Interior" />
-            </div>
-          </div>
-        </section>
+        {/* Hero Banner Slider */}
+        <BannerSlider />
 
         {/* Product Recommendations */}
         <section className="product-recommendations mt-94">

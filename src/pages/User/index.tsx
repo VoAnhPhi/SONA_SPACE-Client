@@ -3,7 +3,7 @@ import { Link, Links, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import CancelOrderModal from "../../components/CancelOrderModal";
-import { BannerSection } from "../../components/BannerSection";
+import BannerSlider from "../../components/BannerSlider";
 import axios from "axios";
 import { cancelOrder } from "../../services/userServices";
 import { message } from 'antd';
@@ -749,7 +749,7 @@ const User: React.FC = () => {
   return (
     <>
       <Header />
-      <BannerSection title={"Tài Khoản"} />
+      <BannerSlider page="tai-khoan" />
       <div className="user-account-page">
         <div className="container">
           <div className="account-wrapper">

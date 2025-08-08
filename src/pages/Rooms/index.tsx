@@ -8,6 +8,7 @@ import InteriorDesign from "../../components/InteriorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/RoomSlider";
 import Product from "../../components/Product";
+import BannerSlider from "../../components/BannerSlider";
 import { getNewestProducts } from "../../api/product";
 import { formatProductForDisplay } from "../../services/productService";
 
@@ -52,11 +53,7 @@ const Rooms: React.FC = () => {
       <div className="rooms-page">
 
         {/* Banner */}
-        <section className="room-banner">
-          <div className="banner-image">
-            <img src="/images/rooms/banner_room.jpg" alt="Khám phá không gian sống" />
-          </div>
-        </section>
+        <BannerSlider page="khong-gian" />
 
         {/* Breadcrumb */}
         <div className="breadcrumb-container">
