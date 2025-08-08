@@ -18,6 +18,7 @@ import type { Product } from "../../types";
 
 // Service or API
 import { fetchAllProducts } from "../../services/productService";
+import BannerSlider from "../../components/BannerSlider";
 
 const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -121,7 +122,8 @@ const ProductPage: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="banner-slider">
+      <BannerSlider page="san-pham" />
+      {/* <div className="banner-slider">
         <div className="header-banner">
           <img src="images/products/banner-slider.jpg" alt="" />
         </div>
@@ -132,7 +134,7 @@ const ProductPage: React.FC = () => {
             Khám phá nhiều loại đồ nội thất chất lượng cao của chúng tôi.
           </div>
         </div>
-      </div>
+      </div> */}
       {/* Breadcrumb */}
       <div className="breadcrumb-container">
         <div className="container">
