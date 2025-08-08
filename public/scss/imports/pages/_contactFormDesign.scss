@@ -67,20 +67,19 @@
 
   // Services Section
   .services-section {
-
     .section-title {
       @include text(28px, M-SB, normal, $text-cl, null);
       margin-bottom: 48px;
       margin-left: 100px;
       text-align: left;
-      position: relative;
+      // position: relative;
 
       &::before {
         content: "";
         width: 60px;
         height: 2px;
         background-color: #333;
-        position: absolute;
+        // position: absolute;
         top: 50%;
         left: -100px;
         transform: translateY(-50%);
@@ -127,7 +126,6 @@
 
   // How We Work Section
   .how-we-work {
-
     .section-title {
       font-family: "M-SB";
       font-size: 24px;
@@ -182,6 +180,187 @@
             object-fit: cover;
           }
         }
+      }
+    }
+  }
+
+  /* ===== Design Process Section ===== */
+  .design-process {
+    padding: 40px 0;
+    background: color-mix(in srgb, $yellow-cl 2%, transparent);
+    .section-title {
+      @include text(24px, M-SB, normal, $text-cl, null);
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .process-timeline {
+      counter-reset: step;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-radius: 6px;
+      padding: 10px 0 10px 0;
+
+      .process-step {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 20px;
+        padding: 22px 22px 22px 0;
+        position: relative;
+
+        .step-body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+        }
+
+        .step-index {
+          @include text(28px, M-SB, normal, $text-cl, null);
+          width: 64px;
+          height: 64px;
+          display: grid;
+          place-items: center;
+          background: #fff;
+          border: 2px solid $yellow-cl;
+          border-radius: 100px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .step-body {
+          .step-title {
+            @include text(20px, M-SB, normal, $text-cl, null);
+            margin: 2px 0 8px;
+          }
+          .step-desc {
+            @include text(16px, BE-R, normal, $text-cl, null);
+            line-height: 1.5;
+            margin-bottom: 8px;
+          }
+          .step-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px 16px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 10px 12px;
+
+            div {
+              @include text(13px, BE-R, normal, $text-cl, null);
+              span {
+                @include text(13px, M-M, normal, #666, null);
+                margin-right: 6px;
+              }
+              b {
+                font-weight: 700;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .process-infobox {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+
+      .infobox-item {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 16px;
+
+        h4 {
+          @include text(16px, M-SB, normal, $text-cl, null);
+          margin-bottom: 10px;
+        }
+        ul {
+          margin: 0;
+          padding-left: 18px;
+          li {
+            list-style: disc;
+            @include text(14px, BE-R, normal, $text-cl, null);
+            line-height: 1.6;
+            &:not(:last-child) {
+              margin-bottom: 6px;
+            }
+          }
+        }
+      }
+    }
+
+    .process-cta {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+
+      .btn-primary {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: $yellow-cl;
+        color: #fff;
+        border-radius: 4px;
+        font-family: "M-SB";
+        font-size: 16px;
+        text-align: center;
+        transition: background-color 0.25s ease;
+        margin-top: 12px;
+        &:hover {
+          background-color: darken($yellow-cl, 10%);
+        }
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: $md-max) {
+      .process-timeline .process-step {
+        grid-template-columns: 64px 1fr;
+
+        .step-index {
+          width: 64px;
+          height: 64px;
+          @include text(22px, M-SB, normal, $text-cl, null);
+        }
+        .step-body .step-meta {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .process-infobox {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: $sm-max) {
+      .section-title::before {
+        display: none;
+      }
+
+      .process-timeline {
+        border-left-width: 3px;
+        .process-step {
+          grid-template-columns: 1fr;
+          padding-left: 20px;
+
+          .step-index {
+            margin-left: 0;
+            margin-bottom: 10px;
+            justify-self: start;
+          }
+          .step-body .step-meta {
+            grid-template-columns: 1fr;
+          }
+        }
+      }
+
+      .process-infobox {
+        grid-template-columns: 1fr;
       }
     }
   }
@@ -314,12 +493,12 @@
             gap: 3px;
 
             a {
-              color: #f5a623;
+              color: $yellow-cl;
               text-decoration: underline;
               transition: color 0.3s ease;
 
               &:hover {
-                color: darken(#f5a623, 10%);
+                color: darken($yellow-cl, 10%);
               }
             }
           }
@@ -330,7 +509,7 @@
         display: block;
         width: 100%;
         padding: 14px;
-        background-color: #f5a623;
+        background-color: $yellow-cl;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -341,7 +520,7 @@
         margin-top: 30px;
 
         &:hover {
-          background-color: darken(#f5a623, 10%);
+          background-color: darken($yellow-cl, 10%);
         }
       }
     }

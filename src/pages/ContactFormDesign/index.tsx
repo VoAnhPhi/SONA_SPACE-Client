@@ -87,6 +87,14 @@ const ContactFormDesign: React.FC = () => {
     }
   };
 
+  const scrollToForm = () => {
+    const form = document.querySelector(".contact-form-section") as HTMLElement;
+    form && window.scrollTo({
+      top: form.getBoundingClientRect().top + window.scrollY - 100,
+      behavior: "smooth"
+    });
+  };
+
   return (
     <>
       <Header />
@@ -195,6 +203,120 @@ const ContactFormDesign: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* quy trình thiết kế nội thất */}
+        <section className="design-process mt-94" aria-labelledby="design-process-title">
+          <div className="container">
+            <h2 id="design-process-title" className="section-title">Quy trình thiết kế tại Sona Space</h2>
+
+            <ol className="process-timeline">
+              {/* 01. Tiếp nhận yêu cầu */}
+              <li className="process-step">
+                <div className="step-index">01</div>
+                <div className="step-body">
+                  <h3 className="step-title">Tiếp nhận yêu cầu</h3>
+                  <p className="step-desc">
+                    Hệ thống ghi nhận thông tin dự án của bạn.
+                    <br />
+                    Trong vòng 24 giờ làm việc, đội ngũ sẽ liên hệ để xác nhận lại nhu cầu và gợi ý stylist/phong cách phù hợp.
+                  </p>
+                </div>
+              </li>
+
+              {/* 02. Liên hệ & chốt khảo sát */}
+              <li className="process-step">
+                <div className="step-index">02</div>
+                <div className="step-body">
+                  <h3 className="step-title">Liên hệ &amp; chốt lịch khảo sát</h3>
+                  <p className="step-desc">
+                    Đội ngũ của Sona Space sẽ liên hệ với bạn để <b>chốt địa chỉ</b> và <b>ngày/giờ khảo sát</b> công trình mà khách hàng muốn thiết kế.
+                    <br /> Gửi checklist những gì cần chuẩn bị.
+                  </p>
+                </div>
+              </li>
+
+              {/* 03. Khảo sát hiện trạng */}
+              <li className="process-step">
+                <div className="step-index">03</div>
+                <div className="step-body">
+                  <h3 className="step-title">Khảo sát công trình hiện trạng</h3>
+                  <p className="step-desc">
+                    Các nhà thiết kế nội thất của Sona Space sẽ đo đạc, chụp ảnh, ghi nhận hiện trạng điện–nước–kết cấu (phần kết cấu phối hợp kiến trúc sư).
+                    <br /> Cùng với đó lập mặt bằng hiện trạng 2D và tiến hành thảo luận về phong cách thiết kế.
+                  </p>
+                </div>
+              </li>
+
+              {/* 04. Concept & wireframe + cọc 30% */}
+              <li className="process-step">
+                <div className="step-index">04</div>
+                <div className="step-body">
+                  <h3 className="step-title">Lên concept &amp; wireframe</h3>
+                  <p className="step-desc">
+                    Sau khi làm rõ các ý tưởng của bạn, nhà thiết kế của chúng tôi sẽ xây dựng moodboard, phối hợp phong cách, bố trí mặt bằng 2D sơ bộ.
+                    <br />
+                    Đồng thời Sona Space sẽ thu <b>cọc 30%</b> để khởi động vòng lặp chỉnh sửa theo ý kiến của bạn cho đến khi bạn ưng ý hoàn toàn với bản thiết kế.
+                    <br />
+                    Sau khi bạn ưng ý với bản thiết kế, nhà thiết kế có thể sẽ đề xuất một số sản phẩm của Sona Space để bạn có thể lựa chọn.
+                  </p>
+                </div>
+              </li>
+              {/* 05. Bàn giao & quyết toán */}
+              <li className="process-step">
+                <div className="step-index">05</div>
+                <div className="step-body">
+                  <h3 className="step-title">Bàn giao hồ sơ &amp; quyết toán</h3>
+                  <p className="step-desc">
+                    Bàn giao file CAD, PDF, ảnh 3D, bảng khối lượng &amp; báo giá thi công.
+                    <br />
+                    Quyết toán phần phí còn lại.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            {/* Meta khuôn mẫu: mốc thanh toán, chỉnh sửa, trạng thái mapping */}
+            <div className="process-infobox">
+              <div className="infobox-item">
+                <h4>Các mốc thanh toán</h4>
+                <ul>
+                  <li><b>Lần 1 — 30%:</b> Khi duyệt concept &amp; wireframe.</li>
+                  <li><b>Lần 2:</b> Khi bàn giao toàn bộ hồ sơ.</li>
+                </ul>
+              </div>
+              <div className="infobox-item">
+                <h4>Chính sách chỉnh sửa</h4>
+                <ul>
+                  <li>Chỉnh sửa theo vòng phản hồi ở giai đoạn concept cho đến khi ưng ý.</li>
+                  <li>Giai đoạn hồ sơ chi tiết: cho phép chỉnh tối ưu nhỏ trong phạm vi công năng.</li>
+                  <li>Render 3D cuối: phí 500.000đ nếu yêu cầu xem/in bộ ảnh xuất ra.</li>
+                </ul>
+              </div>
+              <div className="infobox-item">
+                <h4>Tóm tắt luồng thiết kế</h4>
+                <ul>
+                  <li><b>Tiếp nhận yêu cầu</b></li>
+                  <li><b>Liên hệ & chốt lịch khảo sát</b></li>
+                  <li><b>Khảo sát công trình hiện trạng</b></li>
+                  <li><b>Lên concept & wireframe</b></li>
+                  <li><b>Bàn giao hồ sơ & quyết toán</b></li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="process-cta">
+              {/* Thêm id cho form ở dưới để anchor hoạt động */}
+              <a className="btn-primary" href="#design-form" onClick={scrollToForm}>Bắt đầu dự án của bạn ngay</a>
+            </div>
+          </div>
+        </section>
+
+
+        <section className="showcase-section mt-94">
+          <div className="container">
+            <Showcase categoryName="tu-van-va-thiet-ke" />
           </div>
         </section>
 
@@ -370,13 +492,6 @@ const ContactFormDesign: React.FC = () => {
                 {isLoading ? "Đang gửi..." : "Gửi"}
               </button>
             </form>
-          </div>
-        </section>
-
-
-        <section className="showcase-section mt-94">
-          <div className="container">
-            <Showcase categoryName="tu-van-va-thiet-ke" />
           </div>
         </section>
       </div>
