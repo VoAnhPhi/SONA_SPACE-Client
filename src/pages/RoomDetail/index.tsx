@@ -5,22 +5,111 @@ import Footer from "../../components/Footer";
 import RoomSlider from "../../components/RoomSlider";
 import Filter from "../../components/Filter";
 import ProductComponent from "../../components/Product";
-import { fetchRoomBySlug, fetchProductsByRoom } from "../../services/roomService";
+import {
+  fetchRoomBySlug,
+  fetchProductsByRoomWithFilters,
+} from "../../services/roomService";
 import type { Room, Product } from "../../types";
-import Seemore from "../../components/SeeMore";
+import Seemore from "../../components/seemore";
+
+const PAGE_SIZE = 8;
 
 const RoomDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [room, setRoom] = useState<Room | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]); // products hiển thị
+  const [allProducts, setAllProducts] = useState<Product[]>([]); // toàn bộ sản phẩm đã tải
+  const [filteredAll, setFilteredAll] = useState<Product[]>([]); // kết quả sau khi lọc
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentFilters, setCurrentFilters] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const applyFilters = (
+    source: Product[],
+    filters: { [key: string]: string }
+  ): Product[] => {
+    let data = [...source];
+
+    // category (so khớp theo tên)
+    if (filters.category) {
+      data = data.filter((p) => p.category?.name === filters.category);
+    }
+
+    // price (dựa vào actualPrice: ưu tiên price_sale nếu hợp lệ)
+    if (filters.price) {
+      data = data.filter((p) => {
+        const base = typeof p.price === "number" ? p.price : 0;
+        const sale =
+          typeof p.price_sale === "number" && p.price_sale > 0
+            ? p.price_sale
+            : undefined;
+        const actualPrice = sale ?? base;
+        if (filters.price === "Dưới 10 triệu") return actualPrice < 10_000_000;
+        if (filters.price === "10 - 30 triệu")
+          return actualPrice >= 10_000_000 && actualPrice <= 30_000_000;
+        if (filters.price === "Trên 30 triệu") return actualPrice > 30_000_000;
+        return true;
+      });
+    }
+
+    // color (ở trang này dùng color hex)
+    if (filters.color) {
+      data = data.filter(
+        (p) => Array.isArray(p.colors) && p.colors.includes(filters.color)
+      );
+    }
+
+    // sort
+    if (filters.sort) {
+      const getActualPrice = (p: Product) => {
+        const base = typeof p.price === "number" ? p.price : 0;
+        const sale =
+          typeof p.price_sale === "number" && p.price_sale > 0
+            ? p.price_sale
+            : undefined;
+        return sale ?? base;
+      };
+      if (filters.sort === "Giá tăng dần") {
+        data.sort((a, b) => getActualPrice(a) - getActualPrice(b));
+      } else if (filters.sort === "Giá giảm dần") {
+        data.sort((a, b) => getActualPrice(b) - getActualPrice(a));
+      } else if (filters.sort === "Mới nhất") {
+        data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      } else if (filters.sort === "Giảm giá") {
+        const disc = (p: Product) => {
+          if (
+            typeof p.price === "number" &&
+            typeof p.price_sale === "number" &&
+            p.price_sale > 0 &&
+            p.price > 0
+          ) {
+            return ((p.price - p.price_sale) / p.price) * 100;
+          }
+          return 0;
+        };
+        data.sort((a, b) => disc(b) - disc(a));
+      }
+    }
+
+    return data;
+  };
 
   const handleFilterChange = (newFilters: { [key: string]: string }) => {
-    console.log("New filters:", newFilters);
+    setCurrentFilters(newFilters);
+    // Lọc trên client, không gọi API
+    const filtered = applyFilters(allProducts, newFilters);
+    setFilteredAll(filtered);
+    setPage(1);
+    setTotalPages(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+    setProducts(filtered.slice(0, PAGE_SIZE));
   };
 
   useEffect(() => {
@@ -32,16 +121,52 @@ const RoomDetail: React.FC = () => {
 
     const fetchRoomAndProducts = async () => {
       try {
-        const roomData = await fetchRoomBySlug(slug);
-        setRoom(roomData[0] || roomData);
-        const { products: newProducts, totalPages } = await fetchProductsByRoom(
-          slug || "",
-          page,
-          8
+        console.log(
+          `🏠 [RoomDetail] Fetching room and products for slug:`,
+          slug
         );
-        setProducts(newProducts);
-        setTotalPages(totalPages);
+
+        const roomData = await fetchRoomBySlug(slug);
+        console.log(`🏠 [RoomDetail] Room data received:`, roomData);
+        setRoom(roomData[0] || roomData);
+
+        // Chỉ gọi API 1 lần để lấy nhiều sản phẩm, sau đó lọc client
+        console.log(`🛍️ [RoomDetail] Fetching products with roomSlug:`, slug);
+        const { products: initialProducts } =
+          await fetchProductsByRoomWithFilters(
+            slug,
+            1,
+            200, // tải nhiều sản phẩm để lọc cục bộ
+            {}
+          );
+
+        console.log(`🛍️ [RoomDetail] Initial products received:`, {
+          count: initialProducts.length,
+          firstProduct: initialProducts[0]
+            ? {
+                id: initialProducts[0].id,
+                name: initialProducts[0].name,
+                category: initialProducts[0].category,
+              }
+            : null,
+        });
+
+        setAllProducts(initialProducts);
+        // Khởi tạo filteredAll và products hiển thị
+        const initialFiltered = applyFilters(initialProducts, {});
+        console.log(`🔍 [RoomDetail] Initial filtered products:`, {
+          count: initialFiltered.length,
+        });
+
+        setFilteredAll(initialFiltered);
+        setTotalPages(
+          Math.max(1, Math.ceil(initialFiltered.length / PAGE_SIZE))
+        );
+        setProducts(initialFiltered.slice(0, PAGE_SIZE));
+
+        console.log(`✅ [RoomDetail] State updated successfully`);
       } catch (error) {
+        console.error(`❌ [RoomDetail] Error fetching data:`, error);
         setError("Không tìm thấy không gian");
       } finally {
         setLoading(false);
@@ -51,7 +176,7 @@ const RoomDetail: React.FC = () => {
     fetchRoomAndProducts();
   }, [slug]);
 
-  if (loading) {
+  if (loading && page === 1) {
     return <div>Loading...</div>;
   }
 
@@ -60,8 +185,10 @@ const RoomDetail: React.FC = () => {
   }
 
   const handleSeeMore = () => {
-    if (page < totalPages) {
-      setPage((prev) => prev + 1);
+    if (page < totalPages && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      setProducts(filteredAll.slice(0, nextPage * PAGE_SIZE));
     }
   };
 
@@ -97,10 +224,19 @@ const RoomDetail: React.FC = () => {
 
         {/* Product Section */}
         <section className="product-section mt-94">
-          <Filter onFilterChange={handleFilterChange} />
+          <Filter
+            onFilterChange={handleFilterChange}
+            hideRoomFilter={true}
+            colorMode="hex"
+          />
           <div className="boxProducts">
             <div className="container">
               <div className="section-box-products">
+                {products.length === 0 && (
+                  <p className="empty-text">
+                    Không có sản phẩm phù hợp với bộ lọc.
+                  </p>
+                )}
                 <div className="box-products-container">
                   {products.map((product) => (
                     <ProductComponent
@@ -110,10 +246,13 @@ const RoomDetail: React.FC = () => {
                     />
                   ))}
                 </div>
-                {loading && <p>Đang tải thêm sản phẩm...</p>}
-                {!loading && page < totalPages && (
-                  <Seemore onClick={handleSeeMore} />
-                )}
+
+                {!loading &&
+                  filteredAll &&
+                  filteredAll.length > 12 &&
+                  products.length < filteredAll.length && (
+                    <Seemore onClick={handleSeeMore} />
+                  )}
               </div>
             </div>
           </div>

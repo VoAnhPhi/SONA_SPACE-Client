@@ -27,10 +27,14 @@ const ProductPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<{[key: string]: string}>({});
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
-  const fetchProducts = async (pageNumber: number, currentFilters = {}, isLoadMore = false) => {
+  const fetchProducts = async (
+    pageNumber: number,
+    currentFilters = {},
+    isLoadMore = false
+  ) => {
     if (isLoadMore) {
       setIsLoadingMore(true);
     } else {
@@ -46,12 +50,12 @@ const ProductPage: React.FC = () => {
 
       if (isLoadMore) {
         // Thêm sản phẩm mới vào danh sách hiện tại
-        setProducts(prevProducts => [...prevProducts, ...newProducts]);
+        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
       } else {
         // Load lại từ đầu (khi thay đổi filter)
         setProducts(newProducts);
       }
-      
+
       setTotalPages(totalPages);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -65,47 +69,57 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     const pageParam = parseInt(searchParams.get("page") || "1", 10);
     setPage(pageParam);
-    
+
     // Lấy các tham số lọc từ URL và chỉ lấy các giá trị không rỗng và không phải giá trị mặc định
-    const urlFilters: {[key: string]: string} = {};
+    const urlFilters: { [key: string]: string } = {};
     const category = searchParams.get("category");
     const room = searchParams.get("room");
     const price = searchParams.get("price");
     const color = searchParams.get("color");
     const sort = searchParams.get("sort");
 
-    if (category && category !== "Chọn danh mục") urlFilters.category = category;
+    if (category && category !== "Chọn danh mục")
+      urlFilters.category = category;
     if (room && room !== "Chọn phòng") urlFilters.room = room;
     if (price && price !== "Chọn giá") urlFilters.price = price;
     if (color && color !== "Chọn màu") urlFilters.color = color;
     if (sort && sort !== "Sắp xếp") urlFilters.sort = sort;
-    
+
     setFilters(urlFilters);
     fetchProducts(pageParam, urlFilters, false);
   }, []);
 
   useEffect(() => {
     // Cập nhật URL với các tham số lọc, chỉ thêm các giá trị không rỗng và không phải giá trị mặc định
-    const params: {[key: string]: string} = {
-      page: page.toString(),
-      limit: "8",
-    };
+    const params: { [key: string]: string } = {};
+
+    // Chỉ thêm page vào URL khi page > 1
+    if (page > 1) {
+      params.page = page.toString();
+    }
 
     Object.entries(filters).forEach(([key, value]) => {
-      if (value && 
-          value !== "Chọn danh mục" && 
-          value !== "Chọn phòng" && 
-          value !== "Chọn giá" && 
-          value !== "Chọn màu" && 
-          value !== "Sắp xếp") {
+      if (
+        value &&
+        value !== "Chọn danh mục" &&
+        value !== "Chọn phòng" &&
+        value !== "Chọn giá" &&
+        value !== "Chọn màu" &&
+        value !== "Sắp xếp"
+      ) {
         params[key] = value;
       }
     });
 
-    setSearchParams(new URLSearchParams(params));
+    // Chỉ set search params khi có tham số thực sự
+    if (Object.keys(params).length > 0) {
+      setSearchParams(new URLSearchParams(params));
+    } else {
+      setSearchParams({});
+    }
   }, [page, filters]);
 
-  const handleFilterChange = (newFilters: {[key: string]: string}) => {
+  const handleFilterChange = (newFilters: { [key: string]: string }) => {
     setPage(1); // Reset về trang 1 khi thay đổi bộ lọc
     setFilters(newFilters);
     fetchProducts(1, newFilters, false); // Load lại từ đầu khi thay đổi filter
@@ -155,20 +169,21 @@ const ProductPage: React.FC = () => {
         <div className="boxProducts">
           <div className="container">
             <div className="section-box-products">
+              {loading && <p className="empty-text">Đang tải sản phẩm...</p>}
+              {products.length === 0 && !loading && (
+                <p className="empty-text">
+                  Không có sản phẩm phù hợp với bộ lọc.
+                </p>
+              )}
               <div className="box-products-container">
-                {loading ? (
-                  <p>Đang tải sản phẩm...</p>
-                ) : products.length > 0 ? (
+                {!loading &&
                   products.map((product) => (
                     <ProductComponent
                       key={product.id}
                       product={product}
                       slug={product.slug}
                     />
-                  ))
-                ) : (
-                  <p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc.</p>
-                )}
+                  ))}
               </div>
               {isLoadingMore && <p>Đang tải thêm sản phẩm...</p>}
               {!loading && !isLoadingMore && page < totalPages && (
@@ -185,9 +200,11 @@ const ProductPage: React.FC = () => {
         <GetInTouch />
       </section>
       <Footer />
-            <ToastContainer position="top-right"
+      <ToastContainer
+        position="top-right"
         autoClose={3000}
-        style={{ marginTop: "100px" }} />
+        style={{ marginTop: "100px" }}
+      />
     </>
   );
 };

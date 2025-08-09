@@ -159,8 +159,10 @@ export const formatProductForDisplay = (product: any): Product => {
 
   return {
     id: product.product_id || product.id,
+    product_id: product.product_id || product.id,
     name: product.product_name || product.name || "",
     slug: product.product_slug || product.slug || "",
+    product_slug: product.product_slug || product.slug || "",
     price: price,
     price_sale: priceSale,
     priceSale: priceSale,
@@ -181,6 +183,7 @@ export const formatProductForDisplay = (product: any): Product => {
     variants: product.variants || [],
     variant_id: product.variant_id || 0,
     attributes: product.attributes || [],
+    rooms: product.rooms || [],
   };
 };
 
@@ -290,7 +293,7 @@ export const getRelatedProductsByRoom = async (
         view: item.view || 0,
         description: item.description || "",
         isWishlist: item.isWishlist === true || item.isWishlist === 1,
-      })  
+      })
     );
 
     return formatted;

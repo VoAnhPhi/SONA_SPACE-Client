@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { convertToAdminApiUrl } from "../../utils/url";
 
 interface FilterProps {
@@ -8,17 +8,31 @@ interface FilterProps {
     price?: string;
     color?: string;
     sort?: string;
+    roomSlug?: string;
   }) => void;
+  hideRoomFilter?: boolean;
+  colorMode?: "name" | "hex";
+  hideCategoryFilter?: boolean;
+  roomSlugMode?: boolean;
 }
 
-const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
+const Filter: React.FC<FilterProps> = ({
+  onFilterChange,
+  hideRoomFilter = false,
+  colorMode = "name",
+  hideCategoryFilter = false,
+  roomSlugMode = false,
+}) => {
   const [openedDropdown, setOpenedDropdown] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Chọn danh mục");
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("Chọn danh mục");
   const [selectedRoom, setSelectedRoom] = useState<string>("Chọn phòng");
   const [selectedPrice, setSelectedPrice] = useState<string>("Chọn giá");
   const [selectedColor, setSelectedColor] = useState<string>("Chọn màu");
   const [selectedSort, setSelectedSort] = useState<string>("Sắp xếp");
-  const [currentFilters, setCurrentFilters] = useState<{ [key: string]: string }>({});
+  const [currentFilters, setCurrentFilters] = useState<{
+    [key: string]: string;
+  }>({});
 
   const prices = ["Dưới 10 triệu", "10 - 30 triệu", "Trên 30 triệu"];
   const sortOptions = ["Giá tăng dần", "Giá giảm dần", "Mới nhất", "Giảm giá"];
@@ -28,14 +42,29 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const [colors, setColors] = useState<any[]>([]);
 
   const filterRef = useRef<HTMLDivElement>(null);
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleDropdown = (type: string) => {
     setOpenedDropdown((prev) => (prev === type ? null : type));
   };
 
-  const handleSelect = (type: string, value: string) => {
-    console.log('Selected filter:', type, value);
+  // Debounce function để tránh gọi API quá nhiều
+  const debouncedFilterChange = useCallback(
+    (filters: { [key: string]: string }) => {
+      // Clear timeout cũ nếu có
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
 
+      // Set timeout mới để delay việc gọi onFilterChange
+      debounceTimeoutRef.current = setTimeout(() => {
+        onFilterChange(filters);
+      }, 300);
+    },
+    [onFilterChange]
+  );
+
+  const handleSelect = (type: string, value: string) => {
     let newFilters = { ...currentFilters };
 
     switch (type) {
@@ -43,37 +72,59 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
         setSelectedCategory(value);
         if (value !== "Chọn danh mục") {
           newFilters.category = value;
+        } else {
+          delete newFilters.category;
         }
         break;
       case "room":
         setSelectedRoom(value);
         if (value !== "Chọn phòng") {
-          newFilters.room = value;
+          if (roomSlugMode) {
+            const chosen = rooms.find((r) => r.room_name === value);
+            if (chosen?.slug) {
+              newFilters.roomSlug = chosen.slug;
+              delete newFilters.room;
+            }
+          } else {
+            newFilters.room = value;
+            delete newFilters.roomSlug;
+          }
+        } else {
+          delete newFilters.room;
+          delete newFilters.roomSlug;
         }
         break;
       case "price":
         setSelectedPrice(value);
         if (value !== "Chọn giá") {
           newFilters.price = value;
+        } else {
+          delete newFilters.price;
         }
         break;
       case "color":
         setSelectedColor(value);
         if (value !== "Chọn màu") {
-          newFilters.color = value;
+          const chosen = colors.find((c) => c.color_name === value);
+          newFilters.color =
+            colorMode === "hex" ? chosen?.color_hex ?? "" : value;
+        } else {
+          delete newFilters.color;
         }
         break;
       case "sort":
         setSelectedSort(value);
         if (value !== "Sắp xếp") {
           newFilters.sort = value;
+        } else {
+          delete newFilters.sort;
         }
         break;
     }
 
     setOpenedDropdown(null);
     setCurrentFilters(newFilters);
-    onFilterChange(newFilters);
+    debouncedFilterChange(newFilters);
   };
 
   const handleClear = (type: string) => {
@@ -87,6 +138,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       case "room":
         setSelectedRoom("Chọn phòng");
         delete newFilters.room;
+        delete newFilters.roomSlug;
         break;
       case "price":
         setSelectedPrice("Chọn giá");
@@ -104,7 +156,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
 
     setOpenedDropdown(null);
     setCurrentFilters(newFilters);
-    onFilterChange(newFilters);
+    debouncedFilterChange(newFilters);
   };
 
   const clearAllFilters = () => {
@@ -154,7 +206,13 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      // Cleanup debounce timeout
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -167,98 +225,108 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
           </div>
 
           {/* Category */}
-          <div className="filter-dropdown">
-            <div
-              className="dropdown-toggle"
-              onClick={() => toggleDropdown("category")}
-            >
-              {selectedCategory !== "Chọn danh mục" && (
-                <img
-                  src={
-                    categories.find(
-                      (cat) => cat.category_name === selectedCategory
-                    )?.category_icon
-                  }
-                  alt={selectedCategory}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginRight: 8,
-                    verticalAlign: "middle",
-                  }}
-                />
-              )}
-              <span className="label">{selectedCategory}</span>
-              <i
-                className={`dropdown-icon ${openedDropdown === "category" ? "open" : ""
-                  }`}
-              />
-            </div>
-            <div
-              className={`dropdown-menu ${openedDropdown === "category" ? "show" : ""
-                }`}
-            >
-              {categories.map((cat) => (
-                <div
-                  key={cat.category_id}
-                  className={`dropdown-item ${selectedCategory === cat.category_name ? "selected" : ""
-                    }`}
-                  onClick={() => handleSelect("category", cat.category_name)}
-                >
-                  <img
-                    src={cat.category_icon}
-                    alt={cat.category_name}
-                    style={{ width: 24, height: 24, marginRight: 8 }}
-                  />
-
-                  {cat.category_name}
-                </div>
-              ))}
-
+          {!hideCategoryFilter && (
+            <div className="filter-dropdown">
               <div
-                className="dropdown-item clear-item"
-                onClick={() => handleClear("category")}
+                className="dropdown-toggle"
+                onClick={() => toggleDropdown("category")}
               >
-                Xoá bộ lọc
+                {selectedCategory !== "Chọn danh mục" && (
+                  <img
+                    src={
+                      categories.find(
+                        (cat) => cat.category_name === selectedCategory
+                      )?.category_icon
+                    }
+                    alt={selectedCategory}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      marginRight: 8,
+                      verticalAlign: "middle",
+                    }}
+                  />
+                )}
+                <span className="label">{selectedCategory}</span>
+                <i
+                  className={`dropdown-icon ${
+                    openedDropdown === "category" ? "open" : ""
+                  }`}
+                />
+              </div>
+              <div
+                className={`dropdown-menu ${
+                  openedDropdown === "category" ? "show" : ""
+                }`}
+              >
+                {categories.map((cat) => (
+                  <div
+                    key={cat.category_id}
+                    className={`dropdown-item ${
+                      selectedCategory === cat.category_name ? "selected" : ""
+                    }`}
+                    onClick={() => handleSelect("category", cat.category_name)}
+                  >
+                    <img
+                      src={cat.category_icon}
+                      alt={cat.category_name}
+                      style={{ width: 24, height: 24, marginRight: 8 }}
+                    />
+
+                    {cat.category_name}
+                  </div>
+                ))}
+
+                <div
+                  className="dropdown-item clear-item"
+                  onClick={() => handleClear("category")}
+                >
+                  Xoá bộ lọc
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Room */}
-          <div className="filter-dropdown">
-            <div
-              className="dropdown-toggle"
-              onClick={() => toggleDropdown("room")}
-            >
-              <span className="label">{selectedRoom}</span>
-              <i
-                className={`dropdown-icon ${openedDropdown === "room" ? "open" : ""
-                  }`}
-              />
-            </div>
-            <div
-              className={`dropdown-menu ${openedDropdown === "room" ? "show" : ""
-                }`}
-            >
-              {rooms.map((room) => (
-                <div
-                  key={room.room_id}
-                  className={`dropdown-item ${selectedRoom === room.room_name ? "selected" : ""
-                    }`}
-                  onClick={() => handleSelect("room", room.room_name)}
-                >
-                  {room.room_name}
-                </div>
-              ))}
-
+          {!hideRoomFilter && (
+            <div className="filter-dropdown">
               <div
-                className="dropdown-item clear-item"
-                onClick={() => handleClear("room")}
+                className="dropdown-toggle"
+                onClick={() => toggleDropdown("room")}
               >
-                Xoá bộ lọc
+                <span className="label">{selectedRoom}</span>
+                <i
+                  className={`dropdown-icon ${
+                    openedDropdown === "room" ? "open" : ""
+                  }`}
+                />
+              </div>
+              <div
+                className={`dropdown-menu ${
+                  openedDropdown === "room" ? "show" : ""
+                }`}
+              >
+                {rooms.map((room) => (
+                  <div
+                    key={room.room_id}
+                    className={`dropdown-item ${
+                      selectedRoom === room.room_name ? "selected" : ""
+                    }`}
+                    onClick={() => handleSelect("room", room.room_name)}
+                  >
+                    {room.room_name}
+                  </div>
+                ))}
+
+                <div
+                  className="dropdown-item clear-item"
+                  onClick={() => handleClear("room")}
+                >
+                  Xoá bộ lọc
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Price */}
           <div className="filter-dropdown">
@@ -268,19 +336,22 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
             >
               <span>{selectedPrice}</span>
               <i
-                className={`dropdown-icon ${openedDropdown === "price" ? "open" : ""
-                  }`}
+                className={`dropdown-icon ${
+                  openedDropdown === "price" ? "open" : ""
+                }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${openedDropdown === "price" ? "show" : ""
-                }`}
+              className={`dropdown-menu ${
+                openedDropdown === "price" ? "show" : ""
+              }`}
             >
               {prices.map((price) => (
                 <div
                   key={price}
-                  className={`dropdown-item ${selectedPrice === price ? "selected" : ""
-                    }`}
+                  className={`dropdown-item ${
+                    selectedPrice === price ? "selected" : ""
+                  }`}
                   onClick={() => handleSelect("price", price)}
                 >
                   {price}
@@ -316,19 +387,22 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
 
               <span className="label">{selectedColor}</span>
               <i
-                className={`dropdown-icon ${openedDropdown === "color" ? "open" : ""
-                  }`}
+                className={`dropdown-icon ${
+                  openedDropdown === "color" ? "open" : ""
+                }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${openedDropdown === "color" ? "show" : ""
-                }`}
+              className={`dropdown-menu ${
+                openedDropdown === "color" ? "show" : ""
+              }`}
             >
               {colors.map((color) => (
                 <div
                   key={color.color_id}
-                  className={`dropdown-item ${selectedColor === color.color_name ? "selected" : ""
-                    }`}
+                  className={`dropdown-item ${
+                    selectedColor === color.color_name ? "selected" : ""
+                  }`}
                   onClick={() => handleSelect("color", color.color_name)}
                 >
                   <span
@@ -359,19 +433,22 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
               <img src="/images/products/arrow-down-up.svg" alt="Sort" />
               <span>{selectedSort}</span>
               <i
-                className={`dropdown-icon ${openedDropdown === "sort" ? "open" : ""
-                  }`}
+                className={`dropdown-icon ${
+                  openedDropdown === "sort" ? "open" : ""
+                }`}
               />
             </div>
             <div
-              className={`dropdown-menu ${openedDropdown === "sort" ? "show" : ""
-                }`}
+              className={`dropdown-menu ${
+                openedDropdown === "sort" ? "show" : ""
+              }`}
             >
               {sortOptions.map((option) => (
                 <div
                   key={option}
-                  className={`dropdown-item ${selectedSort === option ? "selected" : ""
-                    }`}
+                  className={`dropdown-item ${
+                    selectedSort === option ? "selected" : ""
+                  }`}
                   onClick={() => handleSelect("sort", option)}
                 >
                   {option}

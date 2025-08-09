@@ -38,7 +38,9 @@ export const getAllProducts = async (
     });
 
     console.log(
-      `Calling API: GET ${convertToAdminApiUrl("/products")}?${queryParams.toString()}`
+      `Calling API: GET ${convertToAdminApiUrl(
+        "/products"
+      )}?${queryParams.toString()}`
     );
 
     const token = sessionStorage.getItem("authToken"); // hoặc localStorage nếu bạn dùng nó
@@ -91,7 +93,9 @@ export const getProductBySlug = async (
   related_products: any[];
 }> => {
   try {
-    const response = await axios.get(convertToAdminApiUrl(`/products/test/${slug}`));
+    const response = await axios.get(
+      convertToAdminApiUrl(`/products/test/${slug}`)
+    );
     return handleApiResponse(response, "No data received from API");
   } catch (error) {
     // xử lý lỗi...
@@ -111,7 +115,9 @@ export const searchProducts = async (
 ): Promise<PaginatedResponse<Product>> => {
   try {
     console.log(
-      `Calling API: GET ${convertToAdminApiUrl("/products/search")} with keyword: ${keyword}`
+      `Calling API: GET ${convertToAdminApiUrl(
+        "/products/search"
+      )} with keyword: ${keyword}`
     );
 
     const response = await axios.get(convertToAdminApiUrl("/products/search"), {

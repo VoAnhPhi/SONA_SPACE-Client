@@ -2,9 +2,11 @@ import {
   getAllCategories,
   getCategoryBySlug,
   getProductsByCategory,
+  getProductsByCategoryUsingTest,
 } from "../api/category";
 import type { Category, PaginatedResponse, Product } from "../types";
 import axios from "axios";
+import { formatProductForDisplay } from "./productService";
 
 /**
  * Fetch all categories
@@ -13,68 +15,33 @@ import axios from "axios";
 export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
     const categories = await getAllCategories();
-    // console.log("Service: Received categories:", categories);
     return categories;
   } catch (error) {
-    // console.error("Error in fetchAllCategories service:", error);
     if (axios.isAxiosError(error) && error.code === "ECONNREFUSED") {
-      // console.error("API server is not running or not accessible");
     }
     return [];
   }
 };
 
-// getAllCategories
-
-/**
- * Fetch a category by slug
- * @param {string} slug - The category slug
- * @returns {Promise<Category | null>} Category data or null if not found
- */
 export const fetchCategoryBySlug = async (
   slug: string
 ): Promise<Category | null> => {
   try {
-    // console.log(`Service: Fetching category with slug: ${slug}`);
     const category = await getCategoryBySlug(slug);
     return category;
   } catch (error) {
-    // console.error(
-    //   `Error in fetchCategoryBySlug service for slug ${slug}:`,
-    //   error
-    // );
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 404) {
-        // console.error(`Category with slug ${slug} not found`);
-      } else if (error.code === "ECONNREFUSED") {
-        // console.error("API server is not running or not accessible");
-      }
-    }
     return null;
   }
 };
 
-/**
- * Fetch products by category ID
- * @param {number} categoryId - The category ID
- * @param {Object} params - Query parameters (pagination, filters, etc.)
- * @returns {Promise<PaginatedResponse<Product> | null>} Paginated products data or null if error
- */
 export const fetchProductsByCategory = async (
   categorySlug: string,
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product> | null> => {
   try {
     const productsData = await getProductsByCategory(categorySlug, params);
-    // console.log(`Service: Received ${productsData.items.length} products`);
-    // console.log("productsData", productsData);
     return productsData;
   } catch (error) {
-    console.error(
-      `Error in fetchProductsByCategory service for category ${categorySlug}:`,
-      error
-    );
-    // Return empty paginated response on error
     return {
       items: [],
       total: 0,
@@ -82,6 +49,29 @@ export const fetchProductsByCategory = async (
       pageSize: params.pageSize || 10,
       totalPages: 1,
     };
+  }
+};
+
+// New: use /products/test to fetch by category + filters
+export const fetchProductsByCategoryUsingTest = async (
+  categorySlug: string,
+  params: {
+    page?: number;
+    pageSize?: number;
+    sort?: string;
+    price?: string;
+    color?: string;
+    roomSlug?: string;
+  } = {}
+): Promise<{ products: Product[]; totalPages: number }> => {
+  try {
+    const raw = await getProductsByCategoryUsingTest(categorySlug, params);
+    return {
+      products: raw.items.map(formatProductForDisplay),
+      totalPages: raw.totalPages,
+    };
+  } catch (error) {
+    return { products: [], totalPages: 1 };
   }
 };
 

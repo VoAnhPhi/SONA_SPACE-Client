@@ -48,7 +48,9 @@ export const getAllCategories = async (): Promise<Category[]> => {
  */
 export const getCategoryBySlug = async (slug: string): Promise<Category> => {
   try {
-    const response = await axios.get(convertToAdminApiUrl(`/categories/${slug}`));
+    const response = await axios.get(
+      convertToAdminApiUrl(`/categories/${slug}`)
+    );
     // console.log("API response received:", response.status);
 
     if (!response.data) {
@@ -103,6 +105,54 @@ export const getProductsByCategory = async (
       `Error fetching products for category ${categorySlug}:`,
       error
     );
+    throw error;
+  }
+};
+
+export const getProductsByCategoryUsingTest = async (
+  categorySlug: string,
+  params: {
+    page?: number;
+    pageSize?: number;
+    sort?: string;
+    price?: string;
+    color?: string;
+    roomSlug?: string;
+  } = {}
+): Promise<PaginatedResponse<Product>> => {
+  try {
+    const { page = 1, pageSize = 8, sort, price, color, roomSlug } = params;
+    const queryParams = new URLSearchParams({
+      page: String(page),
+      limit: String(pageSize),
+      categorySlug,
+      ...(roomSlug && { roomSlug }),
+      ...(sort && { sort }),
+      ...(price && { price }),
+      ...(color && { color }),
+    });
+
+    const response = await axios.get(convertToAdminApiUrl("/products/all"), {
+      params: queryParams,
+    });
+
+    const data = response.data;
+    const pagination = data?.pagination || {
+      totalProducts: 0,
+      currentPage: page,
+      productsPerPage: pageSize,
+      totalPages: 1,
+    };
+
+    return {
+      items: Array.isArray(data?.products) ? data.products : [],
+      total: pagination.totalProducts,
+      page: pagination.currentPage,
+      pageSize: pagination.productsPerPage,
+      totalPages: pagination.totalPages,
+    };
+  } catch (error) {
+    console.error("Error fetching products by category /products/all:", error);
     throw error;
   }
 };
