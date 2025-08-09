@@ -4,6 +4,7 @@ body {
 
 .banner-slider {
   position: relative;
+
   // padding-bottom: 74px;
   .header-banner {
     height: 100dvh;
@@ -46,6 +47,7 @@ body {
     }
 
     .header-text {
+
       .text1,
       .text2 {
         font-size: 30px;
@@ -80,4 +82,13 @@ body {
     justify-items: center;
     // width: 100%;
   }
+}
+
+.empty-text {
+  font-family: "Be-R";
+  font-size: 1.8rem;
+  text-align: center;
+  margin-top: 20px;
+  padding: 50px;
+  margin-top: 94px;
 }

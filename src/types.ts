@@ -42,6 +42,7 @@ export interface Product {
   relatedProducts?: Product[];
   variants?: Variant[];
   variant_id: number;
+  rooms?: string[];
 }
 export interface Attribute {
   name: string;

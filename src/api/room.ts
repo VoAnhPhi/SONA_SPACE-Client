@@ -69,9 +69,12 @@ export const getProductsByRoom = async (
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product>> => {
   try {
-    const response = await axios.get(convertToAdminApiUrl(`/rooms/${roomSlug}/products`), {
-      params,
-    });
+    const response = await axios.get(
+      convertToAdminApiUrl(`/rooms/${roomSlug}/products`),
+      {
+        params,
+      }
+    );
 
     const { products, pagination } = response.data;
     return {
@@ -83,6 +86,62 @@ export const getProductsByRoom = async (
     };
   } catch (error) {
     console.error(`Error fetching products for room ${roomSlug}:`, error);
+    throw error;
+  }
+};
+
+export const getProductsByRoomWithFilters = async (
+  roomSlug: string,
+  page: number = 1,
+  limit: number = 8,
+  filters: {
+    category?: string;
+    room?: string;
+    price?: string;
+    color?: string;
+    sort?: string;
+  } = {}
+): Promise<PaginatedResponse<Product>> => {
+  try {
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      roomSlug: roomSlug,
+      ...(filters?.category && { categorySlug: filters.category }),
+      ...(filters?.price && { price: filters.price }),
+      ...(filters?.color && { color: filters.color }),
+      ...(filters?.sort && { sort: filters.sort }),
+    });
+
+    const response = await axios.get(convertToAdminApiUrl("/products/all"), {
+      params: queryParams,
+    });
+
+    const data = response.data;
+
+    if (!data || !data.products || !data.pagination) {
+      return {
+        items: [],
+        total: 0,
+        page: 1,
+        pageSize: limit,
+        totalPages: 1,
+      };
+    }
+
+    return {
+      items: data.products,
+      total: data.pagination.totalProducts,
+      page: data.pagination.currentPage,
+      pageSize: data.pagination.productsPerPage,
+      totalPages: data.pagination.totalPages,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // Kiểm tra nếu server không chạy
+      if (error.code === "ECONNREFUSED" || error.code === "ERR_NETWORK") {
+      }
+    }
     throw error;
   }
 };
