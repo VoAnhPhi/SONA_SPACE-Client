@@ -37,7 +37,7 @@ export const returnOrder = async (orderId: number | string, reason: string, imag
     
     // Thêm các file hình ảnh
     images.forEach((image) => {
-      formData.append(`images`, image);
+      formData.append(`return_images`, image);
     });
 
     const response = await axios.post(
