@@ -31,7 +31,7 @@ const SignUp: React.FC = () => {
   return (
     <>
       <Header />
-      <BannerSection title={"Đăng Ký Tài Khoản"} />
+      <BannerSection title={"Đăng Ký Tài Khoản"} height="50dvh" />
       <div className="signup-page">
         <div className="container">
           <div className="signup-content">
