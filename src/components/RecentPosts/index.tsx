@@ -59,7 +59,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
               <div className="post-info">
                 <span className="post-title">{item.news_title}</span>
                 <span className="post-date">
-                  {item.news_view}
+                  lượt xem: {item.news_view}
 
                 </span>
               </div>
