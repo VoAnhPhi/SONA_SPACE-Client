@@ -474,3 +474,65 @@
     transform: rotate(360deg);
   }
 }
+
+
+@include sm {
+  .Pay-billment{
+    .pay-info {
+      grid-template-columns: 1fr;
+      gap: 20px;
+
+      &-left {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      &-right {
+        width: 100%;
+        height: auto;
+        margin-left: 0;
+      }
+    }
+
+  }
+}
+
+@include xs {
+  .Pay-billment {
+    .pay-info {
+      grid-template-columns: 1fr;
+      gap: 20px;
+
+      &-left {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      &-right {
+        width: 100%;
+        height: auto;
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+@include xxs {
+  .Pay-billment {
+    .pay-info {
+      grid-template-columns: 1fr;
+      gap: 20px;
+
+      &-left {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      &-right {
+        width: 100%;
+        height: auto;
+        margin-left: 0;
+      }
+    }
+  }
+}

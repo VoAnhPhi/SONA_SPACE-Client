@@ -493,7 +493,7 @@ const Payment: React.FC = () => {
                       <span className="radio-label">Thanh toán qua ví momo</span>
                     </div>
                   </div>
-                  <div className={`payment-option ${paymentMethod === 'VNpay' ? 'active' : ''}`}>
+                  {/* <div className={`payment-option ${paymentMethod === 'VNpay' ? 'active' : ''}`}>
                     <div className="method-option">
                       <input
                         className="input-radio"
@@ -505,7 +505,7 @@ const Payment: React.FC = () => {
                       <img src="/images/icons/vnpay.svg" alt="" width={30} height={30} />
                       <span className="radio-label">Thanh toán qua cổng VNPay</span>
                     </div>
-                  </div>
+                  </div> */}
 
 
                 </div>
