@@ -8,6 +8,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import { loadCartService, updateCartQuantityService, removeFromCartService, clearCartService } from "../../services/cartService";
 import { validateCouponService } from "../../services/conpcodeService";
+import BannerSlider from "../../components/BannerSlider";
+
 interface CartItemProps {
   id: number;
   variant_id: string;
@@ -230,16 +232,7 @@ const CartPage: React.FC = () => {
       <Header />
       <div className="cart-page">
         {/* Banner Section */}
-        <div className="cart-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img
-                src="/images/cartpage/banner_cart.jpg"
-                alt="Giỏ hàng - Mua sắm nội thất cao cấp"
-              />
-            </div>
-          </div>
-        </div>
+        <BannerSlider page="gio-hang" />
 
         {/* Breadcrumb */}
         <div className="breadcrumb-container">

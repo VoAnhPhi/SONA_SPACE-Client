@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService, clearCartServiceid } from "../../services/cartService";
 import { createOrderService } from "../../services/ordersService";
+import BannerSlider from "../../components/BannerSlider";
 
 interface OrderSummaryProps {
   subtotal: number;

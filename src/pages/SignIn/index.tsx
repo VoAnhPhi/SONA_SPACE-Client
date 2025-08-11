@@ -25,7 +25,7 @@ const SignIn: React.FC = () => {
   return (
     <>
       <Header />
-      <BannerSection title={"Đăng Nhập"} />
+      <BannerSection title={"Đăng Nhập"} height="50dvh" />
       <div className="signin-page">
         <div className="container">
           <div className="signin-content">
