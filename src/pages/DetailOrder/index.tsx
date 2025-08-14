@@ -41,6 +41,15 @@ interface OrderDetails {
   discount: number;
   total: number;
   products: OrderProduct[];
+  returnInfo?: {
+    return_id: number;
+    reason: string;
+    return_type: string;
+    total_refund: string;
+    return_status: string;
+    return_created_at: string;
+    return_updated_at: string;
+  };
 }
 
 const DetailOrder: React.FC = () => {
@@ -97,7 +106,10 @@ const DetailOrder: React.FC = () => {
           ...res.data.order,
           products: mappedProducts,
           processType: res.data.order.processType || undefined,
-          statusStep: res.data.order.statusStep || 1
+          statusStep: res.data.order.statusStep !== null && res.data.order.statusStep !== undefined 
+            ? res.data.order.statusStep 
+            : 1,
+          returnInfo: res.data.order.returnInfo || undefined
         };
         
         setOrder(orderData);
@@ -106,9 +118,6 @@ const DetailOrder: React.FC = () => {
           (product) => product.has_comment
         );
         setAllProductsReviewed(allCommented);
-        
-        console.log("fetchOrder - Full API Response:", res.data);
-        console.log("fetchOrder - Mapped Order Data:", orderData);
       }
     } catch (err) {
       console.error("Lỗi khi tải đơn hàng:", err);
@@ -220,7 +229,7 @@ const DetailOrder: React.FC = () => {
           { label: "Yêu cầu trả hàng", icon: "fas fa-undo" },
           { label: "Chờ xử lý trả hàng", icon: "fas fa-hourglass-half" },
           { label: "Xác nhận trả hàng", icon: "fas fa-check-circle" },
-          { label: "Đã trả hàng hoàn tất", icon: "fas fa-box-open" }
+          { label: "Hoàn tất yêu cầu", icon: "fas fa-box-open" }
         ];
       case 'failed':
         return [
@@ -232,7 +241,7 @@ const DetailOrder: React.FC = () => {
   };
 
   // Xác định bước hiện tại dựa trên trạng thái và loại quy trình
-  const getCurrentStep = (status: string, processType: 'normal' | 'cancellation' | 'failed' | 'return', defaultStep: number): number => {
+  const getCurrentStep = (status: string, processType: 'normal' | 'cancellation' | 'failed' | 'return', defaultStep: number, orderData?: OrderDetails): number => {
     const statusUpper = status.toUpperCase();
     const statusLower = status.toLowerCase();
     
@@ -254,6 +263,11 @@ const DetailOrder: React.FC = () => {
             return defaultStep;
         }
       case 'cancellation':
+        // Ưu tiên sử dụng statusStep từ API nếu có và hợp lệ
+        if (defaultStep && defaultStep >= 1 && defaultStep <= 4) {
+          return defaultStep;
+        }
+        
         switch (statusUpper) {
           case 'CANCEL_REQUESTED': return 1;
           case 'CANCEL_PENDING': return 2;
@@ -270,8 +284,27 @@ const DetailOrder: React.FC = () => {
             return defaultStep;
         }
       case 'return':
-        // Ưu tiên sử dụng statusStep từ API nếu có và hợp lệ
-        if (defaultStep && defaultStep >= 1 && defaultStep <= 4) {
+        // Ưu tiên kiểm tra returnInfo trước vì nó chứa thông tin chính xác nhất
+        if (orderData && (orderData as any).returnInfo) {
+          const returnInfo = (orderData as any).returnInfo;
+          const returnStatus = returnInfo.return_status;
+          
+          switch (returnStatus) {
+            case 'PENDING': 
+              return 2;     // Chờ xử lý trả hàng
+            case 'APPROVED': 
+              return 3;    // Xác nhận trả hàng
+            case 'REJECTED': 
+              return 4;    // Đã trả hàng hoàn tất (bị từ chối)
+            case 'COMPLETED': 
+              return 4;   // Đã trả hàng hoàn tất (thành công)
+            default: 
+              return 1;            // Yêu cầu trả hàng
+          }
+        }
+        
+        // Sau đó mới kiểm tra statusStep từ API nếu có và hợp lệ
+        if (typeof defaultStep === 'number' && defaultStep >= 1 && defaultStep <= 4) {
           return defaultStep;
         }
         
@@ -285,6 +318,7 @@ const DetailOrder: React.FC = () => {
           case 'RETURN_CONFIRMED':
           case 'CANCEL_CONFIRMED': return 3; // Xác nhận trả hàng
           case 'RETURNED':
+          case 'REJECTED':
           case 'CANCELLED': return 4;        // Đã trả hàng hoàn tất
           default:
             // Kiểm tra các trạng thái có chứa từ khóa trả hàng
@@ -380,7 +414,6 @@ const DetailOrder: React.FC = () => {
         comment_description: reviewDescription,
         comment_rating: reviewRating,
       };
-      console.log("Sending payload:", payload);
       const res = await axios.post(
         convertToAdminApiUrl("/comments"),
         payload,
@@ -397,32 +430,22 @@ const DetailOrder: React.FC = () => {
         // Reload order data to reflect the new review status
         await fetchOrder(); // <--- Call fetchOrder here
         closeReviewForm();
-        console.log(
-          "Đánh giá thành công, đang chuẩn bị đóng form sau 2 giây..."
-        );
         setTimeout(() => {
           closeReviewForm();
         }, 2000);
-        console.log("Đã gọi closeReviewForm");
       } else {
         setReviewMessage(
           res.data.message || "Đã có lỗi xảy ra khi gửi đánh giá."
         );
       }
     } catch (error: any) {
-      console.error("Lỗi khi gửi đánh giá:", error);
       if (error.response) {
-        console.error("Dữ liệu phản hồi lỗi:", error.response.data);
-        console.error("Mã trạng thái lỗi:", error.response.status);
-        console.error("Headers lỗi:", error.response.headers);
         setReviewMessage(
           error.response.data.message || "Lỗi từ server: Không rõ nguyên nhân."
         );
       } else if (error.request) {
-        console.error("Không nhận được phản hồi từ server:", error.request);
         setReviewMessage("Không nhận được phản hồi từ server.");
       } else {
-        console.error("Lỗi thiết lập request:", error.message);
         setReviewMessage("Lỗi kết nối hoặc thiết lập request.");
       }
     } finally {
@@ -450,11 +473,7 @@ const DetailOrder: React.FC = () => {
       
       // Tải lại thông tin đơn hàng để cập nhật statusStep và processType mới
       await fetchOrder();
-      
-      console.log("Đã reload thông tin đơn hàng sau khi gửi yêu cầu trả hàng");
     } catch (error: any) {
-      console.error("Lỗi khi gửi yêu cầu trả hàng:", error);
-      
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
         message.error(`Lỗi: ${error.response.data.message}`);
@@ -508,8 +527,6 @@ const DetailOrder: React.FC = () => {
       // Tải lại thông tin đơn hàng để cập nhật trạng thái
       await fetchOrder();
     } catch (error: any) {
-      console.error("Lỗi khi hủy đơn hàng:", error);
-      
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
         message.error(`Lỗi: ${error.response.data.message}`);
@@ -566,17 +583,7 @@ const formatPrice1 = (value: number | string): string => {
                   // Xác định loại quy trình và các bước
                   const processType = getProcessType(order.status, order.processType);
                   const steps = getProcessSteps(processType);
-                  const currentStep = getCurrentStep(order.status, processType, order.statusStep || 1);
-                  
-                  console.log("Debug Info:", {
-                    status: order.status,
-                    processType: order.processType,
-                    statusStep: order.statusStep,
-                    calculatedProcessType: processType,
-                    steps: steps.map(s => s.label),
-                    currentStep,
-                    orderData: order
-                  });
+                  const currentStep = getCurrentStep(order.status, processType, order.statusStep || 1, order);
                   
                   return steps.map((step, index) => (
                     <React.Fragment key={index}>
