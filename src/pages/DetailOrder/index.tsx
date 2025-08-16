@@ -229,7 +229,7 @@ const DetailOrder: React.FC = () => {
           { label: "Yêu cầu trả hàng", icon: "fas fa-undo" },
           { label: "Chờ xử lý trả hàng", icon: "fas fa-hourglass-half" },
           { label: "Xác nhận trả hàng", icon: "fas fa-check-circle" },
-          { label: "Hoàn tất yêu cầu", icon: "fas fa-box-open" }
+          { label: "Xử lý hoàn tất", icon: "fas fa-box-open" }
         ];
       case 'failed':
         return [
@@ -291,11 +291,14 @@ const DetailOrder: React.FC = () => {
           
           switch (returnStatus) {
             case 'PENDING': 
-              return 2;     // Chờ xử lý trả hàng
+              return 1;     // Chờ xử lý trả hàng
             case 'APPROVED': 
-              return 3;    // Xác nhận trả hàng
+              return 2;    // Xác nhận trả hàng
+            case 'CANCEL_CONFIRMED':
+              return 3;
             case 'REJECTED': 
-              return 4;    // Đã trả hàng hoàn tất (bị từ chối)
+            case 'CANCELLED':  // Thêm CANCELLED vào case
+              return 4;    // Đã trả hàng hoàn tất (bị từ chối/hủy)
             case 'COMPLETED': 
               return 4;   // Đã trả hàng hoàn tất (thành công)
             default: 
