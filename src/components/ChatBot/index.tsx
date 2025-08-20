@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import DOMPurify from 'dompurify';
+import he from 'he';
 import './ChatBot.scss';
 
 const botAvatar = 'https://res.cloudinary.com/dmgrdgvcf/image/upload/v1754375206/android-chrome-192x192_imxhjz.png';
@@ -8,8 +12,17 @@ const userAvatar = 'https://res.cloudinary.com/dmgrdgvcf/image/upload/v175441442
 type Message = {
       sender: 'user' | 'bot';
       text: string;
-      image?: string;  // Thêm field cho hình ảnh
-      type?: 'text' | 'image';  // Loại tin nhắn
+      image?: string;
+      type?: 'text' | 'image';
+      streaming?: boolean;
+      meta?: any;
+};
+
+// Component render Markdown an toàn
+const SafeMarkdown: React.FC<{ text: string }> = ({ text }) => {
+      const decoded = he.decode(text || '');
+      const sanitized = DOMPurify.sanitize(decoded, { ALLOWED_TAGS: [] });
+      return <ReactMarkdown remarkPlugins={[remarkGfm]}>{sanitized}</ReactMarkdown>;
 };
 
 export default function ChatBot() {
@@ -25,21 +38,40 @@ export default function ChatBot() {
       const fileInputRef = useRef<HTMLInputElement>(null);
 
       useEffect(() => {
-            // Kết nối với Gemini namespace
             socketRef.current = io(`http://localhost:3501/gemini`);
-            
-            // Lắng nghe phản hồi từ Gemini
-            socketRef.current.on("bot_response", (data: { response: string }) => {
-                  // Thêm phản hồi từ Gemini bot
-                  setMessages(prev => [...prev, {
-                        sender: 'bot',
-                        text: data.response,
-                        type: 'text'
-                  } as Message]);
+
+            // Chunk streaming
+            socketRef.current.on("bot_response_chunk", ({ chunk }: { chunk: string }) => {
+                  setMessages(prev => {
+                        const updated = [...prev];
+                        const last = updated[updated.length - 1];
+                        if (last && last.sender === 'bot' && last.streaming) {
+                              updated[updated.length - 1] = { ...last, text: last.text + chunk };
+                              return updated;
+                        }
+                        return [...updated, { sender: 'bot', text: chunk, type: 'text', streaming: true } as Message];
+                  });
+            });
+
+            // Final response
+            socketRef.current.on("bot_response", (data: { response: string; groundingMetadata?: any }) => {
+                  setMessages(prev => {
+                        const updated = [...prev];
+                        let idx = updated.length - 1;
+                        while (idx >= 0) {
+                              if (updated[idx].sender === 'bot' && updated[idx].streaming) break;
+                              idx--;
+                        }
+                        if (idx >= 0) {
+                              updated[idx] = { ...updated[idx], text: data.response, streaming: false, meta: { groundingMetadata: data.groundingMetadata || null } };
+                        } else {
+                              updated.push({ sender: 'bot', text: data.response, type: 'text', streaming: false });
+                        }
+                        return updated;
+                  });
                   setBotTyping(false);
             });
 
-            // Lắng nghe lỗi từ Gemini
             socketRef.current.on("error_response", (data: { error: string }) => {
                   setMessages(prev => [...prev, {
                         sender: 'bot',
@@ -49,7 +81,6 @@ export default function ChatBot() {
                   setBotTyping(false);
             });
 
-            // Test connection với Gemini
             socketRef.current.on("test_response", (data: { message: string }) => {
                   setMessages(prev => [...prev, {
                         sender: 'bot',
@@ -60,17 +91,16 @@ export default function ChatBot() {
             });
 
             socketRef.current.on("connect_error", () => {
-                  setMessages(prev => [...prev, { 
-                        sender: 'bot', 
-                        text: "❌ Không kết nối được máy chủ Gemini chat.", 
-                        type: 'text' 
+                  setMessages(prev => [...prev, {
+                        sender: 'bot',
+                        text: "❌ Không kết nối được máy chủ Gemini chat.",
+                        type: 'text'
                   }]);
                   setBotTyping(false);
             });
 
             socketRef.current.on("connect", () => {
                   console.log("✅ Đã kết nối với Gemini server");
-                  // Test connection khi kết nối thành công
                   socketRef.current?.emit("test_connection", { client: "React ChatBot" });
             });
 
@@ -78,7 +108,6 @@ export default function ChatBot() {
                   socketRef.current?.disconnect();
             };
       }, []);
-
 
       useEffect(() => {
             if (chatBodyRef.current) {
@@ -92,53 +121,37 @@ export default function ChatBot() {
 
             if (!hasText && !hasImage) return;
 
-            // Trường hợp CÓ ẢNH (kèm hoặc không kèm text):
             if (hasImage) {
                   const file = selectedImage!;
                   const reader = new FileReader();
-
                   reader.onload = (e) => {
                         const imageData = e.target?.result as string;
-
-                        // Hiển thị tin nhắn người dùng (ảnh + caption nếu có)
                         setMessages(prev => [
                               ...prev,
                               {
                                     sender: 'user',
-                                    text: hasText ? input.trim() : file.name, // caption nếu có, không thì show file name
+                                    text: hasText ? input.trim() : file.name,
                                     image: imageData,
                                     type: 'image',
                               } as Message,
                         ]);
-
-                        // Gửi ảnh cho Gemini server
                         socketRef.current?.emit('user_image', {
-                              data: imageData,                               // data:image/png;base64,....
+                              data: imageData,
                               prompt: hasText ? input.trim() : 'Hãy mô tả nội dung hình ảnh chi tiết.'
                         });
-
                         setBotTyping(true);
                         setInput('');
                         setSelectedImage(null);
                         setImagePreview(null);
                   };
-
                   reader.readAsDataURL(file);
-                  return; // tránh rơi xuống gửi user_message nữa
+                  return;
             }
 
-            // Trường hợp CHỈ TEXT:
             if (hasText) {
                   const text = input.trim();
-
-                  setMessages(prev => [
-                        ...prev,
-                        { sender: 'user', text, type: 'text' } as Message,
-                  ]);
-
-                  // Gửi tin nhắn text cho Gemini server
+                  setMessages(prev => [...prev, { sender: 'user', text, type: 'text' } as Message]);
                   socketRef.current?.emit('user_message', { message: text });
-
                   setBotTyping(true);
                   setInput('');
             }
@@ -149,9 +162,7 @@ export default function ChatBot() {
             if (file && file.type.startsWith('image/')) {
                   setSelectedImage(file);
                   const reader = new FileReader();
-                  reader.onload = (event) => {
-                        setImagePreview(event.target?.result as string);
-                  };
+                  reader.onload = (event) => setImagePreview(event.target?.result as string);
                   reader.readAsDataURL(file);
             }
       };
@@ -159,11 +170,8 @@ export default function ChatBot() {
       const removeImage = () => {
             setSelectedImage(null);
             setImagePreview(null);
-            if (fileInputRef.current) {
-                  fileInputRef.current.value = '';
-            }
+            if (fileInputRef.current) fileInputRef.current.value = '';
       };
-
 
       return (
             <div className="chat-widget">
@@ -172,54 +180,26 @@ export default function ChatBot() {
                               <img src={botAvatar} alt="Bot" />
                         </button>
                   )}
-
                   {open && (
-                        <div
-                              className={`chat-popup ${minimized ? 'minimized' : ''}`}
-                              style={minimized ? { height: '60px', overflow: 'hidden' } : {}}
-                        >
-                              <div
-                                    className="chat-header"
-                                    onClick={minimized ? () => setMinimized(false) : undefined}
-                                    style={minimized ? { cursor: 'pointer' } : {}}
-                                    title={minimized ? "Click để mở rộng" : ""}
-                              >
-                                    <span>SonaSpace Bot {minimized ? '' : ''}</span>
+                        <div className={`chat-popup ${minimized ? 'minimized' : ''}`} style={minimized ? { height: '60px', overflow: 'hidden' } : {}}>
+                              <div className="chat-header" onClick={minimized ? () => setMinimized(false) : undefined} style={minimized ? { cursor: 'pointer' } : {}} title={minimized ? "Click để mở rộng" : ""}>
+                                    <span>SonaSpace Bot</span>
                                     <div className="header-buttons">
                                           <button
-                                                onClick={(e) => {
-                                                      e.stopPropagation(); // Ngăn event bubbling
-                                                      console.log('Minimize clicked, current minimized:', minimized);
-                                                      setMinimized(!minimized);
-                                                }}
+                                                onClick={(e) => { e.stopPropagation(); setMinimized(!minimized); }}
                                                 title={minimized ? "Mở rộng" : "Thu nhỏ"}
                                                 className="minimize-btn"
                                           >
-                                                {minimized ?
-                                                      <i className="fa-solid fa-window-maximize"></i> :
-                                                      <i className="fa-solid fa-window-minimize"></i>
-                                                }
+                                                {minimized ? <i className="fa-solid fa-window-maximize"></i> : <i className="fa-solid fa-window-minimize"></i>}
                                           </button>
-                                          <button
-                                                onClick={(e) => {
-                                                      e.stopPropagation(); // Ngăn event bubbling
-                                                      setOpen(false);
-                                                }}
-                                                title="Đóng"
-                                                className="close-btn"
-                                          >
-                                                ×
-                                          </button>
+                                          <button onClick={(e) => { e.stopPropagation(); setOpen(false); }} title="Đóng" className="close-btn">×</button>
                                     </div>
                               </div>
                               {!minimized && (
                                     <>
                                           <div className="chat-body" ref={chatBodyRef}>
                                                 {messages.map((msg, i) => (
-                                                      <div
-                                                            key={i}
-                                                            className={`chat-message ${msg.sender === 'user' ? 'right' : 'left'}`}
-                                                      >
+                                                      <div key={i} className={`chat-message ${msg.sender === 'user' ? 'right' : 'left'}`}>
                                                             <img src={msg.sender === 'user' ? userAvatar : botAvatar} alt={msg.sender} />
                                                             <div className="message-content">
                                                                   {msg.type === 'image' && msg.image ? (
@@ -228,7 +208,18 @@ export default function ChatBot() {
                                                                               <span className="image-filename">{msg.text}</span>
                                                                         </div>
                                                                   ) : (
-                                                                        <span>{msg.text}</span>
+                                                                        <div className="markdown-body">
+                                                                              <SafeMarkdown text={msg.text} />
+                                                                              {msg.meta?.groundingMetadata?.groundingChunks && (
+                                                                                    <div className="sources">
+                                                                                          {msg.meta.groundingMetadata.groundingChunks.slice(0, 3).map((c: any, idx: number) => (
+                                                                                                <div key={idx}>
+                                                                                                      <a href={c.web?.uri} target="_blank" rel="noreferrer">{c.web?.title || c.web?.uri}</a>
+                                                                                                </div>
+                                                                                          ))}
+                                                                                    </div>
+                                                                              )}
+                                                                        </div>
                                                                   )}
                                                             </div>
                                                       </div>
@@ -258,19 +249,8 @@ export default function ChatBot() {
                                                             placeholder="Nhập tin nhắn..."
                                                             onKeyDown={e => e.key === 'Enter' && handleSend()}
                                                       />
-                                                      <input
-                                                            ref={fileInputRef}
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={handleImageSelect}
-                                                            style={{ display: 'none' }}
-                                                      />
-                                                      <button
-                                                            type="button"
-                                                            onClick={() => fileInputRef.current?.click()}
-                                                            className="image-btn"
-                                                            title="Đính kèm hình ảnh"
-                                                      >
+                                                      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} style={{ display: 'none' }} />
+                                                      <button type="button" onClick={() => fileInputRef.current?.click()} className="image-btn" title="Đính kèm hình ảnh">
                                                             <i className="fa-solid fa-paperclip"></i>
                                                       </button>
                                                       <button onClick={handleSend}>Gửi</button>
