@@ -20,9 +20,33 @@ type Message = {
 
 // Component render Markdown an toàn
 const SafeMarkdown: React.FC<{ text: string }> = ({ text }) => {
-      const decoded = he.decode(text || '');
-      const sanitized = DOMPurify.sanitize(decoded, { ALLOWED_TAGS: [] });
-      return <ReactMarkdown remarkPlugins={[remarkGfm]}>{sanitized}</ReactMarkdown>;
+      try {
+            if (!text || typeof text !== 'string') {
+                  return <span>{text || ''}</span>;
+            }
+            
+            const decoded = he.decode(text);
+            const sanitized = DOMPurify.sanitize(decoded, { 
+                  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                  ALLOWED_ATTR: [] 
+            });
+            
+            return (
+                  <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                              // Tùy chỉnh rendering để tránh lỗi
+                              p: ({children}) => <p>{children}</p>,
+                              code: ({children}) => <code>{children}</code>,
+                        }}
+                  >
+                        {sanitized}
+                  </ReactMarkdown>
+            );
+      } catch (error) {
+            console.error('SafeMarkdown error:', error);
+            return <span>{text}</span>;
+      }
 };
 
 export default function ChatBot() {
@@ -38,10 +62,19 @@ export default function ChatBot() {
       const fileInputRef = useRef<HTMLInputElement>(null);
 
       useEffect(() => {
-            socketRef.current = io(`http://localhost:3501/gemini`);
+            // Kết nối với Gemini namespace
+            socketRef.current = io(`http://localhost:3501/gemini`, {
+                  timeout: 20000,
+                  reconnection: true,
+                  reconnectionAttempts: 5,
+                  reconnectionDelay: 1000,
+            });
 
-            // Chunk streaming
-            socketRef.current.on("bot_response_chunk", ({ chunk }: { chunk: string }) => {
+            // Chunk streaming - xử lý an toàn hơn
+            socketRef.current.on("bot_response_chunk", (data: { chunk?: string; text?: string }) => {
+                  const chunk = data.chunk || data.text || '';
+                  if (!chunk) return;
+                  
                   setMessages(prev => {
                         const updated = [...prev];
                         const last = updated[updated.length - 1];
@@ -53,55 +86,92 @@ export default function ChatBot() {
                   });
             });
 
-            // Final response
-            socketRef.current.on("bot_response", (data: { response: string; groundingMetadata?: any }) => {
+            // Final response - xử lý an toàn hơn
+            socketRef.current.on("bot_response", (data: { response?: string; text?: string; groundingMetadata?: any }) => {
+                  const responseText = data.response || data.text || '';
+                  if (!responseText) {
+                        console.warn('Received empty response from server');
+                        setBotTyping(false);
+                        return;
+                  }
+
                   setMessages(prev => {
                         const updated = [...prev];
                         let idx = updated.length - 1;
+                        
+                        // Tìm message streaming cuối cùng
                         while (idx >= 0) {
                               if (updated[idx].sender === 'bot' && updated[idx].streaming) break;
                               idx--;
                         }
+                        
                         if (idx >= 0) {
-                              updated[idx] = { ...updated[idx], text: data.response, streaming: false, meta: { groundingMetadata: data.groundingMetadata || null } };
+                              // Cập nhật message streaming
+                              updated[idx] = { 
+                                    ...updated[idx], 
+                                    text: responseText, 
+                                    streaming: false, 
+                                    meta: { groundingMetadata: data.groundingMetadata || null } 
+                              };
                         } else {
-                              updated.push({ sender: 'bot', text: data.response, type: 'text', streaming: false });
+                              // Thêm message mới nếu không có streaming
+                              updated.push({ 
+                                    sender: 'bot', 
+                                    text: responseText, 
+                                    type: 'text', 
+                                    streaming: false,
+                                    meta: { groundingMetadata: data.groundingMetadata || null }
+                              });
                         }
                         return updated;
                   });
                   setBotTyping(false);
             });
 
-            socketRef.current.on("error_response", (data: { error: string }) => {
+            // Error handling
+            socketRef.current.on("error_response", (data: { error?: string; message?: string }) => {
+                  const errorMsg = data.error || data.message || 'Lỗi không xác định';
                   setMessages(prev => [...prev, {
                         sender: 'bot',
-                        text: `❌ ${data.error}`,
+                        text: `❌ ${errorMsg}`,
                         type: 'text'
                   } as Message]);
                   setBotTyping(false);
             });
 
-            socketRef.current.on("test_response", (data: { message: string }) => {
+            // Test response
+            socketRef.current.on("test_response", (data: { message?: string; text?: string }) => {
+                  const message = data.message || data.text || 'Test thành công';
                   setMessages(prev => [...prev, {
                         sender: 'bot',
-                        text: data.message,
+                        text: message,
                         type: 'text'
                   } as Message]);
                   setBotTyping(false);
             });
 
-            socketRef.current.on("connect_error", () => {
+            // Connection error
+            socketRef.current.on("connect_error", (error) => {
+                  console.error('Connection error:', error);
                   setMessages(prev => [...prev, {
                         sender: 'bot',
-                        text: "❌ Không kết nối được máy chủ Gemini chat.",
+                        text: "❌ Không kết nối được máy chủ Gemini chat. Vui lòng thử lại sau.",
                         type: 'text'
                   }]);
                   setBotTyping(false);
             });
 
+            // Connection success
             socketRef.current.on("connect", () => {
                   console.log("✅ Đã kết nối với Gemini server");
-                  socketRef.current?.emit("test_connection", { client: "React ChatBot" });
+                  // Không gửi test ngay để tránh spam
+                  // socketRef.current?.emit("test_connection", { client: "React ChatBot" });
+            });
+
+            // Disconnect
+            socketRef.current.on("disconnect", (reason) => {
+                  console.log("Disconnected:", reason);
+                  setBotTyping(false);
             });
 
             return () => {
@@ -121,29 +191,64 @@ export default function ChatBot() {
 
             if (!hasText && !hasImage) return;
 
+            // Kiểm tra kết nối socket
+            if (!socketRef.current || !socketRef.current.connected) {
+                  setMessages(prev => [...prev, {
+                        sender: 'bot',
+                        text: '❌ Chưa kết nối với server. Vui lòng thử lại.',
+                        type: 'text'
+                  } as Message]);
+                  return;
+            }
+
             if (hasImage) {
                   const file = selectedImage!;
                   const reader = new FileReader();
+                  
                   reader.onload = (e) => {
-                        const imageData = e.target?.result as string;
-                        setMessages(prev => [
-                              ...prev,
-                              {
-                                    sender: 'user',
-                                    text: hasText ? input.trim() : file.name,
-                                    image: imageData,
-                                    type: 'image',
-                              } as Message,
-                        ]);
-                        socketRef.current?.emit('user_image', {
-                              data: imageData,
-                              prompt: hasText ? input.trim() : 'Hãy mô tả nội dung hình ảnh chi tiết.'
-                        });
-                        setBotTyping(true);
-                        setInput('');
-                        setSelectedImage(null);
-                        setImagePreview(null);
+                        try {
+                              const imageData = e.target?.result as string;
+                              if (!imageData || !imageData.startsWith('data:')) {
+                                    throw new Error('Invalid image data');
+                              }
+
+                              setMessages(prev => [
+                                    ...prev,
+                                    {
+                                          sender: 'user',
+                                          text: hasText ? input.trim() : file.name,
+                                          image: imageData,
+                                          type: 'image',
+                                    } as Message,
+                              ]);
+
+                              socketRef.current?.emit('user_image', {
+                                    data: imageData,
+                                    prompt: hasText ? input.trim() : 'Hãy mô tả nội dung hình ảnh chi tiết.'
+                              });
+
+                              setBotTyping(true);
+                              setInput('');
+                              setSelectedImage(null);
+                              setImagePreview(null);
+                        } catch (error) {
+                              console.error('Image processing error:', error);
+                              setMessages(prev => [...prev, {
+                                    sender: 'bot',
+                                    text: '❌ Lỗi khi xử lý hình ảnh. Vui lòng thử lại.',
+                                    type: 'text'
+                              } as Message]);
+                        }
                   };
+
+                  reader.onerror = () => {
+                        setMessages(prev => [...prev, {
+                              sender: 'bot',
+                              text: '❌ Không thể đọc file hình ảnh.',
+                              type: 'text'
+                        } as Message]);
+                  };
+
                   reader.readAsDataURL(file);
                   return;
             }
@@ -151,6 +256,7 @@ export default function ChatBot() {
             if (hasText) {
                   const text = input.trim();
                   setMessages(prev => [...prev, { sender: 'user', text, type: 'text' } as Message]);
+                  
                   socketRef.current?.emit('user_message', { message: text });
                   setBotTyping(true);
                   setInput('');
@@ -209,15 +315,23 @@ export default function ChatBot() {
                                                                         </div>
                                                                   ) : (
                                                                         <div className="markdown-body">
-                                                                              <SafeMarkdown text={msg.text} />
-                                                                              {msg.meta?.groundingMetadata?.groundingChunks && (
-                                                                                    <div className="sources">
-                                                                                          {msg.meta.groundingMetadata.groundingChunks.slice(0, 3).map((c: any, idx: number) => (
-                                                                                                <div key={idx}>
-                                                                                                      <a href={c.web?.uri} target="_blank" rel="noreferrer">{c.web?.title || c.web?.uri}</a>
+                                                                              {msg.text ? (
+                                                                                    <>
+                                                                                          <SafeMarkdown text={msg.text} />
+                                                                                          {msg.meta?.groundingMetadata?.groundingChunks && (
+                                                                                                <div className="sources">
+                                                                                                      {msg.meta.groundingMetadata.groundingChunks.slice(0, 3).map((c: any, idx: number) => (
+                                                                                                            <div key={idx} className="source-link">
+                                                                                                                  <a href={c.web?.uri} target="_blank" rel="noreferrer">
+                                                                                                                        📄 {c.web?.title || c.web?.uri || 'Nguồn tham khảo'}
+                                                                                                                  </a>
+                                                                                                            </div>
+                                                                                                      ))}
                                                                                                 </div>
-                                                                                          ))}
-                                                                                    </div>
+                                                                                          )}
+                                                                                    </>
+                                                                              ) : (
+                                                                                    <span>...</span>
                                                                               )}
                                                                         </div>
                                                                   )}
