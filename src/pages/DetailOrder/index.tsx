@@ -92,7 +92,7 @@ const DetailOrder: React.FC = () => {
             image: p.image || p.product_image || "/images/default.jpg",
             price: p.price_sale ?? p.price,
             quantity: p.quantity,
-            slug: p.product_slug,
+            slug: p.slug,
             color: {
               name: p.color_name,
               hex: p.color_hex,
@@ -100,7 +100,7 @@ const DetailOrder: React.FC = () => {
             has_comment: p.has_comment,
           })
         );
-        
+        console.log("Mapped Products:", mappedProducts);
         // Map order data and ensure processType and statusStep are properly set
         const orderData = {
           ...res.data.order,
@@ -568,7 +568,7 @@ const formatPrice1 = (value: number | string): string => {
           <div className="order-overview">
             <div className="order-header">
               <div className="order-id">
-                <h2>Đơn hàng: #{order.order_hash}</h2>
+                <h2>Đơn hàng: {order.order_hash}</h2>
                 <p className="order-date">Ngày đặt: {formatDate(order.date)}</p>
               </div>
               <div className="order-actions">
