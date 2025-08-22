@@ -132,11 +132,11 @@
 
   .social-signup {
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
     /* Căn giữa theo chiều ngang */
-
     .divider {
       position: relative;
       text-align: center;

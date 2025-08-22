@@ -3,57 +3,113 @@
   bottom: 24px;
   right: 24px;
   z-index: 9999;
+  font-family: Arial, sans-serif;
 
+  // Nút mở chat nổi
   .chat-bubble {
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    border: none;
     background: $yellow-cl;
+    cursor: pointer;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.06);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+    }
+
     img {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-    }
-    transition: box-shadow 0.2s;
-    &:hover {
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+      object-fit: cover;
     }
   }
 
+  // Khung popup
   .chat-popup {
-    width: 340px;
-    height: 440px;
+    width: 380px;
+    height: 520px;
     background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.22);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: height 0.28s ease, box-shadow 0.28s ease;
 
+    // Trạng thái minimize
+    &.minimized {
+      height: 60px;
+      overflow: hidden;
+
+      .chat-body,
+      .chat-input {
+        display: none !important;
+      }
+    }
+
+    // Header
     .chat-header {
-      background: $yellow-cl;
+      background: linear-gradient(135deg, #f4b026 0%, $yellow-cl 100%);
       color: #fff;
-      padding: 8px 12px;
-      @include text(16px, 'M-B', normal, $white-cl, none);
-      font-weight: bold;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      button {
-        background: none;
-        border: none; 
-        @include text(32px, 'M-R', normal, $white-cl, none);
+      cursor: default;
+      span {
+        font-family: "M-SB";
+        font-size: 16px;
+        color: #fff;
+      }
+
+      // Cho phép click để mở rộng khi đang minimized (giống behavior bạn set trong JSX)
+      .chat-popup.minimized & {
         cursor: pointer;
-        padding: 0;
-        margin: 0;
+      }
+
+      .header-buttons {
+        display: flex;
+        gap: 8px;
+
+        .minimize-btn,
+        .close-btn {
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 16px;
+          cursor: pointer;
+          padding: 4px 8px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.18s ease;
+
+          i {
+            font-size: 14px;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+          }
+        }
+
+        .close-btn {
+          font-size: 20px;
+          font-weight: bold;
+        }
       }
     }
+
+    // Body
     .chat-body {
       flex: 1;
       padding: 16px;
@@ -61,12 +117,23 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+
+      // Scrollbar nhẹ nhàng
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #d8dde6;
+        border-radius: 8px;
+      }
     }
+
+    // Một message
     .chat-message {
       display: flex;
       align-items: flex-end;
-      gap: 8px;
+      gap: 10px;
       max-width: 80%;
 
       img {
@@ -74,98 +141,229 @@
         height: 32px;
         border-radius: 8px;
         background: #eee;
+        object-fit: cover;
       }
-      span {
-        display: inline-block;
-        padding: 10px 16px;
-        border-radius: 8px;
-        @include text(12px, 'Be-R', normal, $text-cl, none);
-        background: $gray-cl-3;
+
+      .message-content {
+        padding: 10px 14px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        word-break: break-word;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+        // Nội dung markdown
+        .markdown-body {
+          p {
+            margin: 0;
+          }
+          a {
+            color: #3f6de4;
+            text-decoration: underline;
+            &:hover {
+              opacity: 0.85;
+            }
+          }
+
+          // Nguồn tham khảo (grounding metadata)
+          .sources {
+            margin-top: 8px;
+            font-size: 12px;
+            opacity: 0.9;
+
+            a {
+              display: inline-block;
+              max-width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
       }
+
+      // Tin nhắn người dùng (bên phải)
       &.right {
         align-self: flex-end;
         flex-direction: row-reverse;
-        align-items: end;
-        span {
-          background: $yellow-cl;
+
+        .message-content {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: #fff;
-          @include text(12px, 'Be-R', 1.5, $white-cl, none);
         }
       }
+
+      // Tin nhắn bot (bên trái)
       &.left {
         align-self: flex-start;
-        span {
-          background: #e0e6ed;
-          color: #222;
+
+        .message-content {
+          background: #fff;
+          color: #333;
+          border: 1px solid #e1e8ed;
         }
+
+        // Hiệu ứng typing
         .typing-indicator {
           display: flex;
-          align-items: center;
-          min-width: 16px;
-          span {
-            padding: 0;
-            margin: 0;
-          }
+          gap: 4px;
+          padding: 8px 12px;
+
           .dot {
-            width: 7px;
-            height: 7px;
-            background: #bbb;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            margin: 0 2px;
-            display: inline-block;
-            animation: bounce 0.8s infinite;
-          }
-          .dot:nth-child(1) {
-            animation-delay: 0s;
-          }
-          .dot:nth-child(2) {
-            animation-delay: 0.1s;
-          }
-          .dot:nth-child(3) {
-            animation-delay: 0.2s;
-          }
-          @keyframes bounce {
-            0%,
-            60%,
-            100% {
-              transform: translateY(0);
-              opacity: 0.7;
+            background: #bbb;
+            animation: typing 1.5s infinite;
+
+            &:nth-child(2) {
+              animation-delay: 0.25s;
             }
-            40% {
-              transform: translateY(-4px);
-              opacity: 1;
+            &:nth-child(3) {
+              animation-delay: 0.5s;
             }
           }
         }
       }
     }
+
+    // Tin nhắn ảnh
+    .image-message {
+      .chat-image {
+        max-width: 220px;
+        max-height: 160px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        display: block;
+        object-fit: cover;
+      }
+      .image-filename {
+        font-size: 12px;
+        opacity: 0.8;
+        display: block;
+      }
+    }
+
+    // Input
     .chat-input {
-      display: flex;
-      border-top: 1px solid #eee;
-      padding: 10px;
+      border-top: 1px solid #e1e8ed;
       background: #fff;
-      input {
-        flex: 1;
-        padding: 8px 14px;
-        border: 1px solid #ddd;
-        @include text(12px, 'Be-R', normal, $text-cl, none);
-        border-radius: 8px;
-        outline: none;
+
+      .image-preview {
+        position: relative;
+        padding: 10px 15px;
+        border-bottom: 1px solid #e1e8ed;
+
+        img {
+          max-width: 110px;
+          max-height: 84px;
+          border-radius: 6px;
+          object-fit: cover;
+        }
+
+        .remove-image {
+          position: absolute;
+          top: 6px;
+          right: 12px;
+          background: rgba(0, 0, 0, 0.6);
+          color: #fff;
+          border: none;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
-      button {
-        margin-left: 8px;
-        padding: 0 18px;
-        background: $yellow-cl;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        @include text(12px, 'Be-SB', normal, $white-cl, none);
-        cursor: pointer;
-        transition: background 0.18s;
-        &:hover {
+
+      .input-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+
+        input {
+          flex: 1;
+          border: 1px solid #e1e8ed;
+          border-radius: 20px;
+          padding: 10px 14px;
+          outline: none;
+          font-size: 14px;
+          background: #fff;
+
+          &:focus {
+            border-color: #667eea;
+          }
+        }
+
+        .image-btn {
+          background: #f1f3f4;
+          border: 1px solid #e1e8ed;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          transition: background 0.2s ease;
+
+          i {
+            font-size: 16px;
+            color: #666;
+          }
+
+          &:hover {
+            background: #e8eaed;
+
+            i {
+              color: #333;
+            }
+          }
+        }
+
+        button {
+          padding: 0 18px;
+          height: 40px;
           background: $yellow-cl;
+          color: #fff;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: background 0.18s ease;
+
+          &:hover {
+            background: darken($yellow-cl, 4%);
+          }
         }
       }
     }
+  }
+
+  // Responsive
+  @media (max-width: 480px) {
+    .chat-popup {
+      width: calc(100vw - 40px);
+      height: calc(100vh - 40px);
+      position: fixed;
+      inset: 20px;
+    }
+  }
+}
+
+// Keyframes tách riêng để tái sử dụng
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.86);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
