@@ -32,7 +32,7 @@ const Wishlist: React.FC = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       const res = await loadWishlistService1();
-      console.log("Wishlist data:", res);
+      // console.log("Wishlist data:", res);
       if (res.success) {
         setWishlistProducts(res.wishlistItems);
       } else {

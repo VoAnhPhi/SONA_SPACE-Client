@@ -171,7 +171,7 @@ const SignUp: React.FC = () => {
                 <GoogleLogin
                   onSuccess={handleGoogleLogin}
                   onError={() => {
-                    console.log("Login error");
+                    // console.log("Login error");
                   }}
                 />
               </GoogleOAuthProvider>

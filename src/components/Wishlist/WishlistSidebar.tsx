@@ -117,7 +117,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('wishlist item', response)
+      // console.log('wishlist item', response)
       const items: WishlistItem[] = Array.isArray(response.data) ? response.data : [];
 
       setWishlistItems(items);

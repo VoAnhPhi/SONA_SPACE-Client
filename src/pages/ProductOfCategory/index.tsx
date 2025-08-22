@@ -122,7 +122,7 @@ const ProductOfCategory = () => {
   };
 
   const handleFilterChange = (newFilters: { [key: string]: string }) => {
-    console.log("[Category] onFilterChange (client)", newFilters);
+    // console.log("[Category] onFilterChange (client)", newFilters);
     const filtered = applyFilters(allProducts, newFilters);
     setFilteredAll(filtered);
     setSearchParams({}); // Không set page khi reset về trang 1

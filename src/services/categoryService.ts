@@ -84,7 +84,7 @@ export const getFeaturedCategories = async (
   limit: number = 5
 ): Promise<Category[]> => {
   try {
-    console.log(`Service: Fetching featured categories, limit: ${limit}`);
+    // console.log(`Service: Fetching featured categories, limit: ${limit}`);
     const allCategories = await fetchAllCategories();
     // Sort by priority (lower number means higher priority) and then by product count
     const featuredCategories = allCategories
@@ -96,9 +96,9 @@ export const getFeaturedCategories = async (
       })
       .slice(0, limit);
 
-    console.log(
-      `Service: Returning ${featuredCategories.length} featured categories`
-    );
+    // console.log(
+    //   `Service: Returning ${featuredCategories.length} featured categories`
+    // );
     return featuredCategories;
   } catch (error) {
     console.error("Error in getFeaturedCategories service:", error);

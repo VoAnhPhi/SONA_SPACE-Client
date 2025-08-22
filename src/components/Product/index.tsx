@@ -111,7 +111,7 @@ const addItemToWishlist = async () => {
         autoClose: 2000,
       });
         window.dispatchEvent(new Event("wishlist-changed"));
-      console.log("Đã xoá khỏi wishlist!");
+      // console.log("Đã xoá khỏi wishlist!");
     } catch (error) {
       console.error("Lỗi khi xoá khỏi wishlist:", error);
       toast.error("Có lỗi khi xoá khỏi wishlist.");

@@ -30,7 +30,7 @@
 
           const res = await getOrderByHash(data.order_id);
           if (res.success && res.order) {
-            console.log("Đơn đã tồn tại. Không cần tạo lại.");
+            // console.log("Đơn đã tồn tại. Không cần tạo lại.");
             return;
           }
 
@@ -43,7 +43,7 @@
           try {
             const result = await createOrderService(payload);
             if (result?.success || result?.order_id) {
-              console.log("Đã tạo đơn hàng sau redirect MoMo");
+              // console.log("Đã tạo đơn hàng sau redirect MoMo");
               localStorage.removeItem("pending_order_data");
             }
           } catch (err) {
@@ -60,10 +60,10 @@
       const fetchOrder = async () => {
         if (!orderHash) return;
         const res = await getOrderByHash(orderHash);
-        console.log("Order data:", res);
-        console.log("Order hash:", orderHash);
+        // console.log("Order data:", res);
+        // console.log("Order hash:", orderHash);
         if (res.success && res.order) {
-          setOrderSummary({
+          setOrderSummary({ 
             orderId: res.order.order_hash,
             orderDate: new Date(res.order.created_at).toLocaleString(),
             itemCount: res.order.total_quantity,
@@ -95,9 +95,9 @@
           if (Array.isArray(selectedItemIds) && selectedItemIds.length > 0) {
             try {
               await clearCartServiceid(selectedItemIds);
-              console.log(" Đã xóa các sản phẩm đã chọn khỏi giỏ hàng (sau thanh toán MoMo)");
+              // console.log(" Đã xóa các sản phẩm đã chọn khỏi giỏ hàng (sau thanh toán MoMo)");
             } catch (err) {
-              console.error(" Lỗi khi xóa sản phẩm đã chọn:", err);
+              // console.error(" Lỗi khi xóa sản phẩm đã chọn:", err);
             }
           }
 

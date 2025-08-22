@@ -31,7 +31,7 @@ const ContactFormDesign: React.FC = () => {
     const fetchRoomSimilarData = async () => {
       const roomSimilarData = await fetchRoomSimilar();
       setRoomSimilar(roomSimilarData);
-      console.log("roomSimilarData", roomSimilarData);
+      // console.log("roomSimilarData", roomSimilarData);
     };
     fetchRoomSimilarData();
   }, []);

@@ -41,8 +41,8 @@ export interface BannerResponse {
 export const getBannersByPage = async (page: string): Promise<Banner[]> => {
   try {
     const apiUrl = convertToAdminApiUrl(`/banners/page/${page}`);
-    console.log(`Fetching banners for page: ${page}`);
-    console.log(`API URL: ${apiUrl}`);
+    // console.log(`Fetching banners for page: ${page}`);
+    // console.log(`API URL: ${apiUrl}`);
     
     // Check if API URL is properly configured
     if (!apiUrl || apiUrl.includes('undefined')) {
@@ -52,7 +52,7 @@ export const getBannersByPage = async (page: string): Promise<Banner[]> => {
     
     const response = await axios.get<BannerApiResponse[]>(apiUrl);
     
-    console.log("Banner API response:", response.data);
+    // console.log("Banner API response:", response.data);
     
     // Convert API response format to internal Banner format
     if (Array.isArray(response.data)) {
@@ -71,7 +71,7 @@ export const getBannersByPage = async (page: string): Promise<Banner[]> => {
         updated_at: apiItem.updated_at,
       }));
       
-      console.log("Converted banners:", banners);
+      // console.log("Converted banners:", banners);
       return banners;
     }
     

@@ -12,16 +12,16 @@ export const PopularCategory = () => {
     const loadCategories = async () => {
       try {
         setLoading(true);
-        console.log("PopularCategory: Fetching featured categories");
+        // console.log("PopularCategory: Fetching featured categories");
         const data = await getFeaturedCategories(6); // Lấy 6 danh mục nổi bật
-        console.log("PopularCategory: Received categories:", data);
+        // console.log("PopularCategory: Received categories:", data);
         setCategories(data);
         setError(null);
       } catch (err) {
         console.error("Error loading featured categories:", err);
         setError("Không thể tải danh mục sản phẩm");
         // Sử dụng dữ liệu mặc định nếu API lỗi
-        setCategories(defaultCategories);
+        // setCategories(defaultCategories);
       } finally {
         setLoading(false);
       }
@@ -29,82 +29,6 @@ export const PopularCategory = () => {
 
     loadCategories();
   }, []);
-
-  // Dữ liệu mặc định nếu API lỗi
-  const defaultCategories = [
-    {
-      category_id: 1,
-      category_name: "Ghế",
-      category_slug: "ghe",
-      category_image: "/images/productsCategory/ghe.jpg",
-      category_priority: 1,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 10
-    },
-    {
-      category_id: 2,
-      category_name: "Bàn",
-      category_slug: "ban",
-      category_image: "/images/productsCategory/ban.jpg",
-      category_priority: 2,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 15
-    },
-    {
-      category_id: 3,
-      category_name: "Tủ",
-      category_slug: "tu",
-      category_image: "/images/productsCategory/tu.jpg",
-      category_priority: 3,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 8
-    },
-    {
-      category_id: 4,
-      category_name: "Sofa",
-      category_slug: "sofa",
-      category_image: "/images/productsCategory/sofa.jpg",
-      category_priority: 4,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 12
-    },
-    {
-      category_id: 5,
-      category_name: "Đèn",
-      category_slug: "den",
-      category_image: "/images/productsCategory/den.jpg",
-      category_priority: 5,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 20
-    },
-    {
-      category_id: 6,
-      category_name: "Tranh",
-      category_slug: "tranh",
-      category_image: "/images/productsCategory/tranh.jpg",
-      category_priority: 6,
-      category_status: 1,
-      updated_at: "",
-      created_at: "",
-      deleted_at: null,
-      product_count: 7
-    }
-  ];
 
   if (loading) {
     return (

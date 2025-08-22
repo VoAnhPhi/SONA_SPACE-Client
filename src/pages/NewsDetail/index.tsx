@@ -30,7 +30,7 @@ const NewsDetail: React.FC = () => {
         setIsLoading(false);
       }
     };
-    console.log("API /news/:slug called", new Date());
+    // console.log("API /news/:slug called", new Date());
     fetchData();
   }, [slug]);
 

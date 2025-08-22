@@ -63,7 +63,7 @@ const CartPage: React.FC = () => {
   const loadWishlist = async () => {
     const { success, wishlistItems, message } = await loadCartService();
     if (success && wishlistItems) {
-      console.log("Danh sách sản phẩm trong cart:", wishlistItems);
+      // console.log("Danh sách sản phẩm trong cart:", wishlistItems);
 
       const formattedItems = wishlistItems.map((item: any, index: number) => ({
         id: item.wishlist_id,
@@ -144,7 +144,7 @@ const CartPage: React.FC = () => {
         await loadWishlist();
         toast.success("Đã xóa toàn bộ giỏ hàng!");
       } else {
-        console.log(result.message);
+        // console.log(result.message);
         toast.error(result.message || "Không thể xóa giỏ hàng.");
       }
     } catch (error) {
@@ -184,7 +184,7 @@ const CartPage: React.FC = () => {
           discount: discount_amount
         }));
 
-        console.log("Kết quả mã giảm giá:", result.data.coupon);
+        // console.log("Kết quả mã giảm giá:", result.data.coupon);
         setAppliedDiscount(discount_amount);
         setCartSummary((prev) => ({
           ...prev,

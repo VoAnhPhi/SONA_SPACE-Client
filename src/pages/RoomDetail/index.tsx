@@ -121,17 +121,17 @@ const RoomDetail: React.FC = () => {
 
     const fetchRoomAndProducts = async () => {
       try {
-        console.log(
-          `🏠 [RoomDetail] Fetching room and products for slug:`,
-          slug
-        );
+        // console.log(
+        //   `🏠 [RoomDetail] Fetching room and products for slug:`,
+        //   slug
+        // );
 
         const roomData = await fetchRoomBySlug(slug);
-        console.log(`🏠 [RoomDetail] Room data received:`, roomData);
+        // console.log(`🏠 [RoomDetail] Room data received:`, roomData);
         setRoom(roomData[0] || roomData);
 
         // Chỉ gọi API 1 lần để lấy nhiều sản phẩm, sau đó lọc client
-        console.log(`🛍️ [RoomDetail] Fetching products with roomSlug:`, slug);
+        // console.log(`🛍️ [RoomDetail] Fetching products with roomSlug:`, slug);
         const { products: initialProducts } =
           await fetchProductsByRoomWithFilters(
             slug,
@@ -140,23 +140,23 @@ const RoomDetail: React.FC = () => {
             {}
           );
 
-        console.log(`🛍️ [RoomDetail] Initial products received:`, {
-          count: initialProducts.length,
-          firstProduct: initialProducts[0]
-            ? {
-                id: initialProducts[0].id,
-                name: initialProducts[0].name,
-                category: initialProducts[0].category,
-              }
-            : null,
-        });
+        // console.log(`🛍️ [RoomDetail] Initial products received:`, {
+        //   count: initialProducts.length,
+        //   firstProduct: initialProducts[0]
+        //     ? {
+        //         id: initialProducts[0].id,
+        //         name: initialProducts[0].name,
+        //         category: initialProducts[0].category,
+        //       }
+        //     : null,
+        // });
 
         setAllProducts(initialProducts);
         // Khởi tạo filteredAll và products hiển thị
         const initialFiltered = applyFilters(initialProducts, {});
-        console.log(`🔍 [RoomDetail] Initial filtered products:`, {
-          count: initialFiltered.length,
-        });
+        // console.log(`🔍 [RoomDetail] Initial filtered products:`, {
+        //   count: initialFiltered.length,
+        // });
 
         setFilteredAll(initialFiltered);
         setTotalPages(
@@ -164,7 +164,7 @@ const RoomDetail: React.FC = () => {
         );
         setProducts(initialFiltered.slice(0, PAGE_SIZE));
 
-        console.log(`✅ [RoomDetail] State updated successfully`);
+        // console.log(`✅ [RoomDetail] State updated successfully`);
       } catch (error) {
         console.error(`❌ [RoomDetail] Error fetching data:`, error);
         setError("Không tìm thấy không gian");

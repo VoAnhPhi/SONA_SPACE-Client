@@ -37,11 +37,11 @@ export const getAllProducts = async (
       ...(filters?.sort && { sort: filters.sort }),
     });
 
-    console.log(
-      `Calling API: GET ${convertToAdminApiUrl(
-        "/products"
-      )}?${queryParams.toString()}`
-    );
+    // console.log(
+    //   `Calling API: GET ${convertToAdminApiUrl(
+    //     "/products"
+    //   )}?${queryParams.toString()}`
+    // );
 
     const token = sessionStorage.getItem("authToken"); // hoặc localStorage nếu bạn dùng nó
 
@@ -114,11 +114,11 @@ export const searchProducts = async (
   params: { page?: number; pageSize?: number; sort?: string } = {}
 ): Promise<PaginatedResponse<Product>> => {
   try {
-    console.log(
-      `Calling API: GET ${convertToAdminApiUrl(
-        "/products/search"
-      )} with keyword: ${keyword}`
-    );
+    // console.log(
+    //   `Calling API: GET ${convertToAdminApiUrl(
+    //     "/products/search"
+    //   )} with keyword: ${keyword}`
+    // );
 
     const response = await axios.get(convertToAdminApiUrl("/products/search"), {
       params: { ...params, keyword },

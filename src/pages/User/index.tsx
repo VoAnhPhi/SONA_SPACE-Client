@@ -328,7 +328,7 @@ const User: React.FC = () => {
   // Hàm chuyển đổi trạng thái đơn hàng thành class CSS
   const getStatusClass = (status: string): string => {
     const statusLower = status.toLowerCase();
-    console.log(`getStatusClass - original: "${status}", lowercase: "${statusLower}"`);
+    // console.log(`getStatusClass - original: "${status}", lowercase: "${statusLower}"`);
 
     let result = "";
     switch (statusLower) {
@@ -364,7 +364,7 @@ const User: React.FC = () => {
         break;
     }
 
-    console.log(`getStatusClass result: "${result}" for status: "${status}"`);
+    // console.log(`getStatusClass result: "${result}" for status: "${status}"`);
     return result;
   };
 
@@ -612,7 +612,7 @@ const User: React.FC = () => {
     try {
       setIsCancelling(true);
       const result = await cancelOrder(selectedOrderId, reason);
-      console.log("Hủy đơn hàng thành công:", result);
+      // console.log("Hủy đơn hàng thành công:", result);
 
       // Cập nhật lại danh sách đơn hàng
       const userDataStr = sessionStorage.getItem("user");

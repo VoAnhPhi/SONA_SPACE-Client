@@ -9,7 +9,7 @@ export const getOrderByHash = async (orderHash: string) => {
         Authorization: `Bearer ${token}`, // ← Thêm token vào header
       },
     });
-    console.log(" Dữ liệu từ API:", response.data);
+    // console.log(" Dữ liệu từ API:", response.data);
     return response.data;
   } catch (error: any) {
     console.error("Lỗi khi lấy đơn hàng:", error);

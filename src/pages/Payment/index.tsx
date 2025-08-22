@@ -159,7 +159,7 @@ const Payment: React.FC = () => {
       }
 
       const parsed = JSON.parse(pending);
-      console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
+      // console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
       const confirmOrder = async () => {
         try {
           const response = await createOrderService({
@@ -188,9 +188,7 @@ const Payment: React.FC = () => {
   }, []);
 
 
-  console.log("Selected Items in Payment:", selectedItems);
-
-
+  // console.log("Selected Items in Payment:", selectedItems);
 
   useEffect(() => {
     if (user && isAuthenticated) {
@@ -232,7 +230,7 @@ const Payment: React.FC = () => {
             quantity: item.quantity,
             category: item.category || "Chưa phân loại",
           }));
-          console.log(" Items để xóa:", cartItems.map(i => i.id));
+          // console.log(" Items để xóa:", cartItems.map(i => i.id));
 
           //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
           const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
@@ -324,9 +322,9 @@ const Payment: React.FC = () => {
 
         fromRedirect: true
       };
-      console.log("Payload gửi lên:", payload);
+      // console.log("Payload gửi lên:", payload);
 
-      console.log(" Coupon gửi đi:", appliedCode);
+      // console.log(" Coupon gửi đi:", appliedCode);
 
       if (formData.address.trim() !== prevAddress.trim()) {
         payload.order_address_new = formData.address.trim();
@@ -365,9 +363,7 @@ const Payment: React.FC = () => {
         window.location.href = res.payUrl;
         return;
       }
-
-
-      console.log("Response from createOrderService:", res);
+      // console.log("Response from createOrderService:", res);
 
       if (!res.payUrl) {
         await clearCartServiceid(selectedItems || []);

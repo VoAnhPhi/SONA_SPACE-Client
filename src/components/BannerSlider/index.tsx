@@ -23,32 +23,32 @@ const BannerSlider: React.FC<BannerSliderProps> = ({ className = '', page = 'hom
         setLoading(true);
         setError(null);
         
-        console.log(`Starting to fetch banners for page: ${page}...`);
+        // console.log(`Starting to fetch banners for page: ${page}...`);
         const bannerData = await getBannersByPage(page);
-        console.log('Received banner data:', bannerData);
-        console.log('Banner data type:', typeof bannerData);
-        console.log('Banner data length:', Array.isArray(bannerData) ? bannerData.length : 'Not an array');
+        // console.log('Received banner data:', bannerData);
+        // console.log('Banner data type:', typeof bannerData);
+        // console.log('Banner data length:', Array.isArray(bannerData) ? bannerData.length : 'Not an array');
         
         if (Array.isArray(bannerData) && bannerData.length > 0) {
-          console.log('First banner sample:', bannerData[0]);
+          // console.log('First banner sample:', bannerData[0]);
         }
         
         // Sắp xếp theo position và chỉ lấy những banner có status = 1
         const activeBanners = bannerData
           .filter((banner: Banner) => {
-            console.log(`Banner ${banner.id}: status = ${banner.status}, position = ${banner.position}`);
+            // console.log(`Banner ${banner.id}: status = ${banner.status}, position = ${banner.position}`);
             return banner.status === 1;
           })
           .sort((a: Banner, b: Banner) => a.position - b.position);
         
-        console.log('Active banners after filtering:', activeBanners);
-        console.log('Number of active banners:', activeBanners.length);
+        // console.log('Active banners after filtering:', activeBanners);
+        // console.log('Number of active banners:', activeBanners.length);
         setBanners(activeBanners);
         
         if (activeBanners.length === 0) {
-          console.warn(`No active banners found for page: ${page} - showing fallback content`);
+          // console.warn(`No active banners found for page: ${page} - showing fallback content`);
         } else {
-          console.log(`Successfully loaded ${activeBanners.length} active banners for page: ${page}`);
+          // console.log(`Successfully loaded ${activeBanners.length} active banners for page: ${page}`);
         }
       } catch (err) {
         console.error('Error fetching banners:', err);

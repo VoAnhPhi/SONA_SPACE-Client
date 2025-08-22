@@ -9,9 +9,9 @@ import axios from 'axios';
  */
 export const fetchAllNews = async (): Promise<NewsArticle[]> => {
   try {
-    console.log('Service: Fetching all news');
+    // console.log('Service: Fetching all news');
     const news = await getAllNews();
-    console.log(`Service: Received ${news.length} news`);
+    // console.log(`Service: Received ${news.length} news`);
     return news;
   } catch (error) {
     console.error('Error in fetchAllnews service:', error);

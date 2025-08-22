@@ -12,7 +12,7 @@ export const validateCouponService = async (code: string, cartTotal: number, tok
         },
       }
     );
-    console.log(`Service: validateCouponService response:`, response.data);
+    // console.log(`Service: validateCouponService response:`, response.data);
     return {
       success: true,
       data: response.data,

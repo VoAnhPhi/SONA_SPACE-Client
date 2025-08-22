@@ -48,7 +48,7 @@ export const fetchWishlistFromDatabase1 = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log("fetchWishlistFromDatabase1", response.data);
+  // console.log("fetchWishlistFromDatabase1", response.data);
   return response.data;
 
 };

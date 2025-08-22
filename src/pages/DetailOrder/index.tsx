@@ -100,7 +100,7 @@ const DetailOrder: React.FC = () => {
             has_comment: p.has_comment,
           })
         );
-        console.log("Mapped Products:", mappedProducts);
+        // console.log("Mapped Products:", mappedProducts);
         // Map order data and ensure processType and statusStep are properly set
         const orderData = {
           ...res.data.order,

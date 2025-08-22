@@ -15,7 +15,7 @@ export const saveToCart = async (data: { status: number; cartItems: any[] }) => 
   }
   
 const cartItem = data.cartItems[0]; // Lấy item đầu tiên từ mảng cartItems
-console.log('variant_id gửi lên:', cartItem.variant_id);
+// console.log('variant_id gửi lên:', cartItem.variant_id);
 const response = await axios.post(
   convertToAdminApiUrl("/wishlists"),
   {

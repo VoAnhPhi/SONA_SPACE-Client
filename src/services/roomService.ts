@@ -38,7 +38,7 @@ export const fetchRoomSimilar = async (): Promise<Room[]> => {
     let roomSimilar = room.map((r) => ({
       room_name: r.room_name,
     }));
-    console.log("roomSimilar", roomSimilar);
+    // console.log("roomSimilar", roomSimilar);
     return roomSimilar as Room[];
   } catch (error) {
     return [];
