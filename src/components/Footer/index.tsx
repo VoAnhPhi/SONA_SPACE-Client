@@ -9,7 +9,7 @@ const Footer = () => {
             <div className="tips-grid">
               <div className="tips-grid-aside">
                 <div className="tip-item">
-                  <img src="/images/tip-1.jpg" alt="Thiết kế có nhân hóa" />
+                  <img className="tip-item-img" src="/images/tip-1.jpg" alt="Thiết kế có nhân hóa" />
                   <div className="content">
                     <h3>Thiết kế cá nhân hóa</h3>
                     <p>Liên hệ ngay để được tư vấn</p>
