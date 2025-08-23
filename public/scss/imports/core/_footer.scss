@@ -85,9 +85,7 @@
                         @include text(14px, Be-L, auto, $dark-cl, null);
                         transition: color 0.3s ease;
 
-                        &:hover {
-                            color: #fff;
-                        }
+
                     }
                 }
             }
@@ -198,14 +196,6 @@
 
 @include sm {
     .footer {
-        .footer-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-}
-
-@include xs {
-    .footer {
         .design-tips {
             .tips-grid {
                 grid-template-columns: 1fr;
@@ -217,14 +207,17 @@
                         height: 100%;
 
                         img {
-                            max-width: 40%;
+                            max-width: 50%;
                             object-fit: cover;
+                            border-radius: 4px;
+
                         }
                     }
                 }
 
                 &-bside {
                     column-gap: 16px !important;
+                    justify-content: space-around;
                 }
             }
         }
@@ -246,6 +239,57 @@
             align-items: center;
             text-align: center;
 
+        }
+    }
+}
+
+@include xs {
+    .footer {
+        .design-tips {
+            .tips-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(2, 1fr);
+                row-gap: 16px;
+
+                &-aside {
+                    .tip-item {
+                        height: 100%;
+
+                        img {
+                            max-width: 50%;
+                            object-fit: cover;
+                            border-radius: 4px;
+
+                        }
+
+                    }
+                }
+
+                &-bside {
+                    column-gap: 16px !important;
+                }
+            }
+        }
+
+        &-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+
+            .footer-column {
+                &:last-child {
+                    a {
+                        padding: 8px 16px !important;
+                    }
+                }
+            }
+
+
+
+            &-bottom {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+
+            }
         }
     }
 }
