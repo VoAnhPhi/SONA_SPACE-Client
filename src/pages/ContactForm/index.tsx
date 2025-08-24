@@ -107,7 +107,7 @@ const ContactForm: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        235 PNVB Avenue, New York, NY 10003, United States
+                        Nhà T, CS3-Tòa nhà QTSC9, CVPM QUang Trung, Phường Trung Mỹ Tây, TP HCM
                       </a>
                     </p>
                   </div>
@@ -118,8 +118,8 @@ const ContactForm: React.FC = () => {
                   </div>
                   <div className="content">
                     <h3>Giờ làm việc</h3>
-                    <p>Saturday-Sunday: 9:00 - 21:00</p>
-                    <p>Monday-Friday: 9:00 - 22:00</p>
+                    <p>Thứ bảy - Chủ nhật: 9:00 - 21:00</p>
+                    <p>Thứ hai -Thứ sáu: 9:00 - 22:00</p>
                   </div>
                 </div>
                 <div className="info-item">

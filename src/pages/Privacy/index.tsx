@@ -6,6 +6,7 @@ const Privacy: React.FC = () => {
   return (
     <>
       <Header />
+      <div className="mt-94">
       <div className="privacy-page">
         <div className="container">
           <h1 className="page-title">ĐIỀU KHOẢN SỬ DỤNG</h1>
@@ -102,28 +103,7 @@ const Privacy: React.FC = () => {
           </div>
         </div>
         
-        {/* Design Services Showcase */}
-        <div className="design-services">
-          <div className="container">
-            <div className="services-grid">
-              <div className="service-item">
-                <img src="/images/design/personalized-design.jpg" alt="Thiết kế cá nhân hóa" />
-                <h3>Thiết kế cá nhân hóa</h3>
-                <p>Liên hệ ngay để được tư vấn</p>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/material-samples.jpg" alt="Tìm hiểu về các mẫu vật liệu" />
-                <h3>Tìm hiểu thêm về các mẫu vật liệu</h3>
-              </div>
-              
-              <div className="service-item">
-                <img src="/images/design/design-consultation.jpg" alt="Bạn cần liên hệ hỗ trợ?" />
-                <h3>Bạn cần liên hệ hỗ trợ?</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
       </div>
       <Footer />
     </>

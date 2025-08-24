@@ -35,55 +35,55 @@ const Footer = () => {
             <div className="footer-column">
               <ul>
                 <li>
-                  <a href="/dich-vu">Dịch vụ khách hàng</a>
+                  <a href="#">Dịch vụ khách hàng</a>
                 </li>
                 <li>
-                  <a href="/cua-hang-gan-ban">Tìm cửa hàng gần bạn</a>
+                  <a href="#">Tìm cửa hàng gần bạn</a>
                 </li>
                 <li>
-                  <a href="/the-qua-tang">Mua thẻ quà tặng</a>
+                  <a href="#">Mua thẻ quà tặng</a>
                 </li>
                 <li>
-                  <a href="/ve-chung-toi">Về Sona Space</a>
-                </li>
-              </ul>
-            </div>
-            <div className="footer-column">
-              <ul>
-                <li>
-                  <a href="/room">Phong cách</a>
-                </li>
-                <li>
-                  <a href="/ho-so">Trung tâm hỗ trợ</a>
-                </li>
-                <li>
-                  <a href="/ve-chung-toi">Câu chuyện thương hiệu</a>
+                  <a href="#">Về Sona Space</a>
                 </li>
               </ul>
             </div>
             <div className="footer-column">
               <ul>
                 <li>
-                  <a href="/faq">Câu hỏi thường gặp</a>
+                  <a href="/khong-gian">Phong cách</a>
                 </li>
                 <li>
-                  <a href="/orders">Theo dõi đơn hàng</a>
+                  <a href="#">Trung tâm hỗ trợ</a>
                 </li>
                 <li>
-                  <a href="/privacy-policy">Chính sách đổi trả</a>
+                  <a href="/lien-he">Câu chuyện thương hiệu</a>
                 </li>
               </ul>
             </div>
             <div className="footer-column">
               <ul>
                 <li>
-                  <a href="/thong-tin-van-chuyen">Thông tin vận chuyển</a>
+                  <a href="#">Câu hỏi thường gặp</a>
                 </li>
                 <li>
-                  <a href="/khuyen-mai">Chương trình thành viên</a>
+                  <a href="#">Theo dõi đơn hàng</a>
                 </li>
                 <li>
-                  <a href="/khuyen-mai-doc-quyen">Ưu đãi độc quyền</a>
+                  <a href="#">Chính sách đổi trả</a>
+                </li>
+              </ul>
+            </div>
+            <div className="footer-column">
+              <ul>
+                <li>
+                  <a href="#">Thông tin vận chuyển</a>
+                </li>
+                <li>
+                  <a href="#">Chương trình thành viên</a>
+                </li>
+                <li>
+                  <a href="#">Ưu đãi độc quyền</a>
                 </li>
               </ul>
             </div>
@@ -118,10 +118,10 @@ const Footer = () => {
               bao gồm VAT.
             </p>
             <p>
-              <a href="/chinh-sach-bao-mat">Thông tin cookie</a>
+              <a href="/dieu-khoan-su-dung">Thông tin cookie</a>
             </p>
             <p>
-              <a href="/dieu-khoan-su-dung">Chính sách bảo mật</a>
+              <a href="/chinh-sach-bao-mat">Chính sách bảo mật</a>
             </p>
             <div className="payment-icons">
               <img src="/images/payment-icons.png" alt="Payment methods" />
