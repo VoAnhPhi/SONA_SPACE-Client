@@ -15,7 +15,7 @@ const userAvatar =
 // Giữ typing sau khi end để trông tự nhiên
 const TYPING_LAG_MS = 800;          // Gợi ý 600–1200
 // Hết keepalive bao lâu thì coi như ngừng gõ
-const KEEPALIVE_GRACE_MS = 2500;    // Gợi ý 2000–3500
+const KEEPALIVE_GRACE_MS = 2500;    // Gợi ý 2000–3500s
 
 type Message = {
       id?: string;
@@ -347,7 +347,7 @@ export default function ChatBot() {
                                     style={minimized ? { cursor: "pointer" } : {}}
                                     title={minimized ? "Click để mở rộng" : ""}
                               >
-                                    <span>SonaSpace Bot</span>
+                                    <span>Sona Space</span>
                                     <div className="header-buttons">
                                           <button
                                                 onClick={(e) => {
