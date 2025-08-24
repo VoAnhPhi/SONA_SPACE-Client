@@ -18,7 +18,7 @@ const TYPING_LAG_MS = 800;          // Gợi ý 600–1200
 const KEEPALIVE_GRACE_MS = 2500;    // Gợi ý 2000–3500s
 
 type Message = {
-      id?: string;
+      id?: string;      
       sender: "user" | "bot";
       text: string;
       image?: string;
@@ -66,6 +66,7 @@ const SafeMarkdown: React.FC<{ text: string }> = ({ text }) => {
 export default function ChatBot() {
       const [open, setOpen] = useState(false);
       const [minimized, setMinimized] = useState(false);
+      const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
       const [input, setInput] = useState("");
       const [messages, setMessages] = useState<Message[]>([]);
       const [botTyping, setBotTyping] = useState(false);
@@ -77,6 +78,63 @@ export default function ChatBot() {
       const socketRef = useRef<Socket | null>(null);
       const chatBodyRef = useRef<HTMLDivElement>(null);
       const fileInputRef = useRef<HTMLInputElement>(null);
+      const chatWidgetRef = useRef<HTMLDivElement>(null);
+
+      // Effect để detect screen size changes
+      useEffect(() => {
+            const handleResize = () => {
+                  const newIsDesktop = window.innerWidth >= 1024;
+                  setIsDesktop(newIsDesktop);
+                  
+                  // Reset minimize state khi chuyển sang tablet/mobile
+                  if (!newIsDesktop && minimized) {
+                        setMinimized(false);
+                  }
+            };
+
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+      }, [minimized]);
+
+      // Effect để handle click outside và scroll
+      useEffect(() => {
+            const handleClickOutside = (event: MouseEvent) => {
+                  // Không đóng chat nếu đang minimize (chỉ trên desktop)
+                  if (isDesktop && minimized) return;
+                  
+                  // Không đóng chat nếu bot đang typing hoặc user đang nhập
+                  if (botTyping || input.trim()) return;
+
+                  if (open && chatWidgetRef.current && !chatWidgetRef.current.contains(event.target as Node)) {
+                        setOpen(false);
+                        setMinimized(false);
+                  }
+            };
+
+            const handleScroll = () => {
+                  // Không đóng chat nếu đang minimize (chỉ trên desktop)  
+                  if (isDesktop && minimized) return;
+                  
+                  // Không đóng chat nếu bot đang typing hoặc user đang nhập
+                  if (botTyping || input.trim()) return;
+
+                  if (open) {
+                        setOpen(false);
+                        setMinimized(false);
+                  }
+            };
+
+            if (open) {
+                  document.addEventListener('mousedown', handleClickOutside);
+                  window.addEventListener('scroll', handleScroll, true); // true để capture scroll events từ tất cả elements
+            }
+
+            return () => {
+                  document.removeEventListener('mousedown', handleClickOutside);
+                  window.removeEventListener('scroll', handleScroll, true);
+            };
+      }, [open, isDesktop, minimized, botTyping, input]);
+
       const sendingRef = useRef(false);
 
       // Theo dõi stream hiện tại
@@ -329,40 +387,43 @@ export default function ChatBot() {
       const hasStreaming = messages.some((m) => m.sender === "bot" && m.streaming);
 
       return (
-            <div className="chat-widget">
-                  {!open && (
-                        <button className="chat-bubble" onClick={() => setOpen(true)}>
-                              <img src={botAvatar} alt="Bot" />
-                        </button>
-                  )}
+            <div className="chat-widget" ref={chatWidgetRef}>
+                  <button 
+                        className={`chat-bubble ${open ? "hidden" : ""}`} 
+                        onClick={() => setOpen(true)}
+                  >
+                        <img src={botAvatar} alt="Bot" />
+                  </button>
 
-                  {open && (
-                        <div
-                              className={`chat-popup ${minimized ? "minimized" : ""}`}
-                              style={minimized ? { height: "60px", overflow: "hidden" } : {}}
-                        >
+                  <div
+                        className={`chat-popup ${!open ? "hidden" : ""} ${isDesktop && minimized ? "minimized" : ""}`}
+                        style={isDesktop && minimized ? { height: "60px", overflow: "hidden" } : {}}
+                        title={!(isDesktop && minimized) ? "Chat sẽ tự đóng khi bạn scroll hoặc click ra ngoài" : ""}
+                  >
                               <div
                                     className="chat-header"
-                                    onClick={minimized ? () => setMinimized(false) : undefined}
-                                    style={minimized ? { cursor: "pointer" } : {}}
-                                    title={minimized ? "Click để mở rộng" : ""}
+                                    onClick={isDesktop && minimized ? () => setMinimized(false) : undefined}
+                                    style={isDesktop && minimized ? { cursor: "pointer" } : {}}
+                                    title={isDesktop && minimized ? "Click để mở rộng" : ""}
                               >
                                     <span>Sona Space</span>
                                     <div className="header-buttons">
-                                          <button
-                                                onClick={(e) => {
-                                                      e.stopPropagation();
-                                                      setMinimized(!minimized);
-                                                }}
-                                                title={minimized ? "Mở rộng" : "Thu nhỏ"}
-                                                className="minimize-btn"
-                                          >
-                                                {minimized ? (
-                                                      <i className="fa-solid fa-window-maximize"></i>
-                                                ) : (
-                                                      <i className="fa-solid fa-window-minimize"></i>
-                                                )}
-                                          </button>
+                                          {isDesktop && (
+                                                <button
+                                                      onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setMinimized(!minimized);
+                                                      }}
+                                                      title={minimized ? "Mở rộng" : "Thu nhỏ"}
+                                                      className="minimize-btn"
+                                                >
+                                                      {minimized ? (
+                                                            <i className="fa-solid fa-window-maximize"></i>
+                                                      ) : (
+                                                            <i className="fa-solid fa-window-minimize"></i>
+                                                      )}
+                                                </button>
+                                          )}
                                           <button
                                                 onClick={(e) => {
                                                       e.stopPropagation();
@@ -376,7 +437,7 @@ export default function ChatBot() {
                                     </div>
                               </div>
 
-                              {!minimized && (
+                              {!(isDesktop && minimized) && (
                                     <>
                                           <div className="chat-body" ref={chatBodyRef}>
                                                 {messages.map((msg, i) => (
@@ -466,7 +527,6 @@ export default function ChatBot() {
                                     </>
                               )}
                         </div>
-                  )}
             </div>
       );
 }
