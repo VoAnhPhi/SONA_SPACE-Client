@@ -45,7 +45,7 @@
 
   // Khung popup
   .chat-popup {
-    position: fixed;
+    position: fixed !important;
     bottom: -2px;
     right: 0px;
     width: 500px;
@@ -416,7 +416,6 @@
     .chat-popup {
       width: calc(100vw - 40px);
       height: calc(100vh - 40px);
-      inset: 20px;
       transition: 0.3s;
     }
   }
