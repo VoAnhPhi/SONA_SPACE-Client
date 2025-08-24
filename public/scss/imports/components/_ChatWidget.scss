@@ -1,6 +1,6 @@
 .chat-widget {
   position: fixed;
-  bottom: 24px;
+  bottom: 200px;
   right: 24px;
   z-index: 9999;
   font-family: Arial, sans-serif;
@@ -34,8 +34,8 @@
 
   // Khung popup
   .chat-popup {
-    width: 380px;
-    height: 520px;
+    width: 500px;
+    height: 600px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -64,6 +64,7 @@
       justify-content: space-between;
       align-items: center;
       cursor: default;
+
       span {
         font-family: "M-SB";
         font-size: 16px;
@@ -123,6 +124,7 @@
       &::-webkit-scrollbar {
         width: 8px;
       }
+
       &::-webkit-scrollbar-thumb {
         background: #d8dde6;
         border-radius: 8px;
@@ -156,9 +158,11 @@
           p {
             margin: 0;
           }
+
           a {
             color: #3f6de4;
             text-decoration: underline;
+
             &:hover {
               opacity: 0.85;
             }
@@ -226,6 +230,7 @@
             &:nth-child(2) {
               animation-delay: 0.25s;
             }
+
             &:nth-child(3) {
               animation-delay: 0.5s;
             }
@@ -244,6 +249,7 @@
         display: block;
         object-fit: cover;
       }
+
       .image-filename {
         font-size: 12px;
         opacity: 0.8;
@@ -364,12 +370,14 @@
 
 // Keyframes tách riêng để tái sử dụng
 @keyframes typing {
+
   0%,
   60%,
   100% {
     opacity: 0.35;
     transform: scale(0.86);
   }
+
   30% {
     opacity: 1;
     transform: scale(1);
