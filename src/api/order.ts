@@ -169,7 +169,16 @@ export async function cancelOrderProduct(
   reason: string, 
   token: string
 ): Promise<CancelProductResponse> {
-  const response = await fetch(convertToAdminApiUrl(`/orders-id/cancel-item/${orderId}/${itemId}`), {
+  const endpoint = convertToAdminApiUrl(`/orders-id/cancel-item/${orderId}/${itemId}`);
+  
+  console.log("Calling cancel product API:", {
+    endpoint,
+    orderId,
+    itemId,
+    reason
+  });
+  
+  const response = await fetch(endpoint, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -178,10 +187,12 @@ export async function cancelOrderProduct(
     body: JSON.stringify({ reason }),
   });
   
+  const responseData = await response.json();
+  console.log("Cancel product API response:", responseData);
+  
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Không thể hủy sản phẩm');
+    throw new Error(responseData.message || 'Không thể hủy sản phẩm');
   }
   
-  return response.json();
+  return responseData;
 }

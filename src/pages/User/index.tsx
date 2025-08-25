@@ -6,6 +6,7 @@ import CancelOrderModal from "../../components/CancelOrderModal";
 import BannerSlider from "../../components/BannerSlider";
 import axios from "axios";
 import { cancelOrder } from "../../services/userServices";
+import { getOrderItems } from "../../api/order";
 import { message } from 'antd';
 
 import type {
@@ -43,6 +44,9 @@ interface ProductItem {
   color: ProductColor;
   category: string;
   rating: ProductRating;
+  status?: string; // ACTIVE, CANCELLED, etc.
+  can_cancel?: boolean;
+  item_id?: number; // API item ID for cancellation
 }
 
 interface OrderData {
@@ -133,6 +137,7 @@ const User: React.FC = () => {
   // State cho dữ liệu đơn hàng từ API
   const [apiOrders, setApiOrders] = useState<OrderData[]>([]);
   const [ordersResponse, setOrdersResponse] = useState<OrdersAPIResponse | null>(null);
+  const [detailedOrderItems, setDetailedOrderItems] = useState<Map<number, any[]>>(new Map()); // Map of orderId -> detailed items
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -183,13 +188,45 @@ const User: React.FC = () => {
   }, [refreshUserData]);
 
   // Hàm lấy dữ liệu đơn hàng từ API
+  // Fetch detailed order items to get individual product status
+  const fetchDetailedOrderItems = async (orderId: number) => {
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) return;
+
+      const response = await getOrderItems(orderId, token);
+      
+      if (response.success && response.data.items) {
+        setDetailedOrderItems(prev => {
+          const newMap = new Map(prev.set(orderId, response.data.items));
+          return newMap;
+        });
+      }
+    } catch (error) {
+      console.error(`Error fetching detailed items for order ${orderId}:`, error);
+    }
+  };
+
+  // Force refresh specific order data (useful when products are cancelled)
+  const refreshOrderData = async (orderId: number) => {
+    console.log(`[DEBUG] Force refreshing order data for ${orderId}`);
+    await fetchDetailedOrderItems(orderId);
+    
+    // Also refresh main orders data
+    const userDataStr = sessionStorage.getItem("user");
+    if (userDataStr) {
+      const userData = JSON.parse(userDataStr);
+      if (userData.id) {
+        await fetchOrders(userData.id);
+      }
+    }
+  };
+
   const fetchOrders = async (userId: number) => {
     if (!userId) {
-      // console.log("fetchOrders: userId không hợp lệ");
       return;
     }
 
-    // console.log("fetchOrders: Bắt đầu lấy dữ liệu đơn hàng cho userId:", userId);
     setIsLoading(true);
     setError(null);
 
@@ -197,35 +234,40 @@ const User: React.FC = () => {
       // Lấy token từ sessionStorage
       const token = sessionStorage.getItem("authToken");
       if (!token) {
-        // console.error("fetchOrders: Không tìm thấy token xác thực");
         setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         setIsLoading(false);
         return;
       }
 
-      // Gọi API thực tế
-      const response = await axios.get<OrdersAPIResponse>(convertToAdminApiUrl(`/orders-id/${userId}`), {
-        headers: {
-          Authorization: `Bearer ${token}`
+      // Gọi API thực tế với cache busting
+      const cacheBuster = new Date().getTime();
+      const response = await axios.get<OrdersAPIResponse>(
+        convertToAdminApiUrl(`/orders-id/${userId}?_t=${cacheBuster}`), 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         }
-      });
-
-      // console.log("fetchOrders: Dữ liệu đơn hàng từ API:", response.data);
+      );
 
       // Kiểm tra và cập nhật dữ liệu
       if (response.data && response.data.orders) {
         setOrdersResponse(response.data);
         setApiOrders(response.data.orders);
+        
+        // Fetch detailed items for each order to get individual product status
+        response.data.orders.forEach(order => {
+          fetchDetailedOrderItems(order.id);
+        });
       } else {
-        // console.error("fetchOrders: Dữ liệu không đúng định dạng", response.data);
         setError("Dữ liệu đơn hàng không đúng định dạng");
       }
     } catch (error) {
-      // console.error("fetchOrders: Lỗi khi gọi API:", error);
       setError("Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
-      // console.log("fetchOrders: Kết thúc");
     }
   };
 
@@ -296,7 +338,125 @@ const User: React.FC = () => {
     });
   };
   // Format price with commas
-  const formatPrice = (price: number | undefined | null): string => {
+    // Get detailed product info including status
+  const getProductDetails = (orderId: number, productId: number) => {
+    const orderItems = detailedOrderItems.get(orderId);
+    
+    if (!orderItems) {
+      return null;
+    }
+    
+    // Try exact product ID match first
+    let foundItem = orderItems.find(item => item.product && item.product.id === productId);
+    
+    // Try string comparison
+    if (!foundItem) {
+      foundItem = orderItems.find(item => item.product && String(item.product.id) === String(productId));
+    }
+    
+    // Try item_id match  
+    if (!foundItem) {
+      foundItem = orderItems.find(item => item.item_id === productId);
+    }
+    
+    return foundItem;
+  };
+
+  // Check if a product is cancelled
+  const isProductCancelled = (orderId: number, productId: number) => {
+    const productDetails = getProductDetails(orderId, productId);
+    return productDetails?.status === 'CANCELLED';
+  };
+
+  // Check if order has mixed product statuses (some cancelled, some active)
+  const hasPartiallyProcessedOrder = (order: OrderData) => {
+    if (!order.products || order.products.length <= 1) return false;
+    
+    const productStatuses = order.products.map(product => {
+      const productDetails = getProductDetails(order.id, product.id);
+      let isCancelled = productDetails?.status === 'CANCELLED';
+      
+      // Fallback checks
+      if (!isCancelled && product.status) {
+        isCancelled = product.status === 'CANCELLED';
+      }
+      if (!isCancelled && (product.price === "0" || parseFloat(product.price) === 0)) {
+        isCancelled = true;
+      }
+      
+      return isCancelled;
+    });
+    
+    // Check if we have both cancelled and non-cancelled products
+    const hasCancelled = productStatuses.some(status => status === true);
+    const hasActive = productStatuses.some(status => status === false);
+    
+    return hasCancelled && hasActive;
+  };
+
+  // Get display status - prioritize server status, then check local product status
+  const getDisplayStatus = (order: OrderData) => {
+    // If server already says CANCELLED, trust that
+    if (order.status === "CANCELLED") {
+      return "CANCELLED";
+    }
+    
+    // If server says RETURNED, trust that  
+    if (order.status === "RETURNED" || order.status === "RETURN") {
+      return order.status;
+    }
+    
+    // For other statuses, check if we have mixed products
+    if (hasPartiallyProcessedOrder(order)) {
+      return "PROCESSING"; // Mixed status -> show as processing
+    }
+    
+    // Check if all products are cancelled locally (fallback)
+    if (areAllProductsCancelled(order)) {
+      return "CANCELLED";
+    }
+    
+    return order.status;
+  };
+
+  // Check if all products in order are cancelled
+  const areAllProductsCancelled = (order: OrderData) => {
+    if (!order.products || order.products.length === 0) return false;
+    
+    return order.products.every(product => {
+      const productDetails = getProductDetails(order.id, product.id);
+      let isCancelled = productDetails?.status === 'CANCELLED';
+      
+      // Super aggressive fallback: if order is CANCELLED, assume all products are cancelled
+      if (!isCancelled && order.status === 'CANCELLED') {
+        isCancelled = true;
+      }
+      
+      // Apply same fallback logic as in UI
+      if (!isCancelled && product.status) {
+        isCancelled = product.status === 'CANCELLED';
+      }
+      if (!isCancelled && (product.price === "0" || parseFloat(product.price) === 0)) {
+        isCancelled = true;
+      }
+      if (!isCancelled && product.can_cancel === false && parseFloat(product.price) === 0) {
+        isCancelled = true;
+      }
+      
+      return isCancelled;
+    });
+  };
+
+  // Get refund amount for cancelled product
+  const getRefundAmount = (orderId: number, productId: number) => {
+    const productDetails = getProductDetails(orderId, productId);
+    if (productDetails?.status === 'CANCELLED') {
+      return 0; // Cancelled products show 0 price
+    }
+    return null;
+  };
+
+  const formatPrice = (price: number | string | null | undefined): string => {
     if (price === undefined || price === null) {
       return "0đ";
     }
@@ -376,7 +536,7 @@ const User: React.FC = () => {
         return "Chờ xác nhận";
       case "processing":
       case "confirmed":
-        return "Đã xác nhận";
+        return "Đang xử lý";
       case "shipping":
       case "shipped":
         return "Đang giao hàng";
@@ -848,9 +1008,9 @@ const User: React.FC = () => {
                             </div>
                             <div className="order-status">
                               <span
-                                className={`status ${getStatusClass(order.status)}`}
+                                className={`status ${getStatusClass(getDisplayStatus(order))}`}
                               >
-                                {getStatusDisplayName(order.status)}
+                                {getStatusDisplayName(getDisplayStatus(order))}
                               </span>
                             </div>
                           </div>
@@ -1428,28 +1588,69 @@ const User: React.FC = () => {
                               <span>Ngày đặt: {new Date(order.date).toLocaleDateString('vi-VN')}</span>
                             </div>
                             <div className="order-status">
-                              <span className={`status ${getStatusClass(order.status)}`}>
-                                {getStatusDisplayName(order.status)}
+                              <span className={`status ${getStatusClass(getDisplayStatus(order))}`}>
+                                {getStatusDisplayName(getDisplayStatus(order))}
                               </span>
                             </div>
                           </div>
 
-                          {order.products && order.products.map((product, itemIndex) => (
+                          {order.products && order.products.map((product, itemIndex) => {
+                            const productDetails = getProductDetails(order.id, product.id);
+                            
+                            let isCancelled = productDetails?.status === 'CANCELLED';
+                            
+                            // SUPER AGGRESSIVE FALLBACK: If order is CANCELLED, assume all products are cancelled
+                            if (!isCancelled && order.status === 'CANCELLED') {
+                              isCancelled = true;
+                            }
+                            
+                            // Fallback: check if product has status field
+                            if (!isCancelled && product.status) {
+                              isCancelled = product.status === 'CANCELLED';
+                            }
+                            
+                            // Another fallback: if price is "0" it might be cancelled
+                            if (!isCancelled && (product.price === "0" || parseFloat(product.price) === 0)) {
+                              isCancelled = true;
+                            }
+                            
+                            // Additional fallback: check for can_cancel = false (might indicate already cancelled)
+                            if (!isCancelled && product.can_cancel === false && parseFloat(product.price) === 0) {
+                              isCancelled = true;
+                            }
+                            
+                            return (
                             <div className="order-content" key={`item-${itemIndex}`}>
                               <div className="product-image">
                                 <img
                                   src={getFirstImageUrl(product.image)}
                                   alt={product.name}
+                                  style={{ 
+                                    opacity: isCancelled ? 0.6 : 1,
+                                    filter: isCancelled ? 'grayscale(50%)' : 'none'
+                                  }}
                                 />
                               </div>
 
                               <div className="product-details">
-                                <h4>{product.name}</h4>
+                                <h4 style={{ 
+                                  textDecoration: isCancelled ? 'line-through' : 'none',
+                                  color: isCancelled ? '#999' : 'inherit'
+                                }}>
+                                  {product.name}
+                                  {isCancelled && <span style={{ color: '#ff4757', marginLeft: '10px', fontSize: '14px' }}>(Đã hủy)</span>}
+                                </h4>
                                 <p className="product-category">{product.category}</p>
                                 <div className="product-price">
-                                  <span>
-                                    Thành tiền: {formatPrice(parseFloat(product.price) * product.quantity)}
-                                  </span>
+                                  {isCancelled ? (
+                                    <span style={{ color: '#ff4757', fontWeight: 'bold' }}>
+                                      Đã hủy
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      Thành tiền: {formatPrice(parseFloat(product.price) * product.quantity)}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="product-meta">
                                   {product.color && (
@@ -1489,7 +1690,7 @@ const User: React.FC = () => {
                                 </div>
 
                                 <div className="order-actions">
-                                  {order.status === "PENDING" && (
+                                  {order.status === "PENDING" && !isCancelled && (
                                     <>
                                       <button
                                         className="btn-cancel-order"
@@ -1498,6 +1699,17 @@ const User: React.FC = () => {
                                       >
                                         {isCancelling ? "Đang xử lý..." : "Hủy đơn hàng"}
                                       </button>
+                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                        Xem chi tiết
+                                      </Link>
+                                    </>
+                                  )}
+
+                                  {order.status === "PENDING" && isCancelled && (
+                                    <>
+                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
+                                        Mua lại
+                                      </Link>
                                       <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
                                         Xem chi tiết
                                       </Link>
@@ -1555,7 +1767,8 @@ const User: React.FC = () => {
                                 </div>
                               </div>
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       ))}
                     </div>

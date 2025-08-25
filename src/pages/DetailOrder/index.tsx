@@ -9,7 +9,8 @@ import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
 import { cancelOrder } from "../../services/userServices";
 import { convertToAdminApiUrl } from "../../utils/url";
-import { message } from 'antd';
+import { message, Modal } from 'antd';
+import { getOrderItems, OrderItem, cancelOrderProduct } from "../../api/order";
 
 interface OrderProduct {
   order_item_id: string;
@@ -23,6 +24,8 @@ interface OrderProduct {
   slug: string;
   has_comment?: boolean;
   commented?: boolean;
+  is_cancelled?: boolean;
+  status?: string;
 }
 
 interface OrderDetails {
@@ -55,6 +58,7 @@ interface OrderDetails {
 const DetailOrder: React.FC = () => {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const { id } = useParams<{ id: string }>();
+  const [detailedOrderItems, setDetailedOrderItems] = useState<Map<string, OrderItem[]>>(new Map());
   const starFilledImg = "/images/404/star-filled.svg";
   const starOutlineImg = "/images/404/star-outline.svg";
   const ratingLabels = ["", "Rất tệ", "Tệ", "Trung bình", "Tốt", "Rất tốt"];
@@ -71,36 +75,55 @@ const DetailOrder: React.FC = () => {
   const [isProcessingCancel, setIsProcessingCancel] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancellingProductId, setCancellingProductId] = useState<string | null>(null);
 
   const fetchOrder = async () => {
     try {
       const token = sessionStorage.getItem("authToken");
       const res = await axios.get(
-          convertToAdminApiUrl(`/orders/hash/${id}`),
+          convertToAdminApiUrl(`/orders/hash/${id}?_t=${Date.now()}`),
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
           },
         }
       );
       if (res.data.success) {
+        console.log("Raw order data:", res.data.order);
+        
         const mappedProducts: OrderProduct[] = res.data.order.products.map(
-          (p: any) => ({
-            order_item_id: p.id,
-            product_id: p.id,
-            name: p.product_name,
-            image: p.image || p.product_image || "/images/default.jpg",
-            price: p.price_sale ?? p.price,
-            quantity: p.quantity,
-            slug: p.slug,
-            color: {
-              name: p.color_name,
-              hex: p.color_hex,
-            },
-            has_comment: p.has_comment,
-          })
+          (p: any) => {
+            console.log("Mapping product:", {
+              id: p.id,
+              product_id: p.product_id,
+              item_id: p.item_id,
+              order_item_id: p.order_item_id,
+              name: p.product_name || p.name
+            });
+            
+            return {
+              order_item_id: p.id || p.item_id || p.order_item_id,
+              product_id: p.product_id || p.id,
+              name: p.product_name || p.name,
+              image: p.image || p.product_image || "/images/default.jpg",
+              price: p.price_sale ?? p.price,
+              quantity: p.quantity,
+              slug: p.slug,
+              color: {
+                name: p.color_name,
+                hex: p.color_hex,
+              },
+              has_comment: p.has_comment,
+              is_cancelled: p.is_cancelled || false,
+              status: p.status || 'active'
+            };
+          }
         );
-        // console.log("Mapped Products:", mappedProducts);
+        
+        console.log("Mapped products:", mappedProducts);
+        
         // Map order data and ensure processType and statusStep are properly set
         const orderData = {
           ...res.data.order,
@@ -114,6 +137,11 @@ const DetailOrder: React.FC = () => {
         
         setOrder(orderData);
         
+        // Fetch detailed order items for enhanced cancelled product detection
+        if (orderData.id) {
+          await fetchDetailedOrderItems(orderData.id);
+        }
+        
         const allCommented = mappedProducts.every(
           (product) => product.has_comment
         );
@@ -124,8 +152,170 @@ const DetailOrder: React.FC = () => {
     }
   };
 
+  // Enhanced API call to get detailed order items with cache busting
+  const fetchDetailedOrderItems = async (orderId: number) => {
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) return;
+
+      const response = await getOrderItems(orderId, token);
+      
+      if (response.success && response.data?.items) {
+        const orderHash = response.data.order.hash || id || '';
+        setDetailedOrderItems(prev => new Map(prev.set(orderHash, response.data.items)));
+      }
+    } catch (error) {
+      console.error("Error fetching detailed order items:", error);
+    }
+  };
+
+  // Enhanced product details lookup with multiple ID matching strategies
+  const getProductDetails = (product: OrderProduct, orderHash: string): OrderItem | null => {
+    const items = detailedOrderItems.get(orderHash);
+    if (!items || !Array.isArray(items)) return null;
+
+    // Multiple ID matching strategies for robust detection
+    const matchingItem = items.find(item => {
+      return (
+        item.item_id?.toString() === product.order_item_id?.toString() ||
+        item.product?.id?.toString() === product.product_id?.toString() ||
+        item.item_id?.toString() === product.product_id?.toString() ||
+        (item.product?.name === product.name && item.quantity === product.quantity)
+      );
+    });
+
+    return matchingItem || null;
+  };
+
+  // Get display status with server status prioritization
+  const getDisplayStatus = (product: OrderProduct, orderHash: string): string => {
+    // Server status check first
+    if (product.status && product.status.toLowerCase().includes('cancel')) {
+      return 'Đã hủy';
+    }
+    
+    if (product.is_cancelled === true) {
+      return 'Đã hủy';
+    }
+
+    // API data status check
+    const detailItem = getProductDetails(product, orderHash);
+    if (detailItem?.status) {
+      const statusLower = detailItem.status.toLowerCase();
+      if (statusLower.includes('cancel') || statusLower.includes('hủy') || statusLower.includes('huy')) {
+        return 'Đã hủy';
+      }
+      if (statusLower.includes('return_requested')) {
+        return 'Đang yêu cầu trả hàng';
+      }
+      if (statusLower.includes('return')) {
+        return 'Đang trả hàng';
+      }
+    }
+
+    // Super aggressive fallback - if order is cancelled, assume all products are cancelled
+    if (order?.status === 'CANCELLED') {
+      return 'Đã hủy';
+    }
+
+    return '';
+  };
+
+  // Check if product is cancelled with comprehensive detection
+  const isProductCancelled = (product: OrderProduct, orderHash: string): boolean => {
+    // Direct status check
+    if (product.is_cancelled === true) return true;
+    if (product.status && product.status.toLowerCase().includes('cancel')) return true;
+
+    // API data check
+    const detailItem = getProductDetails(product, orderHash);
+    if (detailItem?.status) {
+      const statusLower = detailItem.status.toLowerCase();
+      if (statusLower.includes('cancel') || statusLower.includes('hủy') || statusLower.includes('huy')) {
+        return true;
+      }
+    }
+
+    // Super aggressive fallback
+    if (order?.status === 'CANCELLED') return true;
+
+    return false;
+  };
+
+  // Check if all products in order are cancelled
+  const areAllProductsCancelled = (products: OrderProduct[], orderHash: string): boolean => {
+    if (!products || products.length === 0) return false;
+    
+    // If order status is CANCELLED, assume all products are cancelled
+    if (order?.status === 'CANCELLED') return true;
+    
+    return products.every(product => isProductCancelled(product, orderHash));
+  };
+
+  // Check if individual product can be cancelled
+  const canCancelProduct = (product: OrderProduct): boolean => {
+    // Don't allow cancelling already cancelled products
+    if (isProductCancelled(product, order?.order_hash || '')) return false;
+    
+    // Don't allow cancelling if product is in return process
+    const detailItem = getProductDetails(product, order?.order_hash || '');
+    if (detailItem?.status) {
+      const statusLower = detailItem.status.toLowerCase();
+      if (statusLower.includes('return') || statusLower.includes('trả')) {
+        return false;
+      }
+    }
+    
+    // Only allow cancelling if order is in cancellable states
+    if (!order) return false;
+    
+    const cancellableOrderStatuses = ['PENDING', 'CONFIRMED', 'APPROVED'];
+    return cancellableOrderStatuses.includes(order.status);
+  };
+
+  // Get reason why product cannot be cancelled (for better UX)
+  const getCannotCancelReason = (product: OrderProduct): string => {
+    if (isProductCancelled(product, order?.order_hash || '')) {
+      return 'Sản phẩm đã được hủy';
+    }
+    
+    const detailItem = getProductDetails(product, order?.order_hash || '');
+    if (detailItem?.status) {
+      const statusLower = detailItem.status.toLowerCase();
+      if (statusLower.includes('return_requested')) {
+        return 'Sản phẩm đang trong quá trình yêu cầu trả hàng';
+      }
+      if (statusLower.includes('return')) {
+        return 'Sản phẩm đang trong quá trình trả hàng';
+      }
+    }
+    
+    if (!order) return 'Không thể xác định trạng thái đơn hàng';
+    
+    const cancellableOrderStatuses = ['PENDING', 'CONFIRMED', 'APPROVED'];
+    if (!cancellableOrderStatuses.includes(order.status)) {
+      return 'Đơn hàng đã ở trạng thái không thể hủy';
+    }
+    
+    return 'Không thể hủy sản phẩm này';
+  };
+
   useEffect(() => {
     fetchOrder();
+    
+    // Test message component khi component mount
+    console.log("DetailOrder component mounted, testing message component...");
+    
+    // Test message sau 1 giây để đảm bảo component đã render xong
+    setTimeout(() => {
+      message.info({
+        content: "DetailOrder component đã sẵn sàng",
+        duration: 2,
+        style: {
+          marginTop: '20px',
+        },
+      });
+    }, 1000);
   }, [id]);
 
   useEffect(() => {
@@ -469,7 +659,13 @@ const DetailOrder: React.FC = () => {
       setIsProcessingReturn(true);
       await returnOrder(order.order_hash, reason, images);
       
-      message.success("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
+      message.success({
+        content: "Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.",
+        duration: 5,
+        style: {
+          marginTop: '20px',
+        },
+      });
       
       // Đóng modal
       setShowReturnModal(false);
@@ -479,9 +675,21 @@ const DetailOrder: React.FC = () => {
     } catch (error: any) {
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        message.error(`Lỗi: ${error.response.data.message}`);
+        message.error({
+          content: `Lỗi: ${error.response.data.message}`,
+          duration: 5,
+          style: {
+            marginTop: '20px',
+          },
+        });
       } else {
-        message.error("Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.");
+        message.error({
+          content: "Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.",
+          duration: 5,
+          style: {
+            marginTop: '20px',
+          },
+        });
       }
     } finally {
       setIsProcessingReturn(false);
@@ -522,7 +730,13 @@ const DetailOrder: React.FC = () => {
       
       await cancelOrder(orderId, reason);
       
-      message.success("Đơn hàng đã được hủy thành công!");
+      message.success({
+        content: "Đơn hàng đã được hủy thành công!",
+        duration: 4,
+        style: {
+          marginTop: '20px',
+        },
+      });
       
       // Đóng modal
       setShowCancelModal(false);
@@ -532,9 +746,21 @@ const DetailOrder: React.FC = () => {
     } catch (error: any) {
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        message.error(`Lỗi: ${error.response.data.message}`);
+        message.error({
+          content: `Lỗi: ${error.response.data.message}`,
+          duration: 5,
+          style: {
+            marginTop: '20px',
+          },
+        });
       } else {
-        message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+        message.error({
+          content: "Không thể hủy đơn hàng. Vui lòng thử lại sau.",
+          duration: 5,
+          style: {
+            marginTop: '20px',
+          },
+        });
       }
     } finally {
       setIsProcessingCancel(false);
@@ -544,6 +770,134 @@ const DetailOrder: React.FC = () => {
   // Xử lý đóng modal hủy đơn hàng
   const handleCancelModalClose = () => {
     setShowCancelModal(false);
+  };
+
+  // Xử lý hủy sản phẩm cụ thể
+  const handleCancelProduct = async (product: OrderProduct) => {
+    console.log("handleCancelProduct called with product:", product);
+    console.log("Current order:", order);
+    
+    if (!order || !order.id) {
+      console.error("No order or order.id found:", { order, orderId: order?.id });
+      message.error({
+        content: "Không thể xác định thông tin đơn hàng",
+        duration: 3,
+        style: {
+          marginTop: '20px',
+        },
+      });
+      return;
+    }
+
+    const productName = product.name || "sản phẩm này";
+    
+    // Debug logging
+    console.log("Cancelling product:", {
+      productName,
+      orderId: order.id,
+      itemId: product.order_item_id,
+      productId: product.product_id
+    });
+    
+    // Test message first
+    console.log("Testing message component...");
+    message.info({
+      content: "Đang chuẩn bị hủy sản phẩm...",
+      duration: 2,
+      style: {
+        marginTop: '20px',
+      },
+    });
+    
+    // Sử dụng Modal.confirm thay vì window.confirm
+    console.log("Showing Modal.confirm...");
+    Modal.confirm({
+      title: 'Xác nhận hủy sản phẩm',
+      content: (
+        <div>
+          <p>Bạn có chắc chắn muốn hủy sản phẩm <strong>"{productName}"</strong> không?</p>
+          <p style={{ color: '#52c41a', fontSize: '14px' }}>
+            ✓ Chỉ hủy sản phẩm này, không hủy toàn bộ đơn hàng
+          </p>
+        </div>
+      ),
+      okText: 'Xác nhận hủy',
+      cancelText: 'Không',
+      okType: 'danger',
+      onOk: async () => {
+        console.log("User confirmed cancellation");
+        try {
+          setCancellingProductId(product.order_item_id);
+          
+          const token = sessionStorage.getItem("authToken");
+          if (!token) {
+            console.error("No auth token found");
+            message.error({
+              content: "Vui lòng đăng nhập lại",
+              duration: 3,
+              style: {
+                marginTop: '20px',
+              },
+            });
+            return;
+          }
+
+          // Sử dụng order_item_id làm itemId để đảm bảo hủy đúng sản phẩm
+          const itemId = parseInt(product.order_item_id);
+          
+          console.log("API call params:", {
+            orderId: order.id,
+            itemId: itemId,
+            endpoint: `/orders-id/cancel-item/${order.id}/${itemId}`
+          });
+
+          await cancelOrderProduct(
+            order.id!,
+            itemId,
+            `Khách hàng yêu cầu hủy sản phẩm: ${productName}`,
+            token
+          );
+
+          console.log("Cancel product API call successful");
+          message.success({
+            content: `Đã hủy sản phẩm "${productName}" thành công!`,
+            duration: 4,
+            style: {
+              marginTop: '20px',
+            },
+          });
+          
+          // Tải lại thông tin đơn hàng để cập nhật trạng thái
+          await fetchOrder();
+        } catch (error: any) {
+          console.error("Error cancelling product:", error);
+          
+          if (error.message) {
+            message.error({
+              content: `Lỗi: ${error.message}`,
+              duration: 5,
+              style: {
+                marginTop: '20px',
+              },
+            });
+          } else {
+            message.error({
+              content: "Không thể hủy sản phẩm. Vui lòng thử lại sau.",
+              duration: 5,
+              style: {
+                marginTop: '20px',
+              },
+            });
+          }
+        } finally {
+          setCancellingProductId(null);
+        }
+      },
+      onCancel: () => {
+        console.log("User cancelled the action");
+        // Không làm gì khi user hủy
+      }
+    });
   };
 
 const formatPrice1 = (value: number | string): string => {
@@ -673,178 +1027,218 @@ const formatPrice1 = (value: number | string): string => {
               <h3>Tổng sản phẩm</h3>
             </div>
             <div className="product-list">
-              {order.products?.map((product: OrderProduct) => (
-                <div className="product-item" key={product.order_item_id}>
-                  <div className="product-image">
-                    <img src={product.image} alt={product.name} />
-                  </div>
-                  <div className="product-detailss">
-                    <h4>{product.name}</h4>
-                    <div className="product-meta">
-                      {product.color && product.color.hex && (
-                        <span
-                          className="product-color"
-                          style={{ backgroundColor: product.color.hex }}
-                          title={`Màu: ${
-                            product.color.name || product.color.hex
-                          }`}
-                        ></span>
-                      )}
-                      {product.size && <span>Size: {product.size}</span>}{" "}
-                      <span>Số lượng: {product.quantity}</span>
+              {order.products?.map((product: OrderProduct) => {
+                const orderHash = order.order_hash;
+                const isCancelled = isProductCancelled(product, orderHash);
+                const displayStatus = getDisplayStatus(product, orderHash);
+                
+                return (
+                  <div className="product-item" key={product.order_item_id}>
+                    <div className="product-image">
+                      <img src={product.image} alt={product.name} />
                     </div>
-                    <span>Giá: {formatPrice1(product.price)}đ</span>
-                  </div>
-                  <div className="product-price">
-                    <p>
-                      Thành tiền:{" "}
-                      <span>
-                        {formatPrice1(product.price * product.quantity)}đ
-                      </span>
-                    </p>
-                  </div>
-                  <div className="product-actions">
-                    <Link to={`/san-pham/${product.slug}`}>
-                      <button className="btn-product-action">
-                        Xem chi tiết
-                      </button>
-                    </Link>
-                    {order.status === "SUCCESS" && !product.has_comment ? (
-                      <button
-                        onClick={() => openReviewForm(product)}
-                        className="btn-product-review"
-                      >
-                        Đánh giá
-                      </button>
-                    ) : order.status === "SUCCESS" && product.has_comment ? (
-                      <button className="status-reviewed">Đã đánh giá</button>
-                    ) : (
-                      <button className="status-cantnot-review">
-                        Chưa thể đánh giá
-                      </button>
-                    )}
-                  </div>
-
-                  {showReviewForm &&
-                    currentReviewProduct?.order_item_id ===
-                      product.order_item_id && (
-                      <div className="review-form-section">
-                        <h4>Đánh giá sản phẩm: {product.name}</h4>
-                        <form onSubmit={handleSubmitReview}>
-                          <div className="form-group">
-                            <label className="form-label">
-                              Chất lượng sản phẩm:
-                            </label>
-                            <div className="star-rating-container">
-                              {Array.from({ length: 5 }, (_, index) => (
-                                <button
-                                  key={index}
-                                  type="button"
-                                  className="star-button"
-                                  onClick={() => handleRatingChange(index + 1)}
-                                >
-                                  <img
-                                    src={
-                                      reviewRating > index
-                                        ? starFilledImg
-                                        : starOutlineImg
-                                    }
-                                    alt={
-                                      reviewRating > index
-                                        ? "Sao đã chọn"
-                                        : "Sao chưa chọn"
-                                    }
-                                    className="star-icon-img"
-                                  />
-                                </button>
-                              ))}
-                              <br />
-                            </div>
-                            <span className="rating-text">
-                              {reviewRating > 0 ? (
-                                <>
-                                  <span className="form-label rating-description">
-                                    {ratingLabels[reviewRating]}{" "}
-                                    {`(${reviewRating}/5 sao)`}
-                                  </span>
-                                </>
-                              ) : (
-                                ratingLabels[0]
-                              )}
-                            </span>
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="reviewTitle" className="form-label">
-                              Tiêu đề:
-                            </label>
-                            <input
-                              type="text"
-                              id="reviewTitle"
-                              className="form-input"
-                              value={reviewTitle}
-                              onChange={(e) => setReviewTitle(e.target.value)}
-                              placeholder="Tiêu đề đánh giá (VD: Sản phẩm rất tốt!)"
-                              required
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label
-                              htmlFor="reviewDescription"
-                              className="form-label"
-                            >
-                              Nội dung đánh giá:
-                            </label>
-                            <textarea
-                              id="reviewDescription"
-                              className="form-textarea"
-                              rows={4}
-                              value={reviewDescription}
-                              onChange={(e) =>
-                                setReviewDescription(e.target.value)
-                              }
-                              placeholder="Viết đánh giá của bạn về sản phẩm..."
-                              required
-                            ></textarea>
-                          </div>
-                          {reviewMessage && (
-                            <p
-                              className={`review-message ${
-                                reviewMessage.includes("thành công")
-                                  ? "success"
-                                  : "error"
-                              }`}
-                            >
-                              {reviewMessage}
-                            </p>
-                          )}
-                          <div className="form-actions">
-                            <button
-                              type="submit"
-                              className="submit-review-button"
-                              disabled={isSubmittingReview}
-                            >
-                              {isSubmittingReview ? (
-                                <>
-                                  <span className="spinner"></span> Đang gửi...
-                                </>
-                              ) : (
-                                <>Gửi đánh giá</>
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              className="cancel-review-button"
-                              onClick={closeReviewForm}
-                              disabled={isSubmittingReview}
-                            >
-                              Hủy
-                            </button>
-                          </div>
-                        </form>
+                    <div className="product-detailss">
+                      <h4>{product.name}</h4>
+                      <div className="product-meta">
+                        {product.color && product.color.hex && (
+                          <span
+                            className="product-color"
+                            style={{ backgroundColor: product.color.hex }}
+                            title={`Màu: ${
+                              product.color.name || product.color.hex
+                            }`}
+                          ></span>
+                        )}
+                        {product.size && <span>Size: {product.size}</span>}{" "}
+                        <span>Số lượng: {product.quantity}</span>
                       </div>
-                    )}
-                </div>
-              ))}
+                      <span>Giá: {formatPrice1(product.price)}đ</span>
+                      {displayStatus && (
+                        <div className="product-status cancelled">
+                          <span>{displayStatus}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="product-price">
+                      <p>
+                        Thành tiền:{" "}
+                        <span>
+                          {formatPrice1(product.price * product.quantity)}đ
+                        </span>
+                      </p>
+                    </div>
+                    <div className="product-actions">
+                      <Link to={`/san-pham/${product.slug}`}>
+                        <button className="btn-product-action">
+                          Xem chi tiết
+                        </button>
+                      </Link>
+                      {isCancelled ? (
+                        <Link to={`/san-pham/${product.slug}`}>
+                          <button className="btn-buy-again">Mua lại</button>
+                        </Link>
+                      ) : canCancelProduct(product) ? (
+                        <button
+                          onClick={() => handleCancelProduct(product)}
+                          className="btn-cancel-product"
+                          disabled={cancellingProductId === product.order_item_id}
+                        >
+                          {cancellingProductId === product.order_item_id ? (
+                            <>
+                              <span className="spinner"></span> Đang hủy...
+                            </>
+                          ) : (
+                            "Hủy sản phẩm"
+                          )}
+                        </button>
+                      ) : displayStatus.includes('trả hàng') ? (
+                        <button 
+                          className="status-return-process" 
+                          disabled 
+                          title={getCannotCancelReason(product)}
+                        >
+                          Đang trả hàng
+                        </button>
+                      ) : order.status === "SUCCESS" && !product.has_comment ? (
+                        <button
+                          onClick={() => openReviewForm(product)}
+                          className="btn-product-review"
+                        >
+                          Đánh giá
+                        </button>
+                      ) : order.status === "SUCCESS" && product.has_comment ? (
+                        <button className="status-reviewed">Đã đánh giá</button>
+                      ) : (
+                        <button 
+                          className="status-cantnot-review"
+                          title={getCannotCancelReason(product)}
+                        >
+                          Chưa thể đánh giá
+                        </button>
+                      )}
+                    </div>
+
+                    {showReviewForm &&
+                      currentReviewProduct?.order_item_id ===
+                        product.order_item_id && (
+                        <div className="review-form-section">
+                          <h4>Đánh giá sản phẩm: {product.name}</h4>
+                          <form onSubmit={handleSubmitReview}>
+                            <div className="form-group">
+                              <label className="form-label">
+                                Chất lượng sản phẩm:
+                              </label>
+                              <div className="star-rating-container">
+                                {Array.from({ length: 5 }, (_, index) => (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    className="star-button"
+                                    onClick={() => handleRatingChange(index + 1)}
+                                  >
+                                    <img
+                                      src={
+                                        reviewRating > index
+                                          ? starFilledImg
+                                          : starOutlineImg
+                                      }
+                                      alt={
+                                        reviewRating > index
+                                          ? "Sao đã chọn"
+                                          : "Sao chưa chọn"
+                                      }
+                                      className="star-icon-img"
+                                    />
+                                  </button>
+                                ))}
+                                <br />
+                              </div>
+                              <span className="rating-text">
+                                {reviewRating > 0 ? (
+                                  <>
+                                    <span className="form-label rating-description">
+                                      {ratingLabels[reviewRating]}{" "}
+                                      {`(${reviewRating}/5 sao)`}
+                                    </span>
+                                  </>
+                                ) : (
+                                  ratingLabels[0]
+                                )}
+                              </span>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="reviewTitle" className="form-label">
+                                Tiêu đề:
+                              </label>
+                              <input
+                                type="text"
+                                id="reviewTitle"
+                                className="form-input"
+                                value={reviewTitle}
+                                onChange={(e) => setReviewTitle(e.target.value)}
+                                placeholder="Tiêu đề đánh giá (VD: Sản phẩm rất tốt!)"
+                                required
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label
+                                htmlFor="reviewDescription"
+                                className="form-label"
+                              >
+                                Nội dung đánh giá:
+                              </label>
+                              <textarea
+                                id="reviewDescription"
+                                className="form-textarea"
+                                rows={4}
+                                value={reviewDescription}
+                                onChange={(e) =>
+                                  setReviewDescription(e.target.value)
+                                }
+                                placeholder="Viết đánh giá của bạn về sản phẩm..."
+                                required
+                              ></textarea>
+                            </div>
+                            {reviewMessage && (
+                              <p
+                                className={`review-message ${
+                                  reviewMessage.includes("thành công")
+                                    ? "success"
+                                    : "error"
+                                }`}
+                              >
+                                {reviewMessage}
+                              </p>
+                            )}
+                            <div className="form-actions">
+                              <button
+                                type="submit"
+                                className="submit-review-button"
+                                disabled={isSubmittingReview}
+                              >
+                                {isSubmittingReview ? (
+                                  <>
+                                    <span className="spinner"></span> Đang gửi...
+                                  </>
+                                ) : (
+                                  <>Gửi đánh giá</>
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                className="cancel-review-button"
+                                onClick={closeReviewForm}
+                                disabled={isSubmittingReview}
+                              >
+                                Hủy
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -886,6 +1280,16 @@ const formatPrice1 = (value: number | string): string => {
                   </button>
                 )}
               </>
+            )}
+            {/* Show "Mua lại" button if all products are cancelled */}
+            {areAllProductsCancelled(order.products || [], order.order_hash) && (
+              <div className="order-actions">
+                <Link to="/san-pham">
+                  <button className="btn-primary btn-buy-again-all">
+                    Mua lại tất cả
+                  </button>
+                </Link>
+              </div>
             )}
             <button className="btn-outline">Liên hệ với SONA</button>
           </div>
