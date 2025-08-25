@@ -941,15 +941,47 @@ body.mobile-menu-open {
 
 .mobile-nav-item {
   border-bottom: 1px solid #f8f8f8;
+  position: relative;
+  overflow: hidden;
+
+  // Thanh ngang hover effect
+  &::after {
+    content: '';
+    position: absolute;
+    right: -100%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: $yellow-cl;
+    transition: right 0.3s ease;
+  }
+
+  &:hover {
+    background: #f8f8f8;
+    
+    &::after {
+      right: 0;
+    }
+
+    a span {
+      transform: translateX(8px);
+      color: #333;
+    }
+  }
 
   &.active {
     background: #f8f8f8;
-    border-left: 4px solid #333;
+    border-left: 4px solid $yellow-cl;
+
+    &::after {
+      right: 0;
+      background-color: $yellow-cl;
+    }
 
     a span {
       color: #333;
       font-weight: 600;
-
+      transform: translateX(4px);
     }
   }
 
@@ -963,6 +995,8 @@ body.mobile-menu-open {
       font-size: 16px;
       color: #666;
       font-weight: 400;
+      transition: all 0.3s ease;
+      display: block;
     }
   }
 }

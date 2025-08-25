@@ -113,6 +113,7 @@
         -webkit-backdrop-filter: blur(5px);
         border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 16px;
+
         .banner-subtitle {
           font-size: 16px;
           font-weight: 400;
@@ -342,6 +343,17 @@
 @media (max-width: 480px) {
   .hero-banner {
     height: 50dvh;
+
+    .banner-content {
+      .container {
+        height: calc(100% - 80px) !important;
+        align-content: center;
+      }
+
+      .banner-text {
+        padding: 8px !important;
+      }
+    }
 
     .banner-nav-arrow {
       display: none; // Hide arrows on very small screens

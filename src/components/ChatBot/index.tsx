@@ -111,12 +111,18 @@ export default function ChatBot() {
                   }
             };
 
-            const handleScroll = () => {
+            const handleScroll = (event: Event) => {
                   // Không đóng chat nếu đang minimize (chỉ trên desktop)  
                   if (isDesktop && minimized) return;
                   
                   // Không đóng chat nếu bot đang typing hoặc user đang nhập
                   if (botTyping || input.trim()) return;
+
+                  // Chỉ đóng chat nếu scroll không phải từ chat widget
+                  if (chatWidgetRef.current && event.target) {
+                        const isScrollInsideChat = chatWidgetRef.current.contains(event.target as Node);
+                        if (isScrollInsideChat) return;
+                  }
 
                   if (open) {
                         setOpen(false);
@@ -439,7 +445,11 @@ export default function ChatBot() {
 
                               {!(isDesktop && minimized) && (
                                     <>
-                                          <div className="chat-body" ref={chatBodyRef}>
+                                          <div 
+                                                className="chat-body" 
+                                                ref={chatBodyRef}
+                                                onScroll={(e) => e.stopPropagation()}
+                                          >
                                                 {messages.map((msg, i) => (
                                                       <div
                                                             key={msg.id || i}

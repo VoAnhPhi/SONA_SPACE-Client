@@ -1584,6 +1584,7 @@ const User: React.FC = () => {
         onSubmit={handleCancelOrderSubmit}
         loading={isCancelling}
         orderHash={selectedOrderHash}
+        orderId={selectedOrderId || undefined}
       />
     </>
   );

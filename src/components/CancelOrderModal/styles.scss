@@ -20,29 +20,144 @@
 
   .modal-content {
     .order-info {
-      background-color: #f8f9fa;
+      margin-bottom: 20px;
       padding: 16px;
-      border-radius: 6px;
-      margin-bottom: 24px;
-      border-left: 4px solid #ff4d4f;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #1890ff;
 
       p {
-        margin: 0 0 8px 0;
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+
+        strong {
+          color: #333;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .cancel-mode-section {
+      margin-bottom: 24px;
+
+      h4 {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        font-weight: 600;
         color: #333;
-        
+      }
+
+      .mode-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        .mode-option {
+          padding: 16px;
+          border: 2px solid #e8e8e8;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            border-color: #40a9ff;
+            background: #f6ffed;
+          }
+
+          &.active {
+            border-color: #1890ff;
+            background: #e6f7ff;
+
+            .mode-header {
+              color: #1890ff;
+            }
+          }
+
+          .mode-header {
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+          }
+
+          p {
+            margin: 0;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+
+    .products-section {
+      margin-bottom: 24px;
+
+      h4 {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .loading-text {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+
+      .no-items {
+        text-align: center;
+        padding: 20px;
+        color: #999;
+        font-style: italic;
+      }
+
+      .ant-list-item {
+        padding: 16px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        margin-bottom: 12px;
+
         &:last-child {
           margin-bottom: 0;
         }
 
-        strong {
-          font-weight: 600;
+        .ant-list-item-meta {
+          .ant-list-item-meta-description {
+            p {
+              margin: 4px 0;
+              font-size: 13px;
+              color: #666;
+            }
+          }
+        }
+
+        .ant-list-item-action {
+          margin-left: 16px;
+
+          .ant-btn-link {
+            padding: 0;
+            height: auto;
+            font-weight: 500;
+          }
         }
       }
+    }
+
+    .warning-section {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: #fff7e6;
+      border: 1px solid #ffd591;
+      border-radius: 8px;
 
       .warning-text {
-        color: #ff4d4f;
+        margin: 0;
+        font-size: 14px;
+        color: #8c4400;
         font-weight: 500;
-        margin-top: 12px;
       }
     }
 
@@ -126,30 +241,19 @@
     }
   }
 
-  .ant-form-item-explain-error {
-    font-size: 12px;
-    color: #ff4d4f;
-  }
-
-  .ant-input-data-count {
-    color: #999;
-    font-size: 12px;
-  }
-
-  // Loading state
-  .ant-btn-loading {
-    cursor: not-allowed;
-    
-    .ant-btn-loading-icon {
-      margin-right: 8px;
-    }
-  }
-
   // Responsive
   @media (max-width: 768px) {
     .ant-modal {
       width: 95% !important;
       margin: 10px auto;
+    }
+
+    .modal-content {
+      .cancel-mode-section {
+        .mode-options {
+          grid-template-columns: 1fr;
+        }
+      }
     }
 
     .modal-actions {

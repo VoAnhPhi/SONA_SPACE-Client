@@ -887,8 +887,8 @@ const Header = () => {
             <div className="mobile-menu-content">
               <nav className="mobile-nav">
                 <ul>
-                  {!loadingRooms && rooms.map((room, index) => (
-                    <li key={room.room_id} className={`mobile-nav-item ${index === 0 ? 'active' : ''}`}>
+                  {!loadingRooms && rooms.map((room) => (
+                    <li key={room.room_id} className={`mobile-nav-item ${window.location.pathname === `/khong-gian/${room.slug}` ? 'active' : ''}`}>
                       <Link to={`/khong-gian/${room.slug}`} onClick={() => setIsMobileMenuOpen(false)}>
                         <span>{room.room_name}</span>
                       </Link>
@@ -942,11 +942,11 @@ const Header = () => {
                       <span>Đơn hàng</span>
                     </Link>
                     <Link to="/san-pham-yeu-thich" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/wishlist.svg" alt="Wishlist" />
+                      <img src="/images/icons/wishlist-baskest.svg" alt="Wishlist" />
                       <span>Yêu thích</span>
                     </Link>
                     <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/cart.svg" alt="Cart" />
+                      <img src="/images/icons/cart-black.svg" alt="Cart" />
                       <span>Giỏ hàng</span>
                     </Link>
                     <button 
@@ -990,7 +990,7 @@ const Header = () => {
                       <span>Xem sản phẩm</span>
                     </Link>
                     <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
-                      <img src="/images/icons/cart.svg" alt="Cart" />
+                      <img src="/images/icons/cart-black.svg" alt="Cart" />
                       <span>Giỏ hàng</span>
                     </Link>
                   </div>

@@ -1,0 +1,273 @@
+.cancel-product-modal {
+  .modal-content {
+    .order-info {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #1890ff;
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+
+        strong {
+          color: #333;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .product-info {
+      margin-bottom: 24px;
+
+      .product-card {
+        display: flex;
+        gap: 16px;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+        .product-image {
+          flex-shrink: 0;
+
+          .ant-image {
+            border-radius: 8px;
+            overflow: hidden;
+          }
+        }
+
+        .product-details {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .product-name {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+          }
+
+          .product-color {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .color-label {
+              font-size: 13px;
+              color: #666;
+            }
+
+            .color-info {
+              display: flex;
+              align-items: center;
+              gap: 6px;
+
+              .color-swatch {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                border: 2px solid #fff;
+                box-shadow: 0 0 0 1px #e8e8e8;
+              }
+
+              .color-name {
+                font-size: 13px;
+                color: #333;
+                font-weight: 500;
+              }
+            }
+          }
+
+          .product-quantity,
+          .product-price {
+            font-size: 14px;
+            color: #666;
+
+            strong {
+              color: #333;
+              font-weight: 600;
+            }
+          }
+
+          .product-total {
+            font-size: 15px;
+            color: #666;
+            margin-top: 4px;
+
+            .total-amount {
+              color: #f5222d;
+              font-weight: 700;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+
+    .warning-section {
+      margin-bottom: 24px;
+
+      .warning-box {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        background: #fff7e6;
+        border: 1px solid #ffd591;
+        border-radius: 8px;
+
+        .warning-icon {
+          font-size: 20px;
+          flex-shrink: 0;
+        }
+
+        .warning-content {
+          flex: 1;
+
+          .warning-title {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            color: #d46b08;
+            font-size: 14px;
+          }
+
+          .warning-text {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #8c4400;
+            line-height: 1.5;
+
+            strong {
+              font-weight: 600;
+            }
+          }
+
+          .refund-info {
+            margin: 0;
+            font-size: 14px;
+            color: #389e0d;
+            font-weight: 500;
+
+            strong {
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-form {
+      .ant-form-item-label {
+        label {
+          font-weight: 600;
+          color: #333;
+        }
+      }
+
+      .ant-input {
+        border-radius: 6px;
+
+        &:focus,
+        &:hover {
+          border-color: #40a9ff;
+        }
+      }
+
+      textarea.ant-input {
+        resize: none;
+      }
+    }
+
+    .help-text {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: #f6ffed;
+      border: 1px solid #d9f7be;
+      border-radius: 8px;
+
+      p {
+        margin: 0;
+        font-size: 13px;
+        color: #52c41a;
+        line-height: 1.5;
+
+        strong {
+          font-weight: 600;
+        }
+      }
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e8e8e8;
+
+      .ant-btn {
+        border-radius: 6px;
+        font-weight: 500;
+
+        &.submit-button {
+          background-color: #ff4d4f;
+          border-color: #ff4d4f;
+
+          &:hover {
+            background-color: #ff7875;
+            border-color: #ff7875;
+          }
+
+          &:focus {
+            background-color: #ff4d4f;
+            border-color: #ff4d4f;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .cancel-product-modal {
+    .modal-content {
+      .product-info {
+        .product-card {
+          flex-direction: column;
+          text-align: center;
+
+          .product-details {
+            align-items: center;
+          }
+        }
+      }
+
+      .warning-section {
+        .warning-box {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      .modal-actions {
+        flex-direction: column;
+
+        .ant-btn {
+          width: 100%;
+          margin: 0 0 8px 0;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
