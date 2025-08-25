@@ -270,37 +270,51 @@ const ContactForm: React.FC = () => {
             </div>
           </div>
           <div className="my-project">
-            <p>Thành viên dự án</p>
+            <p className="member">Thành viên dự án</p>
+            <p className="section-description">
+              Chúng tôi – những thành viên đứng sau dự án SONA SPACE – luôn mang trong mình ngọn lửa nhiệt huyết, <br /> mong muốn lan tỏa sản phẩm nội thất đến nhiều người dùng, mang lại những giá trị thiết thực và bền vững cho cuộc sống.
+            </p>
             <div className="project-grid">
               <div className="project-item">
-                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 1" />
+                <img src="https://res.cloudinary.com/dmgrdgvcf/image/upload/v1756121499/z6943089968774_f0b000d346a9bc76249002ff8ab337cc_gfach5.jpg" alt="Project 1" />
                 <div className="overlay">
                   <h3>Võ Đoàn Anh Phi</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                  <p> Một chàng trai đầy khát vọng, nuôi dưỡng ước mơ trở thành
+                    Business Analyst và Full-Stack Developer. Không chỉ dừng lại ở công nghệ,
+                    cậu ấy còn hướng đến hành trình chinh phục tấm bằng Cử nhân Công nghệ thông tin –
+                    nơi đam mê gặp gỡ tri thức.</p>
                 </div>
               </div>
 
               <div className="project-item">
-                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 2" />
+                <img src="https://res.cloudinary.com/dmgrdgvcf/image/upload/v1756121989/z6943793633210_dc3e8ed626ba024756464067d780e34e_n0ldqn.jpg" alt="Project 2" />
                 <div className="overlay">
                   <h3>Nguyễn Hồng Thái</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                  <p>    Một người đầy nhiệt huyết, khao khát trở thành Team Leader bản lĩnh,
+                    đồng thời theo đuổi con đường Business Analyst và Full Stack Developer.
+                    Anh hướng đến việc gắn kết công nghệ với giá trị kinh doanh, dẫn dắt
+                    đội nhóm chạm tới thành công. </p>
                 </div>
               </div>
 
               <div className="project-item">
-                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 3" />
+                <img src="https://res.cloudinary.com/dmgrdgvcf/image/upload/v1756122329/z6943811819910_04e48941c6a73fa10ed931cb2ea605e4_crmlbj.jpg" alt="Project 3" />
                 <div className="overlay">
                   <h3>Tô Trọng Nhân</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                  <p>Với đam mê công nghệ và khát vọng chinh phục tri thức,
+                    Nhân định hướng trở thành một Full Stack Developer chuyên nghiệp.
+                    Cậu mong muốn không ngừng phát triển, làm chủ cả front-end lẫn back-end,
+                    để tạo ra những sản phẩm công nghệ sáng tạo và giá trị.</p>
                 </div>
               </div>
 
               <div className="project-item">
-                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 4" />
+                <img src="https://res.cloudinary.com/dmgrdgvcf/image/upload/v1756122644/z6943829101313_cb3ced254846ccd82c24d9a9bf01a170_nw0usy.jpg" alt="Project 4" />
                 <div className="overlay">
                   <h3>Trần Thanh Tú</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                  <p> Một người đầy khát vọng với mục tiêu trở thành Business Analyst và Full Stack Developer.
+                    Tú hướng đến việc làm chủ nhiều ngôn ngữ lập trình, phát triển toàn diện kỹ năng để khẳng định
+                    bản thân trong những dự án công nghệ đầy thử thách.</p>
                 </div>
               </div>
             </div>

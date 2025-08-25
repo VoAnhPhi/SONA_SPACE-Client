@@ -19,12 +19,18 @@
     margin-top: 80px;
     width: 100%;
 
-    p {
+    .member {
       text-align: center;
       font-family: "M-SB";
       font-size: 24px;
-      margin-bottom: 30px;
+      margin-bottom: 14px;
 
+    }
+
+    .section-description {
+      @include text(16px, Be-R, 24px, $text-cl, null);
+      text-align: center;
+      margin-bottom: 24px;
     }
 
     .project-grid {
