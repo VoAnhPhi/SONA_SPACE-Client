@@ -269,6 +269,42 @@ const ContactForm: React.FC = () => {
               </form>
             </div>
           </div>
+          <div className="my-project">
+            <p>Thành viên dự án</p>
+            <div className="project-grid">
+              <div className="project-item">
+                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 1" />
+                <div className="overlay">
+                  <h3>Võ Đoàn Anh Phi</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                </div>
+              </div>
+
+              <div className="project-item">
+                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 2" />
+                <div className="overlay">
+                  <h3>Nguyễn Hồng Thái</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                </div>
+              </div>
+
+              <div className="project-item">
+                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 3" />
+                <div className="overlay">
+                  <h3>Tô Trọng Nhân</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                </div>
+              </div>
+
+              <div className="project-item">
+                <img src="https://i.pinimg.com/1200x/9f/b6/56/9fb656429590aa4b2dc7a49c0c681707.jpg" alt="Project 4" />
+                <div className="overlay">
+                  <h3>Trần Thanh Tú</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper, justo eget vehicula vestibulum, enim enim suscipit lectus, et sagittis nibh risus vel metus. </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
