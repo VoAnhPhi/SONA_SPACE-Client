@@ -221,8 +221,12 @@
       .box-products-frame {
         .products-frame-cart {
           gap: 2px;
+          flex-direction: column;
 
           .cart-price {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
             .price1 {
               font-size: 14px
             }
@@ -233,7 +237,9 @@
           }
 
           .cart-button {
+            margin-top: 5px;
             button {
+              width: 200px;
               padding: 10px 22px;
             }
           }
