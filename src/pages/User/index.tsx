@@ -578,7 +578,7 @@ const User: React.FC = () => {
       pending: "PENDING",
       confirmed: "CONFIRMED",
       shipping: "SHIPPING",
-      completed: "COMPLETED",
+      completed: "SUCCESS",
       cancelled: "CANCELLED",
       returned: "RETURNED",
     };

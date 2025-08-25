@@ -6,6 +6,7 @@ interface CartItem {
   id: number;
   name: string;
   price: number;
+  priceSale?: number;
   quantity: number;
   color: string;
   image: string;
@@ -56,11 +57,13 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
           id: item.wishlist_id || index,
           name: item.product_name,
           price: item.price,
+          priceSale: item.price_sale,
           quantity: item.quantity,
           color: item.color_hex || '',
           image: item.image?.split(',')[0] || '/images/default.jpg',
         }));
         setCartItems(formatted);
+        console.log("Đã tải MiniCart:", formatted);
       }
     } catch (error) {
       console.error("Lỗi khi tải MiniCart:", error);
@@ -74,7 +77,7 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
     isVisible,
     refreshCart,
     notifyCartChanged: async () => {
-      await refreshCart(); 
+      await refreshCart();
       // setIsVisible(true);
     },
     getCartCount: () =>
@@ -144,7 +147,12 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
                       <img src="/images/icons/close.svg" alt="Xóa" />
                     </div>
                   </div>
-                  <div className="item-price">{formatPrice(item.price)}</div>
+
+                  <div className="item-price">
+                    {Number(item.priceSale) > 0 && Number(item.priceSale) < Number(item.price)
+                      ? formatPrice(Number(item.priceSale))
+                      : formatPrice(Number(item.price))}
+                  </div>
                 </div>
               </div>
             ))
