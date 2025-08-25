@@ -850,7 +850,7 @@ const Header = () => {
                 )}
               </div>
               <div className="header-hamburger">
-                <button 
+                <button
                   className="btn-icon hamburger-btn"
                   onClick={() => setIsMobileMenuOpen(true)}
                 >
@@ -871,134 +871,134 @@ const Header = () => {
       {/* Mobile Menu Overlay */}
       <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
         <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
-            {/* Header Mobile Menu */}
-            <div className="mobile-menu-header">
-              <div className="mobile-menu-back">
-                <button onClick={() => setIsMobileMenuOpen(false)}>
-                  <span>Back</span>
-                </button>
-              </div>
-              <div className="mobile-menu-logo">
-                <img src="/images/logo.svg" alt="" />
-              </div>
+          {/* Header Mobile Menu */}
+          <div className="mobile-menu-header">
+            <div className="mobile-menu-back">
+              <button onClick={() => setIsMobileMenuOpen(false)}>
+                <span>Back</span>
+              </button>
             </div>
-
-            {/* Menu Content */}
-            <div className="mobile-menu-content">
-              <nav className="mobile-nav">
-                <ul>
-                  {!loadingRooms && rooms.map((room) => (
-                    <li key={room.room_id} className={`mobile-nav-item ${window.location.pathname === `/khong-gian/${room.slug}` ? 'active' : ''}`}>
-                      <Link to={`/khong-gian/${room.slug}`} onClick={() => setIsMobileMenuOpen(false)}>
-                        <span>{room.room_name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-
-              {/* Category Section */}
-              <div className="mobile-category-section">
-                <h3>Không gian nội thất</h3>
-                <div className="mobile-category-grid">
-                  {!loadingRooms && rooms.map((room) => (
-                    <Link 
-                      key={room.room_id} 
-                      to={`/phong/${room.slug}`}
-                      className="mobile-category-item"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div 
-                        className="category-image-placeholder"
-                        style={{
-                          backgroundImage: room.room_image ? `url(${room.room_image})` : 'none'
-                        }}
-                      ></div>
-                      <span>{room.room_name}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Login Mobile */}
-            <div className="mobile-menu-login">
-              {isAuthenticated && user ? (
-                <div className="mobile-user-info">
-                  <div className="mobile-user-avatar">
-                    <img src="/images/icons/user-circle.svg" alt="User" />
-                  </div>
-                  <div className="mobile-user-details">
-                    <h4>Chào, {getLastName(user.full_name)}</h4>
-                    <p>{user.email}</p>
-                  </div>
-                  <div className="mobile-user-actions">
-                    <Link to="/tai-khoan" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/user.svg" alt="Account" />
-                      <span>Tài khoản</span>
-                    </Link>
-                    <Link to="/tai-khoan/don-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/package.svg" alt="Orders" />
-                      <span>Đơn hàng</span>
-                    </Link>
-                    <Link to="/san-pham-yeu-thich" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/wishlist-baskest.svg" alt="Wishlist" />
-                      <span>Yêu thích</span>
-                    </Link>
-                    <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                      <img src="/images/icons/cart-black.svg" alt="Cart" />
-                      <span>Giỏ hàng</span>
-                    </Link>
-                    <button 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        logout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="mobile-action-btn logout-btn"
-                    >
-                      <img src="/images/icons/logout.svg" alt="Logout" />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="mobile-auth-buttons">
-                  <div className="mobile-auth-header">
-                    <h4>Đăng nhập để trải nghiệm tốt hơn</h4>
-                    <p>Đăng nhập để xem đơn hàng và nhận ưu đãi đặc biệt</p>
-                  </div>
-                  <div className="mobile-auth-actions">
-                    <Link 
-                      to="/dang-nhap" 
-                      className="mobile-signin-btn"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Đăng nhập
-                    </Link>
-                    <Link 
-                      to="/dang-ky" 
-                      className="mobile-signup-btn"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Đăng ký
-                    </Link>
-                  </div>
-                  <div className="mobile-guest-actions">
-                    <Link to="/san-pham" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
-                      <img src="/images/icons/grid.svg" alt="Products" />
-                      <span>Xem sản phẩm</span>
-                    </Link>
-                    <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
-                      <img src="/images/icons/cart-black.svg" alt="Cart" />
-                      <span>Giỏ hàng</span>
-                    </Link>
-                  </div>
-                </div>
-              )}
+            <div className="mobile-menu-logo">
+              <img src="/images/logo.svg" alt="" />
             </div>
           </div>
+
+          {/* Menu Content */}
+          <div className="mobile-menu-content">
+            <nav className="mobile-nav">
+              <ul>
+                {!loadingRooms && rooms.map((room, index) => (
+                  <li key={room.room_id} className={`mobile-nav-item ${index === 0 ? 'active' : ''}`}>
+                    <Link to={`/khong-gian/${room.slug}`} onClick={() => setIsMobileMenuOpen(false)}>
+                      <span>{room.room_name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Category Section */}
+            <div className="mobile-category-section">
+              <h3>Không gian nội thất</h3>
+              <div className="mobile-category-grid">
+                {!loadingRooms && rooms.map((room) => (
+                  <Link
+                    key={room.room_id}
+                    to={`/phong/${room.slug}`}
+                    className="mobile-category-item"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <div
+                      className="category-image-placeholder"
+                      style={{
+                        backgroundImage: room.room_image ? `url(${room.room_image})` : 'none'
+                      }}
+                    ></div>
+                    <span>{room.room_name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Login Mobile */}
+          <div className="mobile-menu-login">
+            {isAuthenticated && user ? (
+              <div className="mobile-user-info">
+                <div className="mobile-user-avatar">
+                  <img src="/images/icons/user-circle.svg" alt="User" />
+                </div>
+                <div className="mobile-user-details">
+                  <h4>Chào, {getLastName(user.full_name)}</h4>
+                  <p>{user.email}</p>
+                </div>
+                <div className="mobile-user-actions">
+                  <Link to="/tai-khoan" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
+                    <img src="/images/icons/user.svg" alt="Account" />
+                    <span>Tài khoản</span>
+                  </Link>
+                  <Link to="/tai-khoan/don-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
+                    <img src="/images/icons/package.svg" alt="Orders" />
+                    <span>Đơn hàng</span>
+                  </Link>
+                  <Link to="/san-pham-yeu-thich" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
+                    <img src="/images/icons/wishlist.svg" alt="Wishlist" />
+                    <span>Yêu thích</span>
+                  </Link>
+                  <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
+                    <img src="/images/icons/cart.svg" alt="Cart" />
+                    <span>Giỏ hàng</span>
+                  </Link>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      logout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="mobile-action-btn logout-btn"
+                  >
+                    <img src="/images/icons/logout.svg" alt="Logout" />
+                    <span>Đăng xuất</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mobile-auth-buttons">
+                <div className="mobile-auth-header">
+                  <h4>Đăng nhập để trải nghiệm tốt hơn</h4>
+                  <p>Đăng nhập để xem đơn hàng và nhận ưu đãi đặc biệt</p>
+                </div>
+                <div className="mobile-auth-actions">
+                  <Link
+                    to="/dang-nhap"
+                    className="mobile-signin-btn"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    to="/dang-ky"
+                    className="mobile-signup-btn"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Đăng ký
+                  </Link>
+                </div>
+                <div className="mobile-guest-actions">
+                  <Link to="/san-pham" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
+                    <img src="/images/icons/grid.svg" alt="Products" />
+                    <span>Xem sản phẩm</span>
+                  </Link>
+                  <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
+                    <img src="/images/icons/cart.svg" alt="Cart" />
+                    <span>Giỏ hàng</span>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
     </>
   );
 };
