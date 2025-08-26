@@ -8,7 +8,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService, clearCartServiceid } from "../../services/cartService";
 import { createOrderService } from "../../services/ordersService";
-import BannerSlider from "../../components/BannerSlider";
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -113,7 +112,6 @@ const Payment: React.FC = () => {
     }));
   };
 
-
   const [orderSummary, setOrderSummary] = useState<OrderSummaryProps>({
     subtotal: 0,
     shipping: 30000,
@@ -187,9 +185,6 @@ const Payment: React.FC = () => {
     }
   }, []);
 
-
-  // console.log("Selected Items in Payment:", selectedItems);
-
   useEffect(() => {
     if (user && isAuthenticated) {
       const defaultAddress = user.address || "";
@@ -211,7 +206,6 @@ const Payment: React.FC = () => {
       setPrevEmail(defaultEmail);
     }
   }, [user, isAuthenticated]);
-
 
   useEffect(() => {
     const loadCartFromDatabase = async () => {
@@ -279,7 +273,7 @@ const Payment: React.FC = () => {
         position: "top-right",
         autoClose: 1000,
       })
-        return;
+      return;
     };
 
     if (cartItems.length === 0) {
@@ -287,14 +281,14 @@ const Payment: React.FC = () => {
         position: "top-right",
         autoClose: 1000,
       })
-        return;
+      return;
     };
     if (!agreeToTerms) {
       toast.error("Vui lòng đồng ý với điều khoản và điều kiện.", {
         position: "top-right",
         autoClose: 1000,
       })
-        return;
+      return;
     };
 
     setIsLoading(true);
@@ -343,9 +337,6 @@ const Payment: React.FC = () => {
         payload.order_email_new = formData.email.trim();
       }
 
-
-
-
       const res = await createOrderService(payload);
       localStorage.removeItem("applycode");
       if (paymentMethod === "transfer" && !res?.order_id) {
@@ -381,6 +372,201 @@ const Payment: React.FC = () => {
       setIsLoading(false);
     }
   };
+  // --- Open API v2 (đặt trong Payment) ---
+  const OPEN_API = "https://provinces.open-api.vn/api/v2/";
+  type Province = { code: number; name: string };
+  type Ward = { code: number; name: string; division_type?: string; codename?: string; province_code?: number };
+
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [wards, setWards] = useState<Ward[]>([]);
+
+  // chọn trong modal (string cho chắc)
+  const [provinceCode, setProvinceCode] = useState<string>('');
+  const [wardCode, setWardCode] = useState<string>('');
+  const [street, setStreet] = useState<string>('');
+
+  // prefill ward sau khi wards load xong
+  const [pendingWardCandidates, setPendingWardCandidates] = useState<string[]>([]);
+
+  const vnNormalize = (s?: string) =>
+    (s || "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d").replace(/Đ/g, "D")
+      .toLowerCase().trim();
+
+  const stripAdminWords = (s?: string) =>
+    (vnNormalize(s) || "")
+      .replace(/\./g, " ")
+      .replace(/\b(tinh|thanh pho|tp|quan|qh|huyen|thi xa|tx|thi tran|tt)\b/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  // mở modal -> load provinces + tách địa chỉ hiện tại để prefill
+  useEffect(() => {
+    if (!showAddressModal) return;
+
+    let abort = false;
+
+    // 2.1) Prefill "thô" ngay lập tức để input không bị trống
+    const addrStr = formData.address || "";
+    if (addrStr) {
+      const partsRough = addrStr.split(",").map(s => s.trim()).filter(Boolean);
+      // đoán thô: street = tất cả trừ 2 phần cuối (thường là ward + province)
+      const roughStreet = partsRough.length >= 3
+        ? partsRough.slice(0, -2).join(", ")
+        : partsRough[0] || "";
+      setStreet(roughStreet);
+    } else {
+      setStreet("");
+    }
+
+    // 2.2) Tải provinces, rồi prefill "chuẩn"
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p`);
+        const arr = await r.json();
+        if (abort) return;
+
+        const list: Province[] = Array.isArray(arr)
+          ? arr.map((p: any) => ({ code: p.code, name: p.name }))
+          : [];
+        setProvinces(list);
+
+        if (!addrStr) {
+          setProvinceCode('');
+          setWardCode('');
+          setWards([]);
+          return;
+        }
+
+        // tách chuẩn
+        const parts = addrStr.split(",").map(s => s.trim()).filter(Boolean);
+        if (!parts.length) {
+          setProvinceCode('');
+          setWardCode('');
+          setWards([]);
+          return;
+        }
+
+        // Tìm tỉnh theo so khớp "mềm"
+        let pFound: Province | undefined;
+        let provinceIndex = parts.length - 1;
+
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const seg = parts[i];
+          const match = list.find(p => {
+            const a = stripAdminWords(p.name);
+            const b = stripAdminWords(seg);
+            return a === b || a.includes(b) || b.includes(a);
+          });
+          if (match) {
+            pFound = match;
+            provinceIndex = i;
+            break;
+          }
+        }
+
+        const beforeProvince = parts.slice(0, provinceIndex);
+        // Lấy tối đa 3 khúc trước tỉnh để dò ward
+        const wardCandidates = beforeProvince.slice(-3);
+
+        // Street = phần còn lại trước wardCandidates
+        const streetGuess =
+          wardCandidates.length > 0
+            ? beforeProvince.slice(0, -wardCandidates.length).join(", ")
+            : beforeProvince.join(", ");
+
+        // Fallback nếu streetGuess rỗng: giữ prefill "thô" ở trên
+        if (streetGuess) setStreet(streetGuess);
+
+        if (pFound) {
+          setProvinceCode(String(pFound.code));
+          // tạm lưu candidates vào state để lát nữa match với wards khi load xong
+          setPendingWardCandidates(wardCandidates);
+        } else {
+          // Không đoán được tỉnh -> để user chọn lại nhưng vẫn giữ street
+          setProvinceCode('');
+          setWardCode('');
+          setWards([]);
+          setPendingWardCandidates([]);
+        }
+      } catch {
+        setProvinces([]);
+      }
+    })();
+
+    return () => { abort = true; };
+  }, [showAddressModal]);
+
+  useEffect(() => {
+    if (!provinceCode) { setWards([]); setWardCode(''); return; }
+
+    const ac = new AbortController();
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p/${provinceCode}?depth=2`, { signal: ac.signal });
+        const data = await r.json();
+
+        let list: Ward[] = Array.isArray(data?.wards) ? data.wards : [];
+
+        // fallback nếu thiếu
+        if ((!list || list.length === 0) && Array.isArray(data?.districts)) {
+          const wardBatches = await Promise.all(
+            data.districts.map((d: any) =>
+              fetch(`${OPEN_API}d/${d.code}`, { signal: ac.signal })
+                .then(x => x.json())
+                .catch(() => null)
+            )
+          );
+          list = wardBatches.flatMap((d: any) =>
+            Array.isArray(d?.wards) ? d.wards : []
+          );
+        }
+
+        list = list.filter(w => {
+          const t = (w.division_type || '').toLowerCase();
+          return t === 'phường' || t === 'xã' || t === 'thị trấn';
+        });
+
+        setWards(list);
+        setWardCode(''); // reset khi đổi tỉnh; ward sẽ được set lại ở bước dưới nếu có candidates
+      } catch {
+        setWards([]); setWardCode('');
+      }
+    })();
+
+    return () => ac.abort();
+  }, [provinceCode]);
+
+  useEffect(() => {
+    if (!wards.length || !pendingWardCandidates.length) return;
+
+    // Ưu tiên phần gần Tỉnh nhất (cuối mảng)
+    let found: Ward | undefined;
+    for (let i = pendingWardCandidates.length - 1; i >= 0; i--) {
+      const cand = stripAdminWords(pendingWardCandidates[i]);
+      found = wards.find(w => {
+        const wn = stripAdminWords(w.name);
+        return wn === cand || wn.includes(cand) || cand.includes(wn);
+      });
+      if (found) break;
+    }
+
+    if (found) setWardCode(String(found.code));
+    setPendingWardCandidates([]); // dọn dẹp
+  }, [wards, pendingWardCandidates]);
+
+  // Save modal -> ghép địa chỉ lại và set vào form
+  const handleSaveAddress = () => {
+    const pName = provinces.find(p => String(p.code) === provinceCode)?.name;
+    const wName = wards.find(w => String(w.code) === wardCode)?.name;
+    const combined = [street.trim(), wName, pName].filter(Boolean).join(', ');
+    setFormData(prev => ({ ...prev, address: combined }));
+
+    setShowAddressModal(false);
+  };
+
 
   return (
     <>
@@ -450,16 +636,38 @@ const Payment: React.FC = () => {
                   </div>
                   <div className="form-info">
                     <label htmlFor="address">Địa chỉ</label><br />
-                    <input type="text"
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      onBlur={(e) => validateField("adress", e.target.value)}
-                      required placeholder="Nhập địa chỉ" />
-                    {formErrors.address && <small className="text-error">{formErrors.address}  </small>}
+                    <div className="address-input-wrapper">
+                      <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        readOnly
+                        placeholder="Nhập địa chỉ"
+                        onClick={() => setShowAddressModal(true)}
+                        onBlur={(e) => validateField("address", e.target.value)}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="edit-addr-btn"
+                        aria-label="Chỉnh sửa địa chỉ"
+                        onClick={() => setShowAddressModal(true)}
+                        title="Chỉnh sửa địa chỉ"
+                      >
+                        {/* Pencil (feather-like) */}
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                          width="18" height="18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12.3 5.3l6.4 6.4M4 20l4.5-1 10.8-10.8a2 2 0 0 0 0-2.8l-1.7-1.7a2 2 0 0 0-2.8 0L4 15.2V20z" />
+                        </svg>
+                      </button>
+
+                    </div>
+                    {formErrors.address && <small className="text-error">{formErrors.address}</small>}
                   </div>
+
                 </div>
+
 
                 <div className="info-left-title-2">
                   <h5>PHƯƠNG THỨC THANH TOÁN</h5>
@@ -489,28 +697,11 @@ const Payment: React.FC = () => {
                       <span className="radio-label">Thanh toán qua ví momo</span>
                     </div>
                   </div>
-                  {/* <div className={`payment-option ${paymentMethod === 'VNpay' ? 'active' : ''}`}>
-                    <div className="method-option">
-                      <input
-                        className="input-radio"
-                        type="radio"
-                        name="paymentMethod"
-                        checked={paymentMethod === 'VNpay'}
-                        onChange={() => handlePaymentMethodChange('VNpay')}
-                      />
-                      <img src="/images/icons/vnpay.svg" alt="" width={30} height={30} />
-                      <span className="radio-label">Thanh toán qua cổng VNPay</span>
-                    </div>
-                  </div> */}
-
-
                 </div>
                 <div className="info-left-clause">
                   <input type="checkbox" id="clause" checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
                   <span>Tôi đồng ý với <Link to={`/dieu-khoan-su-dung`}>điều khoản và điều kiện</Link> của SONA SPACE</span>
                 </div>
-
-
 
               </form>
               <div className="cart-summary">
@@ -566,6 +757,64 @@ const Payment: React.FC = () => {
           <div className="spinner" />
         </div>
       )}
+
+      {showAddressModal && (
+        <div className="address-edit-overlay" onClick={() => setShowAddressModal(false)}>
+          <div className="address-edit-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="aem-header">
+              <h3>Cập nhật địa chỉ giao hàng</h3>
+              <button className="aem-close" onClick={() => setShowAddressModal(false)}>×</button>
+            </div>
+
+            <div className="aem-body">
+              <div className="form-row">
+                <label>Tỉnh/Thành phố</label>
+                <select
+                  value={provinceCode}
+                  onChange={e => setProvinceCode(e.target.value)}
+                  className="select-field"
+                >
+                  <option value="">-- Chọn Tỉnh/Thành --</option>
+                  {provinces.map(p => (
+                    <option key={p.code} value={p.code}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-row">
+                <label>Phường/Xã</label>
+                <select
+                  value={wardCode}
+                  onChange={e => setWardCode(e.target.value)}
+                  disabled={!provinceCode}
+                  className="select-field"
+                >
+                  <option value="">-- Chọn Phường/Xã --</option>
+                  {wards.map(w => (
+                    <option key={w.code} value={w.code}>{w.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-row">
+                <label>Số nhà, Tên đường</label>
+                <input
+                  type="text"
+                  value={street}
+                  onChange={e => setStreet(e.target.value)}
+                  placeholder="VD: 123 Lê Lợi"
+                />
+              </div>
+            </div>
+
+            <div className="aem-footer">
+              <button className="btn-secondary" onClick={() => setShowAddressModal(false)}>Hủy</button>
+              <button className="btn-primary" onClick={handleSaveAddress}>Lưu</button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       <Footer />
       <ToastContainer position="top-right"

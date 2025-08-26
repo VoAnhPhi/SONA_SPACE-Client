@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -17,10 +17,94 @@ const SignUp: React.FC = () => {
     handleChange,
     handleCheckboxChange,
     handleSubmit,
+    setFormData,
+    handleChangeSelect,
   } = useRegister();
+
   const { handleGoogleLogin, handleGoogleError } = useLogin();
 
   const [showModal, setShowModal] = useState(false);
+
+  type Province = { code: number; name: string };
+  type Ward = {
+    code: number; name: string;
+    division_type?: string; codename?: string; province_code?: number;
+  };
+
+  const OPEN_API = "https://provinces.open-api.vn/api/v2/";
+
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [wards, setWards] = useState<Ward[]>([]);
+
+
+  const [street, setStreet] = useState<string>('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p/`);
+        const arr = await r.json();
+        const list: Province[] = Array.isArray(arr)
+          ? arr.map((p: any) => ({ code: p.code, name: p.name }))
+          : [];
+        setProvinces(list);
+      } catch {
+        setProvinces([]);
+      }
+    })();
+  }, []);
+
+  // Khi provinceCode đổi → load lại wards + xóa wardCode
+  useEffect(() => {
+    const provinceCode = formData.provinceCode;
+    if (!provinceCode) { setWards([]); return; }
+
+    const ac = new AbortController();
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p/${provinceCode}?depth=2`, { signal: ac.signal });
+        const data = await r.json();
+
+        let list: Ward[] = Array.isArray(data?.wards) ? data.wards : [];
+
+        if ((!list || list.length === 0) && Array.isArray(data?.districts)) {
+          const wardBatches = await Promise.all(
+            data.districts.map((d: any) =>
+              fetch(`${OPEN_API}d/${d.code}`, { signal: ac.signal })
+                .then(x => x.json())
+                .catch(() => null)
+            )
+          );
+          list = wardBatches.flatMap((d: any) =>
+            Array.isArray(d?.wards) ? d.wards : []
+          );
+        }
+
+        list = list.filter(w => {
+          const t = (w.division_type || '').toLowerCase();
+          return t === 'phường' || t === 'xã' || t === 'thị trấn';
+        });
+
+        setWards(list);
+        // clear wardCode khi đổi tỉnh
+        setFormData(prev => ({ ...prev, wardCode: "" }));
+      } catch {
+        setWards([]);
+        setFormData(prev => ({ ...prev, wardCode: "" }));
+      }
+    })();
+
+    return () => ac.abort();
+  }, [formData.provinceCode, setFormData]);
+
+  // Tự ghép địa chỉ đầy đủ từ street + wardName + provinceName
+  useEffect(() => {
+    const pName = provinces.find(p => String(p.code) === formData.provinceCode)?.name;
+    const wName = wards.find(w => String(w.code) === formData.wardCode)?.name;
+    const newAddress = [street, wName, pName].filter(Boolean).join(', ');
+    setFormData(prev => (prev.address === newAddress ? prev : { ...prev, address: newAddress }));
+  }, [street, formData.provinceCode, formData.wardCode, provinces, wards, setFormData]);
+
 
   useEffect(() => {
     if (success) {
@@ -121,19 +205,52 @@ const SignUp: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <textarea
-                  id="address"
-                  name="address"
-                  placeholder="Địa chỉ"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className={errors.address ? "error" : ""}
-                  rows={3}
-                ></textarea>
-                {errors.address && (
-                  <p className="error-message">{errors.address}</p>
+                <select
+                  id="province"
+                  name="provinceCode"
+                  aria-label="Tỉnh/Thành phố"
+                  value={formData.provinceCode}
+                  onChange={handleChangeSelect}
+                  className={errors.provinceCode ? "error" : ""}
+                >
+                  <option value="">Chọn Tỉnh/Thành phố (Việt Nam)</option>
+                  {provinces.map(p => (
+                    <option key={p.code} value={p.code}>{p.name}</option>
+                  ))}
+                </select>
+                {errors.provinceCode && <p className="error-message">{errors.provinceCode}</p>}
+
+                <select
+                  id="ward"
+                  name="wardCode"
+                  aria-label="Phường/Xã"
+                  value={formData.wardCode}
+                  onChange={handleChangeSelect}
+                  disabled={!formData.provinceCode}
+                  className={errors.wardCode ? "error" : ""}
+                >
+                  <option value="">Chọn Phường/Xã</option>
+                  {wards.map(w => (
+                    <option key={w.code} value={w.code}>
+                      {w.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.wardCode && (
+                  <p className="error-message">{errors.wardCode}</p>
                 )}
+
+                <input
+                  id="address"
+                  type="text"
+                  placeholder="Số nhà, tên đường"
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                  className={errors.address ? "error" : ""}
+                />
+                {errors.address && <p className="error-message">{errors.address}</p>}
               </div>
+
 
               <div className="form-group checkbox-group">
                 <input
@@ -175,10 +292,6 @@ const SignUp: React.FC = () => {
                   }}
                 />
               </GoogleOAuthProvider>
-              {/* <button className="google-signin-btn" disabled={loading || success}>
-                <img src="/images/sign-up/Google.svg" alt="Google" />
-                <span>Google</span>
-              </button> */}
             </div>
 
             <div className="login-link">
@@ -186,9 +299,10 @@ const SignUp: React.FC = () => {
                 Đã có tài khoản? <Link to="/dang-nhap">Đăng Nhập</Link>
               </p>
             </div>
+
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
 
       {showModal && (
         <div className="custom-modal-backdrop">

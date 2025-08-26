@@ -196,7 +196,7 @@ const User: React.FC = () => {
       if (!token) return;
 
       const response = await getOrderItems(orderId, token);
-      
+
       if (response.success && response.data.items) {
         setDetailedOrderItems(prev => {
           const newMap = new Map(prev.set(orderId, response.data.items));
@@ -212,7 +212,7 @@ const User: React.FC = () => {
   const refreshOrderData = async (orderId: number) => {
     console.log(`[DEBUG] Force refreshing order data for ${orderId}`);
     await fetchDetailedOrderItems(orderId);
-    
+
     // Also refresh main orders data
     const userDataStr = sessionStorage.getItem("user");
     if (userDataStr) {
@@ -243,7 +243,7 @@ const User: React.FC = () => {
       // Gọi API thực tế với cache busting
       const cacheBuster = new Date().getTime();
       const response = await axios.get<OrdersAPIResponse>(
-        convertToAdminApiUrl(`/orders-id/${userId}?_t=${cacheBuster}`), 
+        convertToAdminApiUrl(`/orders-id/${userId}?_t=${cacheBuster}`),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -257,7 +257,7 @@ const User: React.FC = () => {
       if (response.data && response.data.orders) {
         setOrdersResponse(response.data);
         setApiOrders(response.data.orders);
-        
+
         // Fetch detailed items for each order to get individual product status
         response.data.orders.forEach(order => {
           fetchDetailedOrderItems(order.id);
@@ -282,7 +282,7 @@ const User: React.FC = () => {
 
       const res = await axios.get(convertToAdminApiUrl("/couponcodes/user-has-coupon"), {
         headers: { Authorization: `Bearer ${token}` },
-      });   
+      });
       // console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
       const now = new Date();
 
@@ -339,27 +339,27 @@ const User: React.FC = () => {
     });
   };
   // Format price with commas
-    // Get detailed product info including status
+  // Get detailed product info including status
   const getProductDetails = (orderId: number, productId: number) => {
     const orderItems = detailedOrderItems.get(orderId);
-    
+
     if (!orderItems) {
       return null;
     }
-    
+
     // Try exact product ID match first
     let foundItem = orderItems.find(item => item.product && item.product.id === productId);
-    
+
     // Try string comparison
     if (!foundItem) {
       foundItem = orderItems.find(item => item.product && String(item.product.id) === String(productId));
     }
-    
+
     // Try item_id match  
     if (!foundItem) {
       foundItem = orderItems.find(item => item.item_id === productId);
     }
-    
+
     return foundItem;
   };
 
@@ -372,11 +372,11 @@ const User: React.FC = () => {
   // Check if order has mixed product statuses (some cancelled, some active)
   const hasPartiallyProcessedOrder = (order: OrderData) => {
     if (!order.products || order.products.length <= 1) return false;
-    
+
     const productStatuses = order.products.map(product => {
       const productDetails = getProductDetails(order.id, product.id);
       let isCancelled = productDetails?.status === 'CANCELLED';
-      
+
       // Fallback checks
       if (!isCancelled && product.status) {
         isCancelled = product.status === 'CANCELLED';
@@ -384,14 +384,14 @@ const User: React.FC = () => {
       if (!isCancelled && (product.price === "0" || parseFloat(product.price) === 0)) {
         isCancelled = true;
       }
-      
+
       return isCancelled;
     });
-    
+
     // Check if we have both cancelled and non-cancelled products
     const hasCancelled = productStatuses.some(status => status === true);
     const hasActive = productStatuses.some(status => status === false);
-    
+
     return hasCancelled && hasActive;
   };
 
@@ -401,38 +401,38 @@ const User: React.FC = () => {
     if (order.status === "CANCELLED") {
       return "CANCELLED";
     }
-    
+
     // If server says RETURNED, trust that  
     if (order.status === "RETURNED" || order.status === "RETURN") {
       return order.status;
     }
-    
+
     // For other statuses, check if we have mixed products
     if (hasPartiallyProcessedOrder(order)) {
       return "PROCESSING"; // Mixed status -> show as processing
     }
-    
+
     // Check if all products are cancelled locally (fallback)
     if (areAllProductsCancelled(order)) {
       return "CANCELLED";
     }
-    
+
     return order.status;
   };
 
   // Check if all products in order are cancelled
   const areAllProductsCancelled = (order: OrderData) => {
     if (!order.products || order.products.length === 0) return false;
-    
+
     return order.products.every(product => {
       const productDetails = getProductDetails(order.id, product.id);
       let isCancelled = productDetails?.status === 'CANCELLED';
-      
+
       // Super aggressive fallback: if order is CANCELLED, assume all products are cancelled
       if (!isCancelled && order.status === 'CANCELLED') {
         isCancelled = true;
       }
-      
+
       // Apply same fallback logic as in UI
       if (!isCancelled && product.status) {
         isCancelled = product.status === 'CANCELLED';
@@ -443,7 +443,7 @@ const User: React.FC = () => {
       if (!isCancelled && product.can_cancel === false && parseFloat(product.price) === 0) {
         isCancelled = true;
       }
-      
+
       return isCancelled;
     });
   };
@@ -506,13 +506,13 @@ const User: React.FC = () => {
         break;
       case "completed":
       case "delivered":
-      case "success": 
+      case "success":
         result = "completed";
         break;
       case "failed":
         result = "failed";
         break;
-      
+
       case "cancelled":
         result = "cancelled";
         break;
@@ -588,7 +588,7 @@ const User: React.FC = () => {
             ? userInfo.address
             : userInfo.address[0],
         // Giữ nguyên mật khẩu và role
-        password: userData.password || "123123123", // Giá trị mặc định nếu không có
+        password: userData.password || "Thành phố Hồ Chí Minh",
         role: userData.role || "user",
       };
 
@@ -649,6 +649,132 @@ const User: React.FC = () => {
     newPassword: "",
     confirmPassword: "",
   });
+
+  // Open API v2
+  const OPEN_API = "https://provinces.open-api.vn/api/v2/";
+
+  type Province = { code: number; name: string };
+  type Ward = { code: number; name: string; division_type?: string; codename?: string; province_code?: number };
+
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [wards, setWards] = useState<Ward[]>([]);
+
+  // value của <select> dùng string cho chắc
+  const [provinceCode, setProvinceCode] = useState<string>('');
+  const [wardCode, setWardCode] = useState<string>('');
+
+  // ô số nhà, tên đường (chúng ta sẽ ghép với ward + province)
+  const [street, setStreet] = useState<string>('');
+  const [pendingWardName, setPendingWardName] = useState<string>("");
+  const vnNormalize = (s?: string) =>
+    (s || "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d").replace(/Đ/g, "D")
+      .toLowerCase().trim();
+
+  useEffect(() => {
+    if (!showEditModal) return;
+
+    let abort = false;
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p`);
+        const arr = await r.json();
+        if (abort) return;
+
+        const list: Province[] = Array.isArray(arr)
+          ? arr.map((p: any) => ({ code: p.code, name: p.name }))
+          : [];
+        setProvinces(list);
+
+        const addrStr = typeof userInfo.address === "string"
+          ? userInfo.address
+          : (Array.isArray(userInfo.address) && userInfo.address[0]) ? userInfo.address[0] : "";
+
+        if (addrStr) {
+          const parts = addrStr.split(",").map(s => s.trim());
+          const pNameGuess = parts[parts.length - 1] || "";
+          const wNameGuess = parts.length >= 2 ? parts[parts.length - 2] : "";
+          const streetGuess = parts.slice(0, -2).join(", ");
+
+          const pFound = list.find(p => vnNormalize(p.name) === vnNormalize(pNameGuess));
+          setStreet(streetGuess);
+
+          if (pFound) {
+            setProvinceCode(String(pFound.code));   // sẽ kích hoạt useEffect #2
+            setPendingWardName(wNameGuess);         // để lát nữa map vào wards
+          } else {
+            setProvinceCode("");
+            setWardCode("");
+            setWards([]);
+          }
+        } else {
+          setStreet("");
+          setProvinceCode("");
+          setWardCode("");
+          setWards([]);
+        }
+      } catch {
+        setProvinces([]);
+      }
+    })();
+
+    return () => { abort = true; };
+  }, [showEditModal]);
+
+
+  useEffect(() => {
+    if (!provinceCode) { setWards([]); setWardCode(''); return; }
+
+    const ac = new AbortController();
+    (async () => {
+      try {
+        const r = await fetch(`${OPEN_API}p/${provinceCode}?depth=2`, { signal: ac.signal });
+        const data = await r.json();
+
+        let list: Ward[] = Array.isArray(data?.wards) ? data.wards : [];
+        if ((!list || list.length === 0) && Array.isArray(data?.districts)) {
+          const wardBatches = await Promise.all(
+            data.districts.map((d: any) =>
+              fetch(`${OPEN_API}d/${d.code}`, { signal: ac.signal })
+                .then(x => x.json())
+                .catch(() => null)
+            )
+          );
+          list = wardBatches.flatMap((d: any) =>
+            Array.isArray(d?.wards) ? d.wards : []
+          );
+        }
+
+        list = list.filter(w => {
+          const t = (w.division_type || '').toLowerCase();
+          return t === 'phường' || t === 'xã' || t === 'thị trấn';
+        });
+
+        setWards(list);
+        // nếu user tự đổi tỉnh bằng tay, hãy xóa phường cũ:
+        setWardCode(prev => pendingWardName ? prev : '');
+      } catch {
+        setWards([]); setWardCode('');
+      }
+    })();
+
+    return () => ac.abort();
+  }, [provinceCode]);
+
+  useEffect(() => {
+    if (!pendingWardName || wards.length === 0) return;
+    const wFound = wards.find(w => vnNormalize(w.name) === vnNormalize(pendingWardName));
+    if (wFound) setWardCode(String(wFound.code));
+    setPendingWardName(""); // chỉ prefill 1 lần
+  }, [wards, pendingWardName]);
+
+  useEffect(() => {
+    const pName = provinces.find(p => String(p.code) === provinceCode)?.name;
+    const wName = wards.find(w => String(w.code) === wardCode)?.name;
+    const combined = [street, wName, pName].filter(Boolean).join(', ');
+    setUserInfo(prev => ({ ...prev, address: combined || prev.address }));
+  }, [street, provinceCode, wardCode, provinces, wards]);
 
   // Hàm xử lý đổi mật khẩu
   const handlePasswordChange = async (e: React.FormEvent) => {
@@ -748,12 +874,12 @@ const User: React.FC = () => {
       (order) => {
         const orderStatus = order.status.toUpperCase();
         const targetStatus = statusMap[activeOrderFilter];
-        
+
         // Đặc biệt xử lý cho returned - bao gồm cả RETURN và RETURNED
         if (activeOrderFilter === "returned") {
           return orderStatus === "RETURNED" || orderStatus === "RETURN";
         }
-        
+
         return orderStatus === targetStatus;
       }
     );
@@ -785,7 +911,7 @@ const User: React.FC = () => {
       }
 
       message.success("Đơn hàng đã được hủy thành công!");
-      
+
       // Đóng modal và reset state
       setShowCancelModal(false);
       setSelectedOrderId(null);
@@ -838,7 +964,7 @@ const User: React.FC = () => {
 
   // Apply promo code
   const applyPromoCode = (code: string) => {
-       toast.success(`Mã giảm giá ${code} đã được áp dụng!`);
+    toast.success(`Mã giảm giá ${code} đã được áp dụng!`);
     // Implement actual promo code application logic here
   };
 
@@ -1311,25 +1437,43 @@ const User: React.FC = () => {
 
                           <div className="form-group">
                             <label htmlFor="address">Địa chỉ</label>
+
+                            {/* Tỉnh/Thành */}
+                            <select
+                              aria-label="Tỉnh/Thành phố"
+                              value={provinceCode}
+                              onChange={(e) => setProvinceCode(e.target.value)}
+                            >
+                              <option value="">Chọn Tỉnh/Thành phố (Việt Nam)</option>
+                              {provinces.map(p => (
+                                <option key={p.code} value={String(p.code)}>{p.name}</option>
+                              ))}
+                            </select>
+
+                            {/* Phường/Xã */}
+                            <select
+                              aria-label="Phường/Xã"
+                              value={wardCode}
+                              onChange={(e) => setWardCode(e.target.value)}
+                              disabled={!provinceCode}
+                              style={{ marginTop: 10 }}
+                            >
+                              <option value="">Chọn Phường/Xã</option>
+                              {wards.map(w => (
+                                <option key={w.code} value={String(w.code)}>{w.name}</option>
+                              ))}
+                            </select>
+
+                            {/* Số nhà, tên đường */}
                             <input
                               type="text"
-                              id="address"
-                              value={
-                                typeof userInfo.address === "string"
-                                  ? userInfo.address
-                                  : userInfo.address &&
-                                    userInfo.address.length > 0
-                                    ? userInfo.address[0]
-                                    : ""
-                              }
-                              onChange={(e) =>
-                                setUserInfo({
-                                  ...userInfo,
-                                  address: e.target.value,
-                                })
-                              }
+                              placeholder="Số nhà, tên đường"
+                              value={street}
+                              onChange={(e) => setStreet(e.target.value)}
+                              style={{ marginTop: 10 }}
                             />
                           </div>
+
 
                           <div className="modal-actions">
                             <button
@@ -1450,69 +1594,69 @@ const User: React.FC = () => {
                     </button>
                   </div>
 
-               <div className="voucher-grid">
-  {getFilteredPromoCodes().map((promo, index) => {
-    const isUsedUp = Number(promo.used) === 0;
+                  <div className="voucher-grid">
+                    {getFilteredPromoCodes().map((promo, index) => {
+                      const isUsedUp = Number(promo.used) === 0;
 
-    return (
-      <div
-        className={`voucher-card ${isUsedUp ? "voucher-disabled" : ""}`}
-        key={index}
-      >
-        <div className="voucher-header">
-          <div className="voucher-discount">{promo.discount}</div>
-          <div className="voucher-type">{promo.description}</div>
-        </div>
+                      return (
+                        <div
+                          className={`voucher-card ${isUsedUp ? "voucher-disabled" : ""}`}
+                          key={index}
+                        >
+                          <div className="voucher-header">
+                            <div className="voucher-discount">{promo.discount}</div>
+                            <div className="voucher-type">{promo.description}</div>
+                          </div>
 
-        <div className="voucher-code">
-          <span>Code: {promo.code}</span>
-        </div>
+                          <div className="voucher-code">
+                            <span>Code: {promo.code}</span>
+                          </div>
 
-        {promo.isFlashSale && promo.timeRemaining && (
-          <div className="flash-sale-banner">
-            <div className="flash-icon">⚡</div>
-            <div className="flash-text">Flash sale</div>
-            <CountdownTimer
-              hours={promo.timeRemaining.hours}
-              minutes={promo.timeRemaining.minutes}
-              seconds={promo.timeRemaining.seconds}
-              onComplete={() => handleCountdownComplete(index)}
-            />
-          </div>
-        )}
+                          {promo.isFlashSale && promo.timeRemaining && (
+                            <div className="flash-sale-banner">
+                              <div className="flash-icon">⚡</div>
+                              <div className="flash-text">Flash sale</div>
+                              <CountdownTimer
+                                hours={promo.timeRemaining.hours}
+                                minutes={promo.timeRemaining.minutes}
+                                seconds={promo.timeRemaining.seconds}
+                                onComplete={() => handleCountdownComplete(index)}
+                              />
+                            </div>
+                          )}
 
-        <div className="voucher-details">
-          <ul className="voucher-info-list">
-            <li>
-              <span>
-                {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
-              </span>
-            </li>
-            <li>
-              <span>{promo.description}</span>
-            </li>
-            <li>
-              <span>Ưu đãi: Cho khách hàng</span>
-            </li>
-          </ul>
-        </div>
+                          <div className="voucher-details">
+                            <ul className="voucher-info-list">
+                              <li>
+                                <span>
+                                  {formatDateTime(promo.validFrom)} - {formatDateTime(promo.validUntil)}
+                                </span>
+                              </li>
+                              <li>
+                                <span>{promo.description}</span>
+                              </li>
+                              <li>
+                                <span>Ưu đãi: Cho khách hàng</span>
+                              </li>
+                            </ul>
+                          </div>
 
-        <div className="voucher-actions">
-          <button
-            className="btn-copy"
-            onClick={() => {
-              if (!isUsedUp) copyToClipboard(promo.code);
-            }}
-            disabled={isUsedUp}
-          >
-            <img src="/images/icons/content_copy.svg" alt="" />
-            <span>{isUsedUp ? "Hết lượt sử dụng" : "Copy"}</span>
-          </button>
-        </div>
-      </div>
-    );
-  })}
-</div>
+                          <div className="voucher-actions">
+                            <button
+                              className="btn-copy"
+                              onClick={() => {
+                                if (!isUsedUp) copyToClipboard(promo.code);
+                              }}
+                              disabled={isUsedUp}
+                            >
+                              <img src="/images/icons/content_copy.svg" alt="" />
+                              <span>{isUsedUp ? "Hết lượt sử dụng" : "Copy"}</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
 
                 </div>
               )}
@@ -1597,177 +1741,177 @@ const User: React.FC = () => {
 
                           {order.products && order.products.map((product, itemIndex) => {
                             const productDetails = getProductDetails(order.id, product.id);
-                            
+
                             let isCancelled = productDetails?.status === 'CANCELLED';
-                            
+
                             // SUPER AGGRESSIVE FALLBACK: If order is CANCELLED, assume all products are cancelled
                             if (!isCancelled && order.status === 'CANCELLED') {
                               isCancelled = true;
                             }
-                            
+
                             // Fallback: check if product has status field
                             if (!isCancelled && product.status) {
                               isCancelled = product.status === 'CANCELLED';
                             }
-                            
+
                             // Another fallback: if price is "0" it might be cancelled
                             if (!isCancelled && (product.price === "0" || parseFloat(product.price) === 0)) {
                               isCancelled = true;
                             }
-                            
+
                             // Additional fallback: check for can_cancel = false (might indicate already cancelled)
                             if (!isCancelled && product.can_cancel === false && parseFloat(product.price) === 0) {
                               isCancelled = true;
                             }
-                            
-                            return (
-                            <div className="order-content" key={`item-${itemIndex}`}>
-                              <div className="product-image">
-                                <img
-                                  src={getFirstImageUrl(product.image)}
-                                  alt={product.name}
-                                  style={{ 
-                                    opacity: isCancelled ? 0.6 : 1,
-                                    filter: isCancelled ? 'grayscale(50%)' : 'none'
-                                  }}
-                                />
-                              </div>
 
-                              <div className="product-details">
-                                <h4 style={{ 
-                                  textDecoration: isCancelled ? 'line-through' : 'none',
-                                  color: isCancelled ? '#999' : 'inherit'
-                                }}>
-                                  {product.name}
-                                  {isCancelled && <span style={{ color: '#ff4757', marginLeft: '10px', fontSize: '14px' }}>(Đã hủy)</span>}
-                                </h4>
-                                <p className="product-category">{product.category}</p>
-                                <div className="product-price">
-                                  {isCancelled ? (
-                                    <span style={{ color: '#ff4757', fontWeight: 'bold' }}>
-                                      Đã hủy
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      Thành tiền: {formatPrice(parseFloat(product.price) * product.quantity)}
-                                    </span>
-                                  )}
+                            return (
+                              <div className="order-content" key={`item-${itemIndex}`}>
+                                <div className="product-image">
+                                  <img
+                                    src={getFirstImageUrl(product.image)}
+                                    alt={product.name}
+                                    style={{
+                                      opacity: isCancelled ? 0.6 : 1,
+                                      filter: isCancelled ? 'grayscale(50%)' : 'none'
+                                    }}
+                                  />
                                 </div>
-                                <div className="product-meta">
-                                  {product.color && (
+
+                                <div className="product-details">
+                                  <h4 style={{
+                                    textDecoration: isCancelled ? 'line-through' : 'none',
+                                    color: isCancelled ? '#999' : 'inherit'
+                                  }}>
+                                    {product.name}
+                                    {isCancelled && <span style={{ color: '#ff4757', marginLeft: '10px', fontSize: '14px' }}>(Đã hủy)</span>}
+                                  </h4>
+                                  <p className="product-category">{product.category}</p>
+                                  <div className="product-price">
+                                    {isCancelled ? (
+                                      <span style={{ color: '#ff4757', fontWeight: 'bold' }}>
+                                        Đã hủy
+                                      </span>
+                                    ) : (
+                                      <span>
+                                        Thành tiền: {formatPrice(parseFloat(product.price) * product.quantity)}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="product-meta">
+                                    {product.color && (
+                                      <div className="meta-item">
+                                        <span>Màu: {product.color.name}</span>
+                                        <span
+                                          className="color-dot"
+                                          style={{ backgroundColor: product.color.hex }}
+                                        ></span>
+                                      </div>
+                                    )}
                                     <div className="meta-item">
-                                      <span>Màu: {product.color.name}</span>
-                                      <span
-                                        className="color-dot"
-                                        style={{ backgroundColor: product.color.hex }}
-                                      ></span>
+                                      <span>Số lượng: {product.quantity}</span>
                                     </div>
-                                  )}
-                                  <div className="meta-item">
-                                    <span>Số lượng: {product.quantity}</span>
+                                  </div>
+                                  <div className="product-link">
+                                    <Link to={`/san-pham/${product.slug}`}>Xem sản phẩm</Link>
                                   </div>
                                 </div>
-                                <div className="product-link">
-                                  <Link to={`/san-pham/${product.slug}`}>Xem sản phẩm</Link>
+
+                                <div className="order-info">
+                                  <h4>Thông tin:</h4>
+                                  <div className="info-item">
+                                    <span className="value">
+                                      {order.recipientName}
+                                    </span>
+                                  </div>
+                                  <div className="info-item">
+                                    <span className="value">
+                                      {order.recipientPhone}
+                                    </span>
+                                  </div>
+                                  <div className="info-item">
+                                    <span className="value">
+                                      {order.address}
+                                    </span>
+                                  </div>
+
+                                  <div className="order-actions">
+                                    {order.status === "PENDING" && !isCancelled && (
+                                      <>
+                                        <button
+                                          className="btn-cancel-order"
+                                          onClick={() => handleCancelOrderClick(order.id, order.order_hash)}
+                                          disabled={isCancelling}
+                                        >
+                                          {isCancelling ? "Đang xử lý..." : "Hủy đơn hàng"}
+                                        </button>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {order.status === "PENDING" && isCancelled && (
+                                      <>
+                                        <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
+                                          Mua lại
+                                        </Link>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {order.status === "CONFIRMED" && (
+                                      <>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {order.status === "SHIPPING" && (
+                                      <>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {order.status === "SUCCESS" && (
+                                      <>
+                                        <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
+                                          Mua lại
+                                        </Link>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {order.status === "CANCELLED" && (
+                                      <>
+                                        <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
+                                          Mua lại
+                                        </Link>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+
+                                    {(order.status === "RETURNED" || order.status === "RETURN") && (
+                                      <>
+                                        <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
+                                          Mua lại
+                                        </Link>
+                                        <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
+                                          Xem chi tiết
+                                        </Link>
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-
-                              <div className="order-info">
-                                <h4>Thông tin:</h4>
-                                <div className="info-item">
-                                  <span className="value">
-                                    {order.recipientName}
-                                  </span>
-                                </div>
-                                <div className="info-item">
-                                  <span className="value">
-                                    {order.recipientPhone}
-                                  </span>
-                                </div>
-                                <div className="info-item">
-                                  <span className="value">
-                                    {order.address}
-                                  </span>
-                                </div>
-
-                                <div className="order-actions">
-                                  {order.status === "PENDING" && !isCancelled && (
-                                    <>
-                                      <button
-                                        className="btn-cancel-order"
-                                        onClick={() => handleCancelOrderClick(order.id, order.order_hash)}
-                                        disabled={isCancelling}
-                                      >
-                                        {isCancelling ? "Đang xử lý..." : "Hủy đơn hàng"}
-                                      </button>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {order.status === "PENDING" && isCancelled && (
-                                    <>
-                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
-                                        Mua lại
-                                      </Link>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {order.status === "CONFIRMED" && (
-                                    <>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {order.status === "SHIPPING" && (
-                                    <>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {order.status === "SUCCESS" && (
-                                    <>
-                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
-                                        Mua lại
-                                      </Link>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {order.status === "CANCELLED" && (
-                                    <>
-                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
-                                        Mua lại
-                                      </Link>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-
-                                  {(order.status === "RETURNED" || order.status === "RETURN") && (
-                                    <>
-                                      <Link to={`/san-pham/${product.slug}`} className="btn-action-primary">
-                                        Mua lại
-                                      </Link>
-                                      <Link to={`/chi-tiet-don-hang/${order.order_hash}`} className="btn-view-details">
-                                        Xem chi tiết
-                                      </Link>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
                             );
                           })}
                         </div>

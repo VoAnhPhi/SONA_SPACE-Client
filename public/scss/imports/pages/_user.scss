@@ -21,7 +21,7 @@
       margin-bottom: 15px;
 
       h3 {
-        font-family: 'M-SB', sans-serif;
+        font-family: "M-SB", sans-serif;
         font-size: 18px;
         color: #333;
       }
@@ -41,7 +41,7 @@
           -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
           color: $dark-cl;
           background-color: $white-cl;
-          font-family: 'M-SB', sans-serif;
+          font-family: "M-SB", sans-serif;
 
           i {
             color: $dark-cl;
@@ -57,12 +57,11 @@
           background: none;
           border: none;
           text-align: left;
-          font-family: 'M-R', sans-serif;
+          font-family: "M-R", sans-serif;
           font-size: 14px;
           color: #666;
           cursor: pointer;
           transition: all 0.3s ease;
-
 
           i {
             margin-right: 10px;
@@ -180,10 +179,10 @@
                 background-color: #ff4625;
                 color: #fff;
               }
-                &.confirmed {
-                  background-color: #4a90e2;
-                  color: #fff;
-                }
+              &.confirmed {
+                background-color: #4a90e2;
+                color: #fff;
+              }
               &.cancelled {
                 background-color: #de4437;
                 color: #fff;
@@ -363,8 +362,6 @@
                   }
                 }
               }
-
-
             }
           }
         }
@@ -405,7 +402,7 @@
               .value {
                 font-size: 13px;
                 color: #333;
-                font-family: 'M-M', sans-serif;
+                font-family: "M-M", sans-serif;
               }
             }
 
@@ -704,26 +701,25 @@
               padding: 10px;
               width: 130px;
               border-radius: 4px;
-              font-family: 'M-M', sans-serif;
+              font-family: "M-M", sans-serif;
               font-size: 13px;
               cursor: pointer;
               transition: all 0.3s ease;
 
               &.btn-primary {
-                background-color: #F5A623;
+                background-color: #f5a623;
                 color: #fff;
                 border: none;
 
                 &:hover {
-                  background-color: darken(#F5A623, 10%);
+                  background-color: darken(#f5a623, 10%);
                 }
               }
-
 
               &.btn-outline {
                 background-color: transparent;
                 color: $yellow-cl;
-                border: 1px solid #F5A623;
+                border: 1px solid #f5a623;
 
                 &:hover {
                   background-color: $yellow-cl;
@@ -836,7 +832,7 @@
         button {
           padding: 10px 20px;
           border-radius: 4px;
-          font-family: 'Be-M', sans-serif;
+          font-family: "Be-M", sans-serif;
           font-size: 14px;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -845,17 +841,17 @@
 
       .btn-primary {
         padding: 10px 20px;
-        background-color: #F5A623;
+        background-color: #f5a623;
         color: #fff;
         border: none;
         border-radius: 4px;
-        font-family: 'Be-M', sans-serif;
+        font-family: "Be-M", sans-serif;
         font-size: 14px;
         cursor: pointer;
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: darken(#F5A623, 5%);
+          background-color: darken(#f5a623, 5%);
         }
       }
 
@@ -865,7 +861,7 @@
         color: #333;
         border: 1px solid #ddd;
         border-radius: 4px;
-        font-family: 'Be-M', sans-serif;
+        font-family: "Be-M", sans-serif;
         font-size: 14px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -928,7 +924,7 @@
             padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Be-R', sans-serif;
+            font-family: "Be-R";
             font-size: 14px;
             color: #333;
 
@@ -936,6 +932,54 @@
               outline: none;
               border-color: $yellow-cl;
             }
+          }
+          select {
+            width: 100%;
+            padding: 12px 44px 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            font-family: "Be-R";
+            font-size: 14px;
+            color: #000;
+            transition: border-color 0.3s ease, box-shadow 0.2s ease;
+
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+
+            &:focus {
+              outline: none;
+              border-color: #999;
+              box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+            }
+            &:disabled {
+              background-color: #f9f9f9;
+              border-color: #eee;
+              color: #999;
+              cursor: not-allowed;
+            }
+          }
+
+          /* spacing giữa các control địa chỉ */
+          select + select,
+          select + input[type="text"] {
+            margin-top: 20px;
+          }
+
+          select::-ms-expand {
+            display: none;
+          }
+          select:required:invalid {
+            color: #999;
+          }
+          select option[value=""] {
+            color: #999;
           }
         }
       }
@@ -966,7 +1010,7 @@
             background-color: #f9f9f9;
             border-radius: 4px;
             border: 1px solid #eee;
-            font-family: 'Be-R', sans-serif;
+            font-family: "Be-R", sans-serif;
             font-size: 16px;
             color: #333;
 
@@ -1005,7 +1049,7 @@
         button {
           padding: 12px 30px;
           border-radius: 4px;
-          font-family: 'Be-M', sans-serif;
+          font-family: "Be-M", sans-serif;
           font-size: 14px;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -1023,12 +1067,12 @@
         }
 
         .btn-primary {
-          background-color: #F5A623;
+          background-color: #f5a623;
           color: #fff;
           border: none;
 
           &:hover {
-            background-color: darken(#F5A623, 5%);
+            background-color: darken(#f5a623, 5%);
           }
         }
       }
@@ -1048,7 +1092,7 @@
 
           .address-content {
             h4 {
-              font-family: 'M-SB', sans-serif;
+              font-family: "M-SB", sans-serif;
               font-size: 15px;
               color: #333;
               margin-bottom: 5px;
@@ -1068,7 +1112,7 @@
             .btn-link {
               background: none;
               border: none;
-              color: #F5A623;
+              color: #f5a623;
               font-size: 13px;
               cursor: pointer;
               padding: 0;
@@ -1092,8 +1136,8 @@
           border-radius: 8px;
           width: 100%;
           padding: 15px;
-          color: #F5A623;
-          font-family: 'M-M', sans-serif;
+          color: #f5a623;
+          font-family: "M-M", sans-serif;
           font-size: 14px;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -1134,7 +1178,7 @@
           padding: 10px 20px;
           background: none;
           border: none;
-          font-family: 'Be-M', sans-serif;
+          font-family: "Be-M", sans-serif;
           font-size: 14px;
           color: #666;
           cursor: pointer;
@@ -1142,7 +1186,7 @@
           white-space: nowrap;
 
           &:after {
-            content: '';
+            content: "";
             position: absolute;
             bottom: -1px;
             left: 0;
@@ -1180,7 +1224,7 @@
           align-items: center;
 
           &::before {
-            content: '';
+            content: "";
             display: inline-block;
             width: 4px;
             height: 18px;
@@ -1243,7 +1287,7 @@
           display: flex;
           align-items: center;
           padding: 10px 15px;
-          background-color: #FFF3E0;
+          background-color: #fff3e0;
           border-bottom: 1px solid #eee;
 
           .flash-icon {
@@ -1313,7 +1357,7 @@
               @include text(13px, Be-R, 18px, #666, null);
 
               &:before {
-                content: '•';
+                content: "•";
                 position: absolute;
                 left: 0;
                 color: #999;
@@ -1380,18 +1424,18 @@
       .btn-primary {
         display: inline-block;
         padding: 10px 20px;
-        background-color: #F5A623;
+        background-color: #f5a623;
         color: #fff;
         border: none;
         border-radius: 4px;
-        font-family: 'M-M', sans-serif;
+        font-family: "M-M", sans-serif;
         font-size: 14px;
         cursor: pointer;
         text-decoration: none;
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: darken(#F5A623, 10%);
+          background-color: darken(#f5a623, 10%);
         }
       }
     }
@@ -1410,14 +1454,14 @@
         padding-left: 30px;
 
         &:before {
-          content: '';
+          content: "";
           position: absolute;
           left: 0;
           top: 50%;
           transform: translateY(-50%);
           width: 20px;
           height: 20px;
-          border: 2px solid #F5A623;
+          border: 2px solid #f5a623;
           border-top-color: transparent;
           border-radius: 50%;
           animation: spin 1s linear infinite;
@@ -1449,7 +1493,7 @@
         padding-left: 30px;
 
         &:before {
-          content: '!';
+          content: "!";
           position: absolute;
           left: 0;
           top: 50%;
@@ -1493,7 +1537,7 @@
           padding: 10px 20px;
           background: none;
           border: none;
-          font-family: 'Be-M', sans-serif;
+          font-family: "Be-M", sans-serif;
           font-size: 14px;
           color: #666;
           cursor: pointer;
@@ -1501,7 +1545,7 @@
           white-space: nowrap;
 
           &:after {
-            content: '';
+            content: "";
             position: absolute;
             bottom: -1px;
             left: 0;
@@ -1745,7 +1789,7 @@
                 transition: all 0.3s ease;
                 text-align: center;
                 width: 50%;
-                background-color: #F0A00A;
+                background-color: #f0a00a;
                 color: #fff;
                 border: none;
 
@@ -1782,8 +1826,6 @@
                     background-color: #fff5f5;
                   }
                 }
-
-
 
                 &.btn-review {
                   background-color: #fff;
@@ -1853,7 +1895,7 @@
         }
 
         h3 {
-          font-family: 'M-SB', sans-serif;
+          font-family: "M-SB", sans-serif;
           font-size: 18px;
           color: #333;
           margin-bottom: 8px;
@@ -1880,6 +1922,5 @@
 }
 
 .voucher-disabled .btn-copy span {
-  color: #F0A00A; /* tuỳ chọn: để nổi bật dòng "Hết lượt sử dụng" */
+  color: #f0a00a; /* tuỳ chọn: để nổi bật dòng "Hết lượt sử dụng" */
 }
-

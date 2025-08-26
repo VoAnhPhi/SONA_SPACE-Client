@@ -20,16 +20,16 @@
     padding: 40px;
 
     h1 {
-      font-family: 'M-B', sans-serif;
+      font-family: "M-B", sans-serif;
       font-size: 3.2rem;
       color: #000000;
       margin-bottom: 15px;
     }
 
     .signup-description {
-      font-family: 'BE-R', sans-serif;
+      font-family: "BE-R", sans-serif;
       font-size: 1.6rem;
-      color: #8C8A8A;
+      color: #8c8a8a;
       margin-bottom: 30px;
     }
   }
@@ -50,7 +50,7 @@
         padding: 12px 15px;
         border: 1px solid #ddd;
         border-radius: 6px;
-        font-family: 'Be-R', sans-serif;
+        font-family: "Be-R", sans-serif;
         font-size: 1.6rem;
         color: #000000;
         transition: border-color 0.3s ease;
@@ -69,11 +69,69 @@
         }
       }
 
+      select {
+        width: 100%;
+        padding: 12px 44px 12px 15px; /* chừa chỗ cho mũi tên bên phải */
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: #fff;
+        font-family: "Be-R", sans-serif;
+        font-size: 1.6rem;
+        color: #000000;
+        transition: border-color 0.3s ease, box-shadow 0.2s ease;
+
+        /* Ẩn dropdown gốc của trình duyệt & dùng mũi tên custom */
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px;
+
+        &:focus {
+          outline: none;
+          border-color: #999;
+          box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        &.error {
+          border-color: #ff3b30;
+        }
+
+        &:disabled {
+          background-color: #f9f9f9;
+          border-color: #eee;
+          color: #999;
+          cursor: not-allowed;
+        }
+      }
+
+      /* Khoảng cách giữa các control địa chỉ nếu đặt liên tiếp */
+      select + select,
+      select + input[type="text"] {
+        margin-top: 20px;
+      }
+
+      /* Style “placeholder” cho option rỗng nếu bạn dùng value="" */
+      select:required:invalid {
+        color: #999;
+      }
+      select option[value=""] {
+        color: #999;
+      }
+
+      /* Ẩn mũi tên IE/Edge cũ (không ảnh hưởng trình duyệt hiện đại) */
+      select::-ms-expand {
+        display: none;
+      }
+
       .error-message {
         color: #ff3b30;
         font-size: 1.6rem;
         margin-top: 5px;
-        font-family: 'Be-R', sans-serif;
+        font-family: "Be-R", sans-serif;
       }
 
       &.checkbox-group {
@@ -89,13 +147,13 @@
         }
 
         label {
-          font-family: 'Be-R', sans-serif;
+          font-family: "Be-R", sans-serif;
           font-size: 1.6rem;
-          color: #092C4C;
+          color: #092c4c;
           text-align: left;
 
           a {
-            color: #092C4C;
+            color: #092c4c;
 
             text-decoration: underline;
             /* luôn có gạch chân */
@@ -114,18 +172,18 @@
       width: 100%;
       max-width: 561px;
       padding: 12px 24px;
-      background-color: #F5A623;
+      background-color: #f5a623;
       color: #fff;
       border: none;
       border-radius: 4px;
-      font-family: 'Be-B', sans-serif;
+      font-family: "Be-B", sans-serif;
       font-size: 1.8rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
       text-align: center;
 
       &:hover {
-        background-color: darken(#F5A623, 10%);
+        background-color: darken(#f5a623, 10%);
       }
     }
   }
@@ -135,25 +193,26 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+    margin-bottom: 30px;
+
     /* Căn giữa theo chiều ngang */
     .divider {
       position: relative;
       text-align: center;
       margin-bottom: 20px;
-      color: #092C4C;
-      font-family: 'M-SB', sans-serif;
+      color: #092c4c;
+      font-family: "M-SB", sans-serif;
       font-size: 16px;
 
       &:before {
-        content: '';
+        content: "";
         position: absolute;
         top: 50%;
         left: 0;
         right: 0;
         height: 0;
         /* đổi height thành 0 vì dùng border */
-        border-bottom: 1px dashed #8C8A8A;
+        border-bottom: 1px dashed #8c8a8a;
         /* nét đứt ngang */
 
         z-index: 1;
@@ -178,10 +237,10 @@
       max-width: 230px;
       padding: 12px 24px;
       background-color: #fff;
-      color: #919EAB;
+      color: #919eab;
       border: 1px solid #ddd;
       border-radius: 4px;
-      font-family: 'Be-R', sans-serif;
+      font-family: "Be-R", sans-serif;
       font-size: 1.8rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
@@ -201,14 +260,13 @@
 
   .login-link {
     p {
-      font-family: 'Be-R', sans-serif;
+      font-family: "Be-R", sans-serif;
       font-size: 1.6rem;
-      color: #092C4C;
+      color: #092c4c;
 
       a {
-        color: #092C4C;
+        color: #092c4c;
         text-decoration: underline;
-
 
         &:hover {
           color: $yellow-cl;
@@ -248,7 +306,6 @@
   //   padding-right: 24px;
   // }
 
-
   // Responsive styles
   @media (max-width: 768px) {
     padding: 40px 0px;
@@ -277,15 +334,13 @@
       margin-top: 50px;
     }
   }
-
-
 }
 
 .custom-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  font-family: 'Be-R', sans-serif;
+  font-family: "Be-R", sans-serif;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
@@ -336,7 +391,7 @@
 .modal-header h2 {
   font-size: 24px;
   font-weight: 700;
-  font-family: 'Be-R', sans-serif;
+  font-family: "Be-R", sans-serif;
   color: #1f2937;
   margin: 0;
   line-height: 1.3;
@@ -438,7 +493,7 @@
   display: block;
   width: 100%;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #F5A623, #e09100);
+  background: linear-gradient(135deg, #f5a623, #e09100);
   color: white;
   border: none;
   border-radius: 8px;

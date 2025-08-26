@@ -24,6 +24,8 @@ export const useRegister = () => {
     confirmPassword: "",
     address: "",
     agreeToTerms: false,
+    provinceCode: "",
+    wardCode: "",
   });
 
   // Xử lý thay đổi input
@@ -69,6 +71,21 @@ export const useRegister = () => {
     return Object.keys(validationErrors).length === 0;
   };
 
+  // sử lý select
+  const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors({
+        ...errors,
+        [name]: undefined,
+      });
+    }
+  };
+
   // Xử lý submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,5 +129,6 @@ export const useRegister = () => {
     handleCheckboxChange,
     handleSubmit,
     validateForm,
+    handleChangeSelect,
   };
 };

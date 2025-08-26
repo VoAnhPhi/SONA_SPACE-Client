@@ -483,8 +483,8 @@ const ContactFormDesign: React.FC = () => {
                 />
                 <div className="checkbox-text">
                   Tôi đồng ý với
-                  <a href="/dieu-khoan" target="_blank" rel="noopener noreferrer">Điều khoản dịch vụ</a> &nbsp;và&nbsp;
-                  <a href="/chinh-sach" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
+                  <a href="/dieu-khoan-su-dung" target="_blank" rel="noopener noreferrer">Điều khoản dịch vụ</a> &nbsp;và&nbsp;
+                  <a href="/chinh-sach-bao-mat" target="_blank" rel="noopener noreferrer">Chính sách bảo mật</a>
                 </div>
               </div>
               {errors.agreeToTerms && <p className="error-message">{errors.agreeToTerms}</p>}

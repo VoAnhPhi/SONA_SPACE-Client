@@ -9,6 +9,8 @@ export interface RegisterFormData {
   confirmPassword: string;
   address: string;
   agreeToTerms: boolean;
+  provinceCode: string;
+  wardCode: string;
 }
 
 export interface ValidationErrors {
@@ -19,6 +21,8 @@ export interface ValidationErrors {
   confirmPassword?: string;
   address?: string;
   agreeToTerms?: string;
+  provinceCode?: string;
+  wardCode?: string;
 }
 
 export const validateRegisterForm = (data: RegisterFormData): ValidationErrors => {
@@ -59,11 +63,19 @@ export const validateRegisterForm = (data: RegisterFormData): ValidationErrors =
     errors.confirmPassword = 'Mật khẩu xác nhận không khớp';
   }
 
+  if (!data.provinceCode) {
+    errors.provinceCode = 'Tỉnh/Thành phố không được để trống';
+  }
+
+  if (!data.wardCode) {
+    errors.wardCode = 'Phường/Xã không được để trống';
+  }
+
   // Validate address
   if (!data.address.trim()) {
     errors.address = 'Địa chỉ không được để trống';
   } else if (data.address.trim().length < 10) {
-    errors.address = 'Địa chỉ phải có ít nhất 10 ký tự';
+    errors.address = 'Địa chỉ phải có ít nhất 20 ký tự';
   }
 
   // Validate terms agreement
