@@ -130,51 +130,51 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({ isOpen, onClose }) =>
     }
   };
 
-const handleAddToCart = async (variantId: number) => {
-  try {
-    const token = sessionStorage.getItem("authToken");
-    if (!token) {
-      toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng.", {
-        position: "top-right",
-        autoClose: 1500,
-      });
-      return;
-    }
-
-    const response = await saveToOrCart({
-      status: 0,
-      cartItems: [
-        {
-          variant_id: Number(variantId),
-          quantity: 1,
-        },
-      ],
-    });
-
-    if (response.success) {
-      toast.success("Đã thêm vào giỏ hàng!", {
-        position: "top-right",
-        autoClose: 1000,
-      });
-
-      if (miniCartRef.current) {
-        miniCartRef.current.notifyCartChanged();
-        miniCartRef.current.toggleMiniCart();
+  const handleAddToCart = async (variantId: number) => {
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) {
+        toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng.", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+        return;
       }
-    } else {
-      toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message, {
+
+      const response = await saveToOrCart({
+        status: 0,
+        cartItems: [
+          {
+            variant_id: Number(variantId),
+            quantity: 1,
+          },
+        ],
+      });
+
+      if (response.success) {
+        toast.success("Đã thêm vào giỏ hàng!", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+
+        if (miniCartRef.current) {
+          miniCartRef.current.notifyCartChanged();
+          miniCartRef.current.toggleMiniCart();
+        }
+      } else {
+        toast.error("Lỗi khi thêm vào giỏ hàng: " + response.message, {
+          position: "top-right",
+          autoClose: 1500,
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      toast.error("Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.", {
         position: "top-right",
         autoClose: 1500,
       });
     }
-  } catch (error) {
-    console.error("Lỗi khi thêm vào giỏ hàng:", error);
-    toast.error("Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.", {
-      position: "top-right",
-      autoClose: 1500,
-    });
-  }
-};
+  };
 
 
 
@@ -286,7 +286,7 @@ const handleAddToCart = async (variantId: number) => {
                         {item.product_name || productNames[item.product_id] || `Sản phẩm #${item.product_id}`}
                       </Link>
                       <div className="wishlist-item-price">
-                        {item.price_sale ? (
+                        {Number(item.price_sale) > 0 && Number(item.price_sale) < Number(item.price) ? (
                           <>
                             <span className="sale-price">{formatPrice(item.price_sale)}</span>
                             <span className="original-price">{formatPrice(item.price)}</span>
