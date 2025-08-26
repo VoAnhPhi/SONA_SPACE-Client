@@ -18,7 +18,7 @@ const TYPING_LAG_MS = 800;          // Gợi ý 600–1200
 const KEEPALIVE_GRACE_MS = 2500;    // Gợi ý 2000–3500s
 
 type Message = {
-      id?: string;      
+      id?: string;
       sender: "user" | "bot";
       text: string;
       image?: string;
@@ -85,7 +85,7 @@ export default function ChatBot() {
             const handleResize = () => {
                   const newIsDesktop = window.innerWidth >= 1024;
                   setIsDesktop(newIsDesktop);
-                  
+
                   // Reset minimize state khi chuyển sang tablet/mobile
                   if (!newIsDesktop && minimized) {
                         setMinimized(false);
@@ -101,45 +101,29 @@ export default function ChatBot() {
             const handleClickOutside = (event: MouseEvent) => {
                   // Không đóng chat nếu đang minimize (chỉ trên desktop)
                   if (isDesktop && minimized) return;
-                  
+
                   // Không đóng chat nếu bot đang typing hoặc user đang nhập
                   if (botTyping || input.trim()) return;
 
-                  if (open && chatWidgetRef.current && !chatWidgetRef.current.contains(event.target as Node)) {
-                        setOpen(false);
-                        setMinimized(false);
-                  }
-            };
-
-            const handleScroll = (event: Event) => {
-                  // Không đóng chat nếu đang minimize (chỉ trên desktop)  
-                  if (isDesktop && minimized) return;
-                  
-                  // Không đóng chat nếu bot đang typing hoặc user đang nhập
-                  if (botTyping || input.trim()) return;
-
-                  // Chỉ đóng chat nếu scroll không phải từ chat widget
-                  if (chatWidgetRef.current && event.target) {
-                        const isScrollInsideChat = chatWidgetRef.current.contains(event.target as Node);
-                        if (isScrollInsideChat) return;
-                  }
-
-                  if (open) {
+                  if (
+                        open &&
+                        chatWidgetRef.current &&
+                        !chatWidgetRef.current.contains(event.target as Node)
+                  ) {
                         setOpen(false);
                         setMinimized(false);
                   }
             };
 
             if (open) {
-                  document.addEventListener('mousedown', handleClickOutside);
-                  window.addEventListener('scroll', handleScroll, true); // true để capture scroll events từ tất cả elements
+                  document.addEventListener("mousedown", handleClickOutside);
             }
 
             return () => {
-                  document.removeEventListener('mousedown', handleClickOutside);
-                  window.removeEventListener('scroll', handleScroll, true);
+                  document.removeEventListener("mousedown", handleClickOutside);
             };
       }, [open, isDesktop, minimized, botTyping, input]);
+
 
       const sendingRef = useRef(false);
 
@@ -394,8 +378,8 @@ export default function ChatBot() {
 
       return (
             <div className="chat-widget" ref={chatWidgetRef}>
-                  <button 
-                        className={`chat-bubble ${open ? "hidden" : ""}`} 
+                  <button
+                        className={`chat-bubble ${open ? "hidden" : ""}`}
                         onClick={() => setOpen(true)}
                   >
                         <img src={botAvatar} alt="Bot" />
@@ -406,137 +390,137 @@ export default function ChatBot() {
                         style={isDesktop && minimized ? { height: "60px", overflow: "hidden" } : {}}
                         title={!(isDesktop && minimized) ? "Chat sẽ tự đóng khi bạn scroll hoặc click ra ngoài" : ""}
                   >
-                              <div
-                                    className="chat-header"
-                                    onClick={isDesktop && minimized ? () => setMinimized(false) : undefined}
-                                    style={isDesktop && minimized ? { cursor: "pointer" } : {}}
-                                    title={isDesktop && minimized ? "Click để mở rộng" : ""}
-                              >
-                                    <span>Sona Space</span>
-                                    <div className="header-buttons">
-                                          {isDesktop && (
-                                                <button
-                                                      onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setMinimized(!minimized);
-                                                      }}
-                                                      title={minimized ? "Mở rộng" : "Thu nhỏ"}
-                                                      className="minimize-btn"
-                                                >
-                                                      {minimized ? (
-                                                            <i className="fa-solid fa-window-maximize"></i>
-                                                      ) : (
-                                                            <i className="fa-solid fa-window-minimize"></i>
-                                                      )}
-                                                </button>
-                                          )}
+                        <div
+                              className="chat-header"
+                              onClick={isDesktop && minimized ? () => setMinimized(false) : undefined}
+                              style={isDesktop && minimized ? { cursor: "pointer" } : {}}
+                              title={isDesktop && minimized ? "Click để mở rộng" : ""}
+                        >
+                              <span>Sona Space</span>
+                              <div className="header-buttons">
+                                    {isDesktop && (
                                           <button
                                                 onClick={(e) => {
                                                       e.stopPropagation();
-                                                      setOpen(false);
+                                                      setMinimized(!minimized);
                                                 }}
-                                                title="Đóng"
-                                                className="close-btn"
+                                                title={minimized ? "Mở rộng" : "Thu nhỏ"}
+                                                className="minimize-btn"
                                           >
-                                                ×
+                                                {minimized ? (
+                                                      <i className="fa-solid fa-window-maximize"></i>
+                                                ) : (
+                                                      <i className="fa-solid fa-window-minimize"></i>
+                                                )}
                                           </button>
-                                    </div>
+                                    )}
+                                    <button
+                                          onClick={(e) => {
+                                                e.stopPropagation();
+                                                setOpen(false);
+                                          }}
+                                          title="Đóng"
+                                          className="close-btn"
+                                    >
+                                          ×
+                                    </button>
                               </div>
-
-                              {!(isDesktop && minimized) && (
-                                    <>
-                                          <div 
-                                                className="chat-body" 
-                                                ref={chatBodyRef}
-                                                onScroll={(e) => e.stopPropagation()}
-                                          >
-                                                {messages.map((msg, i) => (
-                                                      <div
-                                                            key={msg.id || i}
-                                                            className={`chat-message ${msg.sender === "user" ? "right" : "left"}`}
-                                                      >
-                                                            <img src={msg.sender === "user" ? userAvatar : botAvatar} alt={msg.sender} />
-                                                            <div className="message-content">
-                                                                  {msg.type === "image" && msg.image ? (
-                                                                        <div className="image-message">
-                                                                              <img src={msg.image} alt={msg.text} className="chat-image" />
-                                                                              <span className="image-filename">{msg.text}</span>
-                                                                        </div>
-                                                                  ) : (
-                                                                        <div className="markdown-body">
-                                                                              {msg.text ? (
-                                                                                    <>
-                                                                                          <SafeMarkdown text={msg.text} />
-                                                                                          {msg.meta?.groundingMetadata?.groundingChunks && (
-                                                                                                <div className="sources">
-                                                                                                      {msg.meta.groundingMetadata.groundingChunks
-                                                                                                            .slice(0, 3)
-                                                                                                            .map((c: any, idx: number) => (
-                                                                                                                  <div key={idx} className="source-link">
-                                                                                                                        <a href={c.web?.uri} target="_blank" rel="noreferrer">
-                                                                                                                              📄 {c.web?.title || c.web?.uri || "Nguồn tham khảo"}
-                                                                                                                        </a>
-                                                                                                                  </div>
-                                                                                                            ))}
-                                                                                                </div>
-                                                                                          )}
-                                                                                    </>
-                                                                              ) : (
-                                                                                    <span>...</span>
-                                                                              )}
-                                                                        </div>
-                                                                  )}
-                                                            </div>
-                                                      </div>
-                                                ))}
-
-                                                {/* Indicator DƯỚI: chỉ hiện khi CHƯA có message stream (tức là đang "chuẩn bị" hoặc vừa end) */}
-                                                {botTyping && !hasStreaming && (
-                                                      <div className="chat-message left">
-                                                            <img src={botAvatar} alt="Bot" />
-                                                            <TypingDots />
-                                                      </div>
-                                                )}
-                                          </div>
-
-                                          <div className="chat-input">
-                                                {imagePreview && (
-                                                      <div className="image-preview">
-                                                            <img src={imagePreview} alt="Preview" />
-                                                            <button type="button" onClick={removeImage} className="remove-image">
-                                                                  ×
-                                                            </button>
-                                                      </div>
-                                                )}
-
-                                                <div className="input-container">
-                                                      <input
-                                                            value={input}
-                                                            onChange={(e) => setInput(e.target.value)}
-                                                            placeholder="Nhập tin nhắn..."
-                                                            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                                                      />
-                                                      <input
-                                                            ref={fileInputRef}
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={handleImageSelect}
-                                                            style={{ display: "none" }}
-                                                      />
-                                                      <button
-                                                            type="button"
-                                                            onClick={() => fileInputRef.current?.click()}
-                                                            className="image-btn"
-                                                            title="Đính kèm hình ảnh"
-                                                      >
-                                                            <i className="fa-solid fa-paperclip"></i>
-                                                      </button>
-                                                      <button onClick={handleSend}>Gửi</button>
-                                                </div>
-                                          </div>
-                                    </>
-                              )}
                         </div>
+
+                        {!(isDesktop && minimized) && (
+                              <>
+                                    <div
+                                          className="chat-body"
+                                          ref={chatBodyRef}
+                                          onScroll={(e) => e.stopPropagation()}
+                                    >
+                                          {messages.map((msg, i) => (
+                                                <div
+                                                      key={msg.id || i}
+                                                      className={`chat-message ${msg.sender === "user" ? "right" : "left"}`}
+                                                >
+                                                      <img src={msg.sender === "user" ? userAvatar : botAvatar} alt={msg.sender} />
+                                                      <div className="message-content">
+                                                            {msg.type === "image" && msg.image ? (
+                                                                  <div className="image-message">
+                                                                        <img src={msg.image} alt={msg.text} className="chat-image" />
+                                                                        <span className="image-filename">{msg.text}</span>
+                                                                  </div>
+                                                            ) : (
+                                                                  <div className="markdown-body">
+                                                                        {msg.text ? (
+                                                                              <>
+                                                                                    <SafeMarkdown text={msg.text} />
+                                                                                    {msg.meta?.groundingMetadata?.groundingChunks && (
+                                                                                          <div className="sources">
+                                                                                                {msg.meta.groundingMetadata.groundingChunks
+                                                                                                      .slice(0, 3)
+                                                                                                      .map((c: any, idx: number) => (
+                                                                                                            <div key={idx} className="source-link">
+                                                                                                                  <a href={c.web?.uri} target="_blank" rel="noreferrer">
+                                                                                                                        📄 {c.web?.title || c.web?.uri || "Nguồn tham khảo"}
+                                                                                                                  </a>
+                                                                                                            </div>
+                                                                                                      ))}
+                                                                                          </div>
+                                                                                    )}
+                                                                              </>
+                                                                        ) : (
+                                                                              <span>...</span>
+                                                                        )}
+                                                                  </div>
+                                                            )}
+                                                      </div>
+                                                </div>
+                                          ))}
+
+                                          {/* Indicator DƯỚI: chỉ hiện khi CHƯA có message stream (tức là đang "chuẩn bị" hoặc vừa end) */}
+                                          {botTyping && !hasStreaming && (
+                                                <div className="chat-message left">
+                                                      <img src={botAvatar} alt="Bot" />
+                                                      <TypingDots />
+                                                </div>
+                                          )}
+                                    </div>
+
+                                    <div className="chat-input">
+                                          {imagePreview && (
+                                                <div className="image-preview">
+                                                      <img src={imagePreview} alt="Preview" />
+                                                      <button type="button" onClick={removeImage} className="remove-image">
+                                                            ×
+                                                      </button>
+                                                </div>
+                                          )}
+
+                                          <div className="input-container">
+                                                <input
+                                                      value={input}
+                                                      onChange={(e) => setInput(e.target.value)}
+                                                      placeholder="Nhập tin nhắn..."
+                                                      onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                                                />
+                                                <input
+                                                      ref={fileInputRef}
+                                                      type="file"
+                                                      accept="image/*"
+                                                      onChange={handleImageSelect}
+                                                      style={{ display: "none" }}
+                                                />
+                                                <button
+                                                      type="button"
+                                                      onClick={() => fileInputRef.current?.click()}
+                                                      className="image-btn"
+                                                      title="Đính kèm hình ảnh"
+                                                >
+                                                      <i className="fa-solid fa-paperclip"></i>
+                                                </button>
+                                                <button onClick={handleSend}>Gửi</button>
+                                          </div>
+                                    </div>
+                              </>
+                        )}
+                  </div>
             </div>
       );
 }
