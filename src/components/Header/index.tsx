@@ -276,7 +276,7 @@ const Header = () => {
         <>
           {latestProducts.map((item, idx) => (
             <div className="search-link-item" key={item.id || idx}>
-              <a href={`/search?q=${encodeURIComponent(item.name)}`}>
+              <a href={`/san-pham/${encodeURIComponent(item.slug)}`}>
                 <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
                 <span>{item.name}</span>
               </a>
@@ -611,10 +611,10 @@ const Header = () => {
                                     {row.map((category) => (
                                       <div className="product-item" key={`search-cat-${category.category_id}`}>
                                         <a
-                                          href={`/san-pham/${category.slug}`}
+                                          href={`/danh-muc/${category.slug}`}
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            handleNavClick(`/san-pham/${category.slug}`);
+                                            handleNavClick(`/danh-muc/${category.slug}`);
                                           }}
                                         >
                                           <div
