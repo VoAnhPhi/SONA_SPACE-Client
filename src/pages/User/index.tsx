@@ -18,6 +18,7 @@ import type {
   PromoCodeWithTimer as PromoCode
 } from "../../types";
 import { convertToAdminApiUrl } from "../../utils/url";
+import { toast } from "react-toastify";
 
 // Định nghĩa interface cho API mới
 interface ProductColor {
@@ -564,14 +565,14 @@ const User: React.FC = () => {
       // Lấy token từ sessionStorage
       const token = sessionStorage.getItem("authToken");
       if (!token) {
-        alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        toast.success("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
       }
 
       // Lấy thông tin người dùng từ sessionStorage để lấy ID
       const userDataStr = sessionStorage.getItem("user");
       if (!userDataStr) {
-        alert("Không tìm thấy thông tin người dùng");
+        toast.warn("Không tìm thấy thông tin người dùng");
         return;
       }
 
@@ -618,11 +619,11 @@ const User: React.FC = () => {
       // Cập nhật state để tải lại thông tin người dùng
       setRefreshUserData((prev) => !prev);
 
-      alert("Thông tin cá nhân đã được cập nhật!");
+      toast.success("Thông tin cá nhân đã được cập nhật!");
       setShowEditModal(false);
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin người dùng:", error);
-      alert("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+      toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
     }
   };
 
@@ -655,7 +656,7 @@ const User: React.FC = () => {
 
     // Kiểm tra mật khẩu mới và xác nhận mật khẩu
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Mật khẩu mới và xác nhận mật khẩu không khớp");
+      toast.warn("Mật khẩu mới và xác nhận mật khẩu không khớp");
       return;
     }
 
@@ -663,14 +664,14 @@ const User: React.FC = () => {
       // Lấy token từ sessionStorage
       const token = sessionStorage.getItem("authToken");
       if (!token) {
-        alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        toast.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
       }
 
       // Lấy thông tin người dùng từ sessionStorage
       const userDataStr = sessionStorage.getItem("user");
       if (!userDataStr) {
-        alert("Không tìm thấy thông tin người dùng");
+        toast.error("Không tìm thấy thông tin người dùng");
         return;
       }
 
@@ -704,7 +705,7 @@ const User: React.FC = () => {
       sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
       // Thông báo thành công
-      alert("Đổi mật khẩu thành công");
+      toast.success("Đổi mật khẩu thành công");
 
       // Cập nhật state để tải lại thông tin người dùng
       setRefreshUserData((prev) => !prev);
@@ -720,7 +721,7 @@ const User: React.FC = () => {
       });
     } catch (error) {
       console.error("Lỗi khi đổi mật khẩu:", error);
-      alert("Đổi mật khẩu thất bại. Vui lòng thử lại sau.");
+      toast.error("Đổi mật khẩu thất bại. Vui lòng thử lại sau.");
     }
   };
 
@@ -827,17 +828,17 @@ const User: React.FC = () => {
     navigator.clipboard
       .writeText(code)
       .then(() => {
-        alert("Mã giảm giá đã được sao chép!");
+        toast.success("Mã giảm giá đã được sao chép!");
       })
       .catch((err) => {
         console.error("Không thể sao chép: ", err);
-        alert("Không thể sao chép mã giảm giá. Vui lòng thử lại.");
+        toast.error("Không thể sao chép mã giảm giá. Vui lòng thử lại.");
       });
   };
 
   // Apply promo code
   const applyPromoCode = (code: string) => {
-    alert(`Mã giảm giá ${code} đã được áp dụng!`);
+       toast.success(`Mã giảm giá ${code} đã được áp dụng!`);
     // Implement actual promo code application logic here
   };
 
@@ -861,13 +862,13 @@ const User: React.FC = () => {
       sessionStorage.removeItem("user");
 
       // Thông báo đăng xuất thành công
-      alert("Đăng xuất thành công!");
+      toast.success("Đăng xuất thành công!");
 
       // Chuyển hướng đến trang đăng nhập
       window.location.href = "/dang-nhap";
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
-      alert("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
+      toast.error("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
     }
   };
 

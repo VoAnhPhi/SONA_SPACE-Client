@@ -148,7 +148,7 @@ const CartPage: React.FC = () => {
         toast.error(result.message || "Không thể xóa giỏ hàng.");
       }
     } catch (error) {
-      alert("Lỗi khi xóa giỏ hàng.");
+      toast.error("Lỗi khi xóa giỏ hàng.");
     }
   };
 

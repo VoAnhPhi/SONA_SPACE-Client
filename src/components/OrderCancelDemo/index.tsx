@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import CancelOrderModal from '../CancelOrderModal';
+import { toast } from 'react-toastify';
 
 // Demo component để test tính năng hủy đơn hàng
 const OrderCancelDemo: React.FC = () => {
@@ -14,7 +15,7 @@ const OrderCancelDemo: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     setShowModal(false);
-    alert('Đơn hàng đã được hủy thành công!');
+    toast.success('Đơn hàng đã được hủy thành công!');
   };
 
   return (

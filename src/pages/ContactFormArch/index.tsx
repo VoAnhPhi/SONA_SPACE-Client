@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { toast } from "react-toastify";
 
 interface FormData {
   fullName: string;
@@ -154,7 +155,7 @@ const ContactFormArch: React.FC = () => {
     e.preventDefault();
     // console.log("Form submitted:", formData);
     // Here you would typically send the data to your backend
-    alert("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
+    toast.success("Cảm ơn bạn đã gửi yêu cầu. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể!");
   };
 
   return (
