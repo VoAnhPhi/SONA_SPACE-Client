@@ -359,54 +359,59 @@ const ProductDetailPage: React.FC = () => {
             <div className="detail-products">
               <div className="detail-image">
                 <div className="image-full">
-                  <div className="image1">
-                    <img
-                      src={imageList[0]?.trim() || "/images/placeholder.jpg"}
-                      alt=""
-                    />
+                  <div
+                    className="image1"
+                    style={{ display: imageList[0]?.trim() ? "" : "none" }}
+                  >
+                    <img src={imageList[0]?.trim()} alt="" />
                   </div>
+
                   <div className="image2">
-                    <div className="image2-1">
-                      <img
-                        src={imageList[1]?.trim() || "/images/placeholder.jpg"}
-                        alt=""
-                      />
+                    <div
+                      className="image2-1"
+                      style={{ display: imageList[1]?.trim() ? "" : "none" }}
+                    >
+                      <img src={imageList[1]?.trim()} alt="" />
                     </div>
-                    <div className="image2-2">
-                      <img
-                        src={imageList[2]?.trim() || "/images/placeholder.jpg"}
-                        alt=""
-                      />
+                    <div
+                      className="image2-2"
+                      style={{ display: imageList[2]?.trim() ? "" : "none" }}
+                    >
+                      <img src={imageList[2]?.trim()} alt="" />
                     </div>
                   </div>
+
                   <div className="image3">
-                    <div className="image3-1">
-                      <img
-                        src={imageList[3]?.trim() || "/images/placeholder.jpg"}
-                        alt=""
-                      />
+                    <div
+                      className="image3-1"
+                      style={{ display: imageList[3]?.trim() ? "" : "none" }}
+                    >
+                      <img src={imageList[3]?.trim()} alt="" />
                     </div>
-                    <div className="image3-2">
-                      <img
-                        src={imageList[4]?.trim() || "/images/placeholder.jpg"}
-                        alt=""
-                      />
+                    <div
+                      className="image3-2"
+                      style={{ display: imageList[4]?.trim() ? "" : "none" }}
+                    >
+                      <img src={imageList[4]?.trim()} alt="" />
                     </div>
                   </div>
-                  <div className="image4">
-                    <img
-                      src={imageList[5]?.trim() || "/images/placeholder.jpg"}
-                      alt=""
-                    />
+
+                  <div
+                    className="image4"
+                    style={{ display: imageList[5]?.trim() ? "" : "none" }}
+                  >
+                    <img src={imageList[5]?.trim()} alt="" />
                   </div>
-                  <div className="image5">
-                    <img
-                      src={imageList[6]?.trim() || "/images/placeholder.jpg"}
-                      alt=""
-                    />
+
+                  <div
+                    className="image5"
+                    style={{ display: imageList[6]?.trim() ? "" : "none" }}
+                  >
+                    <img src={imageList[6]?.trim()} alt="" />
                   </div>
                 </div>
               </div>
+
               <div className="detail-content">
                 <div className="content-name">
                   <h3>{product.name}</h3>
@@ -632,12 +637,22 @@ const ProductDetailPage: React.FC = () => {
           <div className="container">
             <div className="detail-banner">
               <img
-                src={imageList[6]?.trim() || "/images/placeholder.jpg"}
-                alt=""
+                src={
+                  imageList[6]?.trim() ||
+                  imageList[5]?.trim() ||
+                  imageList[4]?.trim() ||
+                  imageList[3]?.trim() ||
+                  imageList[2]?.trim() ||
+                  imageList[1]?.trim() ||
+                  imageList[0]?.trim() ||
+                  "/images/placeholder.jpg"
+                }
+                alt="banner"
               />
             </div>
           </div>
         </div>
+
 
         <PolicyProduct />
 
