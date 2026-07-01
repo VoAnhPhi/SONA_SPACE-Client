@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import GetInTouch from "../../components/GetInTouch";
+import GetInTouch from "../../components/getintouch";
 import PolicyProduct from "../../components/Policy";
 import { toast } from "react-toastify";
 import {

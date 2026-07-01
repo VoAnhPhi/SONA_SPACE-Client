@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import Seemore from "../../components/seemore";
 import CategorySlider from "../../components/CategorySlider";
 import ProductComponent from "../../components/Product";

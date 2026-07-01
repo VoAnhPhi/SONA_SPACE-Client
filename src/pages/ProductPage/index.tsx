@@ -6,10 +6,10 @@ import { ToastContainer } from "react-toastify";
 // Component
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
-import GetInTouch from "../../components/GetInTouch";
+import GetInTouch from "../../components/getintouch";
 import PopularCategory from "../../components/PopularCategory";
 import Seemore from "../../components/seemore";
 import BannerSlider from "../../components/BannerSlider";

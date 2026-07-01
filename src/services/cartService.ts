@@ -49,6 +49,22 @@ export const loadCartService = async () => {
     };
   }
 };
+
+export const getCartCount = async (): Promise<number> => {
+  try {
+    const data = await fetchCartFromDatabase();
+    const items = Array.isArray(data) ? data : data?.items || data?.wishlistItems || [];
+    if (!Array.isArray(items)) return 0;
+
+    return items.reduce((total: number, item: any) => {
+      const quantity = Number(item?.quantity ?? item?.wishlist_quantity ?? 1);
+      return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
+    }, 0);
+  } catch {
+    return 0;
+  }
+};
+
 export const updateCartQuantityService = async (wishlistId: number, quantity: number) => {
   const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");

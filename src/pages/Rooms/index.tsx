@@ -4,7 +4,7 @@ import type { Product as ProductType } from "../../types";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
-import InteriorDesign from "../../components/InteriorDesign";
+import InteriorDesign from "../../components/interiorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/RoomSlider";
 import Product from "../../components/Product";
