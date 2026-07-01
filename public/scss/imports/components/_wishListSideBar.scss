@@ -64,6 +64,12 @@
     cursor: pointer;
     padding: 5px;
 
+    &:focus-visible {
+        outline: 2px solid $yellow-cl;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
     img {
         width: 20px;
         height: 20px;
@@ -201,18 +207,41 @@
 
     &-actions {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         margin-top: auto;
 
+        .state-inline-error {
+            width: 100%;
+            margin-bottom: 6px;
+        }
+
         button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            min-height: 36px;
             background: none;
             border: none;
             cursor: pointer;
             padding: 5px;
             transition: transform 0.2s ease;
 
+            &:disabled {
+                cursor: not-allowed;
+                opacity: 0.6;
+                transform: none;
+            }
+
             &:hover {
                 transform: scale(1.1);
+            }
+
+            &:focus-visible {
+                outline: 2px solid $yellow-cl;
+                outline-offset: 2px;
+                border-radius: 6px;
             }
 
             img {
@@ -228,6 +257,11 @@
         .add-to-cart-button {
             color: $yellow-cl;
         }
+    }
+
+    &-action-label {
+        @include text(12px, Be-M, auto, #666, null);
+        white-space: nowrap;
     }
 }
 

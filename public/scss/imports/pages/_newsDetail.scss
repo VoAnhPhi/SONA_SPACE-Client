@@ -26,6 +26,12 @@
 
   /* Main Content Column */
   .news-main-content {
+    &--loading {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
     .news-title {
       font-size: 24px;
       font-weight: 700;
@@ -211,6 +217,15 @@
     flex-direction: column;
     position: sticky;
     top: 100px;
+
+    .news-sidebar-card {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: grid;
+      gap: 14px;
+    }
 
     .sidebar-section {
       margin-bottom: 30px;

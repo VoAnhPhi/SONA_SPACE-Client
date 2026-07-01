@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import type { Category } from "../../types";
-import { Skeleton } from "antd";
 import { useEffect, useState } from "react";
 import { fetchAllCategories } from "../../services/categoryService";
+import { SkeletonBlock } from "../StateFeedback";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Scrollbar } from "swiper/modules";
 import "swiper/css";
@@ -48,9 +48,16 @@ export default function CategorySlider() {
             <div className="categories-flex">
                 {[...Array(4)].map((_, idx) => (
                     <div key={idx} className="category-item">
-                        <Skeleton.Image style={{ width: 300, height: 420, margin: "0 auto" }} active />
-                        <br />
-                        <Skeleton.Input style={{ width: "100%", alignItems: "left", marginLeft: "0", marginTop: "24px", height: "40px" }} active block size="large" />
+                        <SkeletonBlock
+                            width={300}
+                            height={420}
+                            className="category-slider-skeleton__image"
+                        />
+                        <SkeletonBlock
+                            width="100%"
+                            height={40}
+                            className="category-slider-skeleton__title"
+                        />
                     </div>
                 ))}
                 <DebugInfo />

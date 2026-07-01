@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
@@ -90,7 +91,7 @@ const HomePage = () => {
                   <img src="/images/living-room.jpg" alt="Phòng Khách" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Khách</h3>
-                    <a href="/khong-gian/phong-khach" className="btn btn-outline">
+                    <Link to="/khong-gian/phong-khach" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
@@ -101,13 +102,13 @@ const HomePage = () => {
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
                             d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z"
                           />
                         </svg>
                       </i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -116,7 +117,7 @@ const HomePage = () => {
                   <img src="/images/bedroom.jpg" alt="Phòng Ngủ" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ngủ</h3>
-                    <a href="/khong-gian/phong-ngu" className="btn btn-outline">
+                    <Link to="/khong-gian/phong-ngu" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
@@ -127,13 +128,13 @@ const HomePage = () => {
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
                             d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z"
                           />
                         </svg>
                       </i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -142,7 +143,7 @@ const HomePage = () => {
                   <img src="/images/dining-room.jpg" alt="Phòng Ăn" />
                   <div className="card-content">
                     <h3>Nội Thất Cho Phòng Ăn</h3>
-                    <a href="/khong-gian/phong-an" className="btn btn-outline">
+                    <Link to="/khong-gian/phong-an" className="btn btn-outline">
                       Xem Sản Phẩm{" "}
                       <i>
                         <svg
@@ -153,13 +154,13 @@ const HomePage = () => {
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
                             d="M8.64645 2.64645C8.84171 2.45118 9.15829 2.45118 9.35355 2.64645L14.3536 7.64645C14.5488 7.84171 14.5488 8.15829 14.3536 8.35355L9.35355 13.3536C9.15829 13.5488 8.84171 13.5488 8.64645 13.3536C8.45118 13.1583 8.45118 12.8417 8.64645 12.6464L12.7929 8.5H2C1.72386 8.5 1.5 8.27614 1.5 8C1.5 7.72386 1.72386 7.5 2 7.5H12.7929L8.64645 3.35355C8.45118 3.15829 8.45118 2.84171 8.64645 2.64645Z"
                           />
                         </svg>
                       </i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

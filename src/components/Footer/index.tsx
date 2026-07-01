@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <>
@@ -51,13 +53,13 @@ const Footer = () => {
             <div className="footer-column">
               <ul>
                 <li>
-                  <a href="/khong-gian">Phong cách</a>
+                  <Link to="/khong-gian">Phong cách</Link>
                 </li>
                 <li>
                   <a href="#">Trung tâm hỗ trợ</a>
                 </li>
                 <li>
-                  <a href="/lien-he">Câu chuyện thương hiệu</a>
+                  <Link to="/lien-he">Câu chuyện thương hiệu</Link>
                 </li>
               </ul>
             </div>
@@ -106,9 +108,9 @@ const Footer = () => {
             </div>
             <div className="footer-column">
               <h3>Xem thêm ưu đãi</h3>
-              <a href="/dang-ky" className="btn btn-primary">
+              <Link to="/dang-ky" className="btn btn-primary">
                 Đăng ký ngay
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -118,10 +120,10 @@ const Footer = () => {
               bao gồm VAT.
             </p>
             <p>
-              <a href="/dieu-khoan-su-dung">Thông tin cookie</a>
+              <Link to="/dieu-khoan-su-dung">Thông tin cookie</Link>
             </p>
             <p>
-              <a href="/chinh-sach-bao-mat">Chính sách bảo mật</a>
+              <Link to="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
             </p>
             <div className="payment-icons">
               <img src="/images/payment-icons.png" alt="Payment methods" />

@@ -8,6 +8,11 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService, clearCartServiceid } from "../../services/cartService";
 import { createOrderService } from "../../services/ordersService";
+import {
+  EmptyState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -40,6 +45,9 @@ const Payment: React.FC = () => {
   const [prevEmail, setPrevEmail] = useState("");
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCartLoading, setIsCartLoading] = useState(true);
+  const [cartLoadError, setCartLoadError] = useState<string | null>(null);
+  const [paymentReloadToken, setPaymentReloadToken] = useState(0);
   const location = useLocation();
   const selectedItems: number[] | undefined = location.state?.selectedItems;
   const [formErrors, setFormErrors] = useState({
@@ -209,8 +217,10 @@ const Payment: React.FC = () => {
 
   useEffect(() => {
     const loadCartFromDatabase = async () => {
+      setIsCartLoading(true);
+      setCartLoadError(null);
       try {
-        const { success, wishlistItems } = await loadCartService();
+        const { success, wishlistItems, message } = await loadCartService();
         if (success && wishlistItems) {
           const formatted = wishlistItems.map((item: any, index: number) => ({
             id: item.wishlist_id,
@@ -255,18 +265,23 @@ const Payment: React.FC = () => {
           setPromoCodeInput(code);
           const total = subtotal + shipping - discount;
           setOrderSummary({ subtotal, shipping, discount, total });
+        } else {
+          setCartItems([]);
+          setCartLoadError(message || "Không thể tải giỏ hàng để thanh toán.");
         }
       } catch (error) {
         console.error("Lỗi khi load giỏ hàng:", error);
       }
     };
 
-    loadCartFromDatabase();
-  }, [selectedItems]);
+    loadCartFromDatabase().finally(() => setIsCartLoading(false));
+  }, [selectedItems, paymentReloadToken]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isLoading) return;
 
     if (!validateForm()) {
       toast.error("Vui lòng kiểm tra lại thông tin giao hàng.", {
@@ -592,6 +607,25 @@ const Payment: React.FC = () => {
 
         <div className="Pay-billment">
           <div className="container">
+            {isCartLoading ? (
+              <PageSectionSkeleton variant="cart-list" count={3} />
+            ) : cartLoadError ? (
+              <RetryState
+                message={cartLoadError}
+                onRetry={() => setPaymentReloadToken((current) => current + 1)}
+                secondaryActionLabel="Quay lại giỏ hàng"
+                secondaryActionTo="/gio-hang"
+              />
+            ) : cartItems.length === 0 ? (
+              <EmptyState
+                title="Chưa có sản phẩm để thanh toán"
+                message="Hãy chọn sản phẩm trong giỏ hàng trước khi tiếp tục thanh toán."
+                actionLabel="Quay lại giỏ hàng"
+                actionTo="/gio-hang"
+                secondaryActionLabel="Khám phá sản phẩm"
+                secondaryActionTo="/san-pham"
+              />
+            ) : (
             <div className="pay-info">
               <form onSubmit={handleSubmit} className="pay-info-left">
                 <div className="info-left-title">
@@ -741,13 +775,19 @@ const Payment: React.FC = () => {
                     {formatPrice(orderSummary.total)} đ
                   </span>
                 </div>
-                <div className="checkout-btn" onClick={handleSubmit}>
+                <button
+                  type="button"
+                  className={`checkout-btn ${isLoading ? "loading" : ""}`}
+                  onClick={handleSubmit}
+                  disabled={isLoading || cartItems.length === 0}
+                >
                   Tiến hành thanh toán
-                </div>
+                </button>
               </div>
 
 
             </div>
+            )}
 
           </div>
         </div>

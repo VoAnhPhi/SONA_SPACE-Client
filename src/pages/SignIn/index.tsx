@@ -5,7 +5,6 @@ import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useLogin } from "../../hooks/useLogin";
 import "./styles.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 
 const SignIn: React.FC = () => {
@@ -105,14 +104,12 @@ const SignIn: React.FC = () => {
               <div className="divider">
                 <span>Đăng nhập với Google</span>
               </div>
-              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-                <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    // console.log("Login error");
-                  }}
-                />
-              </GoogleOAuthProvider>
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={() => {
+                  // handled in hook state
+                }}
+              />
 
               {/* <button className="google-signin-btn" disabled={loading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />

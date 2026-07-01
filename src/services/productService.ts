@@ -2,6 +2,7 @@ import type { PaginatedResponse, Product, Variant } from "../types";
 import { getProductBySlug, getAllProducts } from "../api/product";
 import { getProductsByRoom } from "../api/room";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "./loginService";
 
 /**
  * Format raw product from API to usable Product type
@@ -263,7 +264,7 @@ export const getRelatedProductsByRoom = async (
   productId: number
 ): Promise<Product[]> => {
   try {
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     const res = await fetch(
       convertToAdminApiUrl(`/products/related/by-room/${productId}`),
       {

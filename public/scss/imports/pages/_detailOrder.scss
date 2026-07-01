@@ -512,7 +512,7 @@
         border: none;
 
         &:hover {
-          background-color: darken(#F5A623, 10%);
+          background-color: #dc951c;
         }
       }
 
@@ -635,7 +635,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-              background-color: darken(#F5A623, 10%);
+              background-color: #dc951c;
             }
           }
 
@@ -808,7 +808,7 @@
         border: none;
 
         &:hover:not(:disabled) {
-          background-color: darken(#F5A623, 10%);
+          background-color: #dc951c;
         }
       }
 
@@ -818,7 +818,7 @@
         border: 1px solid #bbb;
 
         &:hover:not(:disabled) {
-          background-color: darken(#ccc, 10%);
+          background-color: #b3b3b3;
         }
       }
 

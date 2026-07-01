@@ -1,6 +1,12 @@
 .wishlist-pages{
   margin-top: 100px;
 }
+
+.wishlist-state-container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 72px auto;
+}
+
 /* wishlist */
 .wishlist-title {
   margin: 80px auto;

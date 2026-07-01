@@ -6,6 +6,12 @@ This creates a need for a versatile space solution that combines relaxation comf
 
 SONA SPACE was born with the mission to provide premium rental studio spaces, fully equipped for rest, living, and working, while also offering professional photography services. Our goal is to deliver the most convenient and perfect experience for our customers.
 
+## Client Delivery Docs
+
+- Docs index: `docs/README.md`
+- Tracker: `docs/ui-ux-tracker.md`
+- QA/QC playbook: `docs/qa-qc-frontend-regression-playbook.md`
+- Active sprint docs: `docs/sprints/*`
 
 # React + TypeScript + Vite
 

@@ -313,7 +313,7 @@
         transition: background-color 0.25s ease;
         margin-top: 12px;
         &:hover {
-          background-color: darken($yellow-cl, 10%);
+          background-color: #c98609;
         }
       }
     }
@@ -498,7 +498,7 @@
               transition: color 0.3s ease;
 
               &:hover {
-                color: darken($yellow-cl, 10%);
+                color: #c98609;
               }
             }
           }
@@ -520,7 +520,7 @@
         margin-top: 30px;
 
         &:hover {
-          background-color: darken($yellow-cl, 10%);
+          background-color: #c98609;
         }
       }
     }

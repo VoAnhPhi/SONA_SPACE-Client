@@ -60,6 +60,7 @@ const Header = () => {
   // Ref cho mini cart component để truy cập hàm toggleMiniCart
   const [cartCount, setCartCount] = useState<number>(0);
   const miniCartRef = useRef<MiniCartHandle>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const miniNotificationRef = useRef<MiniNotificationHandle>(null);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -93,6 +94,31 @@ const Header = () => {
       setSuggestedKeywords([]);
     }
   }, [searchTerm]);
+
+  useEffect(() => {
+    const handleGlobalEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+
+      if (isWishlistOpen) {
+        setIsWishlistOpen(false);
+      }
+
+      if (miniCartRef.current?.isVisible) {
+        miniCartRef.current.closeMiniCart();
+      }
+
+      if (miniNotificationRef.current?.isVisible) {
+        miniNotificationRef.current.closeMiniNotification();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalEscape);
+    return () => window.removeEventListener("keydown", handleGlobalEscape);
+  }, [isMobileMenuOpen, isWishlistOpen]);
   useEffect(() => {
     const handleCartUpdate = async () => {
       try {
@@ -223,11 +249,9 @@ const Header = () => {
 
   // Toggle mini cart khi click trên mobile
   const handleMiniCartClick = (e: React.MouseEvent) => {
-    // Ngăn chặn chuyển hướng khi nhấp vào button
-    e.preventDefault();
-
     // Kiểm tra xem có phải là mobile không (dựa theo kích thước màn hình)
     if (window.innerWidth < 768) {
+      e.preventDefault();
       // Ngăn chặn sự kiện lan truyền để không mở link khi click vào button
       e.stopPropagation();
 
@@ -276,10 +300,10 @@ const Header = () => {
         <>
           {latestProducts.map((item, idx) => (
             <div className="search-link-item" key={item.id || idx}>
-              <a href={`/san-pham/${encodeURIComponent(item.slug)}`}>
+              <Link to={`/san-pham/${encodeURIComponent(item.slug)}`}>
                 <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </div>
           ))}
         </>
@@ -287,18 +311,25 @@ const Header = () => {
     }
     return suggestedKeywords.map((kw, idx) => (
       <div className="search-link-item" key={idx}>
-        <a
-          href={`/search?q=${encodeURIComponent(kw)}`}
-          onClick={e => {
-            e.preventDefault();
+        <button
+          type="button"
+          onClick={() => {
             setSearchTerm(kw);
           }}
         >
           <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
           <span>{kw}</span>
-        </a>
+        </button>
       </div>
     ));
+  };
+
+  const handleSearchTriggerKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    searchInputRef.current?.focus();
   };
 
 
@@ -309,31 +340,32 @@ const Header = () => {
         <div className="container">
           <div className="header-wrapper">
             <div className="logo">
-              <a href="/" onClick={() => handleNavClick("/")}>
+              <Link to="/" onClick={() => handleNavClick("/")}>
                 <img src="/images/logo.png" alt="SONA Space" />
-              </a>
+              </Link>
             </div>
             <nav className="main-nav">
               <ul>
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    to="/"
                     className={isActive("/") ? "active" : ""}
                     onClick={() => handleNavClick("/")}
                   >
                     Trang Chủ
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/san-pham"
+                  <Link
+                    to="/san-pham"
                     className={isActive("/san-pham") ? "active" : ""}
                     onClick={() => handleNavClick("/san-pham")}
                   >
                     {" "}
                     Sản Phẩm
                     <img className="arrow-icon" alt="arrow" />
-                    <div className="sub-menu">
+                  </Link>
+                  <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
                           <div className="sub-menu-column">
@@ -354,8 +386,8 @@ const Header = () => {
                                     <li
                                       key={`product-sidebar-${category.category_id}`}
                                     >
-                                      <a
-                                        href={`/danh-muc/${category.slug}`}
+                                      <Link
+                                        to={`/danh-muc/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleNavClick(
@@ -364,7 +396,7 @@ const Header = () => {
                                         }}
                                       >
                                         {category.category_name}
-                                      </a>
+                                      </Link>
                                     </li>
                                   ))
                               )}
@@ -387,8 +419,8 @@ const Header = () => {
                                       className="product-item"
                                       key={`cat-${category.category_id}`}
                                     >
-                                      <a
-                                        href={`/danh-muc/${category.slug}`}
+                                      <Link
+                                        to={`/danh-muc/${category.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleNavClick(
@@ -407,7 +439,7 @@ const Header = () => {
                                         <div className="product-title">
                                           {category.category_name}
                                         </div>
-                                      </a>
+                                      </Link>
                                     </div>
                                   ))}
                                 </div>
@@ -417,18 +449,18 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </a>
 
                 </li>
                 <li>
-                  <a
-                    href="/khong-gian"
+                  <Link
+                    to="/khong-gian"
                     className={isActive("/khong-gian") ? "active" : ""}
                     onClick={() => handleNavClick("/khong-gian")}
                   >
                     Không Gian
                     <img className="arrow-icon" alt="arrow" />
-                    <div className="sub-menu">
+                  </Link>
+                  <div className="sub-menu">
                       <div className="container">
                         <div className="sub-menu-wrapper">
                           <div className="sub-menu-column">
@@ -440,8 +472,8 @@ const Header = () => {
                               ) : (
                                 rooms.slice(0, 10).map((room) => (
                                   <li key={`space-sidebar-${room.room_id}`}>
-                                    <a
-                                      href={`/khong-gian/${room.slug}`}
+                                    <Link
+                                      to={`/khong-gian/${room.slug}`}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleNavClick(
@@ -450,7 +482,7 @@ const Header = () => {
                                       }}
                                     >
                                       {room.room_name}
-                                    </a>
+                                    </Link>
                                   </li>
                                 ))
                               )}
@@ -473,8 +505,8 @@ const Header = () => {
                                       className="product-item"
                                       key={`space-room-${room.room_id}`}
                                     >
-                                      <a
-                                        href={`/khong-gian/${room.slug}`}
+                                      <Link
+                                        to={`/khong-gian/${room.slug}`}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleNavClick(
@@ -493,7 +525,7 @@ const Header = () => {
                                         <div className="product-title">
                                           {room.room_name}
                                         </div>
-                                      </a>
+                                      </Link>
                                     </div>
                                   ))}
                                 </div>
@@ -503,45 +535,59 @@ const Header = () => {
                         </div>
                       </div>
                     </div>
-                  </a>
                 </li>
                 <li>
-                  <a
-                    href="/tin-tuc"
+                  <Link
+                    to="/tin-tuc"
                     className={isActive("/tin-tuc") ? "active" : ""}
                     onClick={() => handleNavClick("/tin-tuc")}
                   >
                     Tin Tức
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/lien-he"
+                  <Link
+                    to="/lien-he"
                     className={isActive("/lien-he") ? "active" : ""}
                     onClick={() => handleNavClick("/lien-he")}
                   >
                     Về Chúng Tôi
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
             <div className="header-actions">
               <div className="header-actions-icons">
-                <button className="btn-icon search-btn">
+                <div
+                  className="btn-icon search-btn"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Mở tìm kiếm sản phẩm"
+                  aria-controls="header-search-panel"
+                  onKeyDown={handleSearchTriggerKeyDown}
+                >
                   <i className="icon-search">
                     <img src="/images/icons/magnifier.svg" alt="search" />
                   </i>
-                  <div className="sub-search">
+                  <div
+                    className="sub-search"
+                    id="header-search-panel"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Tìm kiếm sản phẩm"
+                  >
                     <div className="search-container container">
                       <div className="search-input-wrapper">
                         <input
+                          ref={searchInputRef}
                           type="text"
                           placeholder="Tìm kiếm sản phẩm"
                           value={searchTerm}
                           onChange={handleSearchChange}
+                          aria-label="Tìm kiếm sản phẩm"
 
                         />
-                        <button type="submit">
+                        <button type="submit" aria-label="Tìm kiếm">
                           <img
                             src="../public/images/icons/magnifier-gray.svg"
                             alt="search"
@@ -570,7 +616,7 @@ const Header = () => {
                                   <div className="product-row" key={`search-result-row-${rowIndex}`}>
                                     {row.map((item) => (
                                       <div className="product-item" key={item.id}>
-                                        <a href={`/san-pham/${item.slug}`} className="product-link">
+                                        <Link to={`/san-pham/${item.slug}`} className="product-link">
                                           <div
                                             className="product-image"
                                             style={{ backgroundImage: `url(${item.image})` }}
@@ -579,7 +625,7 @@ const Header = () => {
                                           <div className="product-price">
                                             {item.price ? Number(item.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''}
                                           </div>
-                                        </a>
+                                        </Link>
                                       </div>
                                     ))}
                                   </div>
@@ -610,8 +656,8 @@ const Header = () => {
                                   <div className="product-row" key={`search-cat-row-${rowIndex}`}>
                                     {row.map((category) => (
                                       <div className="product-item" key={`search-cat-${category.category_id}`}>
-                                        <a
-                                          href={`/danh-muc/${category.slug}`}
+                                        <Link
+                                          to={`/danh-muc/${category.slug}`}
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             handleNavClick(`/danh-muc/${category.slug}`);
@@ -626,7 +672,7 @@ const Header = () => {
                                             }}
                                           ></div>
                                           <div className="product-title">{category.category_name}</div>
-                                        </a>
+                                        </Link>
                                       </div>
                                     ))}
                                   </div>
@@ -641,8 +687,8 @@ const Header = () => {
                                   <div className="product-row" key={`search-room-row-${rowIndex}`}>
                                     {row.map((room) => (
                                       <div className="product-item" key={`search-room-${room.room_id}`}>
-                                        <a
-                                          href={`/khong-gian/${room.slug}`}
+                                        <Link
+                                          to={`/khong-gian/${room.slug}`}
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             handleNavClick(`/khong-gian/${room.slug}`);
@@ -657,7 +703,7 @@ const Header = () => {
                                             }}
                                           ></div>
                                           <div className="product-title">{room.room_name}</div>
-                                        </a>
+                                        </Link>
                                       </div>
                                     ))}
                                   </div>
@@ -669,7 +715,7 @@ const Header = () => {
                       </div>
                     </div>
                   </div>
-                </button>
+                </div>
 
                 <div
                   className="notifycation-container"
@@ -684,7 +730,15 @@ const Header = () => {
                     }
                   }}
                 >
-                  <button className="btn-icon notification-btn">
+                  <button
+                    className="btn-icon notification-btn"
+                    type="button"
+                    aria-label={
+                      notificationCount > 0
+                        ? `Thông báo, ${notificationCount} mục chưa đọc`
+                        : "Thông báo"
+                    }
+                  >
                     <img src="/images/icons/bell.svg" alt="notification" />
                     {notificationCount > 0 && (
                       <span
@@ -741,55 +795,57 @@ const Header = () => {
                   }}
                 >
 
-                  <button
+                  <Link
+                    to="/gio-hang"
                     className="btn-icon cart-btn"
                     onClick={handleMiniCartClick}
+                    aria-label="Giỏ hàng"
                   >
-                    <Link
-                      to="/gio-hang"
-                      onClick={(e) =>
-                        window.innerWidth < 768 && e.preventDefault()
-                      }
-                    >
-                      <img src="/images/icons/cart.svg" alt="cart" />
-                      {cartCount > 0 && (
-                        <span
-                          className="cart-badge"
-                          style={{
-                            position: 'absolute',
-                            width: '20px',
-                            height: '18px',
-                            top: '20px',
-                            right: '-6px',
-                            backgroundColor: '#F0A00A',
-                            color: 'white',
-                            fontFamily: 'Be-R',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            padding: '5px',
-                            borderRadius: '50%',
-                            minWidth: '18px',
-                            textAlign: 'center',
-                            zIndex: 10,
-                            boxShadow: '0 0 0 2px white',
-                            display: 'flex',
-                            alignContent: 'center',
-                            justifyContent: 'center',
-                            alignSelf: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          {cartCount}
-                        </span>
-                      )}
-
-                    </Link>
-                  </button>
+                    <img src="/images/icons/cart.svg" alt="cart" />
+                    {cartCount > 0 && (
+                      <span
+                        className="cart-badge"
+                        style={{
+                          position: 'absolute',
+                          width: '20px',
+                          height: '18px',
+                          top: '20px',
+                          right: '-6px',
+                          backgroundColor: '#F0A00A',
+                          color: 'white',
+                          fontFamily: 'Be-R',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          padding: '5px',
+                          borderRadius: '50%',
+                          minWidth: '18px',
+                          textAlign: 'center',
+                          zIndex: 10,
+                          boxShadow: '0 0 0 2px white',
+                          display: 'flex',
+                          alignContent: 'center',
+                          justifyContent: 'center',
+                          alignSelf: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
                   <MiniCart ref={miniCartRef} onCartUpdated={(count) => setCartCount(count)} />
                 </div>
                 <button
                   className="btn-icon wishlist-btn"
+                  type="button"
                   onClick={toggleWishlist}
+                  aria-label={
+                    isWishlistOpen
+                      ? "Đóng danh sách yêu thích"
+                      : "Mở danh sách yêu thích"
+                  }
+                  aria-controls="wishlist-sidebar"
+                  aria-expanded={isWishlistOpen}
                 >
                   <img src="/images/icons/wishlist.svg" alt="wishlist" />
                 </button>
@@ -798,61 +854,71 @@ const Header = () => {
               <div className="header-actions-buttons">
                 {isAuthenticated && user ? (
                   <div className="user-greeting">
-                    <div className="user-greeting-text">
+                    <div
+                      className="user-greeting-text"
+                      role="button"
+                      tabIndex={0}
+                      aria-haspopup="menu"
+                      aria-label="Mở menu tài khoản"
+                    >
                       <span>Chào, {getLastName(user.full_name)}</span>
                       <img src="/images/icons/arrow-down.svg" alt="" />
                     </div>
                     <div className="user-dropdown">
                       <ul>
                         <li>
-                          <a href="/tai-khoan">Tài khoản</a>
+                          <Link to="/tai-khoan">Tài khoản</Link>
                         </li>
                         <li>
-                          <a href="/tai-khoan/thong-tin">Thông tin cá nhân</a>
+                          <Link to="/tai-khoan/thong-tin">Thông tin cá nhân</Link>
                         </li>
                         <li>
-                          <a href="/tai-khoan/ma-giam-gia">
+                          <Link to="/tai-khoan/ma-giam-gia">
                             Quản lý mã giảm giá
-                          </a>
+                          </Link>
                         </li>
                         <li>
-                          <a href="/tai-khoan/don-hang">Quản lý đơn hàng</a>
+                          <Link to="/tai-khoan/don-hang">Quản lý đơn hàng</Link>
                         </li>
                         <li>
-                          <a href="/san-pham-yeu-thich">Danh sách yêu thích</a>
+                          <Link to="/san-pham-yeu-thich">Danh sách yêu thích</Link>
                         </li>
                         <li>
-                          <a href="/gio-hang">Giỏ hàng</a>
+                          <Link to="/gio-hang">Giỏ hàng</Link>
                         </li>
                         <li>
-                          <a
-                            href="#"
+                          <button
+                            type="button"
                             onClick={(e) => {
                               e.preventDefault();
                               logout();
                             }}
                           >
                             Đăng xuất
-                          </a>
+                          </button>
                         </li>
                       </ul>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <a href="/dang-ky" className="btn sign-up">
+                    <Link to="/dang-ky" className="btn sign-up">
                       Đăng Ký
-                    </a>
-                    <a href="/dang-nhap" className="btn sign-in">
+                    </Link>
+                    <Link to="/dang-nhap" className="btn sign-in">
                       Đăng Nhập
-                    </a>
+                    </Link>
                   </>
                 )}
               </div>
               <div className="header-hamburger">
                 <button
                   className="btn-icon hamburger-btn"
+                  type="button"
                   onClick={() => setIsMobileMenuOpen(true)}
+                  aria-label="Mở menu điều hướng"
+                  aria-controls="mobile-menu-dialog"
+                  aria-expanded={isMobileMenuOpen}
                 >
                   <img src="/images/icons/Hamburger_MD.svg" alt="hamburger" />
                 </button>
@@ -870,16 +936,27 @@ const Header = () => {
 
       {/* Mobile Menu Overlay */}
       <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-        <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="mobile-menu"
+          id="mobile-menu-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu điều hướng"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Header Mobile Menu */}
           <div className="mobile-menu-header">
             <div className="mobile-menu-back">
-              <button onClick={() => setIsMobileMenuOpen(false)}>
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Đóng menu điều hướng"
+              >
                 <span>Back</span>
               </button>
             </div>
             <div className="mobile-menu-logo">
-              <img src="/images/logo.svg" alt="" />
+              <img src="/images/logo.svg" alt="SONA Space" />
             </div>
           </div>
 
@@ -904,7 +981,7 @@ const Header = () => {
                 {!loadingRooms && rooms.map((room) => (
                   <Link
                     key={room.room_id}
-                    to={`/phong/${room.slug}`}
+                    to={`/khong-gian/${room.slug}`}
                     className="mobile-category-item"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

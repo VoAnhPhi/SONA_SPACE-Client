@@ -251,6 +251,11 @@
                 &:hover {
                   background-color: #f5f5f5;
                 }
+
+                &:disabled {
+                  cursor: not-allowed;
+                  opacity: 0.55;
+                }
               }
             }
           }
@@ -350,7 +355,12 @@
                 transition: background-color 0.3s ease;
 
                 &:hover {
-                  background-color: darken($yellow-cl, 5%);
+                  background-color: #d98f09;
+                }
+
+                &:disabled {
+                  cursor: not-allowed;
+                  opacity: 0.65;
                 }
               }
             }
@@ -392,7 +402,12 @@
           transition: background-color 0.3s ease;
 
           &:hover {
-            background-color: darken($yellow-cl, 5%);
+            background-color: #d98f09;
+          }
+
+          &:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
           }
         }
       }
@@ -442,7 +457,7 @@
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: darken(#F5A623, 10%);
+          background-color: #dc951c;
         }
       }
     }
@@ -661,4 +676,82 @@
       gap: 15px;
     }
   }
+}
+
+.cart-helper-text {
+  margin: 8px 0 0;
+  color: #7a5a10;
+  font-family: "M-R";
+  font-size: 13px;
+  line-height: 1.4;
+
+  &.error {
+    color: $error-cl;
+  }
+}
+
+.cart-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.cart-confirm-modal {
+  width: min(420px, 100%);
+  padding: 24px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+
+  h3 {
+    margin: 0 0 10px;
+    color: #222;
+    font-family: "M-SB";
+    font-size: 20px;
+  }
+
+  p {
+    margin: 0;
+    color: #555;
+    font-family: "M-R";
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+.cart-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+
+  button {
+    min-width: 104px;
+    min-height: 40px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-family: "M-M";
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+  }
+}
+
+.cart-confirm-secondary {
+  background: #fff;
+  border-color: #d9d9d9 !important;
+  color: #333;
+}
+
+.cart-confirm-danger {
+  background: $error-cl;
+  color: #fff;
 }

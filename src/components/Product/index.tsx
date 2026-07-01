@@ -7,6 +7,7 @@ import { removeFromWishlistService } from "../../services/wishlistService";
 import { saveToOrCart } from "../../services/cartService";
 import { toast } from "react-toastify";
 import { convertToAdminApiUrl } from "../../utils/url";
+import { getAuthToken } from "../../services/loginService";
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
   const [hoveredColor, setHoveredColor] = useState<string | null>(null);
@@ -30,7 +31,7 @@ const handleWishlistChange = (e: Event) => {
   }
 
   // fallback nếu không có detail, gọi lại API như cũ
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) return;
 
   fetch(convertToAdminApiUrl(`/wishlists?status=1`), {
@@ -60,7 +61,7 @@ const handleWishlistChange = (e: Event) => {
 }, [product.variant_id]);
 
 const addItemToWishlist = async () => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
 
   if (!token) {
     toast.warning("Vui lòng đăng nhập để thêm vào wishlist!", {
