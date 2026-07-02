@@ -565,6 +565,10 @@
   .edit-addr-btn:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
+  .edit-addr-btn:focus-visible {
+    outline: 2px solid $yellow-cl;
+    outline-offset: 2px;
+  }
 }
 
 /* ------------ Address Edit Modal ------------ */
@@ -615,6 +619,10 @@
       background: #e5e7eb;
       color: #374151;
     }
+    .aem-close:focus-visible {
+      outline: 2px solid $yellow-cl;
+      outline-offset: 2px;
+    }
   }
 
   .aem-body {
@@ -650,6 +658,12 @@
       outline: none;
       border-color: #999;
     }
+    input[type="text"]:focus-visible,
+    select:focus-visible {
+      outline: 2px solid $yellow-cl;
+      outline-offset: 2px;
+      border-color: #999;
+    }
   }
 
   .aem-footer {
@@ -683,6 +697,11 @@
     }
     .btn-primary:hover {
       background: linear-gradient(135deg, #e09100, #cc8400);
+    }
+    .btn-secondary:focus-visible,
+    .btn-primary:focus-visible {
+      outline: 2px solid $yellow-cl;
+      outline-offset: 2px;
     }
   }
 }

@@ -51,6 +51,19 @@ const Header = () => {
       document.body.style.top = '';
     };
   }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isMobileMenuOpen]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -801,7 +814,7 @@ const Header = () => {
                     onClick={handleMiniCartClick}
                     aria-label="Giỏ hàng"
                   >
-                    <img src="/images/icons/cart.svg" alt="cart" />
+                    <img src="/images/icons/cart.svg" alt="" />
                     {cartCount > 0 && (
                       <span
                         className="cart-badge"
@@ -847,7 +860,7 @@ const Header = () => {
                   aria-controls="wishlist-sidebar"
                   aria-expanded={isWishlistOpen}
                 >
-                  <img src="/images/icons/wishlist.svg" alt="wishlist" />
+                  <img src="/images/icons/wishlist.svg" alt="" />
                 </button>
               </div>
               <span className="header-actions-separator"></span>
@@ -920,7 +933,7 @@ const Header = () => {
                   aria-controls="mobile-menu-dialog"
                   aria-expanded={isMobileMenuOpen}
                 >
-                  <img src="/images/icons/Hamburger_MD.svg" alt="hamburger" />
+                  <img src="/images/icons/Hamburger_MD.svg" alt="" />
                 </button>
               </div>
             </div>
@@ -935,7 +948,11 @@ const Header = () => {
       />
 
       {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
+      <div
+        className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`}
+        aria-hidden={!isMobileMenuOpen}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
         <div
           className="mobile-menu"
           id="mobile-menu-dialog"
@@ -952,7 +969,7 @@ const Header = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label="Đóng menu điều hướng"
               >
-                <span>Back</span>
+                <span>Đóng</span>
               </button>
             </div>
             <div className="mobile-menu-logo">
@@ -1011,22 +1028,23 @@ const Header = () => {
                 </div>
                 <div className="mobile-user-actions">
                   <Link to="/tai-khoan" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                    <img src="/images/icons/user.svg" alt="Account" />
+                    <img src="/images/icons/user.svg" alt="" />
                     <span>Tài khoản</span>
                   </Link>
                   <Link to="/tai-khoan/don-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                    <img src="/images/icons/package.svg" alt="Orders" />
+                    <img src="/images/icons/package.svg" alt="" />
                     <span>Đơn hàng</span>
                   </Link>
                   <Link to="/san-pham-yeu-thich" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                    <img src="/images/icons/wishlist.svg" alt="Wishlist" />
+                    <img src="/images/icons/wishlist.svg" alt="" />
                     <span>Yêu thích</span>
                   </Link>
                   <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-action-btn">
-                    <img src="/images/icons/cart.svg" alt="Cart" />
+                    <img src="/images/icons/cart.svg" alt="" />
                     <span>Giỏ hàng</span>
                   </Link>
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.preventDefault();
                       logout();
@@ -1034,7 +1052,7 @@ const Header = () => {
                     }}
                     className="mobile-action-btn logout-btn"
                   >
-                    <img src="/images/icons/logout.svg" alt="Logout" />
+                    <img src="/images/icons/logout.svg" alt="" />
                     <span>Đăng xuất</span>
                   </button>
                 </div>
@@ -1063,11 +1081,11 @@ const Header = () => {
                 </div>
                 <div className="mobile-guest-actions">
                   <Link to="/san-pham" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
-                    <img src="/images/icons/grid.svg" alt="Products" />
+                    <img src="/images/icons/grid.svg" alt="" />
                     <span>Xem sản phẩm</span>
                   </Link>
                   <Link to="/gio-hang" onClick={() => setIsMobileMenuOpen(false)} className="mobile-guest-btn">
-                    <img src="/images/icons/cart.svg" alt="Cart" />
+                    <img src="/images/icons/cart.svg" alt="" />
                     <span>Giỏ hàng</span>
                   </Link>
                 </div>

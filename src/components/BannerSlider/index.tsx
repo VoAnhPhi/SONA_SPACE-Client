@@ -24,51 +24,51 @@ type BannerFallbackConfig = {
 const pageBannerFallbacks: Record<string, BannerFallbackConfig> = {
   home: {
     subtitle: "SONA SPACE",
-    title: "Thiáº¿t Káº¿ Ná»™i Tháº¥t Cao Cáº¥p",
+    title: "Thiết Kế Nội Thất Cao Cấp",
     description:
-      "KhÃ¡m phÃ¡ bá»™ sÆ°u táº­p ná»™i tháº¥t Ä‘á»™c Ä‘Ã¡o vÃ  hiá»‡n Ä‘áº¡i. Táº¡o nÃªn khÃ´ng gian sá»‘ng hoÃ n háº£o cho ngÃ´i nhÃ  cá»§a báº¡n.",
+      "Khám phá bộ sưu tập nội thất độc đáo và hiện đại. Tạo nên không gian sống hoàn hảo cho ngôi nhà của bạn.",
     link: "/san-pham",
-    buttonText: "KhÃ¡m PhÃ¡ Ngay",
+    buttonText: "Khám Phá Ngay",
   },
   "san-pham": {
-    subtitle: "Bá»˜ SÆ¯U Táº¬P",
-    title: "KhÃ¡m PhÃ¡ Sáº£n Pháº©m Ná»™i Tháº¥t",
+    subtitle: "BỘ SƯU TẬP",
+    title: "Khám Phá Sản Phẩm Nội Thất",
     description:
-      "Lá»±a chá»n nhá»¯ng thiáº¿t káº¿ phÃ¹ há»£p cho phÃ²ng khÃ¡ch, phÃ²ng ngá»§ vÃ  khÃ´ng gian sá»‘ng hiá»‡n Ä‘áº¡i.",
+      "Lựa chọn những thiết kế phù hợp cho phòng khách, phòng ngủ và không gian sống hiện đại.",
     link: "/san-pham",
-    buttonText: "Xem Sáº£n Pháº©m",
+    buttonText: "Xem Sản Phẩm",
   },
   "khong-gian": {
-    subtitle: "KHÃ”NG GIAN Sá»NG",
-    title: "Gá»£i Ã Bá»‘ TrÃ­ Ná»™i Tháº¥t",
+    subtitle: "KHÔNG GIAN SỐNG",
+    title: "Gợi Ý Bố Trí Nội Thất",
     description:
-      "Tham kháº£o cÃ¡c mÃ´ hÃ¬nh khÃ´ng gian Ä‘á»ƒ tÃ¬m phong cÃ¡ch phÃ¹ há»£p vá»›i ngÃ´i nhÃ  cá»§a báº¡n.",
+      "Tham khảo các mô hình không gian để tìm phong cách phù hợp với ngôi nhà của bạn.",
     link: "/khong-gian",
-    buttonText: "KhÃ¡m PhÃ¡ KhÃ´ng Gian",
+    buttonText: "Khám Phá Không Gian",
   },
   "gio-hang": {
-    subtitle: "HOÃ€N Táº¤T ÄÆ N HÃ€NG",
-    title: "Kiá»ƒm Tra Giá» HÃ ng Cá»§a Báº¡n",
+    subtitle: "HOÀN TẤT ĐƠN HÀNG",
+    title: "Kiểm Tra Giỏ Hàng Của Bạn",
     description:
-      "Xem láº¡i sáº£n pháº©m Ä‘Ã£ chá»n, cáº­p nháº­t sá»‘ lÆ°á»£ng vÃ  sáºµn sÃ ng cho bÆ°á»›c thanh toÃ¡n.",
+      "Xem lại sản phẩm đã chọn, cập nhật số lượng và sẵn sàng cho bước thanh toán.",
     link: "/thanh-toan",
-    buttonText: "Tiáº¿n HÃ nh Thanh ToÃ¡n",
+    buttonText: "Tiến Hành Thanh Toán",
   },
   "tai-khoan": {
-    subtitle: "TÃ€I KHOáº¢N",
-    title: "Quáº£n LÃ½ ÄÆ¡n HÃ ng VÃ  Æ¯u ÄÃ£i",
+    subtitle: "TÀI KHOẢN",
+    title: "Quản Lý Đơn Hàng Và Ưu Đãi",
     description:
-      "Theo dÃµi Ä‘Æ¡n hÃ ng, cáº­p nháº­t thÃ´ng tin cÃ¡ nhÃ¢n vÃ  sá»­ dá»¥ng cÃ¡c Æ°u Ä‘Ã£i dÃ nh cho báº¡n.",
+      "Theo dõi đơn hàng, cập nhật thông tin cá nhân và sử dụng các ưu đãi dành cho bạn.",
     link: "/tai-khoan",
-    buttonText: "Xem TÃ i Khoáº£n",
+    buttonText: "Xem Tài Khoản",
   },
   "tin-tuc": {
     subtitle: "SONA JOURNAL",
-    title: "Cáº­p Nháº­t Tin Tá»©c Ná»™i Tháº¥t",
+    title: "Cập Nhật Tin Tức Nội Thất",
     description:
-      "KhÃ¡m phÃ¡ xu hÆ°á»›ng, kinh nghiá»‡m bá»‘ trÃ­ vÃ  cÃ¢u chuyá»‡n thiáº¿t káº¿ má»›i nháº¥t tá»« SONA SPACE.",
+      "Khám phá xu hướng, kinh nghiệm bố trí và câu chuyện thiết kế mới nhất từ SONA SPACE.",
     link: "/tin-tuc",
-    buttonText: "Äá»c Tin Má»›i",
+    buttonText: "Đọc Tin Mới",
   },
 };
 
@@ -96,7 +96,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
         setBanners(activeBanners);
       } catch (err) {
         console.error("Error fetching banners:", err);
-        setError("KhÃ´ng thá»ƒ táº£i banner. Äang hiá»ƒn thá»‹ ná»™i dung dá»± phÃ²ng.");
+        setError("Không thể tải banner. Đang hiển thị nội dung dự phòng.");
         setBanners([]);
       } finally {
         setLoading(false);
@@ -153,7 +153,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
           <div className="banner-image">
             <img
               src={fallbackBanner.image}
-              alt="SONA SPACE - Thiáº¿t káº¿ ná»™i tháº¥t cao cáº¥p"
+              alt="SONA SPACE - Thiết kế nội thất cao cấp"
               loading="lazy"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;

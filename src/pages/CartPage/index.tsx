@@ -56,6 +56,19 @@ const CartPage: React.FC = () => {
     total: 0,
   });
 
+  useEffect(() => {
+    if (!isDeleteAllConfirmOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isDeletingAll) {
+        setIsDeleteAllConfirmOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isDeleteAllConfirmOpen, isDeletingAll]);
+
   const recalculateSummary = (
     items: CartItemProps[],
     appliedDiscountAmount = 0
@@ -132,7 +145,7 @@ const CartPage: React.FC = () => {
     if (!currentItem) return;
 
     if (newQuantity > currentItem.availableStock) {
-      toast.error("San pham khong con du ton kho.");
+      toast.error("Sản phẩm không còn đủ tồn kho.");
       return;
     }
 
@@ -436,7 +449,7 @@ const CartPage: React.FC = () => {
                             </button>
                           </div>
                           {item.quantity >= item.availableStock && (
-                            <p className="cart-helper-text">Da dat toi da ton kho.</p>
+                            <p className="cart-helper-text">Đã đạt tối đa tồn kho.</p>
                           )}
                           <button
                             className="remove-btn"
@@ -463,7 +476,7 @@ const CartPage: React.FC = () => {
                     <p className="cart-helper-text">Chọn ít nhất một sản phẩm để thanh toán.</p>
                   )}
                   {selectedOutOfStockItems.length > 0 && (
-                    <p className="cart-helper-text error">Cap nhat so luong truoc khi thanh toan.</p>
+                    <p className="cart-helper-text error">Cập nhật số lượng trước khi thanh toán.</p>
                   )}
                 </div>
 
@@ -577,10 +590,16 @@ const CartPage: React.FC = () => {
         </section>
       </div>
       {isDeleteAllConfirmOpen && (
-        <div className="cart-confirm-overlay" role="dialog" aria-modal="true">
-          <div className="cart-confirm-modal">
-            <h3>Xac nhan xoa gio hang</h3>
-            <p>Thao tac nay se xoa toan bo san pham trong gio hang.</p>
+        <div className="cart-confirm-overlay">
+          <div
+            className="cart-confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-confirm-title"
+            aria-describedby="cart-confirm-description"
+          >
+            <h3 id="cart-confirm-title">Xác nhận xóa giỏ hàng</h3>
+            <p id="cart-confirm-description">Thao tác này sẽ xóa toàn bộ sản phẩm trong giỏ hàng.</p>
             <div className="cart-confirm-actions">
               <button
                 type="button"
@@ -588,7 +607,7 @@ const CartPage: React.FC = () => {
                 onClick={() => setIsDeleteAllConfirmOpen(false)}
                 disabled={isDeletingAll}
               >
-                Huy
+                Hủy
               </button>
               <button
                 type="button"

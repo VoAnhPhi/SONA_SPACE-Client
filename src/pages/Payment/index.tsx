@@ -10,6 +10,7 @@ import { loadCartService, clearCartServiceid } from "../../services/cartService"
 import { createOrderService } from "../../services/ordersService";
 import {
   EmptyState,
+  InlineErrorState,
   PageSectionSkeleton,
   RetryState,
 } from "../../components/StateFeedback";
@@ -47,6 +48,7 @@ const Payment: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCartLoading, setIsCartLoading] = useState(true);
   const [cartLoadError, setCartLoadError] = useState<string | null>(null);
+  const [checkoutInlineError, setCheckoutInlineError] = useState<string | null>(null);
   const [paymentReloadToken, setPaymentReloadToken] = useState(0);
   const location = useLocation();
   const selectedItems: number[] | undefined = location.state?.selectedItems;
@@ -152,6 +154,23 @@ const Payment: React.FC = () => {
     setPaymentMethod(method);
   };
 
+  const showCheckoutError = (message: string) => {
+    setCheckoutInlineError(message);
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 1800,
+    });
+  };
+
+  const getOrderErrorMessage = (error: any) => {
+    return (
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      "Không thể xử lý đơn hàng. Vui lòng thử lại."
+    );
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const resultCode = params.get("resultCode");
@@ -160,13 +179,23 @@ const Payment: React.FC = () => {
     if (resultCode === "0" && orderId) {
       const pending = localStorage.getItem("pending_order_data");
       if (!pending) {
-        toast.error("Không tìm thấy đơn hàng chờ.");
+        showCheckoutError("Không tìm thấy đơn hàng chờ. Vui lòng đặt hàng lại.");
+        navigate("/thanh-toan", { replace: true });
         return;
       }
 
-      const parsed = JSON.parse(pending);
+      let parsed: any;
+      try {
+        parsed = JSON.parse(pending);
+      } catch {
+        localStorage.removeItem("pending_order_data");
+        showCheckoutError("Dữ liệu thanh toán chờ không hợp lệ. Vui lòng đặt hàng lại.");
+        navigate("/thanh-toan", { replace: true });
+        return;
+      }
       // console.log("Đang xóa cart với ID:", parsed.selectedItemIds);
       const confirmOrder = async () => {
+        setIsLoading(true);
         try {
           const response = await createOrderService({
             ...parsed,
@@ -180,7 +209,9 @@ const Payment: React.FC = () => {
           toast.success("🎉 Thanh toán thành công!");
           navigate(`/dat-hang-thanh-cong/${response.order_hash}`, { replace: true });
         } catch (error) {
-          toast.error("Xác nhận đơn hàng thất bại.");
+          showCheckoutError(getOrderErrorMessage(error));
+        } finally {
+          setIsLoading(false);
         }
       };
 
@@ -188,7 +219,8 @@ const Payment: React.FC = () => {
     }
 
     if (resultCode && resultCode !== "0") {
-      toast.error("Giao dịch thất bại hoặc bị huỷ!");
+      localStorage.removeItem("pending_order_data");
+      showCheckoutError("Giao dịch thất bại hoặc bị hủy. Đơn hàng chưa được xác nhận.");
       navigate("/thanh-toan", { replace: true });
     }
   }, []);
@@ -237,7 +269,9 @@ const Payment: React.FC = () => {
           // console.log(" Items để xóa:", cartItems.map(i => i.id));
 
           //  Chỉ giữ lại những item được chọn (nếu có selectedItems)
-          const filteredItems = formatted.filter((item: any) => selectedItems?.includes(item.id));
+          const filteredItems = selectedItems?.length
+            ? formatted.filter((item: any) => selectedItems.includes(item.id))
+            : formatted;
 
 
           setCartItems(filteredItems);
@@ -271,6 +305,8 @@ const Payment: React.FC = () => {
         }
       } catch (error) {
         console.error("Lỗi khi load giỏ hàng:", error);
+        setCartItems([]);
+        setCartLoadError("Không thể tải giỏ hàng để thanh toán. Vui lòng thử lại.");
       }
     };
 
@@ -284,35 +320,30 @@ const Payment: React.FC = () => {
     if (isLoading) return;
 
     if (!validateForm()) {
-      toast.error("Vui lòng kiểm tra lại thông tin giao hàng.", {
-        position: "top-right",
-        autoClose: 1000,
-      })
+      showCheckoutError("Vui lòng kiểm tra lại thông tin giao hàng.");
       return;
     };
 
     if (cartItems.length === 0) {
-      toast.error("Giỏ hàng đang trống. Không thể thanh toán.", {
-        position: "top-right",
-        autoClose: 1000,
-      })
+      showCheckoutError("Giỏ hàng đang trống. Không thể thanh toán.");
       return;
     };
     if (!agreeToTerms) {
-      toast.error("Vui lòng đồng ý với điều khoản và điều kiện.", {
-        position: "top-right",
-        autoClose: 1000,
-      })
+      showCheckoutError("Vui lòng đồng ý với điều khoản và điều kiện.");
       return;
     };
 
     setIsLoading(true);
+    setCheckoutInlineError(null);
 
     const orderId = "SN" + Math.floor(10000000 + Math.random() * 90000000);
     const method =
       paymentMethod === "card" ? "MOMO" :
         paymentMethod === "VNpay" ? "VNPAY" : "COD";
     const appliedCode = JSON.parse(localStorage.getItem("applycode") || "{}");
+    const selectedItemIdsForCheckout = selectedItems?.length
+      ? selectedItems
+      : cartItems.map((item) => item.id);
     try {
       const payload: any = {
         order_id: orderId,
@@ -353,17 +384,14 @@ const Payment: React.FC = () => {
       }
 
       const res = await createOrderService(payload);
-      localStorage.removeItem("applycode");
       if (paymentMethod === "transfer" && !res?.order_id) {
-        toast.error("Không thể tạo đơn hàng");
+        showCheckoutError("Không thể tạo đơn hàng. Vui lòng thử lại.");
         return;
       }
       if (res?.payUrl) {
         localStorage.setItem("pending_order_data", JSON.stringify({
           ...payload,
-          selectedItemIds: selectedItems && selectedItems.length > 0
-            ? selectedItems
-            : (await loadCartService()).wishlistItems.map((item: any) => item.wishlist_id),
+          selectedItemIds: selectedItemIdsForCheckout,
         }));
 
         window.location.href = res.payUrl;
@@ -372,7 +400,9 @@ const Payment: React.FC = () => {
       // console.log("Response from createOrderService:", res);
 
       if (!res.payUrl) {
-        await clearCartServiceid(selectedItems || []);
+        await clearCartServiceid(selectedItemIdsForCheckout);
+        localStorage.removeItem("applycode");
+        localStorage.removeItem("pending_order_data");
 
         toast.success("🎉 Đặt hàng thành công. Đang chuyển hướng...", { autoClose: 2000 });
         setTimeout(() => {
@@ -382,7 +412,7 @@ const Payment: React.FC = () => {
         window.location.href = res.payUrl;
       }
     } catch (error) {
-      toast.error(" Có lỗi xảy ra khi xử lý đơn hàng.");
+      showCheckoutError(getOrderErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -403,6 +433,19 @@ const Payment: React.FC = () => {
 
   // prefill ward sau khi wards load xong
   const [pendingWardCandidates, setPendingWardCandidates] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!showAddressModal) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowAddressModal(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [showAddressModal]);
 
   const vnNormalize = (s?: string) =>
     (s || "")
@@ -578,6 +621,7 @@ const Payment: React.FC = () => {
     const wName = wards.find(w => String(w.code) === wardCode)?.name;
     const combined = [street.trim(), wName, pName].filter(Boolean).join(', ');
     setFormData(prev => ({ ...prev, address: combined }));
+    validateField("address", combined);
 
     setShowAddressModal(false);
   };
@@ -775,13 +819,17 @@ const Payment: React.FC = () => {
                     {formatPrice(orderSummary.total)} đ
                   </span>
                 </div>
+                {checkoutInlineError && (
+                  <InlineErrorState message={checkoutInlineError} />
+                )}
                 <button
                   type="button"
                   className={`checkout-btn ${isLoading ? "loading" : ""}`}
                   onClick={handleSubmit}
                   disabled={isLoading || cartItems.length === 0}
+                  aria-busy={isLoading}
                 >
-                  Tiến hành thanh toán
+                  {isLoading ? "Đang xử lý..." : "Tiến hành thanh toán"}
                 </button>
               </div>
 
@@ -800,16 +848,30 @@ const Payment: React.FC = () => {
 
       {showAddressModal && (
         <div className="address-edit-overlay" onClick={() => setShowAddressModal(false)}>
-          <div className="address-edit-modal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="address-edit-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="address-edit-title"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="aem-header">
-              <h3>Cập nhật địa chỉ giao hàng</h3>
-              <button className="aem-close" onClick={() => setShowAddressModal(false)}>×</button>
+              <h3 id="address-edit-title">Cập nhật địa chỉ giao hàng</h3>
+              <button
+                type="button"
+                className="aem-close"
+                onClick={() => setShowAddressModal(false)}
+                aria-label="Đóng hộp thoại địa chỉ"
+              >
+                ×
+              </button>
             </div>
 
             <div className="aem-body">
               <div className="form-row">
-                <label>Tỉnh/Thành phố</label>
+                <label htmlFor="address-province">Tỉnh/Thành phố</label>
                 <select
+                  id="address-province"
                   value={provinceCode}
                   onChange={e => setProvinceCode(e.target.value)}
                   className="select-field"
@@ -822,8 +884,9 @@ const Payment: React.FC = () => {
               </div>
 
               <div className="form-row">
-                <label>Phường/Xã</label>
+                <label htmlFor="address-ward">Phường/Xã</label>
                 <select
+                  id="address-ward"
                   value={wardCode}
                   onChange={e => setWardCode(e.target.value)}
                   disabled={!provinceCode}
@@ -837,8 +900,9 @@ const Payment: React.FC = () => {
               </div>
 
               <div className="form-row">
-                <label>Số nhà, Tên đường</label>
+                <label htmlFor="address-street">Số nhà, Tên đường</label>
                 <input
+                  id="address-street"
                   type="text"
                   value={street}
                   onChange={e => setStreet(e.target.value)}
@@ -848,14 +912,12 @@ const Payment: React.FC = () => {
             </div>
 
             <div className="aem-footer">
-              <button className="btn-secondary" onClick={() => setShowAddressModal(false)}>Hủy</button>
-              <button className="btn-primary" onClick={handleSaveAddress}>Lưu</button>
+              <button type="button" className="btn-secondary" onClick={() => setShowAddressModal(false)}>Hủy</button>
+              <button type="button" className="btn-primary" onClick={handleSaveAddress}>Lưu</button>
             </div>
           </div>
         </div>
       )}
-
-
       <Footer />
       <ToastContainer position="top-right"
         autoClose={3000}
