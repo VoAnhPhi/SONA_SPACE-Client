@@ -32,7 +32,11 @@ const SignUp: React.FC = () => {
     handleChangeSelect,
   } = useRegister();
 
-  const { handleGoogleLogin, handleGoogleError } = useLogin();
+  const {
+    apiError: googleApiError,
+    handleGoogleLogin,
+    handleGoogleError,
+  } = useLogin();
 
   const [showModal, setShowModal] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -144,6 +148,7 @@ const SignUp: React.FC = () => {
             </p>
 
             {apiError && <div className="error-message api-error">{apiError}</div>}
+            {googleApiError && <div className="error-message api-error">{googleApiError}</div>}
 
             <form className="signup-form" onSubmit={handleSubmit} noValidate>
               <div className="form-group">
@@ -307,7 +312,10 @@ const SignUp: React.FC = () => {
               </div>
 
               {/* Provider đã bọc ở root (main.tsx) */}
-              <GoogleLogin onSuccess={handleGoogleLogin} onError={() => {}} />
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={() => handleGoogleError({ error: "Không thể đăng nhập bằng Google. Vui lòng thử lại." })}
+              />
             </div>
 
             <div className="login-link">

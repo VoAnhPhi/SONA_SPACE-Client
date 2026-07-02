@@ -19,6 +19,7 @@ const SignIn: React.FC = () => {
     handleSubmit,
     unverifiedError,
     handleGoogleLogin,
+    handleGoogleError,
   } = useLogin();
 
   return (
@@ -106,9 +107,7 @@ const SignIn: React.FC = () => {
               </div>
               <GoogleLogin
                 onSuccess={handleGoogleLogin}
-                onError={() => {
-                  // handled in hook state
-                }}
+                onError={() => handleGoogleError({ error: "Không thể đăng nhập bằng Google. Vui lòng thử lại." })}
               />
 
               {/* <button className="google-signin-btn" disabled={loading || success}>
