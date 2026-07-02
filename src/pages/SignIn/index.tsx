@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useLogin } from "../../hooks/useLogin";
+import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import "./styles.css";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -18,9 +19,13 @@ const SignIn: React.FC = () => {
     handleCheckboxChange,
     handleSubmit,
     unverifiedError,
+  } = useLogin();
+  const {
+    googleLoading,
+    googleError,
     handleGoogleLogin,
     handleGoogleError,
-  } = useLogin();
+  } = useGoogleLogin();
 
   return (
     <>
@@ -46,6 +51,11 @@ const SignIn: React.FC = () => {
             {apiError && (
               <div className="error-message api-error">
                 {apiError}
+              </div>
+            )}
+            {googleError && (
+              <div className="error-message api-error">
+                {googleError}
               </div>
             )}
 
@@ -103,14 +113,14 @@ const SignIn: React.FC = () => {
 
             <div className="social-signin">
               <div className="divider">
-                <span>Đăng nhập với Google</span>
+                <span>{googleLoading ? "Đang xử lý Google..." : "Đăng nhập với Google"}</span>
               </div>
               <GoogleLogin
                 onSuccess={handleGoogleLogin}
-                onError={() => handleGoogleError({ error: "Không thể đăng nhập bằng Google. Vui lòng thử lại." })}
+                onError={handleGoogleError}
               />
 
-              {/* <button className="google-signin-btn" disabled={loading || success}>
+              {/* <button className="google-signin-btn" disabled={loading || googleLoading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button> */}

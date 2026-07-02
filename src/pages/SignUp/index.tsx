@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { BannerSection } from "../../components/BannerSection";
 import { useRegister } from "../../hooks/useRegister";
-import { useLogin } from "../../hooks/useLogin";
+import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 
 type Province = { code: number; name: string };
 type Ward = {
@@ -33,10 +33,11 @@ const SignUp: React.FC = () => {
   } = useRegister();
 
   const {
-    apiError: googleApiError,
+    googleLoading,
+    googleError,
     handleGoogleLogin,
     handleGoogleError,
-  } = useLogin();
+  } = useGoogleLogin();
 
   const [showModal, setShowModal] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -148,7 +149,7 @@ const SignUp: React.FC = () => {
             </p>
 
             {apiError && <div className="error-message api-error">{apiError}</div>}
-            {googleApiError && <div className="error-message api-error">{googleApiError}</div>}
+            {googleError && <div className="error-message api-error">{googleError}</div>}
 
             <form className="signup-form" onSubmit={handleSubmit} noValidate>
               <div className="form-group">
@@ -308,13 +309,13 @@ const SignUp: React.FC = () => {
 
             <div className="social-signup">
               <div className="divider">
-                <span>Đăng ký với Google</span>
+                <span>{googleLoading ? "Đang xử lý Google..." : "Đăng ký với Google"}</span>
               </div>
 
               {/* Provider đã bọc ở root (main.tsx) */}
               <GoogleLogin
                 onSuccess={handleGoogleLogin}
-                onError={() => handleGoogleError({ error: "Không thể đăng nhập bằng Google. Vui lòng thử lại." })}
+                onError={handleGoogleError}
               />
             </div>
 
