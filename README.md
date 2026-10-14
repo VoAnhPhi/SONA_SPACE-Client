@@ -199,19 +199,20 @@ npm run preview
 
 Customer-facing login uses backend user data. If seeded local data is reset, confirm the customer account password in the server seed or current local database.
 
-Backend admin review accounts:
+Backend admin review accounts (local seed data only):
 
 ```text
 Admin dashboard
 URL: http://localhost:3501
 Email: admin@sonaspace.com
-Password: Voanhphi12@
 
 Staff dashboard
 URL: http://localhost:3501
 Email: staff@sonaspace.com
-Password: Voanhphi12@
 ```
+
+Passwords are not kept in this repository. Ask the project owner for the local review
+passwords, or set your own on a local database with the server's seed/reset scripts.
 
 ## Development Workflow
 
