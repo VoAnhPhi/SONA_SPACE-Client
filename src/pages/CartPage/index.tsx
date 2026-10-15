@@ -298,6 +298,7 @@ const CartPage: React.FC = () => {
     (item) =>
       selectedItems.includes(item.id) && item.quantity > item.availableStock
   );
+  const allSelected = cartItems.length > 0 && selectedItems.length === cartItems.length;
   const checkoutDisabled =
     isCheckingOut ||
     selectedItems.length === 0 ||
@@ -317,25 +318,6 @@ const CartPage: React.FC = () => {
               <h2>Giỏ hàng</h2>
               <p className="items-count">{cartItems.length} sản phẩm</p>
             </div>
-
-            {!isCartLoading && !cartError && cartItems.length > 0 ? (
-              <div className="page-select">
-                <button
-                  className="selectt-1"
-                  type="button"
-                  onClick={() => setSelectedItems(cartItems.map((item) => item.id))}
-                >
-                  Chọn tất cả
-                </button>
-                <button
-                  className="selectt-2"
-                  type="button"
-                  onClick={() => setSelectedItems([])}
-                >
-                  Bỏ chọn
-                </button>
-              </div>
-            ) : null}
 
             {/* A guest is known at render time: show the sign-in prompt straight away instead of
                 flashing the list skeleton first */}
@@ -360,11 +342,38 @@ const CartPage: React.FC = () => {
             ) : cartItems.length > 0 ? (
               <div className="cart-grid">
                 <div className="cart-items">
+                  <div className="cart-list-head">
+                    <input
+                      id="cart-select-all"
+                      className="cart-check"
+                      type="checkbox"
+                      checked={allSelected}
+                      ref={(node) => {
+                        if (node) node.indeterminate = selectedItems.length > 0 && !allSelected;
+                      }}
+                      onChange={(e) =>
+                        setSelectedItems(e.target.checked ? cartItems.map((item) => item.id) : [])
+                      }
+                    />
+                    <label htmlFor="cart-select-all">
+                      Chọn tất cả ({selectedItems.length}/{cartItems.length})
+                    </label>
+                    <button
+                      className="delete-all"
+                      type="button"
+                      onClick={() => setIsDeleteAllConfirmOpen(true)}
+                      disabled={isDeletingAll}
+                    >
+                      Xóa toàn bộ
+                    </button>
+                  </div>
                   {cartItems.map((item) => (
                     <div key={item.id} className="cart-item">
                       <div className="item-select">
                         <input
+                          className="cart-check"
                           type="checkbox"
+                          aria-label={`Chọn ${item.name}`}
                           checked={selectedItems.includes(item.id)}
                           disabled={removingItemIds.includes(item.id)}
                           onChange={(e) =>
@@ -380,15 +389,13 @@ const CartPage: React.FC = () => {
                       <div className="item-details">
                         <div className="item-info">
                           <h3 className="item-name">{item.name}</h3>
-                          <div className="item-category">
-                            Phân loại: {item.category_name}
-                          </div>
-                          <div className="item-color">
-                            <span className="color-label">Màu:</span>
+                          <div className="item-meta">
                             <span
                               className="color-dot"
                               style={{ backgroundColor: item.color }}
+                              title="Màu sản phẩm"
                             />
+                            {item.category_name}
                           </div>
                         </div>
                         <div className="item-price">
@@ -465,19 +472,15 @@ const CartPage: React.FC = () => {
                       </div>
                     </div>
                   ))}
-                  <button
-                    className="delete-all"
-                    type="button"
-                    onClick={() => setIsDeleteAllConfirmOpen(true)}
-                    disabled={isDeletingAll}
-                  >
-                    Xóa toàn bộ
-                  </button>
-                  {selectedItems.length === 0 && (
-                    <p className="cart-helper-text">Chọn ít nhất một sản phẩm để thanh toán.</p>
-                  )}
-                  {selectedOutOfStockItems.length > 0 && (
-                    <p className="cart-helper-text error">Cập nhật số lượng trước khi thanh toán.</p>
+                  {(selectedItems.length === 0 || selectedOutOfStockItems.length > 0) && (
+                    <div className="cart-list-foot">
+                      {selectedItems.length === 0 && (
+                        <p className="cart-helper-text">Chọn ít nhất một sản phẩm để thanh toán.</p>
+                      )}
+                      {selectedOutOfStockItems.length > 0 && (
+                        <p className="cart-helper-text error">Cập nhật số lượng trước khi thanh toán.</p>
+                      )}
+                    </div>
                   )}
                 </div>
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
-import PageHero from "../../components/PageHero";
+import AuthLayout, { GoogleButton } from "../../components/AuthLayout";
 import { useRegister } from "../../hooks/useRegister";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 
@@ -136,194 +135,196 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <PageHero title="Đăng Ký Tài Khoản" breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Đăng Ký Tài Khoản" }]} />
-      <div className="signup-page">
-        <div className="container">
-          <div className="signup-content">
-            <h2>Đăng Ký Tài Khoản</h2>
-            <p className="signup-description">
-              Đăng ký thành viên để nhận thêm nhiều ưu đãi hấp dẫn
-            </p>
+      <AuthLayout
+        title="Đăng ký tài khoản"
+        subtitle="Đăng ký thành viên để nhận thêm nhiều ưu đãi hấp dẫn"
+        wide
+      >
+        {apiError && (
+          <div className="auth-alert" role="alert">
+            {apiError}
+          </div>
+        )}
+        {googleError && (
+          <div className="auth-alert" role="alert">
+            {googleError}
+          </div>
+        )}
 
-            {apiError && <div className="error-message api-error">{apiError}</div>}
-            {googleError && <div className="error-message api-error">{googleError}</div>}
-
-            <form className="signup-form" onSubmit={handleSubmit} noValidate>
-              <div className="form-group">
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  placeholder="Nhập Họ Và Tên"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className={errors.fullName ? "error" : ""}
-                  aria-invalid={!!errors.fullName}
-                  disabled={loading || success}
-                />
-                {errors.fullName && <p className="error-message">{errors.fullName}</p>}
-              </div>
-
-              <div className="form-group">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "error" : ""}
-                  aria-invalid={!!errors.email}
-                  disabled={loading || success}
-                />
-                {errors.email && <p className="error-message">{errors.email}</p>}
-              </div>
-
-              <div className="form-group">
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  placeholder="Số điện thoại"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={errors.phone ? "error" : ""}
-                  aria-invalid={!!errors.phone}
-                  disabled={loading || success}
-                />
-                {errors.phone && <p className="error-message">{errors.phone}</p>}
-              </div>
-
-              <div className="form-group">
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Mật Khẩu"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={errors.password ? "error" : ""}
-                  aria-invalid={!!errors.password}
-                  disabled={loading || success}
-                />
-                {errors.password && <p className="error-message">{errors.password}</p>}
-              </div>
-
-              <div className="form-group">
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Nhập lại mật khẩu"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={errors.confirmPassword ? "error" : ""}
-                  aria-invalid={!!errors.confirmPassword}
-                  disabled={loading || success}
-                />
-                {errors.confirmPassword && (
-                  <p className="error-message">{errors.confirmPassword}</p>
-                )}
-              </div>
-
-              <div className="form-group">
-                <select
-                  id="province"
-                  name="provinceCode"
-                  aria-label="Tỉnh/Thành phố"
-                  value={formData.provinceCode} // luôn là string
-                  onChange={handleChangeSelect}
-                  className={errors.provinceCode ? "error" : ""}
-                  aria-invalid={!!errors.provinceCode}
-                  disabled={loading || success}
-                >
-                  <option value="">Chọn Tỉnh/Thành phố (Việt Nam)</option>
-                  {provinces.map((p) => (
-                    <option key={p.code} value={String(p.code)}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.provinceCode && (
-                  <p className="error-message">{errors.provinceCode}</p>
-                )}
-
-                <select
-                  id="ward"
-                  name="wardCode"
-                  aria-label="Phường/Xã"
-                  value={formData.wardCode}
-                  onChange={handleChangeSelect}
-                  disabled={!formData.provinceCode || loading || success}
-                  className={errors.wardCode ? "error" : ""}
-                  aria-invalid={!!errors.wardCode}
-                >
-                  <option value="">Chọn Phường/Xã</option>
-                  {wards.map((w) => (
-                    <option key={w.code} value={String(w.code)}>
-                      {w.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.wardCode && <p className="error-message">{errors.wardCode}</p>}
-
-                <input
-                  id="address"
-                  type="text"
-                  placeholder="Số nhà, tên đường"
-                  value={street}
-                  onChange={(e) => setStreet(e.target.value)}
-                  className={errors.address ? "error" : ""}
-                  aria-invalid={!!errors.address}
-                  disabled={loading || success}
-                />
-                {errors.address && <p className="error-message">{errors.address}</p>}
-              </div>
-
-              <div className="form-group checkbox-group">
-                <input
-                  type="checkbox"
-                  id="agreeToTerms"
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleCheckboxChange}
-                  disabled={loading || success}
-                />
-                <label htmlFor="agreeToTerms">
-                  Tôi đã đọc và đồng ý với{" "}
-                  <Link to="/dieu-khoan">Điều Khoản</Link> và{" "}
-                  <Link to="/chinh-sach">Chính Sách Bảo Mật</Link>
-                </label>
-              </div>
-              {errors.agreeToTerms && (
-                <p className="error-message">{errors.agreeToTerms}</p>
-              )}
-
-              <button type="submit" className="signup-btn" disabled={loading || success}>
-                {loading ? "Đang xử lý..." : "Đăng ký"}
-              </button>
-            </form>
-
-            <div className="social-signup">
-              <div className="divider">
-                <span>{googleLoading ? "Đang xử lý Google..." : "Đăng ký với Google"}</span>
-              </div>
-
-              {/* Provider đã bọc ở root (main.tsx) */}
-              <GoogleLogin
-                onSuccess={handleGoogleLogin}
-                onError={handleGoogleError}
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <div className="auth-row">
+            <div className="auth-field">
+              <label htmlFor="fullName">Họ và tên</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                autoComplete="name"
+                placeholder="Nguyễn Văn A"
+                value={formData.fullName}
+                onChange={handleChange}
+                className={errors.fullName ? "error" : ""}
+                aria-invalid={!!errors.fullName}
+                disabled={loading || success}
               />
+              {errors.fullName && <p className="auth-error">{errors.fullName}</p>}
             </div>
-
-            <div className="login-link">
-              <p>
-                Đã có tài khoản? <Link to="/dang-nhap">Đăng Nhập</Link>
-              </p>
+            <div className="auth-field">
+              <label htmlFor="phone">Số điện thoại</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                autoComplete="tel"
+                placeholder="09xx xxx xxx"
+                value={formData.phone}
+                onChange={handleChange}
+                className={errors.phone ? "error" : ""}
+                aria-invalid={!!errors.phone}
+                disabled={loading || success}
+              />
+              {errors.phone && <p className="auth-error">{errors.phone}</p>}
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className="auth-field">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autoComplete="email"
+              placeholder="ten@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              className={errors.email ? "error" : ""}
+              aria-invalid={!!errors.email}
+              disabled={loading || success}
+            />
+            {errors.email && <p className="auth-error">{errors.email}</p>}
+          </div>
+
+          <div className="auth-row">
+            <div className="auth-field">
+              <label htmlFor="password">Mật khẩu</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? "error" : ""}
+                aria-invalid={!!errors.password}
+                disabled={loading || success}
+              />
+              {errors.password && <p className="auth-error">{errors.password}</p>}
+            </div>
+            <div className="auth-field">
+              <label htmlFor="confirmPassword">Nhập lại mật khẩu</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                autoComplete="new-password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={errors.confirmPassword ? "error" : ""}
+                aria-invalid={!!errors.confirmPassword}
+                disabled={loading || success}
+              />
+              {errors.confirmPassword && <p className="auth-error">{errors.confirmPassword}</p>}
+            </div>
+          </div>
+
+          <div className="auth-row">
+            <div className="auth-field">
+              <label htmlFor="province">Tỉnh/Thành phố</label>
+              <select
+                id="province"
+                name="provinceCode"
+                value={formData.provinceCode}
+                onChange={handleChangeSelect}
+                className={errors.provinceCode ? "error" : ""}
+                aria-invalid={!!errors.provinceCode}
+                disabled={loading || success}
+              >
+                <option value="">Chọn Tỉnh/Thành phố</option>
+                {provinces.map((p) => (
+                  <option key={p.code} value={String(p.code)}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              {errors.provinceCode && <p className="auth-error">{errors.provinceCode}</p>}
+            </div>
+            <div className="auth-field">
+              <label htmlFor="ward">Phường/Xã</label>
+              <select
+                id="ward"
+                name="wardCode"
+                value={formData.wardCode}
+                onChange={handleChangeSelect}
+                disabled={!formData.provinceCode || loading || success}
+                className={errors.wardCode ? "error" : ""}
+                aria-invalid={!!errors.wardCode}
+              >
+                <option value="">Chọn Phường/Xã</option>
+                {wards.map((w) => (
+                  <option key={w.code} value={String(w.code)}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
+              {errors.wardCode && <p className="auth-error">{errors.wardCode}</p>}
+            </div>
+          </div>
+
+          <div className="auth-field">
+            <label htmlFor="address">Địa chỉ</label>
+            <input
+              id="address"
+              type="text"
+              autoComplete="street-address"
+              placeholder="Số nhà, tên đường"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
+              className={errors.address ? "error" : ""}
+              aria-invalid={!!errors.address}
+              disabled={loading || success}
+            />
+            {errors.address && <p className="auth-error">{errors.address}</p>}
+          </div>
+
+          <div className="auth-check">
+            <input
+              type="checkbox"
+              id="agreeToTerms"
+              name="agreeToTerms"
+              checked={formData.agreeToTerms}
+              onChange={handleCheckboxChange}
+              disabled={loading || success}
+            />
+            <label htmlFor="agreeToTerms">
+              Tôi đã đọc và đồng ý với <Link to="/dieu-khoan-su-dung">Điều khoản</Link> và{" "}
+              <Link to="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
+            </label>
+          </div>
+          {errors.agreeToTerms && <p className="auth-error">{errors.agreeToTerms}</p>}
+
+          <button type="submit" className="auth-btn" disabled={loading || success}>
+            {loading ? "Đang xử lý..." : "Đăng ký"}
+          </button>
+
+          <div className="auth-divider">{googleLoading ? "Đang xử lý Google..." : "hoặc"}</div>
+          {/* The Google provider is mounted at the root (main.tsx) */}
+          <GoogleButton onSuccess={handleGoogleLogin} onError={handleGoogleError} text="signup_with" />
+
+          <p className="auth-switch">
+            Đã có tài khoản? <Link to="/dang-nhap">Đăng nhập</Link>
+          </p>
+        </form>
+      </AuthLayout>
 
       {showModal && (
         <div className="custom-modal-backdrop" role="dialog" aria-modal="true">

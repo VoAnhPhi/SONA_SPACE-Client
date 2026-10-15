@@ -51,19 +51,18 @@ const checks = [
   {
     name: "filter toggles expose native keyboard and expanded-state semantics",
     pass:
-      /<button[\s\S]*?className="dropdown-toggle"[\s\S]*?aria-expanded=/.test(
+      /<button[\s\S]*?className="pf-drop-btn"[\s\S]*?aria-expanded=/.test(
         filterSource
       ) &&
-      /<button[\s\S]*?className="sort-toggle"[\s\S]*?aria-expanded=/.test(
-        filterSource
-      ) &&
-      !/<div\s+className="(?:dropdown|sort)-toggle"/.test(filterSource),
+      /<button[\s\S]*?className="pf-drop-btn"[\s\S]*?aria-controls="pf-menu-sort"/.test(filterSource) &&
+      !/<div\s+className="pf-drop-btn"/.test(filterSource),
   },
   {
     name: "filter options use native buttons instead of click-only divs",
     pass:
-      /<button[\s\S]*?className={`dropdown-item/.test(filterSource) &&
-      /<button[\s\S]*?className="dropdown-item clear-item"/.test(filterSource),
+      /<button[\s\S]*?"pf-row"/.test(filterSource) &&
+      /<button[\s\S]*?className={`pf-pill /.test(filterSource) &&
+      !/<div[^>]*onClick=/.test(filterSource),
   },
 ];
 
