@@ -202,20 +202,27 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out),
-    visibility 0s linear var(--dur-base);
+  // A hidden panel must not catch the pointer, otherwise a quick out-and-in over its fading
+  // body reopens it. Closing is faster than opening so a leftover panel never lingers.
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out),
+    visibility 0s linear var(--dur-fast);
 
   .main-nav__item:hover > &,
   .main-nav__item:focus-within > & {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    transition-delay: 0s;
+    pointer-events: auto;
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out),
+      visibility 0s;
   }
 
   .main-nav--suppressed .main-nav__item > & {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
+    transition: none;
   }
 
   &__inner {

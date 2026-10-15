@@ -237,6 +237,26 @@ Owner: heavy flash on reload. Reproduced with a CDP screencast of each reload, m
 
 Measured after (1440 and 390, brightness of the hero area per frame): home 78 -> 20 -> 78, `/san-pham` 110 -> 19 -> 109 with no light frame in between; PageHero pages never reach white. `npm run build`, 7 QA contracts, 39-pair audit max CLS 0.005.
 
+### Revision 6 - cart and auth forms (2026-10-15), plan
+
+Owner: with an account signed in, the cart UI is broken and the sign-in / sign-up forms are too big and hard to use. Measured on the real pages (cart with mocked wishlist data, Docker DB was down; no data written).
+
+| Page | Finding (1440 / 390) |
+|---|---|
+| `/gio-hang` | "Chọn tất cả", "Bỏ chọn", "Xóa toàn bộ" are default-style buttons with an orange border; native 13px checkboxes sit mid-card, far from the thumbnail; thumbnails are narrow portrait crops (114x160); the summary column is not sticky; about 700px of empty space between the list and the footer; on phones each item is a ~430px stacked block (image, name, colour, price, stepper, delete), 3 items = 1,300px before the summary; total page 5,675px |
+| `/dang-nhap` | A 300px hero pushes the form down; card 780px wide with 700px inputs (52px tall, 16px) for two fields; primary button 560px wide and not full width; Google block adds a separate caption line, link text in blue that is not in the palette |
+| `/dang-ky` | Same hero and 780px card; 8 fields stacked in one column (page 2,074px at 1440, 2,593px at 390); province and ward could share a row; terms line centred under left-aligned fields |
+
+Concepts on `public/__mockups/cart-auth-concepts.html` (local only): cart C1 compact list with sticky summary, C2 table columns, C3 list with a bottom checkout bar; auth A1 compact card without hero, A2 photo and form side by side, A3 compact page title band; sign-up uses a two-column grid in all of them.
+
+Constraints: palette, black header, no leading dashes, light shadows, same fields and validation, same `cartService` / `loginService` calls.
+
+Owner choice (2026-10-15): cart C1, sign-in and sign-up A2. Implemented:
+
+- Cart: compact rows with 88px thumbnails, a select-all header (with indeterminate state) and "delete all" inside the list card, sticky summary on the right; single column on phones.
+- Auth: new `AuthLayout` (photo left, form right, sign-up fields in two columns) and `GoogleButton` fitted to the column width; old `_signIn.scss`, `SignIn/styles.css` and the sign-up page styles removed. Sign-up terms links now point to `/dieu-khoan-su-dung` and `/chinh-sach-bao-mat` (the old targets did not exist).
+- Verified: `npm run build`, 7 QA contracts, 39-pair audit (max CLS 0.002), cart select-all / partial / clear / label click, delete-all confirm, empty-submit errors on sign-in and sign-up, 35 provinces load, no page errors. Not verified: the Google button render (blocked by the origin config listed in the blocker log).
+
 ### Order of work after the choice
 
 1. D1 + H1 + logo (header and every surface that uses the dark tone).

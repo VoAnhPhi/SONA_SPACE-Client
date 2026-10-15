@@ -21,6 +21,25 @@ interface FilterProps {
   roomSlugMode?: boolean;
 }
 
+type GroupKey = "category" | "room" | "price" | "color";
+type Selected = Partial<Record<GroupKey | "sort", string>>;
+
+const PRICES = ["Dưới 10 triệu", "10 - 30 triệu", "Trên 30 triệu"];
+const SORT_OPTIONS = ["Giá tăng dần", "Giá giảm dần", "Mới nhất", "Giảm giá"];
+const GROUP_LABEL: Record<"room" | "price" | "color", string> = {
+  room: "Phòng",
+  price: "Giá",
+  color: "Màu",
+};
+
+// Category chips on the first line; room, price, color and sort on the second. On phones the
+// second line collapses into one "Bộ lọc" button that opens a bottom sheet.
+const CloseIcon = () => (
+  <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" />
+  </svg>
+);
+
 const Filter: React.FC<FilterProps> = ({
   onFilterChange,
   initialFilters = EMPTY_FILTERS,
@@ -30,18 +49,11 @@ const Filter: React.FC<FilterProps> = ({
   roomSlugMode = false,
 }) => {
   const [openedDropdown, setOpenedDropdown] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("Chọn danh mục");
-  const [selectedRoom, setSelectedRoom] = useState<string>("Chọn phòng");
-  const [selectedPrice, setSelectedPrice] = useState<string>("Chọn giá");
-  const [selectedColor, setSelectedColor] = useState<string>("Chọn màu");
-  const [selectedSort, setSelectedSort] = useState<string>("Sắp xếp");
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [selected, setSelected] = useState<Selected>({});
   const [currentFilters, setCurrentFilters] = useState<{
     [key: string]: string;
   }>({});
-
-  const prices = ["Dưới 10 triệu", "10 - 30 triệu", "Trên 30 triệu"];
-  const sortOptions = ["Giá tăng dần", "Giá giảm dần", "Mới nhất", "Giảm giá"];
 
   const [categories, setCategories] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
@@ -52,27 +64,22 @@ const Filter: React.FC<FilterProps> = ({
 
   useEffect(() => {
     setCurrentFilters(initialFilters);
-    setSelectedCategory(initialFilters.category || "Chọn danh mục");
-    setSelectedRoom(initialFilters.room || "Chọn phòng");
-    setSelectedPrice(initialFilters.price || "Chọn giá");
-    setSelectedColor(initialFilters.color || "Chọn màu");
-    setSelectedSort(initialFilters.sort || "Sắp xếp");
+    setSelected({
+      category: initialFilters.category,
+      room: initialFilters.room,
+      price: initialFilters.price,
+      color: initialFilters.color,
+      sort: initialFilters.sort,
+    });
     setOpenedDropdown(null);
   }, [initialFilters]);
 
-  const toggleDropdown = (type: string) => {
-    setOpenedDropdown((prev) => (prev === type ? null : type));
-  };
-
-  // Debounce function để tránh gọi API quá nhiều
+  // Debounce so quick successive picks trigger a single request
   const debouncedFilterChange = useCallback(
     (filters: { [key: string]: string }) => {
-      // Clear timeout cũ nếu có
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
-
-      // Set timeout mới để delay việc gọi onFilterChange
       debounceTimeoutRef.current = setTimeout(() => {
         onFilterChange(filters);
       }, 300);
@@ -80,107 +87,65 @@ const Filter: React.FC<FilterProps> = ({
     [onFilterChange]
   );
 
-  const handleSelect = (type: string, value: string) => {
-    let newFilters = { ...currentFilters };
+  const apply = (nextSelected: Selected, nextFilters: { [key: string]: string }) => {
+    setSelected(nextSelected);
+    setCurrentFilters(nextFilters);
+    setOpenedDropdown(null);
+    debouncedFilterChange(nextFilters);
+  };
+
+  // Picking the active value again clears it
+  const handleSelect = (type: GroupKey | "sort", value: string) => {
+    if (selected[type] === value) {
+      handleClear(type);
+      return;
+    }
+    const newFilters = { ...currentFilters };
+    const nextSelected = { ...selected, [type]: value };
 
     switch (type) {
       case "category":
-        setSelectedCategory(value);
-        if (value !== "Chọn danh mục") {
-          newFilters.category = value;
-        } else {
-          delete newFilters.category;
-        }
+        newFilters.category = value;
         break;
       case "room":
-        setSelectedRoom(value);
-        if (value !== "Chọn phòng") {
-          if (roomSlugMode) {
-            const chosen = rooms.find((r) => r.room_name === value);
-            if (chosen?.slug) {
-              newFilters.roomSlug = chosen.slug;
-              delete newFilters.room;
-            }
-          } else {
-            newFilters.room = value;
-            delete newFilters.roomSlug;
+        if (roomSlugMode) {
+          const chosen = rooms.find((r) => r.room_name === value);
+          if (chosen?.slug) {
+            newFilters.roomSlug = chosen.slug;
+            delete newFilters.room;
           }
         } else {
-          delete newFilters.room;
+          newFilters.room = value;
           delete newFilters.roomSlug;
         }
         break;
       case "price":
-        setSelectedPrice(value);
-        if (value !== "Chọn giá") {
-          newFilters.price = value;
-        } else {
-          delete newFilters.price;
-        }
+        newFilters.price = value;
         break;
-      case "color":
-        setSelectedColor(value);
-        if (value !== "Chọn màu") {
-          const chosen = colors.find((c) => c.color_name === value);
-          newFilters.color =
-            colorMode === "hex" ? chosen?.color_hex ?? "" : value;
-        } else {
-          delete newFilters.color;
-        }
+      case "color": {
+        const chosen = colors.find((c) => c.color_name === value);
+        newFilters.color = colorMode === "hex" ? chosen?.color_hex ?? "" : value;
         break;
+      }
       case "sort":
-        setSelectedSort(value);
-        if (value !== "Sắp xếp") {
-          newFilters.sort = value;
-        } else {
-          delete newFilters.sort;
-        }
+        newFilters.sort = value;
         break;
     }
 
-    setOpenedDropdown(null);
-    setCurrentFilters(newFilters);
-    debouncedFilterChange(newFilters);
+    apply(nextSelected, newFilters);
   };
 
-  const handleClear = (type: string) => {
-    let newFilters = { ...currentFilters };
-
-    switch (type) {
-      case "category":
-        setSelectedCategory("Chọn danh mục");
-        delete newFilters.category;
-        break;
-      case "room":
-        setSelectedRoom("Chọn phòng");
-        delete newFilters.room;
-        delete newFilters.roomSlug;
-        break;
-      case "price":
-        setSelectedPrice("Chọn giá");
-        delete newFilters.price;
-        break;
-      case "color":
-        setSelectedColor("Chọn màu");
-        delete newFilters.color;
-        break;
-      case "sort":
-        setSelectedSort("Sắp xếp");
-        delete newFilters.sort;
-        break;
-    }
-
-    setOpenedDropdown(null);
-    setCurrentFilters(newFilters);
-    debouncedFilterChange(newFilters);
+  const handleClear = (type: GroupKey | "sort") => {
+    const newFilters = { ...currentFilters };
+    const nextSelected = { ...selected };
+    delete nextSelected[type];
+    delete newFilters[type];
+    if (type === "room") delete newFilters.roomSlug;
+    apply(nextSelected, newFilters);
   };
 
   const clearAllFilters = () => {
-    setSelectedCategory("Chọn danh mục");
-    setSelectedRoom("Chọn phòng");
-    setSelectedPrice("Chọn giá");
-    setSelectedColor("Chọn màu");
-    setSelectedSort("Sắp xếp");
+    setSelected({});
     setOpenedDropdown(null);
     setCurrentFilters({});
     onFilterChange({});
@@ -221,304 +186,291 @@ const Filter: React.FC<FilterProps> = ({
         setOpenedDropdown(null);
       }
     };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenedDropdown(null);
+        setSheetOpen(false);
+      }
+    };
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      // Cleanup debounce timeout
+      document.removeEventListener("keydown", handleKey);
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
     };
   }, []);
 
+  const activeCount = (["category", "room", "price", "color"] as GroupKey[])
+    .filter((key) => !(key === "room" && hideRoomFilter))
+    .filter((key) => !(key === "category" && hideCategoryFilter))
+    .filter((key) => selected[key]).length;
+  // The sheet only holds room, price and color; category chips stay on the page
+  const sheetCount = activeCount - (selected.category && !hideCategoryFilter ? 1 : 0);
+
+  const groups: ("room" | "price" | "color")[] = hideRoomFilter
+    ? ["price", "color"]
+    : ["room", "price", "color"];
+
+  const optionNames = (group: "room" | "price" | "color"): string[] => {
+    if (group === "room") return rooms.map((r) => r.room_name);
+    if (group === "price") return PRICES;
+    return colors.map((c) => c.color_name);
+  };
+
+  const swatchOf = (name: string) =>
+    colors.find((c) => c.color_name === name)?.color_hex || "#ccc";
+
+  const shortValue = (group: "room" | "price" | "color") => {
+    const value = selected[group] ?? "";
+    return group === "color" ? value.replace(/^Màu /, "") : value;
+  };
+
+  const renderOptions = (
+    group: "room" | "price" | "color",
+    variant: "menu" | "sheet"
+  ) => {
+    const names = optionNames(group);
+    if (group === "color") {
+      return (
+        <div className="pf-swatches">
+          {names.map((name) => (
+            <button
+              type="button"
+              key={name}
+              className={`pf-swatch ${selected.color === name ? "on" : ""}`}
+              aria-pressed={selected.color === name}
+              onClick={() => handleSelect("color", name)}
+            >
+              <span style={{ backgroundColor: swatchOf(name) }} />
+              {name.replace(/^Màu /, "")}
+            </button>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className={variant === "menu" ? "pf-list" : "pf-wrap"}>
+        {names.map((name) => (
+          <button
+            type="button"
+            key={name}
+            className={`${variant === "menu" ? "pf-row" : "pf-pill"} ${
+              selected[group] === name ? "on" : ""
+            }`}
+            aria-pressed={selected[group] === name}
+            onClick={() => handleSelect(group, name)}
+          >
+            {variant === "menu" && <i className="pf-radio" />}
+            {name}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const sortOpen = openedDropdown === "sort";
+  const sortControl = (
+    <div className={`pf-group pf-sort ${sortOpen ? "open" : ""}`}>
+      <div className={`pf-drop ${selected.sort ? "has" : ""}`}>
+        <button
+          type="button"
+          className="pf-drop-btn"
+          aria-expanded={sortOpen}
+          aria-controls="pf-menu-sort"
+          onClick={() => setOpenedDropdown(sortOpen ? null : "sort")}
+        >
+          <svg
+            className="pf-sort-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5" />
+          </svg>
+          {selected.sort ?? "Sắp xếp"}
+        </button>
+        {selected.sort && (
+          <button
+            type="button"
+            className="pf-drop-x"
+            aria-label="Bỏ sắp xếp"
+            onClick={() => handleClear("sort")}
+          >
+            <CloseIcon />
+          </button>
+        )}
+      </div>
+      <div id="pf-menu-sort" className="pf-menu pf-menu--end">
+        <div className="pf-list">
+          {SORT_OPTIONS.map((option) => (
+            <button
+              type="button"
+              key={option}
+              className={`pf-row ${selected.sort === option ? "on" : ""}`}
+              aria-pressed={selected.sort === option}
+              onClick={() => handleSelect("sort", option)}
+            >
+              <i className="pf-radio" />
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="container" ref={filterRef}>
-      <div className="filter-row">
-        <div className="filter-left">
-          <div className="filter-icon">
-            <img src="/images/products/filter.svg" alt="Filter" />
-            <span>Bộ lọc:</span>
-          </div>
-
-          {/* Category */}
-          {!hideCategoryFilter && (
-            <div className="filter-dropdown">
-              <button
-                type="button"
-                className="dropdown-toggle"
-                onClick={() => toggleDropdown("category")}
-                aria-expanded={openedDropdown === "category"}
-                aria-controls="category-filter-menu"
-              >
-                {selectedCategory !== "Chọn danh mục" && (
-                  <img
-                    src={
-                      categories.find(
-                        (cat) => cat.category_name === selectedCategory
-                      )?.category_icon
-                    }
-                    alt={selectedCategory}
-                    style={{
-                      width: 24,
-                      height: 24,
-                      marginRight: 8,
-                      verticalAlign: "middle",
-                    }}
-                  />
-                )}
-                <span className="label">{selectedCategory}</span>
-                <i
-                  className={`dropdown-icon ${
-                    openedDropdown === "category" ? "open" : ""
-                  }`}
-                />
-              </button>
-              <div
-                id="category-filter-menu"
-                className={`dropdown-menu ${
-                  openedDropdown === "category" ? "show" : ""
-                }`}
-              >
-                {categories.map((cat) => (
-                  <button
-                    type="button"
-                    key={cat.category_id}
-                    className={`dropdown-item ${
-                      selectedCategory === cat.category_name ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("category", cat.category_name)}
-                  >
-                    <img
-                      src={cat.category_icon}
-                      alt={cat.category_name}
-                      style={{ width: 24, height: 24, marginRight: 8 }}
-                    />
-
-                    {cat.category_name}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  className="dropdown-item clear-item"
-                  onClick={() => handleClear("category")}
-                >
-                  Xoá bộ lọc
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Room */}
-          {!hideRoomFilter && (
-            <div className="filter-dropdown">
-              <button
-                type="button"
-                className="dropdown-toggle"
-                onClick={() => toggleDropdown("room")}
-                aria-expanded={openedDropdown === "room"}
-                aria-controls="room-filter-menu"
-              >
-                <span className="label">{selectedRoom}</span>
-                <i
-                  className={`dropdown-icon ${
-                    openedDropdown === "room" ? "open" : ""
-                  }`}
-                />
-              </button>
-              <div
-                id="room-filter-menu"
-                className={`dropdown-menu ${
-                  openedDropdown === "room" ? "show" : ""
-                }`}
-              >
-                {rooms.map((room) => (
-                  <button
-                    type="button"
-                    key={room.room_id}
-                    className={`dropdown-item ${
-                      selectedRoom === room.room_name ? "selected" : ""
-                    }`}
-                    onClick={() => handleSelect("room", room.room_name)}
-                  >
-                    {room.room_name}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  className="dropdown-item clear-item"
-                  onClick={() => handleClear("room")}
-                >
-                  Xoá bộ lọc
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Price */}
-          <div className="filter-dropdown">
+      <div className="pf">
+        {!hideCategoryFilter && (
+          <div className="pf-cats" role="group" aria-label="Danh mục">
             <button
               type="button"
-              className="dropdown-toggle"
-              onClick={() => toggleDropdown("price")}
-              aria-expanded={openedDropdown === "price"}
-              aria-controls="price-filter-menu"
+              className={`pf-pill ${selected.category ? "" : "on"}`}
+              aria-pressed={!selected.category}
+              onClick={() => handleClear("category")}
             >
-              <span>{selectedPrice}</span>
-              <i
-                className={`dropdown-icon ${
-                  openedDropdown === "price" ? "open" : ""
-                }`}
-              />
+              Tất cả
             </button>
-            <div
-              id="price-filter-menu"
-              className={`dropdown-menu ${
-                openedDropdown === "price" ? "show" : ""
-              }`}
-            >
-              {prices.map((price) => (
-                <button
-                  type="button"
-                  key={price}
-                  className={`dropdown-item ${
-                    selectedPrice === price ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelect("price", price)}
-                >
-                  {price}
-                </button>
-              ))}
-
+            {categories.map((cat) => (
               <button
                 type="button"
-                className="dropdown-item clear-item"
-                onClick={() => handleClear("price")}
+                key={cat.category_id}
+                className={`pf-pill ${
+                  selected.category === cat.category_name ? "on" : ""
+                }`}
+                aria-pressed={selected.category === cat.category_name}
+                onClick={() => handleSelect("category", cat.category_name)}
               >
-                Xoá bộ lọc
+                {cat.category_name}
               </button>
-            </div>
+            ))}
           </div>
+        )}
 
-          {/* Color */}
-          <div className="filter-dropdown">
+        <div className="pf-bar">
+          {/* Desktop: one popover per group */}
+          <div className="pf-groups">
+            {groups.map((group) => {
+              const active = !!selected[group];
+              const open = openedDropdown === group;
+              return (
+                <div
+                  key={group}
+                  className={`pf-group ${open ? "open" : ""}`}
+                >
+                  <div className={`pf-drop ${active ? "has" : ""}`}>
+                    <button
+                      type="button"
+                      className="pf-drop-btn"
+                      aria-expanded={open}
+                      aria-controls={`pf-menu-${group}`}
+                      onClick={() => setOpenedDropdown(open ? null : group)}
+                    >
+                      {GROUP_LABEL[group]}
+                      {active && <>: {shortValue(group)}</>}
+                    </button>
+                    {active && (
+                      <button
+                        type="button"
+                        className="pf-drop-x"
+                        aria-label={`Bỏ lọc ${GROUP_LABEL[group]}`}
+                        onClick={() => handleClear(group)}
+                      >
+                        <CloseIcon />
+                      </button>
+                    )}
+                  </div>
+                  <div
+                    id={`pf-menu-${group}`}
+                    className={`pf-menu ${group === "color" ? "wide" : ""}`}
+                  >
+                    {renderOptions(group, "menu")}
+                  </div>
+                </div>
+              );
+            })}
             <button
               type="button"
-              className="dropdown-toggle"
-              onClick={() => toggleDropdown("color")}
-              aria-expanded={openedDropdown === "color"}
-              aria-controls="color-filter-menu"
+              className={`pf-clear ${activeCount > 0 ? "show" : ""}`}
+              aria-label="Xoá tất cả bộ lọc"
+              title="Xoá tất cả bộ lọc"
+              tabIndex={activeCount > 0 ? 0 : -1}
+              onClick={clearAllFilters}
             >
-              {selectedColor !== "Chọn màu" && (
-                <span
-                  className="color-box"
-                  style={{
-                    backgroundColor:
-                      colors.find((color) => color.color_name === selectedColor)
-                        ?.color_hex || "#ccc",
-                    marginRight: 8,
-                  }}
-                ></span>
-              )}
-
-              <span className="label">{selectedColor}</span>
-              <i
-                className={`dropdown-icon ${
-                  openedDropdown === "color" ? "open" : ""
-                }`}
-              />
+              <CloseIcon />
             </button>
-            <div
-              id="color-filter-menu"
-              className={`dropdown-menu ${
-                openedDropdown === "color" ? "show" : ""
-              }`}
-            >
-              {colors.map((color) => (
-                <button
-                  type="button"
-                  key={color.color_id}
-                  className={`dropdown-item ${
-                    selectedColor === color.color_name ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelect("color", color.color_name)}
-                >
-                  <span
-                    className="color-box"
-                    style={{
-                      backgroundColor: color.color_hex,
-                      marginRight: 8,
-                    }}
-                  ></span>
-                  {color.color_name}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                className="dropdown-item clear-item"
-                onClick={() => handleClear("color")}
-              >
-                Xoá bộ lọc
-              </button>
-            </div>
           </div>
+
+          {/* Phones: one button opens the sheet */}
+          <button
+            type="button"
+            className="pf-open"
+            aria-haspopup="dialog"
+            onClick={() => setSheetOpen(true)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M3 5h18M6 12h12M10 19h4" />
+            </svg>
+            Bộ lọc
+            {sheetCount > 0 && <span className="pf-badge">{sheetCount}</span>}
+          </button>
+
+          {sortControl}
         </div>
+      </div>
 
-        {/* Sort */}
-        <div className="filter-right">
-          <div className="filter-sort">
+      <div className={`pf-sheet ${sheetOpen ? "open" : ""}`} aria-hidden={!sheetOpen}>
+        <button
+          type="button"
+          className="pf-scrim"
+          tabIndex={-1}
+          aria-label="Đóng bộ lọc"
+          onClick={() => setSheetOpen(false)}
+        />
+        <div className="pf-panel" role="dialog" aria-modal="true" aria-label="Bộ lọc">
+          <div className="pf-panel-head">
+            Bộ lọc
             <button
               type="button"
-              className="sort-toggle"
-              onClick={() => toggleDropdown("sort")}
-              aria-expanded={openedDropdown === "sort"}
-              aria-controls="sort-filter-menu"
+              aria-label="Đóng"
+              onClick={() => setSheetOpen(false)}
             >
-              <img
-                src="/images/products/arrow-down-up.svg"
-                alt=""
-                aria-hidden="true"
-              />
-              <span>{selectedSort}</span>
-              <i
-                className={`dropdown-icon ${
-                  openedDropdown === "sort" ? "open" : ""
-                }`}
-              />
+              <CloseIcon />
             </button>
-            <div
-              id="sort-filter-menu"
-              className={`dropdown-menu ${
-                openedDropdown === "sort" ? "show" : ""
-              }`}
-            >
-              {sortOptions.map((option) => (
-                <button
-                  type="button"
-                  key={option}
-                  className={`dropdown-item ${
-                    selectedSort === option ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelect("sort", option)}
-                >
-                  {option}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                className="dropdown-item clear-item"
-                onClick={() => handleClear("sort")}
-              >
-                Xoá bộ lọc
-              </button>
-            </div>
           </div>
-          <div className="filter-clear-all">
-            <button className="clear-all-btn" onClick={clearAllFilters}>
-              Xoá tất cả bộ lọc
+          <div className="pf-panel-body">
+            {groups.map((group) => (
+              <section key={group}>
+                <h3>{GROUP_LABEL[group]}</h3>
+                {renderOptions(group, "sheet")}
+              </section>
+            ))}
+          </div>
+          <div className="pf-panel-foot">
+            <button type="button" className="pf-link" onClick={clearAllFilters}>
+              Xoá tất cả
+            </button>
+            <button
+              type="button"
+              className="pf-apply"
+              onClick={() => setSheetOpen(false)}
+            >
+              Xem kết quả
             </button>
           </div>
         </div>
