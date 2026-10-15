@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { getAuthToken } from "../../services/loginService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadCartService, clearCartServiceid } from "../../services/cartService";
@@ -629,7 +628,6 @@ const Payment: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="bill-payment">
 
         {/* Breadcrumb */}
@@ -651,7 +649,17 @@ const Payment: React.FC = () => {
 
         <div className="Pay-billment">
           <div className="container">
-            {isCartLoading ? (
+            {/* A guest is known at render time: no skeleton flash before the sign-in prompt */}
+            {!getAuthToken() ? (
+              <EmptyState
+                title="Đăng nhập để thanh toán"
+                message="Vui lòng đăng nhập để xem giỏ hàng và hoàn tất đơn hàng của bạn."
+                actionLabel="Đăng nhập"
+                actionTo="/dang-nhap"
+                secondaryActionLabel="Quay lại giỏ hàng"
+                secondaryActionTo="/gio-hang"
+              />
+            ) : isCartLoading ? (
               <PageSectionSkeleton variant="cart-list" count={3} />
             ) : cartLoadError ? (
               <RetryState
@@ -918,7 +926,6 @@ const Payment: React.FC = () => {
           </div>
         </div>
       )}
-      <Footer />
       <ToastContainer position="top-right"
         autoClose={3000}
         style={{ marginTop: "100px" }} />
