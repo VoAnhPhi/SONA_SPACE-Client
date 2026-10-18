@@ -116,17 +116,6 @@ export interface CancelProductResponse {
   };
 }
 
-// Lấy danh sách đơn hàng của user
-export async function getUserOrders(userId: number): Promise<OrderResponse> {
-  const response = await fetch(convertToAdminApiUrl(`/orders-id/${userId}`));
-  
-  if (!response.ok) {
-    throw new Error('Không thể lấy danh sách đơn hàng');
-  }
-  
-  return response.json();
-}
-
 // Lấy danh sách sản phẩm trong đơn hàng
 export async function getOrderItems(orderId: number, token: string): Promise<OrderItemsResponse> {
   const response = await fetch(convertToAdminApiUrl(`/orders-id/items/${orderId}`), {
