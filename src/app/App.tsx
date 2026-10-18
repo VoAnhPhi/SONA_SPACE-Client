@@ -60,10 +60,7 @@ function App() {
             <Route path="/dang-ky" element={<SignUp />} />
             <Route path="/dang-nhap" element={<SignIn />} />
             <Route path="/quen-mat-khau" element={<ForgotPassword />} />
-            <Route path="/tai-khoan" element={<Account />} />
-            <Route path="/tai-khoan/thong-tin" element={<Account />} />
-            <Route path="/tai-khoan/ma-giam-gia" element={<Account />} />
-            <Route path="/tai-khoan/don-hang" element={<Account />} />
+            <Route path="/tai-khoan/*" element={<Account />} />
             <Route path="/chi-tiet-don-hang/:id" element={<OrderDetail />} />
             <Route path="/dieu-khoan-su-dung" element={<Terms />} />
             <Route path="/chinh-sach-bao-mat" element={<PrivacyPolicy />} />
