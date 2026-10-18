@@ -26,9 +26,9 @@ const PUBLIC_PAGES: Array<[name: string, path: string]> = [
   ["not-found", "/trang-khong-ton-tai"],
 ];
 
-// "/tai-khoan/don-hang" is left out: its list grows with every purchase test run.
+// "/tai-khoan" and "/tai-khoan/don-hang" are left out: both list orders, which grow with every
+// purchase test run.
 const ACCOUNT_PAGES: Array<[name: string, path: string]> = [
-  ["account-overview", "/tai-khoan"],
   ["account-info", "/tai-khoan/thong-tin"],
   ["account-coupons", "/tai-khoan/ma-giam-gia"],
   ["cart-empty", "/gio-hang"],
