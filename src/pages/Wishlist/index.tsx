@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProductComponent from "../../components/Product";
+import ProductComponent from "@/components/ProductCard";
 import { isAuthenticated as hasAuthSession } from "@/shared/auth/token-storage";
 import { loadWishlistService } from "@/domains/wishlist/wishlist.service";
 import type { Product } from "@/domains/catalog/types";
-import PolicyProduct from "../../components/Policy";
+import PolicyProduct from "@/components/ServicePolicies";
 import {
   EmptyState,
   PageSectionSkeleton,

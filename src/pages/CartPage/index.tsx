@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import GetInTouch from "../../components/getintouch";
-import PolicyProduct from "../../components/Policy";
+import GetInTouch from "@/components/GetInTouch";
+import PolicyProduct from "@/components/ServicePolicies";
 import { toast } from "react-toastify";
 import {
   clearCartService,

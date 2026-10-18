@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import InteriorDesign from "../../components/interiorDesign";
-import GetInTouch from "../../components/getintouch";
+import InteriorDesign from "@/components/InteriorDesign";
+import GetInTouch from "@/components/GetInTouch";
 import CategorySlider from "../../components/CategorySlider";
 import BannerSlider from "../../components/BannerSlider";
 import SectionHeading from "../../components/SectionHeading";
 import MediaTile from "../../components/MediaTile";
 import type { Product as ProductType } from "@/domains/catalog/types";
-import ProductComponent from "../../components/Product";
+import ProductComponent from "@/components/ProductCard";
 import { getNewestProducts } from "@/domains/catalog/products.api";
 import { formatProductForDisplay } from "@/domains/catalog/products.service";
 import {

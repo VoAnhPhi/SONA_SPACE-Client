@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BannerSlider from "../../components/BannerSlider";
 import NewsCategories from "../../components/CategoryNews";
-import PolicyProduct from "../../components/Policy";
+import PolicyProduct from "@/components/ServicePolicies";
 import RecentPosts from "../../components/RecentPosts";
 import {
   EmptyState,
