@@ -20,6 +20,7 @@
     "swiper": "^11.2.10"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@types/he": "^1.2.3",
     "@vitejs/plugin-react": "^4.5.0",
     "sass": "^1.89.1",
@@ -36,6 +37,9 @@
     "qa:banner-stability": "node scripts/qa-banner-stability-contract.js",
     "qa:product-filter-history": "node scripts/qa-product-filter-history-contract.js",
     "qa:home-product-state": "node scripts/qa-home-product-state-contract.js",
-    "qa:sass-modules": "node scripts/qa-sass-module-contract.js"
+    "qa:sass-modules": "node scripts/qa-sass-module-contract.js",
+    "test:e2e": "playwright test tests/e2e",
+    "test:visual": "playwright test tests/visual",
+    "test:visual:update": "playwright test tests/visual --update-snapshots"
   }
 }
