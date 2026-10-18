@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProductComponent from "../../components/Product";
-import { isAuthenticated as hasAuthSession } from "../../services/loginService";
-import { loadWishlistService } from "../../services/wishlistService";
-import type { Product } from "../../types";
+import { isAuthenticated as hasAuthSession } from "@/shared/auth/token-storage";
+import { loadWishlistService } from "@/domains/wishlist/wishlist.service";
+import type { Product } from "@/domains/catalog/types";
 import PolicyProduct from "../../components/Policy";
 import {
   EmptyState,

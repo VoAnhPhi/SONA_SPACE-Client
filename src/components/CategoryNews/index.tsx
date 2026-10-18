@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAllNewsCategories } from "../../api/new";
-import type { NewsCategory } from "../../types";
+import { getAllNewsCategories } from "@/domains/content/news.api";
+import type { NewsCategory } from "@/domains/content/types";
 import { EmptyState, InlineErrorState, SkeletonText } from "../StateFeedback";
 
 interface NewsProps {

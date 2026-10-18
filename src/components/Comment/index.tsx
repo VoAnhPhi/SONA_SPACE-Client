@@ -1,5 +1,5 @@
 import React from "react";
-import type { CommentResponse } from "../../types";
+import type { CommentResponse } from "@/domains/content/types";
 
 interface CommentProps {
   commentData: CommentResponse | null;

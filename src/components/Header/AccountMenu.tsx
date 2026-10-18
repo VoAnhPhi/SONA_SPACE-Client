@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useDismiss } from "../../hooks/useDismiss";
+import { useDismiss } from "@/shared/hooks/useDismiss";
 
 export const ACCOUNT_LINKS = [
   { to: "/tai-khoan", label: "Tài khoản" },

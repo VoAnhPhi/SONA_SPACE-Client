@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { ContactForm as ContactFormData } from "../../types";
+import type { ContactForm as ContactFormData } from "@/domains/contact/types";
 import {
   sendContactFormService,
   validateContactForm,
-} from "../../services/contactForm";
+} from "@/domains/contact/contact-form.service";
 
 const initialFormData: ContactFormData = {
   fullName: "",

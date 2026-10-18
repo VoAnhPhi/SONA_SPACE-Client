@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { getAuthToken } from "../../services/loginService";
+import { useAuth } from "@/domains/auth/AuthContext";
+import { getAuthToken } from "@/shared/auth/token-storage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loadCartService, clearCartServiceid } from "../../services/cartService";
-import { createOrderService } from "../../services/ordersService";
+import { loadCartService, clearCartServiceid } from "@/domains/cart/cart.service";
+import { createOrderService } from "@/domains/orders/orders.service";
 import {
   EmptyState,
   InlineErrorState,

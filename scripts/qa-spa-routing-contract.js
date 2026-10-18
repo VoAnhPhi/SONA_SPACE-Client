@@ -55,16 +55,16 @@ function assertVercelHtmlCacheHeader() {
 }
 
 function assertRouterContract() {
-  const appPath = path.join(rootDir, 'src', 'App.tsx')
+  const appPath = path.join(rootDir, 'src', 'app', 'App.tsx')
   const source = fs.readFileSync(appPath, 'utf8')
 
   if (!source.includes('<BrowserRouter')) {
-    fail('src/App.tsx no longer uses BrowserRouter; review the SPA fallback contract')
+    fail('src/app/App.tsx no longer uses BrowserRouter; review the SPA fallback contract')
     return
   }
 
   if (!source.includes('path="*"')) {
-    fail('src/App.tsx is missing a wildcard app-level 404 route')
+    fail('src/app/App.tsx is missing a wildcard app-level 404 route')
     return
   }
 

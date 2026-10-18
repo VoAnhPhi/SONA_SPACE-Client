@@ -1,15 +1,14 @@
 import React, { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { returnOrder } from "../../services/ordersService";
-import { cancelOrder } from "../../services/userServices";
-import { convertToAdminApiUrl } from "../../utils/url";
+import { returnOrder } from "@/domains/orders/orders.service";
+import { cancelOrder } from "@/domains/account/user.service";
 import { Modal } from "antd";
-import { getOrderItems, OrderItem, cancelOrderProduct } from "../../api/order";
-import { getAuthToken } from "../../services/loginService";
+import { getOrderItems, OrderItem, cancelOrderProduct } from "@/domains/orders/orders.api";
+import { getAuthToken } from "@/shared/auth/token-storage";
 import { PageSectionSkeleton, RetryState } from "../../components/StateFeedback";
 import { toast } from "react-toastify";
+import { http } from "@/shared/api/http";
 
 const ReturnOrderModal = lazy(() => import("../../components/ReturnOrderModal"));
 const CancelOrderModal = lazy(() => import("../../components/CancelOrderModal"));
@@ -96,14 +95,12 @@ const DetailOrder: React.FC = () => {
     setIsOrderLoading(true);
     setOrderLoadError(null);
     try {
-      const token = getAuthToken();
-      const res = await axios.get(
-          convertToAdminApiUrl(`/orders/hash/${id}?_t=${Date.now()}`),
+      const res = await http.get(
+          `/orders/hash/${id}?_t=${Date.now()}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
+            'Pragma': 'no-cache',
           },
         }
       );
@@ -169,7 +166,7 @@ const DetailOrder: React.FC = () => {
       const token = getAuthToken();
       if (!token) return;
 
-      const response = await getOrderItems(orderId, token);
+      const response = await getOrderItems(orderId);
       
       if (response.success && response.data?.items) {
         const orderHash = response.data.order.hash || id || '';
@@ -597,7 +594,6 @@ const DetailOrder: React.FC = () => {
     setReviewMessage("");
 
     try {
-      const token = getAuthToken();
       const payload = {
         order_item_id: currentReviewProduct.order_item_id,
         product_id: currentReviewProduct.product_id,
@@ -605,14 +601,11 @@ const DetailOrder: React.FC = () => {
         comment_description: reviewDescription,
         comment_rating: reviewRating,
       };
-      const res = await axios.post(
-        convertToAdminApiUrl("/comments"),
+      const res = await http.post(
+        "/comments",
         payload,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
@@ -775,8 +768,7 @@ const DetailOrder: React.FC = () => {
           await cancelOrderProduct(
             order.id!,
             itemId,
-            `Khách hàng yêu cầu hủy sản phẩm: ${productName}`,
-            token
+            `Khách hàng yêu cầu hủy sản phẩm: ${productName}`
           );
           toast.success(`Đã hủy sản phẩm "${productName}" thành công!`);
           

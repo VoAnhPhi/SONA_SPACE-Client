@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { ContactFormDesign, Room } from "../../types";
+import type { ContactFormDesign } from "@/domains/contact/types";
+import type { Room } from "@/domains/catalog/types";
 import {
   sendContactFormDesignService,
   validateFormContactDesign,
-} from "../../services/contactService";
-import { fetchRoomSimilar } from "../../services/roomService";
+} from "@/domains/contact/contact.service";
+import { fetchRoomSimilar } from "@/domains/catalog/rooms.service";
 import Showcase from "../../components/ShowCase/ShowCase";
 
 const CUSTOM_ROOM = "__custom";

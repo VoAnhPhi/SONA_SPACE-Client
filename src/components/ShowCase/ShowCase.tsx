@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { isAxiosError } from "axios";
+import { isAxiosError } from "@/shared/api/http";
 import { EmptyState, PageSectionSkeleton, RetryState } from "../StateFeedback";
 import { Link } from "react-router-dom";
-import type { NewsArticle } from "../../types";
-import { getNewsByCategory } from "../../api/new";
+import type { NewsArticle } from "@/domains/content/types";
+import { getNewsByCategory } from "@/domains/content/news.api";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';

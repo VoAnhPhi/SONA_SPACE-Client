@@ -3,7 +3,7 @@ const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
 const page = fs.readFileSync(path.join(root, "src/pages/ContactForm/index.tsx"), "utf8");
-const app = fs.readFileSync(path.join(root, "src/App.tsx"), "utf8");
+const app = fs.readFileSync(path.join(root, "src/app/App.tsx"), "utf8");
 const layout = fs.readFileSync(path.join(root, "src/layouts/SiteLayout.tsx"), "utf8");
 // The about route must sit inside the shared SiteLayout route, which owns header, footer and <main>
 const layoutRoutes = app.slice(app.indexOf("<Route element={<SiteLayout />}>"), app.indexOf("</Route>", app.indexOf("<Route element={<SiteLayout />}>")));

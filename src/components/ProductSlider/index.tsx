@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Product from "../Product";
-import type { Product as ProductType } from "../../types";
+import type { Product as ProductType } from "@/domains/catalog/types";
 
 export default function ProductSlider({ products }: { products: ProductType[] }) {
   const sliderRef = useRef<HTMLDivElement>(null);

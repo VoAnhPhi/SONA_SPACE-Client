@@ -9,8 +9,8 @@ import {
   RetryState,
   SkeletonBlock,
 } from "../../components/StateFeedback";
-import { getAllNewsSimple } from "../../api/new";
-import type { NewsArticle } from "../../types";
+import { getAllNewsSimple } from "@/domains/content/news.api";
+import type { NewsArticle } from "@/domains/content/types";
 
 interface NewsProps {
   limit?: number;

@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperInstance } from "swiper";
 import { Autoplay, EffectFade } from "swiper/modules";
-import { getBannersByPage, type Banner } from "../../api/banner";
-import { useRegisterHeaderHero } from "../../hooks/useHeaderHero";
+import { getBannersByPage, type Banner } from "@/domains/content/banners.api";
+import { useRegisterHeaderHero } from "@/shared/hooks/useHeaderHero";
 import { loadMotion, prefersReducedMotion } from "../../motion/gsap";
 import { SkeletonBlock } from "../StateFeedback";
-import { optimizedImageSrcSet, optimizedImageUrl } from "../../utils/image";
+import { optimizedImageSrcSet, optimizedImageUrl } from "@/shared/lib/image";
 
 import "swiper/css";
 import "swiper/css/effect-fade";

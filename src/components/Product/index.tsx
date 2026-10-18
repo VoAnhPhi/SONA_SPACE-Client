@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { Product } from "../../types";
-import { removeFromWishlistService } from "../../services/wishlistService";
-import { saveToOrCart } from "../../services/cartService";
-import { convertToAdminApiUrl } from "../../utils/url";
-import { getAuthToken } from "../../services/loginService";
+import type { Product } from "@/domains/catalog/types";
+import { removeFromWishlistService } from "@/domains/wishlist/wishlist.service";
+import { saveToOrCart } from "@/domains/cart/cart.service";
+import { http } from "@/shared/api/http";
+import { getAuthToken } from "@/shared/auth/token-storage";
 
 const NEW_PRODUCT_DAYS = 3;
 
@@ -66,10 +66,8 @@ const ProductComponent = ({ product }: { product: Product; slug: string }) => {
       const token = getAuthToken();
       if (!token) return;
 
-      fetch(convertToAdminApiUrl(`/wishlists?status=1`), {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
+      http.get(`/wishlists?status=1`, { validateStatus: () => true })
+        .then((res) => res.data)
         .then((data) => {
           setWishlist(data.some((item: { variant_id: number }) => item.variant_id === product.variant_id));
         })

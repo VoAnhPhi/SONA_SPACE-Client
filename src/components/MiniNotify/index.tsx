@@ -5,8 +5,8 @@ import {
   useImperativeHandle,
 } from 'react';
 import { Link } from 'react-router-dom';
-import { convertToAdminApiUrl } from '../../utils/url';
-import { getAuthToken } from '../../services/loginService';
+import { http } from "@/shared/api/http";
+import { getAuthToken } from "@/shared/auth/token-storage";
 import { InlineErrorState, SkeletonText } from '../StateFeedback';
 export interface Notification {
   notification_id: number;
@@ -59,15 +59,7 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
         setLoading(true);
         setLoadError(null);
         setActionError(null);
-        const response = await fetch(convertToAdminApiUrl("/couponcodes/notification"), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch notifications");
-
-        const data = await response.json();
+        const { data } = await http.get("/couponcodes/notification");
         const nextNotifications = Array.isArray(data) ? data : [];
         setNotifications(nextNotifications);
 
@@ -109,14 +101,7 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
 
         setDeletingIds((prev) => [...prev, id]);
         setActionError(null);
-        const response = await fetch(convertToAdminApiUrl(`/couponcodes/notification/${id}`), {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Không thể xóa thông báo");
+        await http.delete(`/couponcodes/notification/${id}`);
 
         setNotifications((prev) => {
           const nextNotifications = prev.filter((n) => n.notification_id !== id);
@@ -145,15 +130,9 @@ const handleMarkAsRead = async (id: number) => {
   try {
     setReadingIds((prev) => [...prev, id]);
     setActionError(null);
-    const res = await fetch(convertToAdminApiUrl(`/couponcodes/notification/read/${id}`), {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+    await http.patch(`/couponcodes/notification/read/${id}`, undefined, {
+      headers: { "Content-Type": "application/json" },
     });
-
-    if (!res.ok) throw new Error("Failed to mark as read");
 
     setNotifications(prev =>
       prev.map(n => n.notification_id === id ? { ...n, is_read: true } : n)

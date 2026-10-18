@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { convertToAdminApiUrl } from "../../utils/url";
+import { http } from "@/shared/api/http";
 
 type FilterValues = {
   category?: string;
@@ -155,15 +155,9 @@ const Filter: React.FC<FilterProps> = ({
     const fetchFilters = async () => {
       try {
         const [catRes, roomRes, colorRes] = await Promise.all([
-          fetch(convertToAdminApiUrl("/categories/filter/")).then((res) =>
-            res.json()
-          ),
-          fetch(convertToAdminApiUrl("/rooms/filter/")).then((res) =>
-            res.json()
-          ),
-          fetch(convertToAdminApiUrl("/color/filter/")).then((res) =>
-            res.json()
-          ),
+          http.get("/categories/filter/", { validateStatus: () => true }).then((res) => res.data),
+          http.get("/rooms/filter/", { validateStatus: () => true }).then((res) => res.data),
+          http.get("/color/filter/", { validateStatus: () => true }).then((res) => res.data),
         ]);
 
         setCategories(catRes);

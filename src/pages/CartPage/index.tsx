@@ -8,10 +8,10 @@ import {
   loadCartService,
   removeFromCartService,
   updateCartQuantityService,
-} from "../../services/cartService";
-import { validateCouponService } from "../../services/conpcodeService";
+} from "@/domains/cart/cart.service";
+import { validateCouponService } from "@/domains/cart/coupons.service";
 import PageHero from "../../components/PageHero";
-import { getAuthToken } from "../../services/loginService";
+import { getAuthToken } from "@/shared/auth/token-storage";
 import {
   EmptyState,
   InlineErrorState,
@@ -225,8 +225,7 @@ const CartPage: React.FC = () => {
     try {
       const result = await validateCouponService(
         promoCodeInput,
-        cartSummary.subtotal,
-        token
+        cartSummary.subtotal
       );
 
       if (result.success) {

@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
-import { saveToOrCart } from "../../services/cartService";
+import { saveToOrCart } from "@/domains/cart/cart.service";
 import { toast } from "react-toastify";
 import type { MiniCartHandle } from "../../components/MiniCart";
-import { convertToAdminApiUrl } from "../../utils/url";
-import { getAuthToken } from "../../services/loginService";
+import { getAuthToken } from "@/shared/auth/token-storage";
 import {
   EmptyState,
   InlineErrorState,
   PageSectionSkeleton,
   RetryState,
 } from "../StateFeedback";
+import { http } from "@/shared/api/http";
 
 interface WishlistItem {
   wishlist_id: number;
@@ -95,13 +94,10 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({
       await Promise.all(
         productIds.map(async (productId) => {
           try {
-            const response = await axios.get(
-              convertToAdminApiUrl("/wishlists?status=1"),
+            const response = await http.get(
+              "/wishlists?status=1",
               {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
               }
             );
 
@@ -138,14 +134,7 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({
         return;
       }
 
-      const response = await axios.get(
-        convertToAdminApiUrl("/wishlists?status=1"),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await http.get("/wishlists?status=1");
       const items: WishlistItem[] = Array.isArray(response.data)
         ? response.data
         : [];
@@ -235,11 +224,8 @@ const WishlistSidebar: React.FC<WishlistSidebarProps> = ({
         (item) => item.wishlist_id === wishlistId
       );
 
-      await axios.delete(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      await http.delete(`/wishlists/${wishlistId}`, {
+        headers: { "Content-Type": "application/json" },
       });
 
       setWishlistItems(

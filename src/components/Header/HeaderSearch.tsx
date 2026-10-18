@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { convertToAdminApiUrl } from "../../utils/url";
-import { useDismiss } from "../../hooks/useDismiss";
+import { useDismiss } from "@/shared/hooks/useDismiss";
+import { http } from "@/shared/api/http";
 import type { HeaderCatalog } from "./useHeaderCatalog";
 
 type SearchProduct = { id: number; name: string; slug: string; image?: string; price?: number | string };
@@ -9,8 +9,8 @@ type SearchProduct = { id: number; name: string; slug: string; image?: string; p
 const SEARCH_DELAY_MS = 250;
 
 async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
-  const response = await fetch(convertToAdminApiUrl(path), { signal });
-  return response.json();
+  const response = await http.get<T>(path, { signal, validateStatus: () => true });
+  return response.data;
 }
 
 function formatPrice(price: SearchProduct["price"]) {
@@ -61,7 +61,7 @@ export default function HeaderSearch({ catalog }: { catalog: HeaderCatalog }) {
       )
         .then((data) => setResults(data.results ?? []))
         .catch((error) => {
-          if (error.name !== "AbortError") setResults([]);
+          if (error.name !== "AbortError" && error.name !== "CanceledError") setResults([]);
         })
         .finally(() => {
           if (!controller.signal.aborted) setLoading(false);

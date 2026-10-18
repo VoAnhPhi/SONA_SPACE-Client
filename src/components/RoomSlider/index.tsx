@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { fetchAllRooms } from "../../services/roomService";
-import type { Room } from "../../types";
+import { fetchAllRooms } from "@/domains/catalog/rooms.service";
+import type { Room } from "@/domains/catalog/types";
 import { useEffect, useState } from "react";
 import { SkeletonBlock } from "../StateFeedback";
 import { Swiper, SwiperSlide } from "swiper/react";

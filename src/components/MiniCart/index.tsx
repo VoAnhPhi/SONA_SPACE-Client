@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Link } from 'react-router-dom';
-import { loadCartService, removeFromCartService } from '../../services/cartService';
+import { loadCartService, removeFromCartService } from '@/domains/cart/cart.service';
 
 interface CartItem {
   id: number;

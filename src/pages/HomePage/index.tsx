@@ -5,10 +5,10 @@ import CategorySlider from "../../components/CategorySlider";
 import BannerSlider from "../../components/BannerSlider";
 import SectionHeading from "../../components/SectionHeading";
 import MediaTile from "../../components/MediaTile";
-import type { Product as ProductType } from "../../types";
+import type { Product as ProductType } from "@/domains/catalog/types";
 import ProductComponent from "../../components/Product";
-import { getNewestProducts } from "../../api/product";
-import { formatProductForDisplay } from "../../services/productService";
+import { getNewestProducts } from "@/domains/catalog/products.api";
+import { formatProductForDisplay } from "@/domains/catalog/products.service";
 import {
   EmptyState,
   PageSectionSkeleton,

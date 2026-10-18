@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthLayout, { GoogleButton } from "../../components/AuthLayout";
-import { useRegister } from "../../hooks/useRegister";
-import { useGoogleLogin } from "../../hooks/useGoogleLogin";
+import { useRegister } from "@/domains/auth/useRegister";
+import { useGoogleLogin } from "@/domains/auth/useGoogleLogin";
 
 type Province = { code: number; name: string };
 type Ward = {

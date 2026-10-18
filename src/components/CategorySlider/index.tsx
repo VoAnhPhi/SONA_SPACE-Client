@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import type { Category } from "../../types";
+import type { Category } from "@/domains/catalog/types";
 import { useEffect, useState } from "react";
-import { fetchAllCategories } from "../../services/categoryService";
+import { fetchAllCategories } from "@/domains/catalog/categories.service";
 import { SkeletonBlock } from "../StateFeedback";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Scrollbar } from "swiper/modules";

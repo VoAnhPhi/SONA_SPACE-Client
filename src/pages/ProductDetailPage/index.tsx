@@ -15,21 +15,21 @@ import PolicyProduct from "../../components/Policy";
 import Comment from "../../components/Comment";
 import type { MiniCartHandle } from "../../components/MiniCart";
 // import API,
-import { getProductBySlug } from "../../api/product";
-import { getProductComments } from "../../api/comment";
+import { getProductBySlug } from "@/domains/catalog/products.api";
+import { getProductComments } from "@/domains/content/comments.api";
 
 // import services
 import {
   formatProductForDisplay,
   getRelatedProductsByRoom,
-} from "../../services/productService";
-import { fetchVariantBySlugAndColor } from "../../services/variantService";
-import { saveToOrCart } from "../../services/cartService";
-import { addToWishlist, removeFromWishlistService, checkVariantInWishlist, fetchWishlistFromDatabase } from "../../services/wishlistService";
-import { getAuthToken } from "../../services/loginService";
+} from "@/domains/catalog/products.service";
+import { fetchVariantBySlugAndColor } from "@/domains/catalog/variants.service";
+import { saveToOrCart } from "@/domains/cart/cart.service";
+import { addToWishlist, removeFromWishlistService, checkVariantInWishlist, fetchWishlistFromDatabase } from "@/domains/wishlist/wishlist.service";
+import { getAuthToken } from "@/shared/auth/token-storage";
 // import types
-import type { Product } from "../../types";
-import type { CommentResponse } from "../../types";
+import type { Product } from "@/domains/catalog/types";
+import type { CommentResponse } from "@/domains/content/types";
 
 import ProductComponent from "../../components/Product";
 import {

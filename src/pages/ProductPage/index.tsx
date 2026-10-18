@@ -19,10 +19,10 @@ import {
 } from "../../components/StateFeedback";
 
 // Type
-import type { Product } from "../../types";
+import type { Product } from "@/domains/catalog/types";
 
 // Service or API
-import { fetchAllProducts } from "../../services/productService";
+import { fetchAllProducts } from "@/domains/catalog/products.service";
 
 const DEFAULT_FILTER_LABELS = [
   "Chọn danh mục",

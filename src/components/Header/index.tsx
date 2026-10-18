@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { loadCartService } from "../../services/cartService";
-import { useHeaderHero } from "../../hooks/useHeaderHero";
+import { useAuth } from "@/domains/auth/AuthContext";
+import { loadCartService } from "@/domains/cart/cart.service";
+import { useHeaderHero } from "@/shared/hooks/useHeaderHero";
 import WishlistSidebar from "../Wishlist/WishlistSidebar";
 import MiniCart, { type MiniCartHandle } from "../MiniCart";
 import MiniNotification, { type MiniNotificationHandle } from "../MiniNotify";

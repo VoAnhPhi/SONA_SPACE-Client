@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Product as ProductType } from "../../types";
+import type { Product as ProductType } from "@/domains/catalog/types";
 import PopularCategory from "../../components/PopularCategory";
 import InteriorDesign from "../../components/interiorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/RoomSlider";
 import Product from "../../components/Product";
 import BannerSlider from "../../components/BannerSlider";
-import { getNewestProducts } from "../../api/product";
-import { formatProductForDisplay } from "../../services/productService";
+import { getNewestProducts } from "@/domains/catalog/products.api";
+import { formatProductForDisplay } from "@/domains/catalog/products.service";
 import { InlineErrorState, PageSectionSkeleton } from "../../components/StateFeedback";
 
 const Rooms: React.FC = () => {

@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { useRegisterHeaderHero } from "../../hooks/useHeaderHero";
+import { useRegisterHeaderHero } from "@/shared/hooks/useHeaderHero";
 import { SkeletonBlock } from "../StateFeedback";
-import { optimizedImageSrcSet, optimizedImageUrl } from "../../utils/image";
+import { optimizedImageSrcSet, optimizedImageUrl } from "@/shared/lib/image";
 import "./styles.scss";
 
 type Crumb = { label: string; to?: string };

@@ -12,9 +12,9 @@ import ProductComponent from "../../components/Product";
 import {
   fetchCategoryBySlug,
   fetchProductsByCategoryUsingTest,
-} from "../../services/categoryService";
-import type { Category, Product } from "../../types";
-import { formatProductForDisplay } from "../../services/productService";
+} from "@/domains/catalog/categories.service";
+import type { Category, Product } from "@/domains/catalog/types";
+import { formatProductForDisplay } from "@/domains/catalog/products.service";
 import PageHero from "../../components/PageHero";
 import ListingPageSkeleton from "../../components/ListingPageSkeleton";
 

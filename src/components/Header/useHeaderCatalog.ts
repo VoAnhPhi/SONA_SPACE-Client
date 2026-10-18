@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { getAllCategories } from "../../api/category";
-import { getAllRooms } from "../../api/room";
-import type { Category, Room } from "../../types";
+import { getAllCategories } from "@/domains/catalog/categories.api";
+import { getAllRooms } from "@/domains/catalog/rooms.api";
+import type { Category, Room } from "@/domains/catalog/types";
 
 export type HeaderCatalog = {
   categories: Category[];

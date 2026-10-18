@@ -6,8 +6,8 @@ import ProductComponent from "../../components/Product";
 import {
   fetchRoomBySlug,
   fetchProductsByRoomWithFilters,
-} from "../../services/roomService";
-import type { Room, Product } from "../../types";
+} from "@/domains/catalog/rooms.service";
+import type { Room, Product } from "@/domains/catalog/types";
 import Seemore from "../../components/seemore";
 import PageHero from "../../components/PageHero";
 import ListingPageSkeleton from "../../components/ListingPageSkeleton";

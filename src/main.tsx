@@ -1,7 +1,7 @@
 import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import App from "./App.tsx";
+import App from "./app/App.tsx";
 import 'antd/dist/reset.css';
 
 const ChatBot = lazy(() => import("./components/ChatBot/index.tsx"));

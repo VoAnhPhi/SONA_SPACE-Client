@@ -1,26 +1,20 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Link, Links, useNavigate, useLocation } from "react-router-dom";
 import PageHero from "../../components/PageHero";
-import axios from "axios";
-import { cancelOrder } from "../../services/userServices";
-import { getOrderItems } from "../../api/order";
+import { cancelOrder } from "@/domains/account/user.service";
+import { getOrderItems } from "@/domains/orders/orders.api";
 
-import type {
-  OrderItemAPI,
-  OrderAPI,
-  OrdersResponse,
-  OrderItem,
-  UserInfo, CouponCode,
-  PromoCodeWithTimer as PromoCode
-} from "../../types";
-import { convertToAdminApiUrl } from "../../utils/url";
+import type { OrderItemAPI, OrderAPI, OrdersResponse, OrderItem } from "@/domains/orders/types";
+import type { UserInfo } from "@/domains/account/types";
+import type { CouponCode, PromoCodeWithTimer as PromoCode } from "@/domains/cart/types";
 import { toast } from "react-toastify";
-import { getAuthToken, getAuthUser, updateAuthUser } from "../../services/loginService";
+import { getAuthToken, getAuthUser, updateAuthUser } from "@/shared/auth/token-storage";
 import {
   EmptyState,
   PageSectionSkeleton,
   RetryState,
 } from "../../components/StateFeedback";
+import { http } from "@/shared/api/http";
 
 // Định nghĩa interface cho API mới
 interface ProductColor {
@@ -199,7 +193,7 @@ const User: React.FC = () => {
       const token = getAuthToken();
       if (!token) return;
 
-      const response = await getOrderItems(orderId, token);
+      const response = await getOrderItems(orderId);
 
       if (response.success && response.data.items) {
         setDetailedOrderItems(prev => {
@@ -243,14 +237,13 @@ const User: React.FC = () => {
 
       // Gọi API thực tế với cache busting
       const cacheBuster = new Date().getTime();
-      const response = await axios.get<OrdersAPIResponse>(
-        convertToAdminApiUrl(`/orders-id/${userId}?_t=${cacheBuster}`),
+      const response = await http.get<OrdersAPIResponse>(
+        `/orders-id/${userId}?_t=${cacheBuster}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
+            'Pragma': 'no-cache',
+          },
         }
       );
 
@@ -281,9 +274,7 @@ const User: React.FC = () => {
       const token = getAuthToken();
       if (!token) return;
 
-      const res = await axios.get(convertToAdminApiUrl("/couponcodes/user-has-coupon"), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await http.get("/couponcodes/user-has-coupon");
       // console.log("fetchPromoCodes: Dữ liệu mã giảm giá từ API:", res.data);
       const now = new Date();
 
@@ -593,14 +584,11 @@ const User: React.FC = () => {
       };
 
       // Gọi API cập nhật thông tin người dùng
-      const response = await axios.put(
-        convertToAdminApiUrl(`/users/${userId}`),
+      const response = await http.put(
+        `/users/${userId}`,
         updatedUserInfo,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
@@ -804,8 +792,8 @@ const User: React.FC = () => {
       const userId = userData.id;
 
       // Gọi API đổi mật khẩu
-      const response = await axios.put(
-        convertToAdminApiUrl(`/users/${userId}`),
+      const response = await http.put(
+        `/users/${userId}`,
         {
           password: passwordData.newPassword,
           // Giữ nguyên các thông tin khác
@@ -815,10 +803,7 @@ const User: React.FC = () => {
           role: userData.role || "user",
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
