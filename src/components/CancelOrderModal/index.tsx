@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, List, Divider, message } from 'antd';
-import { getOrderItems, cancelOrderProduct, type OrderItem } from '../../api/order';
+import { getOrderItems, cancelOrderProduct, type OrderItem } from '@/domains/orders/orders.api';
 import CancelProductModal from '../CancelProductModal';
-import { getAuthToken } from '../../services/loginService';
+import { getAuthToken } from "@/shared/auth/token-storage";
 import './styles.scss';
 
 interface CancelOrderModalProps {
@@ -50,7 +50,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         return;
       }
       
-      const response = await getOrderItems(orderId, token);
+      const response = await getOrderItems(orderId);
       setOrderItems(response.data.items);
     } catch (error) {
       message.error('Không thể tải danh sách sản phẩm');
@@ -97,7 +97,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         return;
       }
       
-      const response = await cancelOrderProduct(orderId, selectedProduct.item_id, reason, token);
+      const response = await cancelOrderProduct(orderId, selectedProduct.item_id, reason);
       
       message.success(response.message);
       setShowProductModal(false);

@@ -1,9 +1,9 @@
   import React, { useEffect, useState } from "react";
   import { Link, useParams } from "react-router-dom";
-  import { getOrderByHash } from "../../services/ordersCompleteService";
-  import { createOrderService } from "../../services/ordersService"; // ADD
+  import { getOrderByHash } from "@/domains/orders/orders-complete.service";
+  import { createOrderService } from "@/domains/orders/orders.service"; // ADD
 
-  import { clearCartServiceid } from "../../services/cartService";
+  import { clearCartServiceid } from "@/domains/cart/cart.service";
   import { EmptyState, SkeletonBlock } from "../../components/StateFeedback";
   interface OrderSummaryProps {
     orderId: string;

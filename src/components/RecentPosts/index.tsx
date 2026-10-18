@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllNewsByView } from "../../api/new";
-import type { NewsArticle } from "../../types";
+import { getAllNewsByView } from "@/domains/content/news.api";
+import type { NewsArticle } from "@/domains/content/types";
 import { EmptyState, InlineErrorState, SkeletonText } from "../StateFeedback";
 
 interface RecentPostsProps {

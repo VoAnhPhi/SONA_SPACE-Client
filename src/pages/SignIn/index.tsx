@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import AuthLayout, { GoogleButton } from "../../components/AuthLayout";
-import { useLogin } from "../../hooks/useLogin";
-import { useGoogleLogin } from "../../hooks/useGoogleLogin";
+import { useLogin } from "@/domains/auth/useLogin";
+import { useGoogleLogin } from "@/domains/auth/useGoogleLogin";
 
 const SignIn: React.FC = () => {
   const {

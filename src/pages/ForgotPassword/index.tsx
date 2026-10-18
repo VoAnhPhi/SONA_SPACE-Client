@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
-import { convertToAdminApiUrl } from "../../utils/url";
+import { http } from "@/shared/api/http";
 
 
 // Định nghĩa các bước phục hồi mật khẩu
@@ -37,15 +37,18 @@ const ForgotPassword: React.FC = () => {
   const callApi = async (url: string, method: string, body?: any) => {
     setLoading(true);
     try {
-      const response = await fetch(url, {
-        method: method,
+      const response = await http.request<string>({
+        url,
+        method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: body ? JSON.stringify(body) : undefined,
+        data: body ? JSON.stringify(body) : undefined,
+        transformResponse: (raw) => raw,
+        validateStatus: () => true,
       });
 
-      const responseText = await response.text();
+      const responseText = response.data;
       let data;
       try {
         data = responseText ? JSON.parse(responseText) : {};
@@ -55,7 +58,7 @@ const ForgotPassword: React.FC = () => {
         throw new Error(`Máy chủ trả về dữ liệu không hợp lệ. Vui lòng thử lại. (${responseText.substring(0, 50)}...)`);
       }
 
-      if (!response.ok) {
+      if (response.status < 200 || response.status >= 300) {
         // Ném lỗi từ server để được bắt ở khối catch bên ngoài
         throw new Error(data?.error || "Có lỗi xảy ra từ server.");
       }
@@ -131,7 +134,7 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-    const result = await callApi(convertToAdminApiUrl("/auth/send-otp"), "POST", { email: formData.email });
+    const result = await callApi("/auth/send-otp", "POST", { email: formData.email });
     if (result?.success) {
       toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
       setCurrentStep(RecoveryStep.OTP_VERIFICATION);
@@ -151,7 +154,7 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-    const result = await callApi(convertToAdminApiUrl("/auth/verify-otp"), "POST", {
+    const result = await callApi("/auth/verify-otp", "POST", {
       email: formData.email,
       otp: enteredOtp,
     });
@@ -173,7 +176,7 @@ const ForgotPassword: React.FC = () => {
       toast.error("Không có email để gửi lại OTP."); // Toast cho lỗi client-side
       return;
     }
-    const result = await callApi(convertToAdminApiUrl("/auth/send-otp"), "POST", { email: formData.email });
+    const result = await callApi("/auth/send-otp", "POST", { email: formData.email });
     if (result?.success) {
       toast.success(result.data.message); // Chỉ hiển thị toast thành công TẠI ĐÂY
     } else {
@@ -202,7 +205,7 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-    const result = await callApi(convertToAdminApiUrl("/auth/reset-password"), "POST", {
+    const result = await callApi("/auth/reset-password", "POST", {
       newPassword: formData.newPassword,
       token: resetToken,
     });

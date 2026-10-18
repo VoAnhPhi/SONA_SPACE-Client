@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BannerSlider from "../../components/BannerSlider";
 import NewsCategories from "../../components/CategoryNews";
-import PolicyProduct from "../../components/Policy";
+import PolicyProduct from "@/components/ServicePolicies";
 import RecentPosts from "../../components/RecentPosts";
 import {
   EmptyState,
   RetryState,
   SkeletonBlock,
 } from "../../components/StateFeedback";
-import { getAllNewsSimple } from "../../api/new";
-import type { NewsArticle } from "../../types";
+import { getAllNewsSimple } from "@/domains/content/news.api";
+import type { NewsArticle } from "@/domains/content/types";
 
 interface NewsProps {
   limit?: number;

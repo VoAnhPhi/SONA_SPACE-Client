@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import MediaTile from "../MediaTile";
 import { SkeletonBlock } from "../StateFeedback";
-import { getFeaturedCategories, formatCategoryForDisplay } from "../../services/categoryService";
-import type { Category } from "../../types";
+import { getFeaturedCategories, formatCategoryForDisplay } from "@/domains/catalog/categories.service";
+import type { Category } from "@/domains/catalog/types";
 
 export const PopularCategory = () => {
   const [categories, setCategories] = useState<Category[]>([]);

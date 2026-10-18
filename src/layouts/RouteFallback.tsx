@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useLocation } from "react-router-dom";
 import PageHero from "../components/PageHero";
-import { useRegisterHeaderHero } from "../hooks/useHeaderHero";
+import { useRegisterHeaderHero } from "@/shared/hooks/useHeaderHero";
 
 type ShellKind = "banner-full" | "banner-compact" | "page-hero" | "order" | "plain";
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { convertToAdminApiUrl } from "../../utils/url";
+import { http } from "@/shared/api/http";
 
 const PaymentResult: React.FC = () => {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ const PaymentResult: React.FC = () => {
       if (resultCode === "0" && orderHash) {
         try {
           setMessage("Đang xác minh đơn hàng...");
-          const res = await axios.get(convertToAdminApiUrl(`/orders/hash/${orderHash}`));
+          const res = await http.get(`/orders/hash/${orderHash}`);
 
           if (res.data.success && res.data.order) {
             localStorage.removeItem("pending_order_data");

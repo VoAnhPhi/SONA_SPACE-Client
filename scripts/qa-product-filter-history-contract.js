@@ -3,11 +3,11 @@ const path = require("path");
 
 const clientRoot = path.resolve(__dirname, "..");
 const productPageSource = fs.readFileSync(
-  path.join(clientRoot, "src", "pages", "ProductPage", "index.tsx"),
+  path.join(clientRoot, "src", "pages", "Products", "index.tsx"),
   "utf8"
 );
 const filterSource = fs.readFileSync(
-  path.join(clientRoot, "src", "components", "filter", "index.tsx"),
+  path.join(clientRoot, "src", "components", "ProductFilter", "index.tsx"),
   "utf8"
 );
 

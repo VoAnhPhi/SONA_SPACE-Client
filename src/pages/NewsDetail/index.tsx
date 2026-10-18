@@ -8,8 +8,8 @@ import {
   SkeletonBlock,
   SkeletonText,
 } from "../../components/StateFeedback";
-import { getNewsBySlugDetail } from "../../api/new";
-import type { NewsArticle } from "../../types";
+import { getNewsBySlugDetail } from "@/domains/content/news.api";
+import type { NewsArticle } from "@/domains/content/types";
 
 const NewsDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();

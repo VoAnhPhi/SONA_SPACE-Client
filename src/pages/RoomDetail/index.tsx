@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import RoomSlider from "../../components/RoomSlider";
-import Filter from "../../components/filter";
-import ProductComponent from "../../components/Product";
+import Filter from "@/components/ProductFilter";
+import ProductComponent from "@/components/ProductCard";
 import {
   fetchRoomBySlug,
   fetchProductsByRoomWithFilters,
-} from "../../services/roomService";
-import type { Room, Product } from "../../types";
-import Seemore from "../../components/seemore";
+} from "@/domains/catalog/rooms.service";
+import type { Room, Product } from "@/domains/catalog/types";
+import Seemore from "@/components/SeeMore";
 import PageHero from "../../components/PageHero";
 import ListingPageSkeleton from "../../components/ListingPageSkeleton";
 import { RetryState } from "../../components/StateFeedback";
