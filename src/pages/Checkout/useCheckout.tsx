@@ -227,7 +227,7 @@ export function useCheckout() {
       try {
         const { success, wishlistItems, message } = await loadCartService();
         if (success && wishlistItems) {
-          const formatted = wishlistItems.map((item: any, index: number) => ({
+          const formatted = wishlistItems.map((item: any) => ({
             id: item.wishlist_id,
             variant_id: item.variant_id,
             name: item.product_name,

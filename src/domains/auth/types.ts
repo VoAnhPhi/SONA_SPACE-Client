@@ -7,6 +7,7 @@ export interface User {
   name: string;
   email: string;
   phone: string;
+  address?: string;
   addresses: Address[];
   wishlist?: Product[];
   full_name?: string;

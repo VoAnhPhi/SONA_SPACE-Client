@@ -1,4 +1,4 @@
-import type { Product, Variant } from "./types";
+import type { Product } from "./types";
 import type { PaginatedResponse } from "@/shared/api/types";
 import { http } from "@/shared/api/http";
 

@@ -25,7 +25,7 @@ import {
 } from "@/domains/catalog/products.service";
 import { fetchVariantBySlugAndColor } from "@/domains/catalog/variants.service";
 import { saveToOrCart } from "@/domains/cart/cart.service";
-import { addToWishlist, removeFromWishlistService, checkVariantInWishlist, fetchWishlistFromDatabase } from "@/domains/wishlist/wishlist.service";
+import { addToWishlist, removeFromWishlistService, checkVariantInWishlist } from "@/domains/wishlist/wishlist.service";
 import { getAuthToken } from "@/shared/auth/token-storage";
 // import types
 import type { Product } from "@/domains/catalog/types";
@@ -45,11 +45,10 @@ const ProductDetailPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number | "">(1);
   const [activeTab, setActiveTab] = useState<string>("description");
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
-  const [cartCount, setCartCount] = useState<number>(0);
   const [isLoadingProduct, setIsLoadingProduct] = useState<boolean>(true);
   const [productError, setProductError] = useState<string | null>(null);
   const [productReloadToken, setProductReloadToken] = useState<number>(0);
@@ -72,7 +71,7 @@ const ProductDetailPage: React.FC = () => {
             variant_id: variant.variant_id,
             variant_price: variant.price,
             variant_price_sale: variant.priceSale,
-            listImage: variant.images.join(","),
+            listImage: (variant.images ?? []).join(","),
             quantity: variant.quantity,
             color_hex: variant.color.hex,
             color_name: variant.color.name,
@@ -201,7 +200,7 @@ const ProductDetailPage: React.FC = () => {
   };
 
   const handleQuantityChange = (amount: number) => {
-    const newQuantity = quantity + amount;
+    const newQuantity = Number(quantity) + amount;
     if (newQuantity > 0) setQuantity(newQuantity);
   };
 
@@ -468,7 +467,7 @@ const ProductDetailPage: React.FC = () => {
                 </div>
                 <div className="content-price">
                   {selectedVariant?.variant_price_sale > 0 ||
-                    product.priceSale > 0 ? (
+                    (product.priceSale ?? 0) > 0 ? (
                     <>
                       <span className="price">
                         {formatPrice(
@@ -553,7 +552,7 @@ const ProductDetailPage: React.FC = () => {
                     <button
                       className="quantity-input-"
                       onClick={() => handleQuantityChange(-1)}
-                      disabled={quantity <= 1}
+                      disabled={Number(quantity) <= 1}
                     >
                       {" "}
                       <img src="/images/detail/tru.svg" alt="" />

@@ -9,7 +9,7 @@ export const fetchVariantBySlugAndColor = async (
   try {
     const raw = await getVariantBySlugAndColor(slug, colorId);
 
-    const formatted: Variant = {
+    const formatted = {
       variant_id: raw.variantId,
       productId: raw.productId,
       color: {
@@ -25,7 +25,7 @@ export const fetchVariantBySlugAndColor = async (
       images: raw.listImage
         ? raw.listImage.split(",").map((img: string) => img.trim())
         : [],
-    };
+    } as Variant;
 
     return formatted;
   } catch (error) {
