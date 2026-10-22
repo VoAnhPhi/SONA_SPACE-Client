@@ -99,6 +99,7 @@ export interface Variant {
   variant_price: number;
   variant_images?: string; // dùng nếu ảnh là chuỗi (dùng split sau)
   image: string[];
+  images?: string[];
   variant_price_sale?: number;
   productId: number;
   variant_height?: number;

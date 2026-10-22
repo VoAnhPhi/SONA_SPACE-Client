@@ -30,9 +30,6 @@ const ProductOfCategory = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [currentFilters, setCurrentFilters] = useState<{
-    [key: string]: string;
-  }>({});
 
   const applyFilters = (
     source: Product[],

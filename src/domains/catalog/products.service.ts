@@ -1,7 +1,5 @@
-import type { PaginatedResponse } from "@/shared/api/types";
-import type { Product, Variant } from "./types";
+import type { Product } from "./types";
 import { getProductBySlug, getAllProducts } from "./products.api";
-import { getProductsByRoom } from "./rooms.api";
 import { http } from "@/shared/api/http";
 
 /**

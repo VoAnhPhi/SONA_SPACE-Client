@@ -467,7 +467,7 @@ export function useAccountPage() {
       };
 
       // Gọi API cập nhật thông tin người dùng
-      const response = await http.put(
+      await http.put(
         `/users/${userId}`,
         updatedUserInfo,
         {
@@ -675,7 +675,7 @@ export function useAccountPage() {
       const userId = userData.id;
 
       // Gọi API đổi mật khẩu
-      const response = await http.put(
+      await http.put(
         `/users/${userId}`,
         {
           password: passwordData.newPassword,
@@ -765,7 +765,7 @@ export function useAccountPage() {
 
     try {
       setIsCancelling(true);
-      const result = await cancelOrder(selectedOrderId, reason);
+      await cancelOrder(selectedOrderId, reason);
       // console.log("Hủy đơn hàng thành công:", result);
 
       // Cập nhật lại danh sách đơn hàng

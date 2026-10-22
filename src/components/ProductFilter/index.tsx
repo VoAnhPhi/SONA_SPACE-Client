@@ -60,7 +60,7 @@ const Filter: React.FC<FilterProps> = ({
   const [colors, setColors] = useState<any[]>([]);
 
   const filterRef = useRef<HTMLDivElement>(null);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setCurrentFilters(initialFilters);

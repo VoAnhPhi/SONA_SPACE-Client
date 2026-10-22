@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Link } from 'react-router-dom';
 import { loadCartService, removeFromCartService } from '@/domains/cart/cart.service';
 
@@ -25,10 +25,9 @@ export interface MiniCartHandle {
   getCartCount: () => number;
 }
 
-const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpdated }, ref) => {
+const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ onCartUpdated }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [cartChanged, setCartChanged] = useState(false);
 
   useEffect(() => {
     refreshCart();

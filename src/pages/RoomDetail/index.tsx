@@ -26,7 +26,7 @@ const RoomDetail: React.FC = () => {
 
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [currentFilters, setCurrentFilters] = useState<{
+  const [, setCurrentFilters] = useState<{
     [key: string]: string;
   }>({});
 

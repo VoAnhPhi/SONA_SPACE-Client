@@ -45,6 +45,8 @@ export interface Comment {
   user_image: string;
   comment_description: string;
   comment_rating: number;
+  id?: number;
+  comment_reaction?: number;
   created_at: string;
 }
 

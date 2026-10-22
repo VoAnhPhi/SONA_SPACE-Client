@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product as ProductType } from "@/domains/catalog/types";
-import PopularCategory from "../../components/PopularCategory";
 import InteriorDesign from "@/components/InteriorDesign";
-import ProductSlider from "./components/ProductSlider";
 import CategorySlider from "../../components/RoomSlider";
 import Product from "@/components/ProductCard";
 import BannerSlider from "../../components/BannerSlider";
@@ -24,7 +22,7 @@ const Rooms: React.FC = () => {
         // console.log("Fetched newest products:", products);
 
         // Format sản phẩm để phù hợp với component Product
-        const formattedProducts = products.map((product, index) => {
+        const formattedProducts = products.map((product) => {
           return formatProductForDisplay(product);
         });
 
@@ -96,7 +94,7 @@ const Rooms: React.FC = () => {
                       slug: product.slug,
                       isWishlist: product.isWishlist,
                       category: product.category
-                    }}
+                    } as ProductType}
                     slug={product.slug}
                   />
                 ))}
